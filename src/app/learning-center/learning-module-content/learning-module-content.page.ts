@@ -1,0 +1,241 @@
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { LearningModuleService, LearningModule, Question } from '../../services/learning-module.service';
+import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
+import { ToastController } from '@ionic/angular';
+import { Storage } from '@ionic/storage';
+
+@Component({
+  selector: 'app-learning-module-content',
+  templateUrl: './learning-module-content.page.html',
+  styleUrls: ['./learning-module-content.page.scss'],
+})
+
+/**
+ * Youtube video stuff written with help from this article: 
+ * https://medium.com/@gouravkajal/integrate-youtube-iframe-player-api-in-angular-98ab9661aff6
+ */
+
+export class LearningModuleContentPage implements OnInit {
+
+  learningModule: LearningModule = 
+  {
+    moduleTitle: '',
+    moduleDescription: '',
+    moduleContent: '',
+    moduleVideoID: '',
+    modulePPTurl: '',
+    moduleVisibilityTime: [''],
+    moduleQuiz: [],
+    modulePointsWorth: 0,
+    moduleNext: ''
+  }
+
+  quizQuestions: Question =
+  {
+    questionText: '',
+    choice1: '',
+    choice2: '',
+    choice3: '',
+    choice4: '',
+    correctAnswer: '',
+    userSelection: ''
+  }
+
+  //Powerpoint Variables
+  sanitizedPPTurl: SafeResourceUrl;  
+
+  //Quiz Variables
+  totalNumberQuizQuestions = 0;
+  numberQuestionsCorrect = 0;
+  numberTimesQuizTaken = 0;
+  quizSubmissionLimit = 3; //if changed, change this hardcoded number in presentPreventSubmit()
+
+  //YouTube Video variables
+  public YT: any;
+  public video: any;
+  public player: any;
+  videoHasEnded = false;
+  
+  constructor(
+    private activatedRoute: ActivatedRoute, 
+    private learningModuleService: LearningModuleService,
+    public domSanitizer: DomSanitizer,
+    public toastController: ToastController,
+    private storage: Storage) { }
+
+  ngOnInit() {
+  }
+  
+  ionViewWillEnter()
+  {
+    let id = this.activatedRoute.snapshot.paramMap.get('id');
+    if (id)
+    {
+      this.learningModuleService.getLearningModule(id).subscribe(learningModule => {
+        this.learningModule = learningModule;
+
+        //If there is a YouTube video
+        if (learningModule.moduleVideoID != '')
+        {
+          //initialize the YouTube video player
+          this.youtubeIframeInit();
+        }
+        
+        //If there is a PPT URL
+        if (learningModule.modulePPTurl != '')
+        {
+          //need to sanitize the url for the powerpoint, otherwise there will be security complaint and it won't show
+          this.sanitizedPPTurl = this.domSanitizer.bypassSecurityTrustResourceUrl(this.learningModule.modulePPTurl);
+        }
+
+        //count number of questions in this module
+        this.countQuestions();
+
+      });
+      //this line is important!! attaches the ID to the learning module so the content for that LM shows up
+      this.learningModule.id = id;
+    }
+  }
+
+  /**
+   * Specific function for using YouTube API to track whether video has ended
+   * Refer to tutorial linked above
+   */
+  youtubeIframeInit()
+  { 
+    if (window['YT'])
+    {
+      this.startVideo();
+      return;
+    }
+
+    var tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    window['onYouTubeIframeAPIReady'] = () => this.startVideo();
+  }
+
+  startVideo()
+  {
+    this.player = new window['YT'].Player('player'+ this.learningModule.id, //IMPORTANT: give every player a unique id 
+    {
+      videoId: this.learningModule.moduleVideoID,
+      playerVars: 
+      {
+        controls: 1,
+        fs: 1,
+        playsinline: 1,
+        modestbranding: 1,
+        rel: 0,
+        showinfo: 0,
+        disablekb: 1,
+        autoplay: 0
+      },
+      events:
+      {
+        'onStateChange': this.onPlayerStateChange.bind(this),
+        'onReady': this.onPlayerReady.bind(this),
+      }
+    });
+  }
+
+  onPlayerReady(event)
+  {
+    event.target.playVideo();
+  }
+
+  onPlayerStateChange(event)
+  {
+    //code 0 means video has ended
+    if (event.data == 0)
+    {
+      this.videoHasEnded = true;
+      this.storage.set("videoHasEnded", this.videoHasEnded);
+    }
+  }
+
+
+  //Get the total number of quiz questions
+  countQuestions()
+  {
+    this.learningModule.moduleQuiz.forEach(element => {
+        this.totalNumberQuizQuestions += 1;
+        this.storage.set("totalNumberQuizQuestions", this.totalNumberQuizQuestions);
+    });
+  }
+
+
+  /**
+   * Updates the user's answer selection in the correct Question every time the selection changes
+   */
+  quizRadioChange(questionName, event)
+  {
+    this.learningModule.moduleQuiz.forEach(element => {
+      if (element.questionText == questionName)
+      {
+        element.userSelection = event.detail.value;
+      }
+      
+    });
+  }
+
+  /**
+   * If the user hasn't exceeded quiz submission limit, handles checking their selections
+   * against the correct answers and counting the number of questions that are correct.
+   */
+  quizSubmit()
+  {
+    //Check quiz limit has not been reached
+    if (this.numberTimesQuizTaken < this.quizSubmissionLimit)
+    {
+      //reset this number for each submit
+      if (this.numberQuestionsCorrect > 0)
+      {
+        this.numberQuestionsCorrect = 0;
+      }
+      //Check if user's selections are correct
+      //Increment number of questions correct
+      this.learningModule.moduleQuiz.forEach(element => {
+        if (element.correctAnswer == element.userSelection)
+        {
+          this.numberQuestionsCorrect += 1;
+          this.storage.set("numberQuestionsCorrect", this.numberQuestionsCorrect);
+        }
+
+      });
+
+      this.numberTimesQuizTaken += 1;
+      this.storage.set("numberTimesQuizTaken", this.numberTimesQuizTaken);
+    }
+    else
+    {
+      //If the quiz taking limit is exceeded
+      this.presentPreventSubmit();
+    }
+  }
+
+  /**
+   * Present a toast telling the user their limit is reached
+   */
+  async presentPreventSubmit()
+  {
+    const toast = await this.toastController.create({
+      header: 'Quiz Limit Reached',
+      message: "You've reached the limit of 3 quiz submissions.",
+      position: 'bottom',
+      buttons: [
+        {
+          text: 'Okay',
+          role: 'cancel',
+        }
+      ]
+    });
+    toast.present();
+  }
+
+
+}

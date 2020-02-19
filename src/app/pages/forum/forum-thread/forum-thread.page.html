@@ -1,0 +1,105 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Information Desk
+    </ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/forum"></ion-back-button>
+    </ion-buttons>
+    <ion-title></ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+    <ion-card>
+      <ion-row>
+        <ion-col size="2.5" *ngIf="!question.anon; else elseBlock">
+          <ion-button class="thumbnail" fill="clear"  (click)="goToProfile(question.userID, question.id)">
+            <ion-thumbnail slot="start">
+            <ion-img src="{{ question.profilePic }}"> </ion-img>
+            </ion-thumbnail>
+          </ion-button>
+        </ion-col>
+          <ng-template #elseBlock>
+              <ion-button class="thumbnail" fill="clear"  disabled="true">
+                  <ion-thumbnail slot="start">
+                      <ion-img src="{{ question.profilePic }}"> </ion-img>
+                  </ion-thumbnail>
+              </ion-button>
+          </ng-template>
+          <ion-col>
+            {{ question.username }}
+            <ion-row>
+            Posted at: {{ question.timestamp.seconds * 1000 | date:'MM-dd-yyyy h:mm:ss a' }}
+            </ion-row>
+          </ion-col>
+      </ion-row>
+      <ion-row class="header">
+        {{question.title}}
+      </ion-row>
+      <ion-row>
+        <p class="content">
+          {{question.description}}
+        </p>
+      </ion-row>
+    </ion-card>
+
+  <ion-button padding-horizontal color="primary" (click)="displayCommentBox();">
+    Comment
+  </ion-button>
+  <div *ngIf="showCommentBox">
+    <ion-item>
+      <ion-label position="stacked">Enter comment:</ion-label>
+      <ion-textarea [(ngModel)]="comment.input"></ion-textarea>
+    </ion-item>
+    <ion-item>
+      <ion-label> Comment Anonymously? </ion-label>
+      <ion-toggle [(ngModel)]="anon"></ion-toggle>
+    </ion-item>
+    <ion-button float-end size="small" (click)="addComment()"> Submit </ion-button>
+  </div>
+
+  <h6 padding-horizontal> Answers: </h6>
+
+  <ion-list>
+    <ion-item *ngFor="let comment of (comments | async)">
+      <ion-card>
+        <ion-row>
+          <ion-col size="2.5">
+            <ion-button class="thumbnail" fill="clear" *ngIf="!comment.anon; else elseBlock" (click)="goToProfile(comment.userID, question.id)">
+              <ion-thumbnail slot="start">
+                <ion-img src="{{ comment.profilePic }}"> </ion-img>
+              </ion-thumbnail>
+            </ion-button>
+            <ng-template #elseBlock>
+                <ion-button class="thumbnail" fill="clear" disabled = "true">
+                  <ion-thumbnail slot="start">
+                    <ion-img src="{{ comment.profilePic }}"> </ion-img>
+                  </ion-thumbnail>
+                </ion-button>
+            </ng-template>
+            </ion-col>
+          <ion-col>
+          {{ comment.username }}
+            <ion-row>
+              {{ comment.type }}
+            </ion-row>
+            <ion-row>
+            Posted at: {{ comment.timestamp.seconds * 1000 | date:'MM-dd-yyyy h:mm:ss a' }}
+            </ion-row>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <p class="content">
+            {{ comment.input }}
+          </p>
+        </ion-row>
+      </ion-card>
+    </ion-item>
+
+  </ion-list>
+
+</ion-content>
+
+

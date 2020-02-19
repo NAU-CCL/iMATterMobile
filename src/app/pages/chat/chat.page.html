@@ -1,0 +1,66 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      {{ cohort.name }} Chat Room
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content #content>
+  <div *ngFor="let chat of (chats | async)" class="message-wrap">
+
+    <!-- Automatic message -->
+    <div *ngIf="chat.type == 'auto'; else elseBlock">
+      <div align-self-center class="timestamp">
+        {{ chat.timestamp.seconds * 1000 | date:'MM-dd-yyyy h:mm a' }}
+      </div>
+
+      <div class="message">
+        <ion-button class="user-img" fill="clear"  (click)="goToProfile(chat.userID, chat.cohort)">
+        <img class="user-img" src="{{ chat.profilePic }}" alt="" >
+        </ion-button>
+        <div class="auto-msg-detail">
+          <div class="msg-info">
+            <p>
+              {{ chat.username }}&nbsp;&nbsp;&nbsp;</p>
+          </div>
+          <div class="msg-content">
+            <span class="triangle"></span>
+            <p class="line-breaker ">{{chat.message}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- User message -->
+    <ng-template #elseBlock>
+    <div align-self-center class="timestamp">
+      {{ chat.timestamp.seconds * 1000 | date:'MM-dd-yyyy h:mm a' }}
+    </div>
+
+    <div class="message">
+      <ion-button class="user-img" fill="clear"  (click)="goToProfile(chat.userID, chat.cohort)">
+      <img class="user-img" src="{{ chat.profilePic }}" alt="" >
+      </ion-button>
+      <div class="msg-detail">
+        <div class="msg-info">
+          <p>
+            {{ chat.username }}&nbsp;&nbsp;&nbsp;</p>
+        </div>
+        <div class="msg-content">
+          <span class="triangle"></span>
+          <p class="line-breaker ">{{chat.message}}</p>
+        </div>
+      </div>
+     </div>
+    </ng-template>
+    </div>
+</ion-content>
+
+<ion-footer>
+    <ion-item>
+      <ion-textarea [(ngModel)]="chat.message" placeholder="Enter message"></ion-textarea>
+      <ion-button slot="end" fill="clear" (click)="addChat()"><ion-icon ios="ios-arrow-forward" md="md-arrow-forward"></ion-icon></ion-button>
+    </ion-item>
+</ion-footer>

@@ -1,0 +1,92 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-item button [routerLink]="['/tabs/home/']" slot="start">
+      <ion-icon name="arrow-back"></ion-icon>
+    </ion-item>
+    <ion-title>Profile Page</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="logOut()">
+        Log Out
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-card>
+        <ion-img src="{{ user.profilePic }}"></ion-img>
+        <ion-card-title padding-horizontal>
+            {{ user.username }}
+        </ion-card-title>
+        <ion-card-subtitle padding-horizontal>
+            Due in: {{ user.cohort }}
+        </ion-card-subtitle>
+        <ion-card-subtitle padding-horizontal>
+            Weeks Pregnant: {{ user.weeksPregnant }}
+        </ion-card-subtitle>
+        <ion-card-subtitle padding-horizontal>
+            Currently feeling: {{ user.currentEmotion }}
+        </ion-card-subtitle>
+        <ion-card-content (click)="updateBio()">
+            {{ user.bio }}
+        </ion-card-content>
+    </ion-card>
+
+  <ion-list>
+    <ion-list-header> Personal Information (Tap to Edit) </ion-list-header>
+    <ion-item (click)="updateEmail()">
+      <ion-label>
+        <ion-grid>
+          <ion-row>
+            <ion-col class="text-left" size="5"> Email </ion-col>
+            <ion-col class="text-center" size="7" *ngIf="user.email">
+              {{user.email}}
+            </ion-col>
+            <ion-col
+                    size="7"
+                    class="placeholder-profile text-center"
+                    *ngIf="!user.email"
+            >
+              <span> Tap here to edit. </span>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-label>
+    </ion-item>
+
+    <ion-item (click)="updatePassword()">
+      <ion-label>
+        <ion-grid>
+          <ion-row>
+            <ion-col class="text-left" size="5"> Password </ion-col>
+            <ion-col class="text-center" size="7" class="placeholder-profile">
+              <span> Tap here to edit. </span>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-label>
+    </ion-item>
+
+      <ion-item (click)="updateLocation()">
+          <ion-label>
+              <ion-grid>
+                  <ion-row>
+                      <ion-col class="text-left" size="5"> Location </ion-col>
+                      <ion-col class="text-center" size="7" *ngIf="user.email">
+                          {{user.location}}
+                      </ion-col>
+                      <ion-col
+                              size="7"
+                              class="placeholder-profile text-center"
+                              *ngIf="!user.location"
+                      >
+
+                      </ion-col>
+                  </ion-row>
+              </ion-grid>
+          </ion-label>
+      </ion-item>
+
+
+  </ion-list>
+</ion-content>

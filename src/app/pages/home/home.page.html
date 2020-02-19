@@ -1,0 +1,74 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title> iMATter </ion-title>
+    <ion-buttons slot="end">
+      <ion-button [routerLink]="['/profile']">
+        <ion-icon slot="icon-only" name="person"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-text padding-horizontal> Currently I am feeling: </ion-text>
+<ion-row>
+  <ion-col>
+    <ion-button size = "small" fill = "clear" (click)="saveEmotion('excited')">
+      🤗
+    </ion-button>
+  </ion-col>
+  <ion-col>
+  <ion-button size = "small" fill = "clear" (click)="saveEmotion('happy')">
+      😃
+    </ion-button>
+  </ion-col>
+  <ion-col>
+  <ion-button size = "small" fill = "clear" (click)="saveEmotion('loved')">
+      🥰
+    </ion-button>
+  </ion-col>
+  <ion-col>
+  <ion-button size = "small" fill = "clear" (click)="saveEmotion('indifferent')">
+      😐
+    </ion-button>
+  </ion-col>
+  <ion-col>
+  <ion-button size = "small" fill = "clear" (click)="saveEmotion('sad')">
+      😢
+    </ion-button>
+  </ion-col>
+  <ion-col>
+  <ion-button size = "small" fill = "clear" (click)="saveEmotion('angry')">
+      😡
+    </ion-button>
+  </ion-col>
+  <ion-col>
+  <ion-button size = "small" fill = "clear"(click)="saveEmotion('overwhelmed')">
+      😩
+    </ion-button>
+  </ion-col>
+</ion-row>
+
+<ion-content>
+    <ion-card>
+      <img src="/assets/shapes.svg" alt="" />
+      <ion-card-header>
+        <ion-card-subtitle>Baby Update</ion-card-subtitle>
+        <ion-card-title>Week {{ user.weeksPregnant }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p> Here could be something about the baby</p>
+      </ion-card-content>
+    </ion-card>
+
+  <ion-card>
+    <ion-card-title padding>
+      Learning Center
+    </ion-card-title>
+    <ion-card-content>
+      The learning center offers modules you can take to learn and earn points.
+    </ion-card-content>
+    <ion-item button [routerLink]="['/learning-center']">
+      Go to Learning Center
+      <ion-icon name="arrow-forward" slot="end"></ion-icon>
+    </ion-item>
+  </ion-card>
+</ion-content>

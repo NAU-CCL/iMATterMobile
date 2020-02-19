@@ -1,0 +1,62 @@
+form {
+  margin-bottom: 32px;
+  button {
+    margin-top: 20px !important;
+  }
+}
+
+p {
+  font-size: 0.8em;
+  color: #d2d2d2;
+}
+
+ion-label {
+  margin-left: 5px;
+}
+
+ion-input {
+  padding: 5px;
+}
+
+.content {
+  color: black;
+  font-size: 16px;
+}
+
+.invalid {
+  border-bottom: 1px solid #ff6153;
+}
+
+.error-message {
+  min-height: 2.2rem;
+  ion-label {
+    margin: 2px 0;
+    font-size: 60%;
+    color: #ff6153;
+  }
+  .item-inner {
+    border-bottom: 0 !important;
+  }
+
+  .img-button {
+    width : 150px;
+    height : 150px;
+  }
+
+  .img{
+    width: 150%;
+    height : 150px;
+  }
+
+  .button-img {
+    display: block;
+  }
+
+}
+
+.select-box{
+  white-space: normal;
+  max-width: 100% !important;
+  width: 100% !important;
+  padding-left: 0 !important;
+}

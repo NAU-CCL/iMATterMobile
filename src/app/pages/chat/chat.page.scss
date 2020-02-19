@@ -1,0 +1,81 @@
+.username {
+  color: #9370DB;
+  font-size: 14px;
+}
+
+.timestamp {
+  color: #383a3e;
+  font-size: 10px;
+  align-content: center;
+}
+
+.content {
+  color: black;
+}
+
+.center {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+
+.message-wrap {
+  padding: 0 10px;
+
+  .timestamp {
+    padding-top: 15px;
+    color: #383a3e;
+    font-size: 10px;
+    align-content: center;
+    display: block;
+  }
+
+  .message {
+    position: relative;
+    padding: 10px 0;
+
+    .user-img {
+      position: absolute;
+      border-radius: 45px;
+      width: 47px;
+      height: 47px;
+      box-shadow: 0 0 2px rgba(0, 0, 0, 0.36);
+    }
+
+    .auto-msg-detail {
+      width: 100%;
+      display: inline-block;
+      padding-left: 55px;
+      color: #9370DB;
+
+      p {
+        margin: 0;
+      }
+
+      .msg-info {
+        p {
+          font-size: .8em;
+          color: #888;
+        }
+      }
+    }
+
+    .msg-detail {
+      width: 100%;
+      display: inline-block;
+      padding-left: 55px;
+
+      p {
+        margin: 0;
+      }
+
+      .msg-info {
+        p {
+          font-size: .8em;
+          color: #888;
+        }
+      }
+    }
+  }
+}

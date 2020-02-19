@@ -1,0 +1,52 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>iMATter</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-text padding=".01">
+  <h6>
+    Please enter the code that was provided to you.
+  </h6>
+</ion-text>
+
+
+<ion-item>
+  <ion-label>Code: </ion-label>
+  <ion-input style="font-weight:bold;" type="text" [(ngModel)]="code"></ion-input>
+</ion-item>
+
+<ion-button (click)="validateCode(code)">Enter</ion-button>
+
+<!---
+<ion-content>
+  <form [formGroup]="codeForm">
+    <ion-item>
+      <ion-label position="stacked">Code</ion-label>
+      <ion-input
+              formControlName="code"
+              placeholder="Enter Code"
+              [class.invalid]="!codeForm.controls['code'].valid &&
+      codeForm.controls['code'].touched"
+      >
+      </ion-input>
+    </ion-item>
+    <ion-item
+            class="error-message"
+            *ngIf="!codeForm.controls['code'].valid &&
+       codeForm.controls['code'].touched"
+    >
+      <ion-label>Please enter a valid code.</ion-label>
+    </ion-item>
+
+    <ion-button
+            (click)="goToSignup(codeForm)"
+            expand="block"
+            [disabled]="!codeForm.valid"
+    >
+      Submit
+    </ion-button>
+
+  </form>
+</ion-content>
+-->
