@@ -64,7 +64,7 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: () =>
-                import('../learning-center/learning-center.module').then(m => m.LearningCenterPageModule)
+                import('../pages/learning-center/learning-center.module').then(m => m.LearningCenterPageModule)
           }
         ]
       },

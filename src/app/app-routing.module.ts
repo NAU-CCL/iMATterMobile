@@ -36,11 +36,11 @@ const routes: Routes = [
 
   {
     path: 'learning-center',
-    loadChildren: () => import('./learning-center/learning-center.module').then( m => m.LearningCenterPageModule)
+    loadChildren: () => import('./pages/learning-center/learning-center.module').then( m => m.LearningCenterPageModule)
   },
   {
     path: 'learning-module-content/:id',
-    loadChildren: () => import('./learning-center/learning-module-content/learning-module-content.module').then( m => m.LearningModuleContentPageModule)
+    loadChildren: () => import('./pages/learning-center/learning-module-content/learning-module-content.module').then( m => m.LearningModuleContentPageModule)
   },
   {
     path: 'more',

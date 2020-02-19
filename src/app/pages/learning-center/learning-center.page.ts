@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { LearningModuleService, LearningModule } from '../services/learning-module.service';
+import { LearningModuleService, LearningModule } from '../../services/learning-module.service';
 import { Observable } from 'rxjs';
 import { Storage} from '@ionic/storage';
 import { Router } from '@angular/router';

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LearningModuleService, LearningModule, Question } from '../../services/learning-module.service';
+import { LearningModuleService, LearningModule, Question } from '../../../services/learning-module.service';
 import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
 import { ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
