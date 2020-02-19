@@ -14,19 +14,20 @@ import { AngularFirestore } from '@angular/fire/firestore';
 })
 export class ProfilePage implements OnInit {
   user: User = {
-    code: '',
-    username: '',
-    email:  '',
-    password: '',
-    dueMonth: '',
-    weeksPregnant: 0,
-    location: 0,
-    cohort: '',
-    bio:  '',
-    securityQ: '',
-    securityA: '',
-    currentEmotion: '',
-    profilePic: ''
+      code: '',
+      username: '',
+      email:  '',
+      password: '',
+      dueDate: '',
+      location: 0,
+      cohort: '',
+      bio:  '',
+      securityQ: '',
+      securityA: '',
+      currentEmotion: '',
+      profilePic: '',
+      joined: '',
+      daysAUser: 0
   };
 
   private userProfileID: any;
@@ -60,7 +61,6 @@ export class ProfilePage implements OnInit {
                       this.user.username = doc.get('username');
                       this.user.email = doc.get('email');
                       this.user.password = doc.get('password');
-                      this.user.weeksPregnant = doc.get('weeksPregnant');
                       this.user.bio = doc.get('bio');
                       this.user.location = doc.get('location');
                       this.user.cohort = doc.get('cohort');
@@ -73,10 +73,12 @@ export class ProfilePage implements OnInit {
       });
   }
 
-
   logOut(): void {
     this.storage.set('authenticated', 'false');
     this.storage.remove('userCode');
+    this.storage.remove('totalDaysPregnant');
+    this.storage.remove('weeksPregnant');
+    this.storage.remove('daysPregnant');
     this.router.navigateByUrl('login');
   }
 
@@ -174,6 +176,5 @@ export class ProfilePage implements OnInit {
   goHome() {
     this.router.navigate(['/tabs/home/', this.userProfileID ]);
   }
-
 
 }

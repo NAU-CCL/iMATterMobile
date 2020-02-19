@@ -13,8 +13,7 @@ export interface User {
   username: string;
   email: string;
   password: string;
-  dueMonth: string;
-  weeksPregnant: number;
+  dueDate: string;
   location: number;
   cohort: any;
   securityQ: string;
@@ -22,6 +21,8 @@ export interface User {
   bio: string;
   currentEmotion: string;
   profilePic: any;
+  joined: any;
+  daysAUser: any;
 }
 
 export interface Provider {
@@ -62,22 +63,21 @@ export class AuthServiceProvider {
 
 
   // tslint:disable-next-line:max-line-length
-  signupUser(user: User, email: string, password: string, username: string,
-             expectedMonth: any, location: number, weeksPregnant: number,
-             bio: string, cohort: any): Promise<any> {
+  signupUser(user: User): Promise<any> {
     return this.userCollection.doc(user.code).set({
       code: user.code,
-      email: email,
+      email: user.email,
       securityQ: user.securityQ,
       securityA: user.securityA,
-      password: password,
-      username: username,
-      expectedMonth: expectedMonth,
-      location: location,
-      weeksPregnant: weeksPregnant,
-      bio: bio,
-      cohort: cohort,
-      profilePic: user.profilePic});
+      password: user.password,
+      username: user.username,
+      dueDate: user.dueDate,
+      location: user.location,
+      bio: user.bio,
+      cohort: user.cohort,
+      profilePic: user.profilePic,
+      joined: user.joined,
+      daysAUser: user.daysAUser});
   }
 
 
@@ -87,5 +87,3 @@ export class AuthServiceProvider {
 
 
 }
-
-

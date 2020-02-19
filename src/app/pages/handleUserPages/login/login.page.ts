@@ -13,6 +13,8 @@ import { Storage } from '@ionic/storage';
     templateUrl: './login.page.html',
     styleUrls: ['./login.page.scss'],
 })
+
+
 export class LoginPage implements OnInit {
 
     public loginForm: FormGroup;
@@ -46,7 +48,10 @@ export class LoginPage implements OnInit {
 
     ngOnInit() {
         this.storage.set('authenticated', 'false');
+
+
     }
+
 
     validateUser(loginForm: FormGroup) {
         this.email = loginForm.value.email;
@@ -62,21 +67,21 @@ export class LoginPage implements OnInit {
                     result.forEach(doc => {
                         this.userID = doc.id;
                         this.userPassword = doc.get('password');
-                        console.log(this.userPassword);
 
                         if ( this.userPassword === this.password) {
                             this.storage.set('userCode', this.userID);
                             this.storage.set('authenticated', 'true');
-                            this.storage.set('expectedMonth', doc.get('expectedMonth'));
                             this.storage.set('username', doc.get('username'));
-                            this.storage.set('weeksPregnant', doc.get('weeksPregnant'));
+                            this.storage.set('dueDate', doc.get('dueDate'));
                             this.storage.set('cohort', doc.get('cohort'));
+
+                            this.getCurrentPregnancyStatus(doc.get('dueDate'));
+                            console.log(doc.get('dueDate'));
+
 
                             this.router.navigate(['/tabs/home/']);
                         } else {
                             this.showToast('Password is incorrect');
-                            console.log(this.userPassword);
-                            console.log(this.password);
                         }
 
                     });
@@ -94,5 +99,26 @@ export class LoginPage implements OnInit {
             message: msg,
             duration: 2000
         }).then(toast => toast.present());
+    }
+
+    getCurrentPregnancyStatus(dueDate) {
+        const currentDateString = new Date().toJSON().split('T')[0];
+        const currentDate = new Date(currentDateString);
+        console.log(currentDate);
+        const userDueDate = new Date(dueDate);
+        console.log(dueDate);
+        console.log(userDueDate);
+        const dateDiff = Math.abs(currentDate.getTime() - userDueDate.getTime());
+        const diffInDays = Math.ceil(dateDiff / (24 * 3600 * 1000));
+        console.log(diffInDays);
+        const totalDays = 280 - diffInDays - 1;
+        this.storage.set('totalDaysPregnant', totalDays);
+        console.log(totalDays);
+        const weeksPregnant = Math.floor(totalDays / 7);
+        this.storage.set('weeksPregnant', weeksPregnant);
+        console.log(weeksPregnant);
+        const daysPregnant = totalDays % 7;
+        this.storage.set('daysPregnant', daysPregnant);
+        console.log(daysPregnant);
     }
 }

@@ -3,6 +3,9 @@
     <ion-title>
       {{ viewTitle }}
     </ion-title>
+    <ion-buttons slot="start">
+      <ion-button (click)="showAddEvent = true">Add Event</ion-button>
+    </ion-buttons>
     <ion-buttons slot="end">
       <ion-button (click)="today()">Today</ion-button>
     </ion-buttons>
@@ -12,34 +15,35 @@
 <ion-content>
 
   <!-- Card for adding a new event -->
-  <ion-card>
-    <ion-card-header tappable (click)="collapseCard = !collapseCard">
-      <ion-card-title>Add New Event</ion-card-title>
-    </ion-card-header>
-    <ion-card-content *ngIf="!collapseCard">
-
-      <ion-item>
-        <ion-input type="text" placeholder="Title" [(ngModel)]="event.title"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-input type="text" placeholder="Description" [(ngModel)]="event.desc"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label>Start</ion-label>
-        <ion-datetime displayFormat="MM/DD/YYYY hh:mm" pickerFormat="MMM D:HH:mm" [(ngModel)]="event.startTime" ></ion-datetime>
-      </ion-item>
-      <ion-item>
-        <ion-label>End</ion-label>
-        <ion-datetime displayFormat="MM/DD/YYYY hh:mm" pickerFormat="MMM D:HH:mm" [(ngModel)]="event.endTime" ></ion-datetime>
-      </ion-item>
-      <ion-item>
-        <ion-label>All Day?</ion-label>
-        <ion-checkbox [(ngModel)]="event.allDay"></ion-checkbox>
-      </ion-item>
-      <ion-button fill="outline" expand="block" class=event-button (click)="addEvent()" [disabled]="event.title == ''">Add Event</ion-button>
-
-    </ion-card-content>
-  </ion-card>
+  <ion-item *ngIf="showAddEvent">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Add New Event</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-input type="text" placeholder="Title" [(ngModel)]="event.title"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input type="text" placeholder="Description" [(ngModel)]="event.desc"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Start</ion-label>
+          <ion-datetime displayFormat="MM/DD/YYYY hh:mm" pickerFormat="MMM D:HH:mm" [(ngModel)]="event.startTime" ></ion-datetime>
+        </ion-item>
+        <ion-item>
+          <ion-label>End</ion-label>
+          <ion-datetime displayFormat="MM/DD/YYYY hh:mm" pickerFormat="MMM D:HH:mm" [(ngModel)]="event.endTime" ></ion-datetime>
+        </ion-item>
+        <ion-item>
+          <ion-label>All Day?</ion-label>
+          <ion-checkbox [(ngModel)]="event.allDay"></ion-checkbox>
+        </ion-item>
+        <ion-button fill="outline" color="important" class=event-button (click)="showAddEvent = false" > Cancel </ion-button>
+        <ion-button fill="outline" class=event-button (click)="addEvent()" [disabled]="event.title == ''">Add Event</ion-button>
+      </ion-card-content>
+    </ion-card>
+  </ion-item>
 
   <ion-row>
     <!-- Change the displayed calendar mode -->

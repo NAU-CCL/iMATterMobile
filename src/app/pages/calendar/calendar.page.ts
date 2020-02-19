@@ -7,6 +7,12 @@ import { Router } from '@angular/router';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import * as moment from 'moment';
 
+/**
+ * This code written with the help of this tutorial:
+ * https://devdactic.com/ionic-4-calendar-app/
+ * Used for the general build and functionality of the calendar
+ */
+
 @Component({
   selector: 'app-tab3',
   templateUrl: 'calendar.page.html',
@@ -25,10 +31,8 @@ export class CalendarPage implements OnInit {
   days: any[];
   chosenHours: number;
   chosenMinutes: number;
-  
-  
+
   minDate = new Date().toISOString();
-  
 
   eventSource = [];
   viewTitle;
@@ -37,6 +41,8 @@ export class CalendarPage implements OnInit {
     mode: 'month',
     currentDate: new Date(),
   };
+
+  private showAddEvent: boolean;
 
   // @ts-ignore
   @ViewChild(CalendarComponent) myCal: CalendarComponent;
@@ -66,6 +72,7 @@ export class CalendarPage implements OnInit {
         this.router.navigate(['/login/']);
       }
     });
+    this.showAddEvent = false;
     this.resetEvent();
   }
 
@@ -82,13 +89,13 @@ export class CalendarPage implements OnInit {
 
   // Create the right event format and reload source
   addEvent() {
-    let eventCopy = {
+    const eventCopy = {
       title: this.event.title,
       startTime:  new Date(this.event.startTime),
       endTime: new Date(this.event.endTime),
       allDay: this.event.allDay,
       desc: this.event.desc
-    }
+    };
 
     if (eventCopy.allDay) {
       let start = eventCopy.startTime;
@@ -97,7 +104,8 @@ export class CalendarPage implements OnInit {
       eventCopy.startTime = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate()));
       eventCopy.endTime = new Date(Date.UTC(end.getUTCFullYear(), end.getUTCMonth(), end.getUTCDate() + 1));
     }
-	//add notification when creating event
+
+	// add notification when creating event
 	this.localNotifications.schedule({
 	   text: 'You have an event, check your calendar!',
 	   trigger: {at: new Date(this.event.startTime)},
@@ -108,6 +116,7 @@ export class CalendarPage implements OnInit {
     this.eventSource.push(eventCopy);
     this.myCal.loadEvents();
     this.resetEvent();
+    this.showAddEvent = false;
   }
 
   next() {
@@ -152,7 +161,7 @@ export class CalendarPage implements OnInit {
 
 // Time slot was clicked
   onTimeSelected(ev) {
-    let selected = new Date(ev.selectedTime);
+    const selected = new Date(ev.selectedTime);
     this.event.startTime = selected.toISOString();
     selected.setHours(selected.getHours() + 1);
     this.event.endTime = (selected.toISOString());
