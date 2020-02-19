@@ -54,6 +54,10 @@ const routes: Routes = [
     path: 'viewable-profile/:id',
     loadChildren: () => import('./pages/viewable-profile/viewable-profile.module').then( m => m.ViewableProfilePageModule)
   },
+  {
+    path: 'home',
+    loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
+  }
 ];
 @NgModule({
   imports: [

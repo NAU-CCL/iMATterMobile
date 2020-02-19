@@ -9,6 +9,8 @@
 
 <ion-content>
 
+  <ion-button (click)="clearStorage()" color="danger">CLEAR STORAGE</ion-button>
+  
   <ion-card>
 
     <ion-card-header color="medium">{{learningModule.moduleContent}}</ion-card-header>
@@ -55,7 +57,7 @@
 
   <ion-button (click)="quizSubmit()">Submit</ion-button>
 
-  <ion-card *ngIf="storage.get('numberTimesQuizTaken') > 0">
+  <ion-card *ngIf="numberTimesQuizTaken > 0">
     <ion-card-header color="success">
       Quiz Score: {{numberQuestionsCorrect}} out of {{totalNumberQuizQuestions}}    
     </ion-card-header>

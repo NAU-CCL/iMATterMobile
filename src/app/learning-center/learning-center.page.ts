@@ -12,6 +12,9 @@ import { Router } from '@angular/router';
 })
 export class LearningCenterPage implements OnInit {
 
+   //Weeks Pregnant of user (to display correct modules to them)
+   userWeeksPregnant;
+
   private learningModules: Observable<LearningModule[]>;
 
   constructor(private router: Router, private storage: Storage, private learningModService: LearningModuleService) { }
@@ -23,5 +26,21 @@ export class LearningCenterPage implements OnInit {
       }
     });
     this.learningModules = this.learningModService.getAllLearningModules();
+
+    //WeeksPregnant
+    this.storage.get("weeksPregnant").then(value => {
+      if (value != null) 
+      {
+        this.userWeeksPregnant = value;
+        console.log('userweekspregnant: '+ this.userWeeksPregnant);
+        //convert to string to be able to use in *ngIf in HTML
+        this.userWeeksPregnant = this.userWeeksPregnant.toString();
+      }
+    
+      }).catch(e => {
+      
+      console.log('error retrieving userweekspregnant: '+ e);
+      
+      });
   }
 }

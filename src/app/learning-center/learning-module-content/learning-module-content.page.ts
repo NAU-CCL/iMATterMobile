@@ -47,15 +47,15 @@ export class LearningModuleContentPage implements OnInit {
 
   //Quiz Variables
   totalNumberQuizQuestions = 0;
-  numberQuestionsCorrect = 0;
-  numberTimesQuizTaken = 0;
+  numberQuestionsCorrect;
+  numberTimesQuizTaken;
   quizSubmissionLimit = 3; //if changed, change this hardcoded number in presentPreventSubmit()
 
   //YouTube Video variables
   public YT: any;
   public video: any;
   public player: any;
-  videoHasEnded = false;
+  videoHasEnded: boolean;
   
   constructor(
     private activatedRoute: ActivatedRoute, 
@@ -64,8 +64,8 @@ export class LearningModuleContentPage implements OnInit {
     public toastController: ToastController,
     private storage: Storage) { }
 
-  ngOnInit() {
-  }
+  ngOnInit() 
+  {}
   
   ionViewWillEnter()
   {
@@ -88,14 +88,79 @@ export class LearningModuleContentPage implements OnInit {
           //need to sanitize the url for the powerpoint, otherwise there will be security complaint and it won't show
           this.sanitizedPPTurl = this.domSanitizer.bypassSecurityTrustResourceUrl(this.learningModule.modulePPTurl);
         }
-
+        
         //count number of questions in this module
         this.countQuestions();
 
       });
       //this line is important!! attaches the ID to the learning module so the content for that LM shows up
       this.learningModule.id = id;
+
+      //IMPORTANT! initializes variables for learning module (retrieves from storage when applicable)
+      this.initializeStorage();
     }
+  }
+
+  /**
+   * Initializes local storage for the specific learning module
+   * If first time in module, initializes variables to what they should be
+   * If not first time, retrieves the saved values from storage
+   */
+  initializeStorage()
+  {
+    //VideoHasEnded
+    this.storage.get(this.learningModule.id + "videoHasEnded").then(value => {
+      if (value != null) //not first time in module
+      {
+        this.videoHasEnded = value;
+        console.log('videohasended: '+ this.videoHasEnded);
+      }
+      else //first time in module
+      {
+        this.videoHasEnded = false;
+      }
+      
+      }).catch(e => {
+      
+      console.log('error retrieving videoHasEnded: '+ e);
+      
+      });
+
+    //NumberTimesQuizTaken
+    this.storage.get(this.learningModule.id + "numberTimesQuizTaken").then(value => {
+      if (value != null) //not first time in module
+      {
+        this.numberTimesQuizTaken = value;
+        console.log('numbertimesquiztaken: '+ this.numberTimesQuizTaken);      
+      }
+      else //first time in module
+      {
+        this.numberTimesQuizTaken = 0;
+      }
+      
+      }).catch(e => {
+      
+      console.log('error retrieving numberTimesQuizTaken: '+ e);
+      
+      });
+
+    //NumberQuestionsCorrect
+    this.storage.get(this.learningModule.id + "numberQuestionsCorrect").then(value => {
+      if (value != null) //not first time in module
+      {
+        this.numberQuestionsCorrect = value;
+        console.log('numberquestionscorrect: '+ this.numberQuestionsCorrect);
+      }
+      else //first time in module
+      {
+        this.numberQuestionsCorrect = 0;
+      }
+      
+      }).catch(e => {
+      
+      console.log('error retrieving numberTimesQuizTaken: '+ e);
+      
+      });
   }
 
   /**
@@ -126,13 +191,12 @@ export class LearningModuleContentPage implements OnInit {
       videoId: this.learningModule.moduleVideoID,
       playerVars: 
       {
-        controls: 1,
-        fs: 1,
+        controls: 1, //allow user control of video
+        fs: 1, //fullscreen allowed
         playsinline: 1,
         modestbranding: 1,
-        rel: 0,
-        showinfo: 0,
-        disablekb: 1,
+        rel: 0, //related videos only from same youtube channel
+        disablekb: 1, //disable keyboard controls so can't use keys to skip forward
         autoplay: 0
       },
       events:
@@ -154,7 +218,7 @@ export class LearningModuleContentPage implements OnInit {
     if (event.data == 0)
     {
       this.videoHasEnded = true;
-      this.storage.set("videoHasEnded", this.videoHasEnded);
+      this.storage.set(this.learningModule.id + "videoHasEnded", this.videoHasEnded);
     }
   }
 
@@ -164,7 +228,6 @@ export class LearningModuleContentPage implements OnInit {
   {
     this.learningModule.moduleQuiz.forEach(element => {
         this.totalNumberQuizQuestions += 1;
-        this.storage.set("totalNumberQuizQuestions", this.totalNumberQuizQuestions);
     });
   }
 
@@ -196,6 +259,7 @@ export class LearningModuleContentPage implements OnInit {
       if (this.numberQuestionsCorrect > 0)
       {
         this.numberQuestionsCorrect = 0;
+        this.storage.set(this.learningModule.id + "numberQuestionsCorrect", this.numberQuestionsCorrect);
       }
       //Check if user's selections are correct
       //Increment number of questions correct
@@ -203,13 +267,13 @@ export class LearningModuleContentPage implements OnInit {
         if (element.correctAnswer == element.userSelection)
         {
           this.numberQuestionsCorrect += 1;
-          this.storage.set("numberQuestionsCorrect", this.numberQuestionsCorrect);
+          this.storage.set(this.learningModule.id + "numberQuestionsCorrect", this.numberQuestionsCorrect);
         }
 
       });
 
       this.numberTimesQuizTaken += 1;
-      this.storage.set("numberTimesQuizTaken", this.numberTimesQuizTaken);
+      this.storage.set(this.learningModule.id + "numberTimesQuizTaken", this.numberTimesQuizTaken);
     }
     else
     {
@@ -237,5 +301,10 @@ export class LearningModuleContentPage implements OnInit {
     toast.present();
   }
 
+
+  clearStorage()
+  {
+    this.storage.clear();
+  }
 
 }
