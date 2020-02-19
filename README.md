@@ -1,1 +1,1 @@
-# iMATter
+# iMATter Mobile Application
