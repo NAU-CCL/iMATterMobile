@@ -15,17 +15,18 @@ export class ViewableProfilePage implements OnInit {
   user: User = {
     code: '',
     username: '',
-    email: '',
+    email:  '',
     password: '',
-    dueMonth: '',
-    weeksPregnant: 0,
+    dueDate: '',
     location: 0,
     cohort: '',
-    bio: '',
+    bio:  '',
     securityQ: '',
     securityA: '',
     currentEmotion: '',
-    profilePic: ''
+    profilePic: '',
+    joined: '',
+    daysAUser: 0
   };
 
   provider: Provider = {
@@ -89,7 +90,6 @@ export class ViewableProfilePage implements OnInit {
             this.userType = 'user';
             this.user.username = doc.get('username');
             console.log(this.user.username);
-            this.user.weeksPregnant = doc.get('weeksPregnant');
             this.user.bio = doc.get('bio');
             this.user.cohort = doc.get('cohort');
             this.user.currentEmotion = doc.get('mood');

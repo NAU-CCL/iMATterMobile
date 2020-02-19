@@ -8,59 +8,60 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-<ion-text padding-horizontal> Currently I am feeling: </ion-text>
-<ion-row>
-  <ion-col>
-    <ion-button size = "small" fill = "clear" (click)="saveEmotion('excited')">
+<ion-text class="ion-padding-horizontal"> Currently I am feeling: {{user.currentEmotion}} </ion-text>
+
+<ion-row class="ion-justify-content-center">
+  <ion-col size="1.5">
+    <ion-button [class.highlight]="this.user.currentEmotion == 'excited'" size = "small" fill = "clear" (click)="saveEmotion('excited')">
       🤗
     </ion-button>
   </ion-col>
-  <ion-col>
-  <ion-button size = "small" fill = "clear" (click)="saveEmotion('happy')">
+  <ion-col size="1.5">
+  <ion-button [class.highlight]="this.user.currentEmotion == 'happy'" size = "small" fill = "clear" (click)="saveEmotion('happy')">
       😃
     </ion-button>
   </ion-col>
-  <ion-col>
-  <ion-button size = "small" fill = "clear" (click)="saveEmotion('loved')">
+  <ion-col size="1.5">
+  <ion-button [class.highlight]="this.user.currentEmotion == 'loved'" size = "small" fill = "clear" (click)="saveEmotion('loved')">
       🥰
     </ion-button>
   </ion-col>
-  <ion-col>
-  <ion-button size = "small" fill = "clear" (click)="saveEmotion('indifferent')">
+  <ion-col size="1.5">
+  <ion-button [class.highlight]="this.user.currentEmotion == 'indifferent'" size = "small" fill = "clear" (click)="saveEmotion('indifferent')">
       😐
     </ion-button>
   </ion-col>
-  <ion-col>
-  <ion-button size = "small" fill = "clear" (click)="saveEmotion('sad')">
+  <ion-col size="1.5">
+    <ion-button [class.highlight]="this.user.currentEmotion == 'overwhelmed'" size = "small" fill = "clear"(click)="saveEmotion('overwhelmed')">
+      😩
+    </ion-button>
+  </ion-col>
+  <ion-col size="1.5">
+  <ion-button [class.highlight]="this.user.currentEmotion == 'sad'" size = "small" fill = "clear" (click)="saveEmotion('sad')">
       😢
     </ion-button>
   </ion-col>
-  <ion-col>
-  <ion-button size = "small" fill = "clear" (click)="saveEmotion('angry')">
+  <ion-col size="1.5">
+  <ion-button [class.highlight]="this.user.currentEmotion == 'angry'" size = "small" fill = "clear" (click)="saveEmotion('angry')">
       😡
-    </ion-button>
-  </ion-col>
-  <ion-col>
-  <ion-button size = "small" fill = "clear"(click)="saveEmotion('overwhelmed')">
-      😩
     </ion-button>
   </ion-col>
 </ion-row>
 
 <ion-content>
     <ion-card>
-      <img src="/assets/shapes.svg" alt="" />
+      <img [src]="pregnancyCard.picture" alt="" />
       <ion-card-header>
-        <ion-card-subtitle>Baby Update</ion-card-subtitle>
-        <ion-card-title>Week {{ user.weeksPregnant }}</ion-card-title>
+        <ion-card-subtitle>Baby Update: {{totalDaysPregnant}} Days</ion-card-subtitle>
+        <ion-card-title> {{ weeksPregnant }} Weeks and {{ daysPregnant }} Days </ion-card-title>
       </ion-card-header>
       <ion-card-content>
-        <p> Here could be something about the baby</p>
+        <p> {{pregnancyCard.description}} </p>
       </ion-card-content>
     </ion-card>
 
   <ion-card>
-    <ion-card-title padding>
+    <ion-card-title class="ion-padding-horizontal">
       Learning Center
     </ion-card-title>
     <ion-card-content>
@@ -68,7 +69,7 @@
     </ion-card-content>
     <ion-item button [routerLink]="['/learning-center']">
       Go to Learning Center
-      <ion-icon name="arrow-forward" slot="end"></ion-icon>
+      <ion-icon md="md-arrow-forward" slot="end"></ion-icon>
     </ion-item>
   </ion-card>
 </ion-content>

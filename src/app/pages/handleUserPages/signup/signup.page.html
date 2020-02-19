@@ -26,10 +26,9 @@
   </p>
 
   <p class="content">
-    Due month and weeks pregnant: All new users are placed into a group based on what
+    Due date: All new users are placed into a group based on what
     month their expected due date is in. And in order to tailor information provided
-    to you about your pregnancy, we require the number
-    of weeks you are currently at in your pregnancy.
+    to you about your pregnancy, we require you enter your full due date.
   </p>
   <p class="content">
     Location: If you would like for us to provide resources to you based on your location, please enter
@@ -47,100 +46,62 @@
 </ion-text>
 <ion-content>
   <form [formGroup]="signupForm">
-
     <ion-item>
-      <ion-img *ngIf="!showImages" src='{{ picURL }}' style="width : 50% ; height : 50%" ></ion-img>
+      <ion-row>
+      <ion-thumbnail class="profilePic">
+        <ion-img *ngIf="!showImages" src='{{ picURL }}' ></ion-img>
+      </ion-thumbnail>
       <ion-button *ngIf="!showImages" (click)="showPics()"> Change Profile Picture </ion-button>
+      </ion-row>
       <ion-item *ngIf="showImages">
-          <ion-button *ngFor="let pic of allPicURLs"  class='button-img' fill="clear" (click)="changePic(pic)">
+        <ion-button class="thumbnail" fill="clear"  *ngFor="let pic of allPicURLs" (click)="changePic(pic)">
+          <ion-thumbnail>
             <ion-img src="{{pic}}" ></ion-img>
-          </ion-button>
+          </ion-thumbnail>
+        </ion-button>
         </ion-item>
       <ion-label position="stacked">Email</ion-label>
-      <ion-input
-              formControlName="email"
-              type="email"
-              placeholder="Your email address"
+      <ion-input formControlName="email" type="email" placeholder="Your email address"
               [class.invalid]="!signupForm.controls['email'].valid && signupForm.controls['email'].touched">
       </ion-input>
     </ion-item>
-    <ion-item
-            class="error-message"
-            *ngIf="!signupForm.controls['email'].valid
-      && signupForm.controls['email'].touched"
-    >
+    <ion-item class="error-message"
+              *ngIf="!signupForm.controls['email'].valid && signupForm.controls['email'].touched">
       <ion-label>Please enter a valid email.</ion-label>
     </ion-item>
 
     <ion-item>
       <ion-label position="stacked">Password</ion-label>
-      <ion-input
-              formControlName="password"
-              type="password"
-              placeholder="Your password"
-              [class.invalid]="!signupForm.controls['password'].valid && signupForm.controls['password'].touched"
-      >
+      <ion-input formControlName="password" type="password" placeholder="Your password"
+                 [class.invalid]="!signupForm.controls['password'].valid && signupForm.controls['password'].touched">
       </ion-input>
     </ion-item>
-    <ion-item
-            class="error-message"
-            *ngIf="!signupForm.controls['password'].valid  &&
-      signupForm.controls['password'].touched"
-    >
+    <ion-item class="error-message"
+            *ngIf="!signupForm.controls['password'].valid  && signupForm.controls['password'].touched">
       <ion-label>Your password needs more than 6 characters.</ion-label>
     </ion-item>
 
     <ion-item>
       <ion-label position="stacked">Username</ion-label>
-      <ion-input
-              formControlName="username"
-              placeholder="Username"
-      >
+      <ion-input formControlName="username" placeholder="Username">
       </ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked">Expected Month Due</ion-label>
-
-      <ion-select placeholder="Month" formControlName="expectedMonth" [(ngModel)]="dueMonth">
-        <ion-select-option value="January"> January </ion-select-option>
-        <ion-select-option value="February"> February </ion-select-option>
-        <ion-select-option value="March"> March </ion-select-option>
-        <ion-select-option value="April"> April </ion-select-option>
-        <ion-select-option value="May"> May </ion-select-option>
-        <ion-select-option value="June"> June </ion-select-option>
-        <ion-select-option value="July"> July </ion-select-option>
-        <ion-select-option value="August"> August </ion-select-option>
-        <ion-select-option value="September"> September </ion-select-option>
-        <ion-select-option value="October"> October </ion-select-option>
-        <ion-select-option value="November"> November </ion-select-option>
-        <ion-select-option value="December"> December </ion-select-option>
-      </ion-select>
-    </ion-item>
-
-    <ion-item>
-      <ion-label position="stacked">Current Pregnancy Status in Weeks</ion-label>
-      <ion-input
-              formControlName="weeksPregnant"
-              type="number"
-              placeholder="Number of Weeks"
-      >
-      </ion-input>
+      <ion-label position="stacked">Due Date </ion-label>
+      <ion-datetime formControlName="dateDue"  min="{{currentDate}}" placeholder="Your due date"> </ion-datetime>
     </ion-item>
 
     <ion-item>
       <ion-label position="stacked">Location (Optional)</ion-label>
-      <ion-input
-              formControlName="location"
-              placeholder="Location"
-      >
+      <ion-input formControlName="location" placeholder="Location">
       </ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label position="stacked">Security Question</ion-label>
 
-      <ion-select interface="action-sheet" placeholder="Pick a Question" formControlName="securityQ" [(ngModel)]="securityQuestion">
+      <ion-select interface="action-sheet" placeholder="Pick a Question" formControlName="securityQ">
         <ion-select-option value="What was the name of your favorite teacher?">
           What was the name of your favorite teacher?
         </ion-select-option>

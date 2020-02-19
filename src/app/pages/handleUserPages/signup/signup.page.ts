@@ -22,9 +22,8 @@ export class SignupPage implements OnInit {
   private allPicURLs: any;
   private picURL: any;
   private showImages: boolean;
-  private dueMonth: string;
-  private securityQuestion: string;
-  private securityAnswer: string;
+  private dueDate: string;
+  private currentDate = new Date().toJSON().split('T')[0];
 
   constructor(
       private authService: AuthServiceProvider,
@@ -62,13 +61,9 @@ export class SignupPage implements OnInit {
         '',
         Validators.compose([Validators.required, Validators.maxLength(21)]),
       ],
-      expectedMonth: [
+      dateDue: [
         '',
         Validators.compose([Validators.required]),
-      ],
-      weeksPregnant: [
-        '',
-        Validators.compose([Validators.required, Validators.pattern('^0*([0-9]|[1-3][0-9]|40)$')]),
       ],
       location: [
         '',
@@ -94,15 +89,16 @@ export class SignupPage implements OnInit {
     username: '',
     email:  '',
     password: '',
-    dueMonth: '',
-    weeksPregnant: 0,
+    dueDate: '',
     location: 0,
     cohort: '',
     bio:  '',
     securityQ: '',
     securityA: '',
     currentEmotion: '',
-    profilePic: ''
+    profilePic: '',
+    joined: '',
+    daysAUser: 0
   };
 
   ngOnInit() {}
@@ -120,29 +116,33 @@ export class SignupPage implements OnInit {
       const email: string = signupForm.value.email;
       const password: string = signupForm.value.password;
       const username: string = signupForm.value.username;
-      const dueMonth: string = this.dueMonth;
-      const securityQ: string = this.securityQuestion;
+      const dateDue: string = signupForm.value.dateDue;
+      const securityQ: string = signupForm.value.securityQ;
       const securityA: string = signupForm.value.securityA;
-      const weeksPregnant: number = signupForm.value.weeksPregnant;
       const location: number = signupForm.value.location;
       const bio: string = signupForm.value.bio;
+
+
 
       this.user.code = this.id;
       this.user.username = username;
       this.user.email =  email;
       this.user.password = password;
-      this.user.dueMonth = dueMonth;
-      this.user.weeksPregnant = weeksPregnant;
+      this.user.dueDate = dateDue.split('T')[0];
       this.user.location = location;
-      this.user.cohort = dueMonth;
       this.user.bio = bio;
       this.user.profilePic = this.picURL;
       this.user.securityQ = securityQ;
       this.user.securityA = securityA;
+      this.user.joined = firebase.firestore.FieldValue.serverTimestamp();
+      this.user.daysAUser = 0;
 
+      // find user cohort
+      const tempCohort = this.user.dueDate.split('-');
+      console.log(tempCohort);
+      this.user.cohort = this.findCohort(tempCohort[1]);
 
-      this.authService.signupUser(this.user, email, password, username, dueMonth,
-          location, weeksPregnant, bio, this.user.cohort).then(
+      this.authService.signupUser(this.user).then(
           () => {
             this.loading.dismiss().then(() => {
               // this.ionicStorage.set('userCode', this.user.code);
@@ -179,5 +179,37 @@ export class SignupPage implements OnInit {
   changePic(url: string) {
     this.showImages = false;
     this.picURL = url;
+  }
+
+  findCohort(month: string) {
+    let cohort = '';
+
+    if (month === '01') {
+      cohort = 'January';
+    } else if (month === '02') {
+      cohort = 'February';
+    } else if (month === '03') {
+      cohort = 'March';
+    } else if (month === '04') {
+      cohort = 'April';
+    } else if (month === '05') {
+      cohort = 'May';
+    } else if (month === '06') {
+      cohort = 'June';
+    } else if (month === '07') {
+      cohort = 'July';
+    } else if (month === '08') {
+      cohort = 'August';
+    } else if (month === '09') {
+      cohort = 'September';
+    } else if (month === '10') {
+      cohort = 'October';
+    } else if (month === '11') {
+      cohort = 'November';
+    } else if (month === '12') {
+      cohort = 'December';
+    }
+
+    return cohort;
   }
 }
