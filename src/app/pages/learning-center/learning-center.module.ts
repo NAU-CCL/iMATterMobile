@@ -10,7 +10,7 @@ import { LearningCenterPage } from './learning-center.page';
 
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule, FirestoreSettingsToken, AngularFirestore } from '@angular/fire/firestore';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 
 @NgModule({
   imports: [
