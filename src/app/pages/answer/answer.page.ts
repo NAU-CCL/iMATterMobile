@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FireService, Survey } from 'src/app/services/survey/fire.service';
-import { ActivatedRoute } from '@angular/router';
-import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-
+import { ActivatedRoute, Router } from '@angular/router';
+import { InAppBrowser, InAppBrowserOptions } from '@ionic-native/in-app-browser/ngx';
 
 @Component({
   selector: 'app-answer',
@@ -12,13 +11,15 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 export class AnswerPage implements OnInit {
   survey: Survey = {
     title: '',
-    startTime: '',
-    endTime: '',
+    daysTillRelease: 0,
     surveyLink: ''
   }
+
+  isDisabled = true;
   constructor(private activatedRoute: ActivatedRoute, 
               private fs: FireService,
-              private browser: InAppBrowser
+              private browser: InAppBrowser,
+              private router: Router
               ) { }
 
   ngOnInit() {
@@ -32,9 +33,16 @@ export class AnswerPage implements OnInit {
   }
 
   openPage(url: string) {
-    this.browser.create(url, `_blank`);
-    // If it doesn't work just do
-    // this.browser.create(this.survey.surveyLink, `_blank`);
+    const options: InAppBrowserOptions = {
+      hideurlbar: 'yes'
+    }
+    this.browser.create(url, `_blank`, options);
+    this.isDisabled = false;
   }
 
+  submit(){
+    this.fs.deleteSurvey(this.survey.id).then(() => {
+      this.router.navigateByUrl('/available');
+    },);
+  }
 }
