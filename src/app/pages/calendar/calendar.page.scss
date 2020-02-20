@@ -1,11 +1,30 @@
 
- .primary-color {
-    background-color: #9370DB;
+
+  .primary-color {
+    background-color: var(--main-color);
   }
 
 
- .event-button {
-   border-color: #9370DB;
-   outline-color: #9370DB;
- }
+  .event-button {
+    border-color: var(--main-color);
+    outline-color: var(--main-color);
+  }
+
+  .ion-button-background {
+    --background: var(--main-color);
+  }
+
+  .ion-text-press {
+    color: var(--main-color);
+  }
+
+  ion-icon {
+    color: var(--main-color);
+  }
+
+  .noHighlight{
+    opacity: 50%;
+  }
+
+
 
