@@ -4,7 +4,10 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-text padding=".01">
+
+<img src="/src/assets/logo-example.png" alt="">
+
+<ion-text class="title">
   <h4>
     Welcome to iMATter.
   </h4>
@@ -47,25 +50,21 @@
             *ngIf="!loginForm.controls['password'].valid
       && loginForm.controls['password'].touched"
     >
-      <ion-label>Your password needs more than 6 characters.</ion-label>
+      <ion-label></ion-label>
     </ion-item>
 
-    <ion-button
-            (click)="validateUser(loginForm)"
-            expand="block"
-            [disabled]="!loginForm.valid"
-    >
+    <ion-button class="login-button" (click)="validateUser(loginForm)" expand="block" [disabled]="!loginForm.valid">
       Log In
     </ion-button>
   </form>
 </ion-content>
 
 <ion-content>
-  <ion-button expand="block" fill="clear" routerLink="/code">
+  <ion-button class="ion-link" expand="block" fill="clear" routerLink="/code">
     New to iMATter? Create a new account
   </ion-button>
 
-  <ion-button expand="block" fill="clear" routerLink="/reset-password">
+  <ion-button class="ion-link" expand="block" fill="clear" routerLink="/reset-password">
     Forgot password
   </ion-button>
 </ion-content>
