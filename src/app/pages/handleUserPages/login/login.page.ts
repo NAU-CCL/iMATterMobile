@@ -120,5 +120,18 @@ export class LoginPage implements OnInit {
         const daysPregnant = totalDays % 7;
         this.storage.set('daysPregnant', daysPregnant);
         console.log(daysPregnant);
+
+        this.storage.get('userCode').then((val) => {
+            if (val) {
+                this.afs.firestore.collection('users').where('code', '==', val)
+                    .get().then(snapshot => {
+                    snapshot.forEach(doc => {
+                        this.afs.firestore.collection('users')
+                            .doc(val).update({weeksPregnant: weeksPregnant});
+                    });
+                });
+            }
+        });
     }
+
 }
