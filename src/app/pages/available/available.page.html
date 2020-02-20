@@ -5,26 +5,13 @@
 </ion-header>
 
 <ion-content>
-<!--
-  <ion-list>
-    <ion-item button *ngFor="let survey of (surveys | async)" [routerLink]="['/answer', survey.id]">
-      {{ survey.title }}
-    </ion-item>
-  </ion-list>
--->
-
-<div *ngFor="let survey of (surveys | async)">
-  <div *ngIf="isDisplayed(survey) == true">
-    <ion-title>
-      {{ survey.startTime }} to {{ survey.endTime }}
-    </ion-title>
-    
-    <ion-item button [routerLink]="['/answer', survey.id]">
-      {{ survey.title }}
-
-    </ion-item>
+  
+  <div *ngFor="let survey of (surveys | async)">
+    <div *ngIf="isDisplayed(survey) == true">
+      <ion-item button [routerLink]="['/answer', survey.id]">
+        {{ survey.title }}
+      </ion-item>
+    </div>
   </div>
-</div>
   
 </ion-content>
-

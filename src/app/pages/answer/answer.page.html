@@ -6,4 +6,5 @@
 
 <ion-content>
   <ion-button (click)="openPage(survey.surveyLink)">Take Survey</ion-button>
+  <ion-button disabled = "{{isDisabled}}" (click) = "submit()">Submit</ion-button>
 </ion-content>

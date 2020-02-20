@@ -3,6 +3,7 @@ import { FireService, Survey } from 'src/app/services/survey/fire.service';
 import { ActivatedRoute } from '@angular/router';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
+
 @Component({
   selector: 'app-answer',
   templateUrl: './answer.page.html',
