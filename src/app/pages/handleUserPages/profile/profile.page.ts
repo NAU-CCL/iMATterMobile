@@ -177,4 +177,5 @@ export class ProfilePage implements OnInit {
     this.router.navigate(['/tabs/home/', this.userProfileID ]);
   }
 
+
 }
