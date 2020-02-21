@@ -39,10 +39,10 @@ ion-input {
 }
 
 .login-button {
-  --background: #9370DB;
+  --background: var(--main-color);
 }
 
 .ion-link {
-  --color: #9370DB;
+  --color: var(--main-color);
 }
 

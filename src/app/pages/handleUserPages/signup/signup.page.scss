@@ -85,3 +85,11 @@ ion-input {
     height: 50px;
   }
 }
+
+.ion-button-background {
+  --background: var(--main-color);
+}
+
+.ion-link {
+  --color: var(--main-color);
+}

@@ -15,6 +15,7 @@ export interface User {
   password: string;
   dueDate: string;
   location: number;
+  weeksPregnant: any;
   cohort: any;
   securityQ: string;
   securityA: string;
