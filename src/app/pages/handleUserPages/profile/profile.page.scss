@@ -14,12 +14,10 @@ ion-list-header {
   color: #cccccc;
 }
 
-.dob-label {
-  color: #000000;
-  padding: 10px;
-  max-width: 50%;
+.ion-text-button {
+  --color: var(--main-color);
 }
 
-.ion-link {
-  --color: #9370DB;
+.logout {
+  color: var(--main-color);
 }

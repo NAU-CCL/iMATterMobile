@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/forum"></ion-back-button>
+      <ion-back-button class="ion-text-button" defaultHref="/forum"></ion-back-button>
     </ion-buttons>
     <ion-title>Create Post</ion-title>
   </ion-toolbar>
@@ -21,14 +21,14 @@
 
   <ion-item>
     <ion-label> Ask Anonymously? </ion-label>
-    <ion-toggle [(ngModel)]="anon"></ion-toggle>
+    <ion-toggle color="dark" [(ngModel)]="anon"></ion-toggle>
   </ion-item>
 
 </ion-content>
 
 <ion-footer *ngIf="!question.id">
   <ion-toolbar>
-    <ion-button expand="full" color="primary" (click)="addQuestion()">
+    <ion-button class="create-post-button" expand="full" (click)="addQuestion()">
       Post
     </ion-button>
   </ion-toolbar>
