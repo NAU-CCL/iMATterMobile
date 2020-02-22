@@ -92,6 +92,7 @@ export class SignupPage implements OnInit {
     dueDate: '',
     location: 0,
     cohort: '',
+    weeksPregnant: '',
     bio:  '',
     securityQ: '',
     securityA: '',
