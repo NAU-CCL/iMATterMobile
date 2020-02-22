@@ -5,7 +5,9 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { ToastController, AlertController } from '@ionic/angular';
 import { User } from '../../services/user/auth.service';
 import { ChatService, Cohort, Chat } from '../../services/chat/chat-service.service';
+import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyticsService.service';
 import * as firebase from 'firebase/app';
+import {Observable} from 'rxjs';
 
 
 @Component({
@@ -52,18 +54,37 @@ export class HomePage implements OnInit {
     daysAUser: 0
   };
 
+
+    analytic: Analytics =
+  {
+    page: '',
+    userID: '',
+    timestamp: '',
+    sessionID: ''
+  }
+
+  session : Sessions =
+  {
+    userID: '',
+    LogOutTime: '',
+    LoginTime: '',
+  }
+
   private userProfileID: any;
   private id: any;
   private weeksPregnant: any;
   private daysPregnant: any;
   private totalDaysPregnant: any;
+  private analyticss : string;
+  private sessions : Observable<any>;
 
   constructor(private activatedRoute: ActivatedRoute, public afs: AngularFirestore,
               private toastCtrl: ToastController,
               private storage: Storage,
               private  router: Router,
               private chatService: ChatService,
-              private alertController: AlertController) {
+              private alertController: AlertController,
+              private analyticsService: AnalyticsService) {
   }
 
   ngOnInit() {
@@ -133,9 +154,37 @@ export class HomePage implements OnInit {
   }
 
   ionViewWillEnter() {
-
+  this.addView();
 
   }
+
+
+  addView(){
+
+  //this.analytic.sessionID = this.session.id;
+  this.storage.get('userCode').then((val) =>{
+    if (val) {
+      const ref = this.afs.firestore.collection('users').where('code', '==', val);
+      ref.get().then((result) =>{
+        result.forEach(doc =>{
+          this.analytic.page = 'home';
+          this.analytic.userID = val;
+          this.analytic.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+          //this.analytic.sessionID = this.idReference;
+          this.analyticsService.addView(this.analytic).then (() =>{
+            console.log('successful added view: home');
+
+          }, err =>{
+            console.log('unsucessful added view: home');
+
+          });
+        });
+      });
+    }
+  });
+}
+
+
 
   saveEmotion(emotion: string) {
     this.afs.firestore.collection('users').doc(this.userProfileID)
