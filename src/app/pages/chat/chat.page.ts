@@ -23,7 +23,6 @@ export class ChatPage implements OnInit {
 
   @ViewChild('content', {static: true}) content: IonContent;
 
-
   cohort: Cohort = {
     name: ''
   };
@@ -44,10 +43,8 @@ export class ChatPage implements OnInit {
 
   constructor(public _zone: NgZone, private router: Router, private storage: Storage, private chatService: ChatService, private afs: AngularFirestore) {
 
-
     this.storage.get('cohort').then((val) => {
       if (val) {
-        this.router.navigate(['/tabs/chat/', val]);
         this.cohortChat = val;
         this.chats = this.chatService.getChats(this.cohortChat);
       }
@@ -61,44 +58,16 @@ export class ChatPage implements OnInit {
       }
     });
 
-    console.log('Initializing HomePage');
 
-    // Register with Apple / Google to receive push via APNS/FCM
-    PushNotifications.register();
-
-    // On success, we should be able to receive notifications
-    PushNotifications.addListener('registration',
-        (token: PushNotificationToken) => {
-          alert('Push registration success, token: ' + token.value);
-        }
-    );
-
-    // Some issue with our setup and push will not work
-    PushNotifications.addListener('registrationError',
-        (error: any) => {
-          alert('Error on registration: ' + JSON.stringify(error));
-        }
-    );
-
-    // Show us the notification payload if the app is open on our device
-    PushNotifications.addListener('pushNotificationReceived',
-        (notification: PushNotification) => {
-          alert('Push received: ' + JSON.stringify(notification));
-        }
-    );
-
-    // Method called when tapping on a notification
-    PushNotifications.addListener('pushNotificationActionPerformed',
-        (notification: PushNotificationActionPerformed) => {
-          alert('Push action performed: ' + JSON.stringify(notification));
-        }
-    );
-
-    this.getCohort();
+    this.chat.message = '';
     this.scrollToBottom();
+
   }
 
   ionViewDidEnter() {
+
+    this.getCohort();
+
     this.chat.cohort = this.cohortChat;
     this.storage.get('userCode').then((val) => {
       if (val) {
@@ -127,6 +96,9 @@ export class ChatPage implements OnInit {
         });
       }
     });
+
+    this.chat.message = '';
+    this.scrollToBottom();
   }
 
   scrollToBottom() {
