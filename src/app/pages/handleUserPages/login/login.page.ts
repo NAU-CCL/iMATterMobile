@@ -3,9 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { AuthServiceProvider, User} from '../../../services/user/auth.service';
+import { FcmService } from '../../../services/pushNotifications/fcm.service';
 import { Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
-import {ToastController} from '@ionic/angular';
+import { ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 
 @Component({
@@ -34,7 +35,8 @@ export class LoginPage implements OnInit {
         private formBuilder: FormBuilder,
         public afs: AngularFirestore,
         private toastCtrl: ToastController,
-        private storage: Storage
+        private storage: Storage,
+        private fcm: FcmService
     ) {
         this.loginForm = this.formBuilder.group({
             email: ['',
@@ -48,10 +50,16 @@ export class LoginPage implements OnInit {
 
     ngOnInit() {
         this.storage.set('authenticated', 'false');
-
-
     }
 
+    private notificationSetup(userID) {
+        console.log(userID);
+        this.fcm.getToken(userID);
+        this.fcm.onNotifications().subscribe(
+            (msg) => {
+                this.presentToast(msg.body);
+            });
+    }
 
     validateUser(loginForm: FormGroup) {
         this.email = loginForm.value.email;
@@ -76,7 +84,8 @@ export class LoginPage implements OnInit {
                             this.storage.set('cohort', doc.get('cohort'));
 
                             this.getCurrentPregnancyStatus(doc.get('dueDate'));
-                            console.log(doc.get('dueDate'));
+                            console.log('right before notif called');
+                            this.notificationSetup(this.userID);
 
 
                             this.router.navigate(['/tabs/home/']);
@@ -132,6 +141,15 @@ export class LoginPage implements OnInit {
                 });
             }
         });
+    }
+
+
+    private async presentToast(message) {
+        const toast = await this.toastCtrl.create({
+            message,
+            duration: 3000
+        });
+        toast.present();
     }
 
 }
