@@ -47,6 +47,33 @@ exports.sendEmailNotification=functions.https.onRequest((req, res)=>{
 
 });
 
+/*exports.sendRecoveryEmail=functions.firestore.document('recovery/{docID})=>{	
+	const data=snap.data();
+	let authData = nodemailer.createTransport({
+		host:'smtp.gmail.com',
+		port:587,
+		secure: false,
+		auth: {
+		  user: SENDER_EMAIL, 
+		  pass: SENDER_PASSWORD 
+		}
+		
+		
+});
+
+	authData.sendMail({
+		from: 'imatternotification@gmail.com',
+		to: ${data.userEmail}, // list of receivers
+		subject: "Imatter InfoDesk", // Subject line
+		text: "Here is your recovery code: " + ${data.code}, // plain text body
+		html: "Here is your recovery code: " + ${data.code} // html body
+		res.send("sent");
+		}).then(res=>console.log('successfully sent that mail')).catch(err=>console.log(err));
+	});
+
+
+});
+*/
 
 
 
