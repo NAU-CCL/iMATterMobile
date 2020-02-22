@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthServiceProvider } from '../../../services/user/auth.service';
+import { recovery_emailService, Recovery_email } from '../../../services/recovery.service';
 import { AlertController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -27,6 +28,14 @@ export class ResetPasswordPage implements OnInit {
 
   ngOnInit() {}
 
+recovery_email: Recovery_email = {
+    id: '',
+	code: '',
+    email: ''
+  };
+
+	
+  
   resetPassword(resetPasswordForm: FormGroup): void {
     if (!resetPasswordForm.valid) {
       console.log(
@@ -34,6 +43,7 @@ export class ResetPasswordPage implements OnInit {
       );
     } else {
       const email: string = resetPasswordForm.value.email;
+	 
       this.authService.resetPassword(email).then(
           async () => {
             const alert = await this.alertCtrl.create({
@@ -60,5 +70,10 @@ export class ResetPasswordPage implements OnInit {
       );
     }
   }
+  addRecovery(){
+		this.recovery_email.code = '123456';
+		this.recovery_email.email = this.resetPasswordForm.value.email;
+		console.log(this.recovery_email.email);
+	}
 
 }
