@@ -7,6 +7,7 @@ import {Observable} from 'rxjs';
 import {AngularFirestore} from '@angular/fire/firestore';
 import * as firebase from 'firebase/app';
 import FieldValue = firebase.firestore.FieldValue;
+import { HttpClient } from '@angular/common/http';
 
 
 @Component({
@@ -30,7 +31,7 @@ export class ForumDeatailsPage implements OnInit {
   private anon: boolean;
 
   constructor(private afs: AngularFirestore, private activatedRoute: ActivatedRoute, private questionService: QuestionService,
-              private toastCtrl: ToastController, private router: Router, private storage: Storage) {
+              private toastCtrl: ToastController, private router: Router, private storage: Storage, private http: HttpClient) {
   }
 
   ngOnInit() {
@@ -106,4 +107,9 @@ export class ForumDeatailsPage implements OnInit {
       duration: 2000
     }).then(toast => toast.present());
   }
+  sendEmail(){
+	this.http.get('https://us-central1-techdemofirebase.cloudfunctions.net/sendEmailNotification').subscribe((response) => {
+		console.log(response);
+	});
+	}
 }
