@@ -95,6 +95,8 @@ export class SignupPage implements OnInit {
     location: 0,
     cohort: '',
     weeksPregnant: '',
+    daysPregnant: '',
+    totalDaysPregnant: '',
     bio:  '',
     securityQ: '',
     securityA: '',
@@ -140,6 +142,9 @@ export class SignupPage implements OnInit {
       this.user.securityA = securityA;
       this.user.joined = firebase.firestore.FieldValue.serverTimestamp();
       this.user.daysAUser = 0;
+      this.user.weeksPregnant = 0;
+      this.user.totalDaysPregnant = 0;
+      this.user.daysPregnant = 0;
 
       // find user cohort
       const tempCohort = this.user.dueDate.split('-');

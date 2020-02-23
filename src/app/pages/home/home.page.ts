@@ -44,6 +44,8 @@ export class HomePage implements OnInit {
     location: 0,
     cohort: '',
     weeksPregnant: '',
+    daysPregnant: '',
+    totalDaysPregnant: '',
     bio:  '',
     securityQ: '',
     securityA: '',
@@ -88,6 +90,9 @@ export class HomePage implements OnInit {
             this.user.profilePic = doc.get('profilePic');
             this.user.email = doc.get('email');
             this.user.dueDate = doc.get('dueDate');
+            this.user.weeksPregnant = doc.get('weeksPregnant');
+            this.user.daysPregnant = doc.get('daysPregnant');
+            this.user.totalDaysPregnant = doc.get('totalDaysPregnant');
             this.user.password = doc.get('password');
             this.user.bio = doc.get('bio');
             this.user.location = doc.get('location');
@@ -95,10 +100,23 @@ export class HomePage implements OnInit {
             this.user.currentEmotion = doc.get('mood');
             this.user.code = doc.get('code');
 
+            const pregUpdateRef = this.afs.firestore.collection('pregnancyUpdates')
+                .where('day', '==', this.user.totalDaysPregnant);
+            pregUpdateRef.get().then((res) => {
+              res.forEach(document => {
+                this.pregnancyCard.day = document.get('day');
+                this.pregnancyCard.picture = document.get('picture');
+                this.pregnancyCard.description = document.get('description');
+              });
+            });
+
           });
         });
       }
     });
+
+
+    /*
 
     this.storage.get('weeksPregnant').then((val) => {
       if (val) {
@@ -130,7 +148,7 @@ export class HomePage implements OnInit {
           });
         });
       }
-    });
+    });*/
 
   }
 

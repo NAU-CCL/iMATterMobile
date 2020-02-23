@@ -34,18 +34,6 @@ export class FcmService {
     return devicesDatabaseReference.set({token: token}, { merge: true });
   }
 
-  topicSubscription(topic) {
-    this.firebase.subscribe(topic).then((res:any) => {
-      console.log('Subscribed to topic: ' + topic, res);
-    });
-  }
-
-  topicUnsubscription(topic) {
-    this.firebase.unsubscribe(topic).then((res:any) => {
-      console.log('Unsubscribed from topic: ' + topic, res);
-    });
-  }
-
   onNotifications() {
     return this.firebase.onNotificationOpen();
   }

@@ -20,6 +20,8 @@ export class ViewableProfilePage implements OnInit {
     dueDate: '',
     location: 0,
     weeksPregnant: '',
+    daysPregnant: '',
+    totalDaysPregnant: '',
     cohort: '',
     bio:  '',
     securityQ: '',

@@ -22,6 +22,8 @@ export class ProfilePage implements OnInit {
       location: 0,
       cohort: '',
       weeksPregnant: '',
+      daysPregnant: '',
+      totalDaysPregnant: '',
       bio:  '',
       securityQ: '',
       securityA: '',

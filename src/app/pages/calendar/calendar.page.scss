@@ -12,6 +12,8 @@
 
   .ion-button-background {
     --background: var(--main-color);
+    --background-activated: var(--main-color);
+    --background-hover: var(--secondary-color);
   }
 
   .ion-text-press {

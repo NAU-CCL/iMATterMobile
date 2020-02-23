@@ -16,6 +16,8 @@ export interface User {
   dueDate: string;
   location: number;
   weeksPregnant: any;
+  daysPregnant: any;
+  totalDaysPregnant: any;
   cohort: any;
   securityQ: string;
   securityA: string;
@@ -80,7 +82,10 @@ export class AuthServiceProvider {
       profilePic: user.profilePic,
       joined: user.joined,
       daysAUser: user.daysAUser,
-    token: user.token});
+      weeksPregnant: user.weeksPregnant,
+      daysPregnant: user.daysPregnant,
+      totalDaysPregnant: user.totalDaysPregnant,
+      token: user.token});
   }
 
 

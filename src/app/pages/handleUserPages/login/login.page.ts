@@ -120,7 +120,7 @@ export class LoginPage implements OnInit {
         const dateDiff = Math.abs(currentDate.getTime() - userDueDate.getTime());
         const diffInDays = Math.ceil(dateDiff / (24 * 3600 * 1000));
         console.log(diffInDays);
-        const totalDays = 280 - diffInDays - 1;
+        const totalDays = 280 - diffInDays;
         this.storage.set('totalDaysPregnant', totalDays);
         console.log(totalDays);
         const weeksPregnant = Math.floor(totalDays / 7);
@@ -136,7 +136,7 @@ export class LoginPage implements OnInit {
                     .get().then(snapshot => {
                     snapshot.forEach(doc => {
                         this.afs.firestore.collection('users')
-                            .doc(val).update({weeksPregnant: weeksPregnant});
+                            .doc(val).update({weeksPregnant: weeksPregnant, daysPregnant: daysPregnant, totalDaysPregnant: totalDays});
                     });
                 });
             }
