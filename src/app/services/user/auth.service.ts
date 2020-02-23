@@ -24,6 +24,7 @@ export interface User {
   profilePic: any;
   joined: any;
   daysAUser: any;
+  token: any;
 }
 
 export interface Provider {
@@ -78,7 +79,8 @@ export class AuthServiceProvider {
       cohort: user.cohort,
       profilePic: user.profilePic,
       joined: user.joined,
-      daysAUser: user.daysAUser});
+      daysAUser: user.daysAUser,
+    token: user.token});
   }
 
 

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthServiceProvider, User } from '../../../services/user/auth.service';
+import { FcmService } from '../../../services/pushNotifications/fcm.service';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -33,6 +34,7 @@ export class SignupPage implements OnInit {
       private activatedRoute: ActivatedRoute,
       private router: Router,
       private ionicStorage: Storage,
+      private fcm: FcmService
   ) {
     const fbstorage = firebase.storage();
     const storageRef = fbstorage.ref('/ProfileImages');
@@ -99,7 +101,8 @@ export class SignupPage implements OnInit {
     currentEmotion: '',
     profilePic: '',
     joined: '',
-    daysAUser: 0
+    daysAUser: 0,
+    token: ''
   };
 
   ngOnInit() {}

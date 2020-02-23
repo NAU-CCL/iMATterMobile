@@ -50,7 +50,8 @@ export class HomePage implements OnInit {
     currentEmotion: '',
     profilePic: '',
     joined: '',
-    daysAUser: 0
+    daysAUser: 0,
+    token: ''
   };
 
   private userProfileID: any;

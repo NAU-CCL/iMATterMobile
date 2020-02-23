@@ -11,6 +11,7 @@ import {
   PushNotification,
   PushNotificationToken,
   PushNotificationActionPerformed } from '@capacitor/core';
+import {sendChatNotification} from "../../../../functions/src";
 
 const { PushNotifications } = Plugins;
 
@@ -84,6 +85,7 @@ export class ChatPage implements OnInit {
 
             this.chatService.addChat(this.chat).then(() => {
               this.chat.message = '';
+              // sendChatNotification();
               this._zone.run(() => {
                 setTimeout(() => {
                   this.content.scrollToBottom(300);

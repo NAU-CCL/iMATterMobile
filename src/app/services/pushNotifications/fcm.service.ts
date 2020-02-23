@@ -26,12 +26,12 @@ export class FcmService {
 
   private saveToken(token, userID) {
     if (!token) return;
-    const devicesDatabaseReference = this.angularFirestore.collection('device-tokens');
+    const devicesDatabaseReference = this.angularFirestore.collection('users').doc(userID);
     const data = {
       token,
       userId: userID,
     };
-    return devicesDatabaseReference.doc(token).set(data);
+    return devicesDatabaseReference.set({token: token}, { merge: true });
   }
 
   topicSubscription(topic) {
@@ -42,7 +42,7 @@ export class FcmService {
 
   topicUnsubscription(topic) {
     this.firebase.unsubscribe(topic).then((res:any) => {
-      console.log('Unsubscribed from topic: ' + topic, res)
+      console.log('Unsubscribed from topic: ' + topic, res);
     });
   }
 
