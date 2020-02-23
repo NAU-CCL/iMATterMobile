@@ -26,6 +26,7 @@ export interface User {
   profilePic: any;
   joined: any;
   daysAUser: any;
+  chatNotif: boolean;
   token: any;
 }
 
@@ -85,6 +86,7 @@ export class AuthServiceProvider {
       weeksPregnant: user.weeksPregnant,
       daysPregnant: user.daysPregnant,
       totalDaysPregnant: user.totalDaysPregnant,
+      chatNotif: user.chatNotif,
       token: user.token});
   }
 

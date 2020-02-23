@@ -12,7 +12,7 @@
     <ion-list-header> Notifications </ion-list-header>
     <ion-item>
       <ion-label> Chat Notifications </ion-label>
-      <ion-toggle [(ngModel)]="chatNotif" color="dark" ></ion-toggle>
+      <ion-toggle [(ngModel)]="chatNotif" color="dark" (ionChange)= setChatNotification(chatNotif) ></ion-toggle>
     </ion-item>
   </ion-list>
 

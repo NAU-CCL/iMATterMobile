@@ -31,6 +31,7 @@ export class ProfilePage implements OnInit {
       profilePic: '',
       joined: '',
       daysAUser: 0,
+      chatNotif: true,
       token: ''
   };
 

@@ -104,6 +104,7 @@ export class SignupPage implements OnInit {
     profilePic: '',
     joined: '',
     daysAUser: 0,
+    chatNotif: true,
     token: ''
   };
 
@@ -145,6 +146,7 @@ export class SignupPage implements OnInit {
       this.user.weeksPregnant = 0;
       this.user.totalDaysPregnant = 0;
       this.user.daysPregnant = 0;
+      this.user.chatNotif = true;
 
       // find user cohort
       const tempCohort = this.user.dueDate.split('-');
