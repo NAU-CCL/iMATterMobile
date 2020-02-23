@@ -47,6 +47,7 @@ export class ReportPage implements OnInit {
             this.submission.userID = val;
             this.submission.timestamp = firebase.firestore.FieldValue.serverTimestamp();
             this.submission.username = doc.get('username');
+            this.submission.type = 'Problem';
 
             this.userSubmissionService.addSubmission(this.submission).then(() => {
               this.router.navigateByUrl('/more');
