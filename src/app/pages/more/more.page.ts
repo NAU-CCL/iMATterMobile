@@ -24,6 +24,20 @@ export class MorePage implements OnInit {
     sessionID: ''
   }
 
+  session : Sessions =
+      {
+          userID: '',
+          LogOutTime: '',
+          LoginTime: '',
+          numOfClickChat: 0,
+          numOfClickCalendar: 0,
+          numOfClickLModule: 0,
+          numOfClickInfo: 0,
+          numOfClickSurvey: 0,
+          numOfClickProfile: 0,
+          numOfClickMore: 0
+      }
+
   private analyticss : string;
   private sessions : Observable<any>;
 
@@ -51,10 +65,15 @@ export class MorePage implements OnInit {
 
 
 
+  updateInfoClicks()
+  {
+    this.analyticsService.updateInfoClicks(this.session);
+    console.log("added info click");
+
+  }
+
 
   addView(){
-
-  //this.analytic.sessionID = this.session.id;
   this.storage.get('userCode').then((val) =>{
     if (val) {
       const ref = this.afs.firestore.collection('users').where('code', '==', val);

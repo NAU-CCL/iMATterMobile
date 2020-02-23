@@ -215,6 +215,9 @@ export class AnalyticsService {
     this.sessionCollection.doc(this.idReference).update({numOfClickLModule:  firebase.firestore.FieldValue.increment(1)});
   }
 
+  updateInfoClicks (session: Sessions){
+    this.sessionCollection.doc(this.idReference).update({numOfClickInfo:  firebase.firestore.FieldValue.increment(1)});
+  }
 
 
 

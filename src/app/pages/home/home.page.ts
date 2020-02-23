@@ -181,10 +181,9 @@ export class HomePage implements OnInit {
   updateLModuleClicks()
   {
     this.analyticsService.updateLModuleClicks(this.session);
-    console.log("added profile click");
+    console.log("added learning module click");
 
   }
-
 
 
   addView(){
