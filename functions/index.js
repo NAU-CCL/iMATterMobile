@@ -40,30 +40,3 @@ exports.sendChatNotfication =
                 return token;
             }).catch(error => {console.log('error', error)});
         });
-
-
-        /*const ref = admin.firestore().collection('users', ref => ref.where('cohort', '==', newChat.cohort));
-        ref.get().then((result) => {
-            result.forEach(doc => {
-                var cohort = doc.get('cohort');
-                var uid = doc.get('code');
-                var token = doc.get('token');
-
-                const payload = {
-                    notification: {
-                        title: 'iMATter Chat Room',
-                        body: 'There is a new message in the chat room',
-                        sound: "default"
-                    },
-                };
-                return admin.messaging().sendToDevice(token, payload)
-                    .then((response) => {
-                        console.log('worked');
-                        return payload;
-                        }).catch((err) => {
-                            console.log(err);
-                        });
-            });
-            return token;
-        }).catch(error => {console.log('error', error)});
-    });*/
