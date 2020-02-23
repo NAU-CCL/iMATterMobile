@@ -47,8 +47,7 @@ exports.sendEmailNotification=functions.https.onRequest((req, res)=>{
 
 });
 
-exports.sendRecoveryEmail=functions.firestore.document('recovery/{docID}')
-.onCreate((snap,ctx)=>{	
+exports.sendRecoveryEmail=functions.firestore.document('recovery_email/{docID}').onCreate((snap,context)=>{	
 	const data=snap.data();
 	let authData = nodemailer.createTransport({
 		host:'smtp.gmail.com',
