@@ -16,7 +16,8 @@ export class ResetPasswordPage implements OnInit {
       private authService: AuthServiceProvider,
       private alertCtrl: AlertController,
       private formBuilder: FormBuilder,
-      private router: Router
+      private router: Router,
+	  private recovery_emailService: recovery_emailService
   ) {
     this.resetPasswordForm = this.formBuilder.group({
       email: [
@@ -71,9 +72,12 @@ recovery_email: Recovery_email = {
     }
   }
   addRecovery(){
-		this.recovery_email.code = '123456';
+		//this.id = this.activatedRoute.snapshot.paramMap.get('id');
+		//var number = Math.floor(Math.random() * 1000000000);
+		this.recovery_email.code = Math.floor(Math.random() * 1000000000).toString();
 		this.recovery_email.email = this.resetPasswordForm.value.email;
 		console.log(this.recovery_email.email);
+		this.recovery_emailService.addRecovery(this.recovery_email);
 	}
 
 }

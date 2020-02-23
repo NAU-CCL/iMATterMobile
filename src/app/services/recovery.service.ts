@@ -35,6 +35,13 @@ export class recovery_emailService {
       })
     );
   }
+  
+  async addRecovery(recovery_email: Recovery_email) {
+    this.afs.collection('recovery_email').add({
+      email: recovery_email.email,
+      code: recovery_email.code
+    });
+  }
  
   
 }
