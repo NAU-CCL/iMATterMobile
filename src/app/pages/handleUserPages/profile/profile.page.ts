@@ -54,7 +54,8 @@ export class ProfilePage implements OnInit {
           numOfClickLModule: 0,
           numOfClickInfo: 0,
           numOfClickSurvey: 0,
-          numOfClickProfile: 0
+          numOfClickProfile: 0,
+          numOfClickMore: 0
       }
 
   private userProfileID: any;
@@ -109,14 +110,6 @@ export class ProfilePage implements OnInit {
    console.log('added LogOutTime');
 
   }
-
-  updateProfileClicks()
-  {
-    this.analyticsService.updateProfileClicks(this.session);
-    console.log("added profile click");
-
-  }
-
 
 
   addView(){

@@ -75,7 +75,8 @@ export class HomePage implements OnInit {
           numOfClickLModule: 0,
           numOfClickInfo: 0,
           numOfClickSurvey: 0,
-          numOfClickProfile: 0
+          numOfClickProfile: 0,
+          numOfClickMore: 0
       }
 
   private userProfileID: any;
@@ -169,6 +170,21 @@ export class HomePage implements OnInit {
 
 
 
+  updateProfileClicks()
+  {
+    this.analyticsService.updateProfileClicks(this.session);
+    console.log("added profile click");
+
+  }
+
+
+  updateLModuleClicks()
+  {
+    this.analyticsService.updateLModuleClicks(this.session);
+    console.log("added profile click");
+
+  }
+
 
 
   addView(){
@@ -232,5 +248,8 @@ export class HomePage implements OnInit {
 
     await alert.present();
   }
+
+
+
 
 }

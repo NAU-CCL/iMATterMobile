@@ -147,6 +147,7 @@ analytic: Analytics =
 
 
 
+
   addView(){
 
   //this.analytic.sessionID = this.session.id;
@@ -260,4 +261,9 @@ analytic: Analytics =
     this.storage.set('currentCohort', cohort);
     this.storage.set('currentLoc', '/chat/');
   }
+
+
+
+
+
 }

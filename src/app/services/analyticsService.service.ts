@@ -28,7 +28,8 @@ export interface Sessions
   numOfClickLModule: number,
   numOfClickInfo: number,
   numOfClickSurvey: number,
-  numOfClickProfile: number
+  numOfClickProfile: number,
+  numOfClickMore: number
 }
 
 
@@ -178,7 +179,8 @@ export class AnalyticsService {
       numOfClickLModule: session.numOfClickLModule,
       numOfClickInfo: session.numOfClickInfo,
       numOfClickSurvey: session.numOfClickSurvey,
-      numOfClickProfile: session.numOfClickProfile
+      numOfClickProfile: session.numOfClickProfile,
+      numOfClickMore: session.numOfClickMore
   ,
   })
     .then ( ref => {
@@ -193,8 +195,24 @@ export class AnalyticsService {
   }
 
 
-  async updateProfileClicks (session: Sessions){
+  updateProfileClicks (session: Sessions){
     this.sessionCollection.doc(this.idReference).update({numOfClickProfile:  firebase.firestore.FieldValue.increment(1)});
+  }
+
+  updateChatClicks (session: Sessions){
+    this.sessionCollection.doc(this.idReference).update({numOfClickChat:  firebase.firestore.FieldValue.increment(1)});
+  }
+
+  updateCalendarClicks (session: Sessions){
+    this.sessionCollection.doc(this.idReference).update({numOfClickCalendar:  firebase.firestore.FieldValue.increment(1)});
+  }
+
+  updateMoreClicks (session: Sessions){
+    this.sessionCollection.doc(this.idReference).update({numOfClickMore:  firebase.firestore.FieldValue.increment(1)});
+  }
+
+  updateLModuleClicks (session: Sessions){
+    this.sessionCollection.doc(this.idReference).update({numOfClickLModule:  firebase.firestore.FieldValue.increment(1)});
   }
 
 

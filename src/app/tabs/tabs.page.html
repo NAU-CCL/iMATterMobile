@@ -6,17 +6,17 @@
       <ion-label>Home</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="chat">
-      <ion-icon (click) = "addClick()" name="chatbubbles"></ion-icon>
+    <ion-tab-button tab="chat" (click) = "updateChatClicks()">
+      <ion-icon name="chatbubbles"></ion-icon>
       <ion-label>Chat</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="calendar">
+    <ion-tab-button tab="calendar" (click) = "updateCalendarClicks()">
       <ion-icon name="calendar"></ion-icon>
       <ion-label>Calendar</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="more">
+    <ion-tab-button tab="more"  (click) = "updateMoreClicks()">
       <ion-icon name="menu"></ion-icon>
       <ion-label>More</ion-label>
     </ion-tab-button>
