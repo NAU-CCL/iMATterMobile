@@ -45,12 +45,17 @@ export class ProfilePage implements OnInit {
 
 
   session : Sessions =
-  {
-    userID: '',
-    LogOutTime: '',
-    LoginTime: '',
-  //      sessionID: ''
-  }
+      {
+          userID: '',
+          LogOutTime: '',
+          LoginTime: '',
+          numOfClickChat: 0,
+          numOfClickCalendar: 0,
+          numOfClickLModule: 0,
+          numOfClickInfo: 0,
+          numOfClickSurvey: 0,
+          numOfClickProfile: 0
+      }
 
   private userProfileID: any;
   private analyticss : string;
@@ -102,6 +107,13 @@ export class ProfilePage implements OnInit {
   updateLogOut(){
    this.analyticsService.updateLogOut(this.session);
    console.log('added LogOutTime');
+
+  }
+
+  updateProfileClicks()
+  {
+    this.analyticsService.updateProfileClicks(this.session);
+    console.log("added profile click");
 
   }
 

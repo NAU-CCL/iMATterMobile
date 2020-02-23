@@ -22,14 +22,6 @@ export class ForumPage implements OnInit {
   sessionID: ''
 }
 
-session : Sessions =
-{
-  userID: '',
-  LogOutTime: '',
-  LoginTime: '',
-//      sessionID: ''
-}
-
   private questions: Observable<Question[]>;
   private analyticss : string;
   private sessions : Observable<any>;

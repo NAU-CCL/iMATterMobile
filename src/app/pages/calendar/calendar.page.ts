@@ -53,14 +53,6 @@ analytic: Analytics =
   sessionID: ''
 }
 
-session : Sessions =
-{
-  userID: '',
-  LogOutTime: '',
-  LoginTime: '',
-//      sessionID: ''
-}
-
 
   private showAddEvent: boolean;
   private analyticss : string;

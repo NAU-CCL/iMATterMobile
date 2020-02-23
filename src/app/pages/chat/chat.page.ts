@@ -48,16 +48,6 @@ analytic: Analytics =
 }
 
 
-
-session : Sessions =
-{
-  userID: '',
-  LogOutTime: '',
-  LoginTime: '',
-//      sessionID: ''
-}
-
-
   private cohortChat: string;
   private chats: Observable<any>;
   private hasEntered: boolean;

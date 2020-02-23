@@ -63,12 +63,20 @@ export class HomePage implements OnInit {
     sessionID: ''
   }
 
+
+
   session : Sessions =
-  {
-    userID: '',
-    LogOutTime: '',
-    LoginTime: '',
-  }
+      {
+          userID: '',
+          LogOutTime: '',
+          LoginTime: '',
+          numOfClickChat: 0,
+          numOfClickCalendar: 0,
+          numOfClickLModule: 0,
+          numOfClickInfo: 0,
+          numOfClickSurvey: 0,
+          numOfClickProfile: 0
+      }
 
   private userProfileID: any;
   private id: any;
@@ -157,6 +165,10 @@ export class HomePage implements OnInit {
   this.addView();
 
   }
+
+
+
+
 
 
   addView(){

@@ -37,11 +37,17 @@ export class LoginPage implements OnInit {
   }
 
   session : Sessions =
-  {
-    userID: '',
-    LogOutTime: '',
-    LoginTime: '',
-  }
+      {
+          userID: '',
+          LogOutTime: '',
+          LoginTime: '',
+          numOfClickChat: 0,
+          numOfClickCalendar: 0,
+          numOfClickLModule: 0,
+          numOfClickInfo: 0,
+          numOfClickSurvey: 0,
+          numOfClickProfile: 0
+      }
 
 
   private analyticss : string;

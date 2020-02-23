@@ -24,14 +24,6 @@ export class MorePage implements OnInit {
     sessionID: ''
   }
 
-  session : Sessions =
-  {
-    userID: '',
-    LogOutTime: '',
-    LoginTime: '',
-
-  }
-
   private analyticss : string;
   private sessions : Observable<any>;
 

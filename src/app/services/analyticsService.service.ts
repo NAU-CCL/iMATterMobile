@@ -16,13 +16,19 @@ export interface Analytics
   sessionID: string
 }
 
+
 export interface Sessions
 {
   id?: string,
   userID: string,
   LogOutTime: any,
   LoginTime: any,
-//  sessionID: string
+  numOfClickChat: number,
+  numOfClickCalendar: number,
+  numOfClickLModule: number,
+  numOfClickInfo: number,
+  numOfClickSurvey: number,
+  numOfClickProfile: number
 }
 
 
@@ -167,17 +173,28 @@ export class AnalyticsService {
       userID: session.userID,
       LogOutTime: session.LogOutTime,
       LoginTime: session.LoginTime,
-  //    sessionID: session.sessionID
-})
-.then ( ref => {
-  this.idReference = ref.id;
-  console.log(ref.id);
+      numOfClickChat: session.numOfClickChat,
+      numOfClickCalendar: session.numOfClickCalendar,
+      numOfClickLModule: session.numOfClickLModule,
+      numOfClickInfo: session.numOfClickInfo,
+      numOfClickSurvey: session.numOfClickSurvey,
+      numOfClickProfile: session.numOfClickProfile
+  ,
+  })
+    .then ( ref => {
+      this.idReference = ref.id;
+      console.log(ref.id);
 
-});
+    });
   }
 
   async updateLogOut (session: Sessions){
     this.sessionCollection.doc(this.idReference).update({LogOutTime: firebase.firestore.FieldValue.serverTimestamp()});
+  }
+
+
+  async updateProfileClicks (session: Sessions){
+    this.sessionCollection.doc(this.idReference).update({numOfClickProfile:  firebase.firestore.FieldValue.increment(1)});
   }
 
 
