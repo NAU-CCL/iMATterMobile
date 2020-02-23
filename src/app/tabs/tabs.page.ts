@@ -25,7 +25,8 @@ export class TabsPage implements OnInit {
           numOfClickInfo: 0,
           numOfClickSurvey: 0,
           numOfClickProfile: 0,
-          numOfClickMore: 0
+          numOfClickMore: 0,
+          numOfClickHome: 0
       }
 
   private sessions : Observable<any>;
@@ -53,6 +54,14 @@ export class TabsPage implements OnInit {
   {
     this.analyticsService.updateCalendarClicks(this.session);
     console.log("added more click");
+
+  }
+
+
+  updateHomeClicks()
+  {
+    this.analyticsService.updateHomeClicks(this.session);
+    console.log("added home click");
 
   }
 

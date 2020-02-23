@@ -29,7 +29,8 @@ export interface Sessions
   numOfClickInfo: number,
   numOfClickSurvey: number,
   numOfClickProfile: number,
-  numOfClickMore: number
+  numOfClickMore: number,
+  numOfClickHome: number
 }
 
 
@@ -180,7 +181,8 @@ export class AnalyticsService {
       numOfClickInfo: session.numOfClickInfo,
       numOfClickSurvey: session.numOfClickSurvey,
       numOfClickProfile: session.numOfClickProfile,
-      numOfClickMore: session.numOfClickMore
+      numOfClickMore: session.numOfClickMore,
+      numOfClickHome: session.numOfClickHome
   ,
   })
     .then ( ref => {
@@ -217,6 +219,11 @@ export class AnalyticsService {
 
   updateInfoClicks (session: Sessions){
     this.sessionCollection.doc(this.idReference).update({numOfClickInfo:  firebase.firestore.FieldValue.increment(1)});
+  }
+
+
+  updateHomeClicks (session: Sessions){
+    this.sessionCollection.doc(this.idReference).update({numOfClickHome:  firebase.firestore.FieldValue.increment(1)});
   }
 
 

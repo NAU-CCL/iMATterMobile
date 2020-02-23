@@ -76,7 +76,8 @@ export class HomePage implements OnInit {
           numOfClickInfo: 0,
           numOfClickSurvey: 0,
           numOfClickProfile: 0,
-          numOfClickMore: 0
+          numOfClickMore: 0,
+          numOfClickHome: 0
       }
 
   private userProfileID: any;

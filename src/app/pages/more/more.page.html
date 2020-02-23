@@ -6,7 +6,7 @@
 
 <ion-content>
   <ion-card>
-    <ion-item button [routerLink]="['/forum/']">
+    <ion-item button (click) = "updateInfoClicks()" [routerLink]="['/forum/']">
       Information Desk
       <ion-icon md="md-arrow-forward" slot="end"></ion-icon>
     </ion-item>
