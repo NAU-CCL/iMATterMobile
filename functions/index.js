@@ -47,7 +47,8 @@ exports.sendEmailNotification=functions.https.onRequest((req, res)=>{
 
 });
 
-/*exports.sendRecoveryEmail=functions.firestore.document('recovery/{docID})=>{	
+exports.sendRecoveryEmail=functions.firestore.document('recovery/{docID}')
+.onCreate((snap,ctx)=>{	
 	const data=snap.data();
 	let authData = nodemailer.createTransport({
 		host:'smtp.gmail.com',
@@ -63,17 +64,17 @@ exports.sendEmailNotification=functions.https.onRequest((req, res)=>{
 
 	authData.sendMail({
 		from: 'imatternotification@gmail.com',
-		to: ${data.userEmail}, // list of receivers
+		to: data.email, // list of receivers
 		subject: "Imatter InfoDesk", // Subject line
-		text: "Here is your recovery code: " + ${data.code}, // plain text body
-		html: "Here is your recovery code: " + ${data.code} // html body
-		res.send("sent");
+		text: "Here is your recovery code: " + data.code, // plain text body
+		html: "Here is your recovery code: " + data.code // html body
+		//res.send("sent");
 		}).then(res=>console.log('successfully sent that mail')).catch(err=>console.log(err));
 	});
 
 
-});
-*/
+
+
 
 
 
