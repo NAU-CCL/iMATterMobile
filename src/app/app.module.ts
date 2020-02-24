@@ -13,7 +13,7 @@ import { environment } from '../environments/environment';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule, FirestoreSettingsToken, AngularFirestore } from '@angular/fire/firestore';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { Firebase } from '@ionic-native/firebase/ngx';
+import { FirebaseX } from '@ionic-native/firebase-x/ngx';
 
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 
@@ -32,7 +32,7 @@ import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
     SplashScreen,
 	LocalNotifications,
     AngularFirestore,
-    Firebase,
+    FirebaseX,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: FirestoreSettingsToken, useValue: {} },
     InAppBrowser

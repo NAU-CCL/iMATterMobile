@@ -23,6 +23,7 @@
     "@capacitor/core": "1.5.0",
     "@ionic-native/core": "^5.0.0",
     "@ionic-native/firebase": "^5.0.0-beta.14",
+    "@ionic-native/firebase-x": "^5.21.6",
     "@ionic-native/in-app-browser": "^5.21.4",
     "@ionic-native/local-notifications": "^5.21.0",
     "@ionic-native/splash-screen": "^5.0.0",
@@ -30,11 +31,11 @@
     "@ionic/angular": "^4.7.1",
     "@ionic/storage": "^2.2.0",
     "cordova-android": "^8.1.0",
+    "cordova-ios": "^5.1.1",
     "cordova-plugin-androidx": "^1.0.2",
     "cordova-plugin-androidx-adapter": "^1.1.0",
     "cordova-plugin-badge": "^0.8.8",
-    "cordova-plugin-firebase": "^2.0.5",
-    "cordova-plugin-firebasex": "^8.0.0",
+    "cordova-plugin-firebasex": "^8.0.1",
     "cordova-plugin-inappbrowser": "^3.2.0",
     "cordova-plugin-local-notification": "^0.9.0-beta.2",
     "core-js": "^2.5.4",
@@ -93,12 +94,13 @@
       },
       "cordova-plugin-ionic-keyboard": {},
       "cordova-plugin-local-notification": {},
-      "cordova-plugin-firebasex": {},
       "cordova-plugin-androidx": {},
-      "cordova-plugin-androidx-adapter": {}
+      "cordova-plugin-androidx-adapter": {},
+      "cordova-plugin-firebasex": {}
     },
     "platforms": [
-      "android"
+      "android",
+      "ios"
     ]
   }
 }

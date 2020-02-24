@@ -55,10 +55,11 @@ export class LoginPage implements OnInit {
     private notificationSetup(userID) {
         console.log(userID);
         this.fcm.getToken(userID);
+        /*
         this.fcm.onNotifications().subscribe(
             (msg) => {
                 this.presentToast(msg.body);
-            });
+            });*/
     }
 
     validateUser(loginForm: FormGroup) {

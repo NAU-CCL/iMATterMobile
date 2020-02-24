@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Firebase } from '@ionic-native/firebase/ngx';
+import { FirebaseX } from '@ionic-native/firebase-x/ngx';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Platform } from '@ionic/angular';
 
@@ -8,7 +9,7 @@ import { Platform } from '@ionic/angular';
 })
 export class FcmService {
 
-  constructor(private firebase: Firebase,
+  constructor(private firebase: FirebaseX,
               private angularFirestore: AngularFirestore,
               private platform: Platform) {
   }
@@ -34,9 +35,10 @@ export class FcmService {
     return devicesDatabaseReference.set({token: token}, { merge: true });
   }
 
+  /*
   onNotifications() {
     return this.firebase.onNotificationOpen();
-  }
+  }*/
 
 
 }
