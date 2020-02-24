@@ -75,9 +75,12 @@ exports.sendRecoveryEmail=functions.firestore.document('recovery_email/{docID}')
 //https://firebase.google.com/docs/firestore/extend-with-functions
 exports.newLearningModuleNotification = functions.firestore.document('users/{userID}').onUpdate((change, content) => {
     const newData = change.after.data();
+    const previousData = change.before.data();
 
-    console.log("NEW LEARNING MODULE NOTIFICATION");
+    console.log("MOOD HAS CHANGED");
     console.log(newData);
+    console.log("OLD DATA: ");
+    console.log(previousData);
 })
 
 
