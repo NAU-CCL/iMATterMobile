@@ -1,0 +1,23 @@
+<ion-content padding>
+
+  <form *ngIf="enterCodeForm" [formGroup]="enterCodeForm" (ngSubmit)="onSubmit()">
+    <ion-item>
+      <ion-label position="stacked">Code</ion-label>
+      <ion-input
+              formControlName="theCode"
+              type="text"
+              placeholder="Your email address"
+              
+      >
+      </ion-input>
+    </ion-item>
+   
+
+    <ion-button
+            expand="block"
+			
+    >
+      Enter
+    </ion-button>
+  </form>
+</ion-content>

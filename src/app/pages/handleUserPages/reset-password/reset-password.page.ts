@@ -37,7 +37,7 @@ recovery_email: Recovery_email = {
 
 	
   
-  resetPassword(resetPasswordForm: FormGroup): void {
+ /* resetPassword(resetPasswordForm: FormGroup): void {
     if (!resetPasswordForm.valid) {
       console.log(
           'Form is not valid yet, current value:', resetPasswordForm.value
@@ -54,7 +54,7 @@ recovery_email: Recovery_email = {
                   text: 'Ok',
                   role: 'cancel',
                   handler: () => {
-                    this.router.navigateByUrl('login');
+                    this.router.navigateByUrl('recovery-code');
                   },
                 },
               ],
@@ -70,14 +70,15 @@ recovery_email: Recovery_email = {
           }
       );
     }
-  }
+	IN THE HTML WITH BUTTON: (click)="resetPassword(resetPasswordForm)"
+  }*/
   addRecovery(){
-		//this.id = this.activatedRoute.snapshot.paramMap.get('id');
-		//var number = Math.floor(Math.random() * 1000000000);
-		this.recovery_email.code = Math.floor(Math.random() * 1000000000).toString();
-		this.recovery_email.email = this.resetPasswordForm.value.email;
-		console.log(this.recovery_email.email);
-		this.recovery_emailService.addRecovery(this.recovery_email);
+		//commented for testing
+		//this.recovery_email.code = Math.floor(Math.random() * 1000000000).toString();
+		//this.recovery_email.email = this.resetPasswordForm.value.email;
+		//console.log(this.recovery_email.email);
+		//this.recovery_emailService.addRecovery(this.recovery_email);
+		this.router.navigateByUrl('recovery-code');
 	}
 
 }
