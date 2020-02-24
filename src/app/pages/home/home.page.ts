@@ -53,6 +53,7 @@ export class HomePage implements OnInit {
     profilePic: '',
     joined: '',
     daysAUser: 0,
+    points: 0,
     chatNotif: true,
     token: ''
   };

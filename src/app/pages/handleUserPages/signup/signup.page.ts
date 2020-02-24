@@ -77,11 +77,11 @@ export class SignupPage implements OnInit {
       ],
       securityQ: [
         '',
-        Validators.compose([Validators.nullValidator, Validators.maxLength(300)]),
+        Validators.compose([Validators.required, Validators.maxLength(300)]),
       ],
       securityA: [
         '',
-        Validators.compose([Validators.nullValidator, Validators.maxLength(300)]),
+        Validators.compose([Validators.required, Validators.maxLength(300)]),
       ],
     });
   }
@@ -104,6 +104,7 @@ export class SignupPage implements OnInit {
     profilePic: '',
     joined: '',
     daysAUser: 0,
+    points: 0,
     chatNotif: true,
     token: ''
   };
@@ -147,6 +148,7 @@ export class SignupPage implements OnInit {
       this.user.totalDaysPregnant = 0;
       this.user.daysPregnant = 0;
       this.user.chatNotif = true;
+      this.user.points = 0;
 
       // find user cohort
       const tempCohort = this.user.dueDate.split('-');

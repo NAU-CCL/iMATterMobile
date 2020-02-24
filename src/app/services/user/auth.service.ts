@@ -26,6 +26,7 @@ export interface User {
   profilePic: any;
   joined: any;
   daysAUser: any;
+  points: number;
   chatNotif: boolean;
   token: any;
 }
