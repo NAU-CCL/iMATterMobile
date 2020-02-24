@@ -27,6 +27,7 @@ export class RecoveryCodePage implements OnInit {
 	private wantedUserID: string;
 	private recoveryPassword: string;
 	
+	
 
   public enterCodeForm: FormGroup;
   constructor(
@@ -60,12 +61,16 @@ export class RecoveryCodePage implements OnInit {
   validateUser(enterCodeForm: FormGroup) {
         this.recoveryCode = enterCodeForm.value.recoveryCode;
 		this.recoveryPassword = enterCodeForm.value.recoveryPassword;
+		
         var recoveryEmail;
 		var theCode;
 		console.log("1");
 		console.log(this.recoveryCode);
 		console.log("recoveryEmail");
-		console.log(this.recoveryPassword);
+		console.log(this.recoveryPassword.toString());
+		//const newPassword: string = this.recoveryPassword;
+		let newPassword = this.enterCodeForm.controls['recoveryPassword'].value;
+		console.log(newPassword);
         this.afs.firestore.collection('recovery_email').where('code', '==', this.recoveryCode)
             .get().then(snapshot => {
 				console.log("2");
@@ -117,10 +122,11 @@ export class RecoveryCodePage implements OnInit {
 							//doc.update({
 							//	password: 'wordpass'
 							//});
-							console.log(this.recoveryPassword);
+							//console.log(recoveryPassword);
 							this.wantedUserID = this.userID;
+							console.log(newPassword);
 							this.afs.firestore.collection('users').doc(this.wantedUserID).update({
-								password: this.recoveryPassword
+								password: newPassword
 							});
 							//this.router.navigate(['/tabs/home/']);
                         } else {
