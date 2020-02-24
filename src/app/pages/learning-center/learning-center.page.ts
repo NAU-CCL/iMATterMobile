@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { LearningModuleService, LearningModule } from '../../services/learning-module.service';
+import { LearningModuleService, LearningModule } from '../../services/learningModule/learning-module.service';
 import { Observable } from 'rxjs';
 import { Storage} from '@ionic/storage';
 import { Router } from '@angular/router';
@@ -17,9 +17,13 @@ export class LearningCenterPage implements OnInit {
 
   private learningModules: Observable<LearningModule[]>;
 
-  constructor(private router: Router, private storage: Storage, private learningModService: LearningModuleService) { }
+  constructor(
+    private router: Router, 
+    private storage: Storage, 
+    private learningModService: LearningModuleService) { }
 
   ngOnInit() {
+
     this.storage.get('authenticated').then((val) => {
       if (val === 'false') {
         this.router.navigate(['/login/']);

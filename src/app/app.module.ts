@@ -15,8 +15,7 @@ import { AngularFirestoreModule, FirestoreSettingsToken, AngularFirestore } from
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
-
-
+import { BackgroundMode } from '@ionic-native/background-mode/ngx';
 
 
 @NgModule({
@@ -33,6 +32,7 @@ import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
     SplashScreen,
 	LocalNotifications,
     AngularFirestore,
+    BackgroundMode,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: FirestoreSettingsToken, useValue: {} },
     InAppBrowser
