@@ -74,10 +74,10 @@ recovery_email: Recovery_email = {
   }*/
   addRecovery(){
 		//commented for testing
-		//this.recovery_email.code = Math.floor(Math.random() * 1000000000).toString();
-		//this.recovery_email.email = this.resetPasswordForm.value.email;
-		//console.log(this.recovery_email.email);
-		//this.recovery_emailService.addRecovery(this.recovery_email);
+		this.recovery_email.code = Math.floor(Math.random() * 1000000000).toString();
+		this.recovery_email.email = this.resetPasswordForm.value.email;
+		console.log(this.recovery_email.email);
+		this.recovery_emailService.addRecovery(this.recovery_email);
 		this.router.navigateByUrl('recovery-code');
 	}
 

@@ -4,7 +4,6 @@
     <ion-item>
       <ion-label position="stacked">Code</ion-label>
       <ion-input
-              formControlName="theCode"
               type="text"
               placeholder="Your email address"
               
@@ -15,7 +14,7 @@
 
     <ion-button
             expand="block"
-			
+			(click)="validateUser(enterCodeForm)"
     >
       Enter
     </ion-button>
