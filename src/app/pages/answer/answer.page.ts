@@ -11,11 +11,17 @@ import { InAppBrowser, InAppBrowserOptions } from '@ionic-native/in-app-browser/
 export class AnswerPage implements OnInit {
   survey: Survey = {
     title: '',
-    daysTillRelease: 0,
-    surveyLink: ''
+    surveyLink: '',
+    type: '',
+    daysTillRelease: '',
+    daysBeforeDueDate: '',
+    daysTillExpire: 0,
+    daysInactive: 0,
+    emotionChosen: '',
   }
 
   isDisabled = true;
+  
   constructor(private activatedRoute: ActivatedRoute, 
               private fs: FireService,
               private browser: InAppBrowser,
