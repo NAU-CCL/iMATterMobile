@@ -15,6 +15,7 @@ import { AngularFirestoreModule, FirestoreSettingsToken, AngularFirestore } from
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { FirebaseX } from '@ionic-native/firebase-x/ngx';
 
+import { HttpClientModule } from '@angular/common/http';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 
 
@@ -23,6 +24,7 @@ import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
   entryComponents: [],
   imports: [BrowserModule,
       IonicModule.forRoot(),
+	  HttpClientModule,
       IonicStorageModule.forRoot(),
       AppRoutingModule,
       AngularFirestoreModule,

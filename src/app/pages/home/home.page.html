@@ -2,7 +2,7 @@
   <ion-toolbar>
     <ion-title> iMATter </ion-title>
     <ion-buttons slot="end">
-      <ion-button [routerLink]="['/profile']">
+      <ion-button (click) ="updateProfileClicks()" [routerLink]="['/profile']">
         <ion-icon slot="icon-only" name="person"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -73,7 +73,7 @@
     <ion-card-content>
       The learning center offers modules you can take to learn and earn points.
     </ion-card-content>
-    <ion-item class="ion-text-button" button [routerLink]="['/learning-center']">
+    <ion-item class="ion-text-button" button [routerLink]="['/learning-center']"  (click)= "updateLModuleClicks()"     >
       Go to Learning Center
       <ion-icon md="md-arrow-forward" slot="end"></ion-icon>
     </ion-item>

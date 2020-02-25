@@ -57,6 +57,14 @@ const routes: Routes = [
   {
     path: 'home',
     loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
+  },
+  {
+    path: 'handle-user-pages',
+    loadChildren: () => import('./pages/handle-user-pages/handle-user-pages.module').then( m => m.HandleUserPagesPageModule)
+  },
+  {
+    path: 'recovery-code',
+    loadChildren: () => import('./pages/handleUserPages/recovery-code/recovery-code.module').then( m => m.RecoveryCodePageModule)
   }
 
 ];

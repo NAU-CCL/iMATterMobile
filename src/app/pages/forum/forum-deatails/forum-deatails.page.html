@@ -28,7 +28,7 @@
 
 <ion-footer *ngIf="!question.id">
   <ion-toolbar>
-    <ion-button class="create-post-button" expand="full" (click)="addQuestion()">
+    <ion-button expand="full" class="create-post-button" (click)="addQuestion()" (click)="sendEmail()">
       Post
     </ion-button>
   </ion-toolbar>

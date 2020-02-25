@@ -5,6 +5,7 @@ import { ChatService, Cohort, Chat } from '../../services/chat/chat-service.serv
 import {Observable} from 'rxjs';
 import * as firebase from 'firebase/app';
 import {AngularFirestore} from '@angular/fire/firestore';
+import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyticsService.service';
 import {IonContent} from '@ionic/angular';
 import {
   Plugins,
@@ -38,11 +39,24 @@ export class ChatPage implements OnInit {
   type: ''
 };
 
+analytic: Analytics =
+{
+  page: '',
+  userID: '',
+  timestamp: '',
+  sessionID: ''
+}
+
+
   private cohortChat: string;
   private chats: Observable<any>;
   private hasEntered: boolean;
 
-  constructor(public _zone: NgZone, private router: Router, private storage: Storage, private chatService: ChatService, private afs: AngularFirestore) {
+  private analyticss : string;
+  private sessions : Observable<any>;
+
+  constructor(public _zone: NgZone, private router: Router, private storage: Storage, private chatService: ChatService
+    , private afs: AngularFirestore , private analyticsService: AnalyticsService ) {
 
     this.storage.get('cohort').then((val) => {
       if (val) {
@@ -101,7 +115,36 @@ export class ChatPage implements OnInit {
 
     this.chat.message = '';
     this.scrollToBottom();
+    this.addView();
   }
+
+
+
+
+  addView(){
+
+  //this.analytic.sessionID = this.session.id;
+  this.storage.get('userCode').then((val) =>{
+    if (val) {
+      const ref = this.afs.firestore.collection('users').where('code', '==', val);
+      ref.get().then((result) =>{
+        result.forEach(doc =>{
+          this.analytic.page = 'chat';
+          this.analytic.userID = val;
+          this.analytic.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+          //this.analytic.sessionID = this.idReference;
+          this.analyticsService.addView(this.analytic).then (() =>{
+            console.log('successful added view: chat');
+
+          }, err =>{
+            console.log('unsucessful added view: chat');
+
+          });
+        });
+      });
+    }
+  });
+}
 
   scrollToBottom() {
     setTimeout(() => {
