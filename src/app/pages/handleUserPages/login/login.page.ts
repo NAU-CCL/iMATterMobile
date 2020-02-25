@@ -66,7 +66,7 @@ export class LoginPage implements OnInit {
         public afs: AngularFirestore,
         private toastCtrl: ToastController,
         private storage: Storage,
-        private fcm: FcmService
+        private fcm: FcmService,
         private analyticsService: AnalyticsService
     ) {
         this.loginForm = this.formBuilder.group({
