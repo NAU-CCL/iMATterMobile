@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-
+import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyticsService.service';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { AuthServiceProvider, User} from '../../../services/user/auth.service';
 import { Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
 import {ToastController} from '@ionic/angular';
 import { Storage } from '@ionic/storage';
+import * as firebase from 'firebase/app';
 
 @Component({
     selector: 'app-login',
@@ -26,6 +28,34 @@ export class LoginPage implements OnInit {
     private userPassword: string;
 
 
+    analytic: Analytics =
+  {
+    page: '',
+    userID: '',
+    timestamp: '',
+    sessionID: ''
+  }
+
+  session : Sessions =
+      {
+          userID: '',
+          LogOutTime: '',
+          LoginTime: '',
+          numOfClickChat: 0,
+          numOfClickCalendar: 0,
+          numOfClickLModule: 0,
+          numOfClickInfo: 0,
+          numOfClickSurvey: 0,
+          numOfClickProfile: 0,
+          numOfClickMore: 0,
+          numOfClickHome: 0
+      }
+
+
+  private analyticss : string;
+  private sessions : Observable<any>;
+
+
     constructor(
         public loadingCtrl: LoadingController,
         public alertCtrl: AlertController,
@@ -34,7 +64,8 @@ export class LoginPage implements OnInit {
         private formBuilder: FormBuilder,
         public afs: AngularFirestore,
         private toastCtrl: ToastController,
-        private storage: Storage
+        private storage: Storage,
+        private analyticsService: AnalyticsService
     ) {
         this.loginForm = this.formBuilder.group({
             email: ['',
@@ -51,6 +82,30 @@ export class LoginPage implements OnInit {
 
 
     }
+
+
+  addSession(){
+  this.storage.get('userCode').then((val) => {
+    if(val){
+      const ref = this.afs.firestore.collection('users').where('code', '==',val);
+      ref.get().then((result)=> {
+        result.forEach(doc =>{
+
+          this.session.userID= val;
+          this.session.LoginTime = firebase.firestore.FieldValue.serverTimestamp();
+          this.analyticsService.addSession(this.session).then(()=> {
+
+          }, err => {
+          console.log('trouble adding session');
+
+        });
+      });
+    });
+  }
+});
+console.log('successful session creation');
+
+}
 
 
     validateUser(loginForm: FormGroup) {
@@ -77,6 +132,7 @@ export class LoginPage implements OnInit {
 
                             this.getCurrentPregnancyStatus(doc.get('dueDate'));
                             console.log(doc.get('dueDate'));
+                            this.addSession();
 
 
                             this.router.navigate(['/tabs/home/']);

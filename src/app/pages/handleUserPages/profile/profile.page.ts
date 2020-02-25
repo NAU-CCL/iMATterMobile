@@ -5,6 +5,9 @@ import { ProfileService } from '../../../services/user/profile.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
+import * as firebase from 'firebase/app';
+import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyticsService.service';
 
 
 @Component({
@@ -30,7 +33,35 @@ export class ProfilePage implements OnInit {
       daysAUser: 0
   };
 
+
+  analytic: Analytics =
+  {
+    page: '',
+    userID: '',
+    timestamp: '',
+    sessionID: ''
+  }
+
+
+
+  session : Sessions =
+      {
+          userID: '',
+          LogOutTime: '',
+          LoginTime: '',
+          numOfClickChat: 0,
+          numOfClickCalendar: 0,
+          numOfClickLModule: 0,
+          numOfClickInfo: 0,
+          numOfClickSurvey: 0,
+          numOfClickProfile: 0,
+          numOfClickMore: 0,
+          numOfClickHome: 0
+      }
+
   private userProfileID: any;
+  private analyticss : string;
+  private sessions : Observable<any>;
 
   constructor(
       private alertCtrl: AlertController,
@@ -39,7 +70,8 @@ export class ProfilePage implements OnInit {
       private router: Router,
       private activatedRoute: ActivatedRoute,
       private afs: AngularFirestore,
-      private storage: Storage
+      private storage: Storage,
+      private analyticsService: AnalyticsService
   ) {}
 
   ngOnInit() {
@@ -71,7 +103,40 @@ export class ProfilePage implements OnInit {
               });
           }
       });
+          this.addView();
   }
+
+  updateLogOut(){
+   this.analyticsService.updateLogOut(this.session);
+   console.log('added LogOutTime');
+
+  }
+
+
+  addView(){
+
+  //this.analytic.sessionID = this.session.id;
+  this.storage.get('userCode').then((val) =>{
+    if (val) {
+      const ref = this.afs.firestore.collection('users').where('code', '==', val);
+      ref.get().then((result) =>{
+        result.forEach(doc =>{
+          this.analytic.page = 'profile';
+          this.analytic.userID = val;
+          this.analytic.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+          //this.analytic.sessionID = this.idReference;
+          this.analyticsService.addView(this.analytic).then (() =>{
+            console.log('successful added view: profile');
+
+          }, err =>{
+            console.log('unsucessful added view: profile');
+
+          });
+        });
+      });
+    }
+  });
+}
 
   logOut(): void {
     this.storage.set('authenticated', 'false');

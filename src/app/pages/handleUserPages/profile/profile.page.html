@@ -5,7 +5,7 @@
     </ion-item>
     <ion-title>Profile Page</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="logOut()">
+      <ion-button (click) = "updateLogOut()" (click)="logOut()" >
         Log Out
       </ion-button>
     </ion-buttons>
@@ -75,8 +75,7 @@
                       <ion-col
                               size="7"
                               class="placeholder-profile text-center"
-                              *ngIf="!user.location"
-                      >
+                              *ngIf="!user.location">
 
                       </ion-col>
                   </ion-row>

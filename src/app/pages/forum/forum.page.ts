@@ -3,6 +3,10 @@ import { QuestionService, Question } from 'src/app/services/infoDesk/question.se
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
+import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyticsService.service';
+import * as firebase from 'firebase/app';
+import {AngularFirestore} from '@angular/fire/firestore';
+
 
 @Component({
   selector: 'app-forum',
@@ -10,13 +14,23 @@ import { Storage } from '@ionic/storage';
   styleUrls: ['./forum.page.scss'],
 })
 export class ForumPage implements OnInit {
-
+  analytic: Analytics =
+{
+  page: '',
+  userID: '',
+  timestamp: '',
+  sessionID: ''
+}
 
   private questions: Observable<Question[]>;
+  private analyticss : string;
+  private sessions : Observable<any>;
 
   constructor(private questionService: QuestionService,
               private storage: Storage,
-              private router: Router) {
+              private router: Router,
+              private afs: AngularFirestore,
+              private analyticsService: AnalyticsService) {
   }
 
   ngOnInit() {
@@ -27,6 +41,39 @@ export class ForumPage implements OnInit {
     });
     this.questions = this.questionService.getQuestions();
   }
+
+
+  ionViewWillEnter() {
+    this.addView();
+   }
+
+
+
+
+  addView(){
+
+  //this.analytic.sessionID = this.session.id;
+  this.storage.get('userCode').then((val) =>{
+    if (val) {
+      const ref = this.afs.firestore.collection('users').where('code', '==', val);
+      ref.get().then((result) =>{
+        result.forEach(doc =>{
+          this.analytic.page = 'infoDesk';
+          this.analytic.userID = val;
+          this.analytic.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+          //this.analytic.sessionID = this.idReference;
+          this.analyticsService.addView(this.analytic).then (() =>{
+            console.log('successful added view: infoDesk');
+
+          }, err =>{
+            console.log('unsucessful added view: infoDesk');
+
+          });
+        });
+      });
+    }
+  });
+}
 
 
 }
