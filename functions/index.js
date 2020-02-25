@@ -25,7 +25,7 @@ exports.sendChatNotfication =
             const ref = admin.firestore().collection('users').where('cohort', '==', newChat.cohort);
             ref.get().then((result) => {
                 result.forEach(doc => {
-                    if(doc.get('token') && newChat.userID !== doc.get('code')) {
+                    if(doc.get('chatNotif') === true && newChat.userID !== doc.get('code')) {
                         token = doc.get('token');
 
                         admin.messaging().sendToDevice(token, payload)

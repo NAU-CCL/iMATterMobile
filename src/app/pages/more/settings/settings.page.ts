@@ -42,7 +42,7 @@ export class SettingsPage implements OnInit {
               snapshot.forEach(doc => {
                 if (notifSetting === false) {
                   this.afs.firestore.collection('users')
-                      .doc(val).update({chatNotif: false, token: ''});
+                      .doc(val).update({chatNotif: false});
                 } else {
                   this.afs.firestore.collection('users')
                       .doc(val).update({chatNotif: true});

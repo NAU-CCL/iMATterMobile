@@ -86,11 +86,7 @@ export class LoginPage implements OnInit {
 
                             this.getCurrentPregnancyStatus(doc.get('dueDate'));
 
-                            if (doc.get('chatNotif') === true) {
-                                this.notificationSetup(this.userID);
-                            }
-
-
+                            this.notificationSetup(this.userID);
 
                             this.router.navigate(['/tabs/home/']);
                         } else {
