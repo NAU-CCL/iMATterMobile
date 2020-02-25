@@ -83,8 +83,7 @@ exports.newLearningModuleNotification = functions.firestore.document('users/{use
     console.log(previousData);
 })
 
-
-
+  
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 //
