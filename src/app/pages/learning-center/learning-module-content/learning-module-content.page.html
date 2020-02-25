@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot=start>
-    <ion-back-button defaultHref="/learning-center"></ion-back-button>
+    <ion-back-button class="ion-text-button"  defaultHref="/learning-center"></ion-back-button>
   </ion-buttons>
     <ion-title>{{learningModule.moduleTitle}} Module</ion-title>
   </ion-toolbar>
@@ -55,7 +55,7 @@
     </ion-radio-group>
   </ion-list>
 
-  <ion-button (click)="quizSubmit()">Submit</ion-button>
+  <ion-button class="submit-button" (click)="quizSubmit()">Submit</ion-button>
 
   <ion-card *ngIf="numberTimesQuizTaken > 0">
     <ion-card-header color="success">
@@ -66,6 +66,6 @@
 
 </ion-card>
 
-<ion-button [routerLink]="['/learning-module-content', learningModule.moduleNext]" *ngIf="numberTimesQuizTaken > 0 && learningModule.moduleNext" expand="block">Next Module</ion-button>
+<ion-button class="submit-button" [routerLink]="['/learning-module-content', learningModule.moduleNext]" *ngIf="numberTimesQuizTaken > 0 && learningModule.moduleNext" expand="block">Next Module</ion-button>
 
 </ion-content>

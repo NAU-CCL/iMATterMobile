@@ -3,6 +3,7 @@ import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyti
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { AuthServiceProvider, User} from '../../../services/user/auth.service';
+import { FcmService } from '../../../services/pushNotifications/fcm.service';
 import { Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
@@ -65,6 +66,7 @@ export class LoginPage implements OnInit {
         public afs: AngularFirestore,
         private toastCtrl: ToastController,
         private storage: Storage,
+        private fcm: FcmService
         private analyticsService: AnalyticsService
     ) {
         this.loginForm = this.formBuilder.group({
@@ -79,10 +81,17 @@ export class LoginPage implements OnInit {
 
     ngOnInit() {
         this.storage.set('authenticated', 'false');
-
-
     }
 
+    private notificationSetup(userID) {
+        console.log(userID);
+        this.fcm.getToken(userID);
+        /*
+        this.fcm.onNotifications().subscribe(
+            (msg) => {
+                this.presentToast(msg.body);
+            });*/
+    }
 
   addSession(){
   this.storage.get('userCode').then((val) => {
@@ -134,6 +143,7 @@ console.log('successful session creation');
                             console.log(doc.get('dueDate'));
                             this.addSession();
 
+                            this.notificationSetup(this.userID);
 
                             this.router.navigate(['/tabs/home/']);
                         } else {
@@ -160,22 +170,15 @@ console.log('successful session creation');
     getCurrentPregnancyStatus(dueDate) {
         const currentDateString = new Date().toJSON().split('T')[0];
         const currentDate = new Date(currentDateString);
-        console.log(currentDate);
         const userDueDate = new Date(dueDate);
-        console.log(dueDate);
-        console.log(userDueDate);
         const dateDiff = Math.abs(currentDate.getTime() - userDueDate.getTime());
         const diffInDays = Math.ceil(dateDiff / (24 * 3600 * 1000));
-        console.log(diffInDays);
-        const totalDays = 280 - diffInDays - 1;
+        const totalDays = 280 - diffInDays;
         this.storage.set('totalDaysPregnant', totalDays);
-        console.log(totalDays);
         const weeksPregnant = Math.floor(totalDays / 7);
         this.storage.set('weeksPregnant', weeksPregnant);
-        console.log(weeksPregnant);
         const daysPregnant = totalDays % 7;
         this.storage.set('daysPregnant', daysPregnant);
-        console.log(daysPregnant);
 
         this.storage.get('userCode').then((val) => {
             if (val) {
@@ -183,11 +186,19 @@ console.log('successful session creation');
                     .get().then(snapshot => {
                     snapshot.forEach(doc => {
                         this.afs.firestore.collection('users')
-                            .doc(val).update({weeksPregnant: weeksPregnant});
+                            .doc(val).update({weeksPregnant: weeksPregnant, daysPregnant: daysPregnant, totalDaysPregnant: totalDays});
                     });
                 });
             }
         });
+    }
+
+    private async presentToast(message) {
+        const toast = await this.toastCtrl.create({
+            message,
+            duration: 3000
+        });
+        toast.present();
     }
 
 }

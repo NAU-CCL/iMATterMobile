@@ -24,13 +24,19 @@ export class ProfilePage implements OnInit {
       dueDate: '',
       location: 0,
       cohort: '',
+      weeksPregnant: '',
+      daysPregnant: '',
+      totalDaysPregnant: '',
       bio:  '',
       securityQ: '',
       securityA: '',
       currentEmotion: '',
       profilePic: '',
       joined: '',
-      daysAUser: 0
+      daysAUser: 0,
+      points: 0,
+      chatNotif: true,
+      token: ''
   };
 
 

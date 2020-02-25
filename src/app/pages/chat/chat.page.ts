@@ -12,6 +12,7 @@ import {
   PushNotification,
   PushNotificationToken,
   PushNotificationActionPerformed } from '@capacitor/core';
+import {sendChatNotification} from "../../../../functions/src";
 
 const { PushNotifications } = Plugins;
 
@@ -23,7 +24,6 @@ const { PushNotifications } = Plugins;
 export class ChatPage implements OnInit {
 
   @ViewChild('content', {static: true}) content: IonContent;
-
 
   cohort: Cohort = {
     name: ''
@@ -58,10 +58,8 @@ analytic: Analytics =
   constructor(public _zone: NgZone, private router: Router, private storage: Storage, private chatService: ChatService
     , private afs: AngularFirestore , private analyticsService: AnalyticsService ) {
 
-
     this.storage.get('cohort').then((val) => {
       if (val) {
-        this.router.navigate(['/tabs/chat/', val]);
         this.cohortChat = val;
         this.chats = this.chatService.getChats(this.cohortChat);
       }
@@ -75,44 +73,16 @@ analytic: Analytics =
       }
     });
 
-    console.log('Initializing HomePage');
 
-    // Register with Apple / Google to receive push via APNS/FCM
-    PushNotifications.register();
-
-    // On success, we should be able to receive notifications
-    PushNotifications.addListener('registration',
-        (token: PushNotificationToken) => {
-          alert('Push registration success, token: ' + token.value);
-        }
-    );
-
-    // Some issue with our setup and push will not work
-    PushNotifications.addListener('registrationError',
-        (error: any) => {
-          alert('Error on registration: ' + JSON.stringify(error));
-        }
-    );
-
-    // Show us the notification payload if the app is open on our device
-    PushNotifications.addListener('pushNotificationReceived',
-        (notification: PushNotification) => {
-          alert('Push received: ' + JSON.stringify(notification));
-        }
-    );
-
-    // Method called when tapping on a notification
-    PushNotifications.addListener('pushNotificationActionPerformed',
-        (notification: PushNotificationActionPerformed) => {
-          alert('Push action performed: ' + JSON.stringify(notification));
-        }
-    );
-
-    this.getCohort();
+    this.chat.message = '';
     this.scrollToBottom();
+
   }
 
   ionViewDidEnter() {
+
+    this.getCohort();
+
     this.chat.cohort = this.cohortChat;
     this.storage.get('userCode').then((val) => {
       if (val) {
@@ -129,6 +99,7 @@ analytic: Analytics =
 
             this.chatService.addChat(this.chat).then(() => {
               this.chat.message = '';
+              // sendChatNotification();
               this._zone.run(() => {
                 setTimeout(() => {
                   this.content.scrollToBottom(300);
@@ -142,6 +113,8 @@ analytic: Analytics =
       }
     });
 
+    this.chat.message = '';
+    this.scrollToBottom();
     this.addView();
   }
 
@@ -261,9 +234,4 @@ analytic: Analytics =
     this.storage.set('currentCohort', cohort);
     this.storage.set('currentLoc', '/chat/');
   }
-
-
-
-
-
 }
