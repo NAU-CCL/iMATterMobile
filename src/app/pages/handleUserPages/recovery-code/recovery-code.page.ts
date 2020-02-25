@@ -56,7 +56,12 @@ export class RecoveryCodePage implements OnInit {
   ngOnInit() {
   }
   
-  
+  showToast(msg) {
+        this.toastCtrl.create({
+            message: msg,
+            duration: 2000
+        }).then(toast => toast.present());
+    }
   
   validateUser(enterCodeForm: FormGroup) {
         this.recoveryCode = enterCodeForm.value.recoveryCode;
@@ -73,33 +78,22 @@ export class RecoveryCodePage implements OnInit {
 		console.log(newPassword);
         this.afs.firestore.collection('recovery_email').where('code', '==', this.recoveryCode)
             .get().then(snapshot => {
-				console.log("2");
             if (snapshot.docs.length > 0) {
                 console.log(('exists'));
-				console.log("3");
 				const recoveryRef = this.afs.firestore.collection('recovery_email');
 				recoveryRef.get().then((result) => {
                     result.forEach(doc => {
                         this.userID = doc.id;
-                        this.theCode = doc.get('code');
-						console.log(this.theCode);
-						console.log("4");
+                        this.theCode = doc.get('code');						
                         if ( this.theCode === this.recoveryCode) {
                             recoveryEmail = doc.get('email');
 							console.log(recoveryEmail);
-							console.log("5");
-                            
-
-
-                            //this.router.navigate(['/tabs/home/']);
-                        } else {
-                            //this.showToast('Password is incorrect');
+							console.log("5");                                                    
+                        } else {                            
                         }
-
                     });
-                });
-				//console.log(recoveryRef.email);
-				console.log("?");
+                });				
+				
                 const userRef = this.afs.firestore.collection('users');
                 userRef.get().then((result) => {
                     result.forEach(doc => {
@@ -107,36 +101,17 @@ export class RecoveryCodePage implements OnInit {
                         this.userEmail = doc.get('email');
 						this.password = doc.get('password');
 
-                        if ( this.userEmail === recoveryEmail) {
-                            //this.storage.set('userCode', this.userID);
-                            //this.storage.set('authenticated', 'true');
-                            //this.storage.set('username', doc.get('username'));
-                            //this.storage.set('dueDate', doc.get('dueDate'));
-                            //this.storage.set('cohort', doc.get('cohort'));
-							console.log("Ya!");
-							//updatePassword();
-							//this.doc.password = "wordpass";
-                            //this.storage.set('password', 'wordpass');
-							//doc.password = 'wordpass';
-							//console.log(doc.get('password'));
-							//doc.update({
-							//	password: 'wordpass'
-							//});
-							//console.log(recoveryPassword);
+                        if ( this.userEmail === recoveryEmail) {                            							
 							this.wantedUserID = this.userID;
 							console.log(newPassword);
 							this.afs.firestore.collection('users').doc(this.wantedUserID).update({
 								password: newPassword
 							});
-							//this.router.navigate(['/tabs/home/']);
-                        } else {
-                            //this.showToast('Password is incorrect');
+							this.router.navigate(['/login/']);
+                        } else {                           
                         }
-
                     });
-                });
-				
-
+                });				
             } else {
                 console.log('Email does not exist');
                 this.userEmail = false;

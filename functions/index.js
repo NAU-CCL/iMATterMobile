@@ -7,7 +7,7 @@ admin.initializeApp(functions.config().firebase);
 //admin.initializeApp();
 require('dotenv').config()
 
-const {SENDER_EMAIL, SENDER_PASSWORD}= process.env;
+const {SENDER_EMAIL, SENDER_PASS}= process.env;
 
 exports.sendEmailNotification=functions.https.onRequest((req, res)=>{	
 	let authData = nodemailer.createTransport({
@@ -16,7 +16,7 @@ exports.sendEmailNotification=functions.https.onRequest((req, res)=>{
 		secure: false,
 		auth: {
 		  user: SENDER_EMAIL, 
-		  pass: SENDER_PASSWORD 
+		  pass: SENDER_PASS 
 		}
 		
 		
@@ -55,7 +55,7 @@ exports.sendRecoveryEmail=functions.firestore.document('recovery_email/{docID}')
 		secure: false,
 		auth: {
 		  user: SENDER_EMAIL, 
-		  pass: SENDER_PASSWORD 
+		  pass: SENDER_PASS
 		}
 		
 		
