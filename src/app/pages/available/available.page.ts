@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { FireService, Survey } from 'src/app/services/survey/fire.service';
+import { Storage} from '@ionic/storage';
+import { Router } from '@angular/router';
 
 const today = new Date();
 const todaysDate = today.toISOString();
@@ -18,10 +20,17 @@ var emotion = 'Negative';
 export class AvailablePage implements OnInit {
   private surveys: Observable<Survey[]>;
 
-  constructor(private fs: FireService) { }
+  constructor(private fs: FireService, private storage: Storage, private router: Router) { }
 
   ngOnInit() {
+    this.storage.get('authenticated').then((val) => {
+      if (val === 'false') {
+        this.router.navigate(['/login/']);
+      }
+    });
+
     this.surveys = this.fs.getSurveys();
+
     console.log(today);
     console.log(todaysDate);
   }
