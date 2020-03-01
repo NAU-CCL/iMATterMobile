@@ -9,7 +9,7 @@ declare var google;
 })
 
 export class ResourcesPage implements OnInit, AfterViewInit {
-    @ViewChild('mapElement') mapNativeElement: ElementRef;
+    @ViewChild('mapElement') mapNativeElement;
     constructor() { }
 
     ngOnInit() {
