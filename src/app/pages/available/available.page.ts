@@ -3,14 +3,14 @@ import { Observable } from 'rxjs';
 import { FireService, Survey } from 'src/app/services/survey/fire.service';
 import { Storage} from '@ionic/storage';
 import { Router } from '@angular/router';
+import { AngularFirestore } from '@angular/fire/firestore';
 
 const today = new Date();
 const todaysDate = today.toISOString();
 
-var dateJoined = new Date("02/07/2020");
-var dateDue = new Date("03/13/2020");
+//var dateJoined = new Date("02/07/2020");
+
 var inactiveDays = 20;
-var emotion = 'Negative';
 
 @Component({
   selector: 'app-available',
@@ -20,7 +20,11 @@ var emotion = 'Negative';
 export class AvailablePage implements OnInit {
   private surveys: Observable<Survey[]>;
 
-  constructor(private fs: FireService, private storage: Storage, private router: Router) { }
+  dueDate;
+  emotion;
+  joined;
+
+  constructor(private fs: FireService, private storage: Storage, private router: Router, public afs: AngularFirestore) { }
 
   ngOnInit() {
     this.storage.get('authenticated').then((val) => {
@@ -31,13 +35,37 @@ export class AvailablePage implements OnInit {
 
     this.surveys = this.fs.getSurveys();
 
-    console.log(today);
-    console.log(todaysDate);
+    this.storage.get('userCode').then((val) => {
+      if (val) {
+        const ref = this.afs.firestore.collection('users').where('code', '==', val);
+        ref.get().then((result) => {
+          result.forEach(doc => {
+            this.emotion = doc.get('mood');
+            this.joined = doc.get('joined');
+          });
+        });
+      }
+    });
+
+    this.storage.get("dueDate").then(value => {
+      if (value != null){
+        // dueDate[0] = year
+        // dueDate[1] = month
+        // dueDate[2] = day
+        this.dueDate = value.toString().split('-');
+        // console.log('User Due Date: '+ this.dueDate[2]);
+      }
+    })
   }
   
   isDisplayed(survey: Survey){
     // boolean to determine if the survey will be displayed
     let isDisplayed = false;
+    // dateJoined of the user
+    let dateJoined = new Date( this.joined.toDate().getMonth()+1 + "/" + this.joined.toDate().getDate() + "/" + this.joined.toDate().getFullYear());
+    console.log("testDate: " + dateJoined);
+    // dueDate of the user
+    let dateDue = new Date(this.dueDate[1] + "/" + this.dueDate[2] + "/" + this.dueDate[0]);
     // todaysDate string split into an array
     let currentTime = this.fs.getTime(todaysDate).split(" ");
     // obtaining the current month/day/year from the currentTime array
@@ -84,15 +112,29 @@ export class AvailablePage implements OnInit {
     }
 
     if(survey.type == 'Emotion'){
-      if(survey.emotionChosen == 'Negative' && emotion == 'Negative'){
+      if(survey.emotionChosen == 'excited' && this.emotion == 'excited'){
         isDisplayed = true;
       }
 
-      if(survey.emotionChosen == 'Indifferent' && emotion == 'Indifferent'){
+      if(survey.emotionChosen == 'happy' && this.emotion == 'happy'){
         isDisplayed = true;
       }
 
-      if(survey.emotionChosen == 'Postive' && emotion == 'Postive'){
+      if(survey.emotionChosen == 'loved' && this.emotion == 'loved'){
+        isDisplayed = true;
+      }
+      if(survey.emotionChosen == 'indifferent' && this.emotion == 'indifferent'){
+        isDisplayed = true;
+      }
+
+      if(survey.emotionChosen == 'overwhelmed' && this.emotion == 'overwhelmed'){
+        isDisplayed = true;
+      }
+
+      if(survey.emotionChosen == 'sad' && this.emotion == 'sad'){
+        isDisplayed = true;
+      }
+      if(survey.emotionChosen == 'angry' && this.emotion == 'angry'){
         isDisplayed = true;
       }
     }
