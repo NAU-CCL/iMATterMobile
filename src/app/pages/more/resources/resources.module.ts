@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { ResourcesPageRoutingModule } from './resources-routing.module';
 
 import { ResourcesPage } from './resources.page';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 
 @NgModule({
   imports: [
@@ -15,6 +16,7 @@ import { ResourcesPage } from './resources.page';
     IonicModule,
     ResourcesPageRoutingModule
   ],
-  declarations: [ResourcesPage]
+  declarations: [ResourcesPage],
+  providers: [Geolocation]
 })
 export class ResourcesPageModule {}
