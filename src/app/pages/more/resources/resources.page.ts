@@ -90,14 +90,24 @@ export class ResourcesPage implements OnInit, AfterViewInit {
            title: this.dtitle,
            icon: icon
          });
-         /*
+
+         const contentString = '<div id="content">'+
+         '<div id= "siteNotice" ' +
+         '</div>' +
+         '<h1 id="firstHeading" class="firstHeading">' + this.dtitle  + '</h1>' +
+         '<div id="bodyContent">' +
+         '<p>' + this.dcontent + '</p>' +
+         '</div>'+
+         '</div>';
+
          google.maps.event.addListener(marker, 'click', function(){
            var infowindow = new google.maps.InfoWindow({
-             content: this.content
+             content: contentString,
+             maxWidth: 300
            });
            infowindow.open(this.map, marker);
          });
-**/
+
 
      }
 
