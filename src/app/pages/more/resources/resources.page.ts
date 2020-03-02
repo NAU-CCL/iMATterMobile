@@ -19,6 +19,9 @@ export class ResourcesPage implements OnInit, AfterViewInit {
     dlongitude: string;
     dlatitude: string;
     dcontent: string;
+    map: any;
+    icon: any;
+    pos: any;
 
     @ViewChild('mapElement', {static: false}) mapNativeElement;
     constructor(private geolocation: Geolocation) { }
@@ -27,6 +30,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit(): void {
+      this.geoMaps();
       this.getLocations();
 
      }
@@ -43,7 +47,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
         this.dlongitude = doc.get("longitude");
         this.dlatitude = doc.get("latitude");
         this.dcontent = doc.get("content");
-        this.geoMaps(this.dtitle, this.dlongitude, this.dlatitude, this.dcontent);
+        this.addMarker(this.dtitle, this.dlongitude, this.dlatitude, this.dcontent);
         console.log(this.dlongitude);
 
       });
@@ -53,49 +57,47 @@ export class ResourcesPage implements OnInit, AfterViewInit {
 
 
 
-     geoMaps(dtitle , dlongitude, dlatitude, dcontent)
+     geoMaps()
      {
        this.geolocation.getCurrentPosition().then((resp) => {
           this.latitude = resp.coords.latitude;
           this.longitude = resp.coords.longitude;
-          const map = new google.maps.Map(this.mapNativeElement.nativeElement, {
+          this.map = new google.maps.Map(this.mapNativeElement.nativeElement, {
             center: {lat: this.latitude, lng: this.longitude},
             zoom: 16
           });
-          this.createNewMarker(this.dtitle, this.dlongitude, this.dlatitude, this.dcontent,this.map);
-/*
-          marker.addListener('click', function() {
-            infowindow.open(map, marker);
-          });
-          **/
+
         }).catch((error) => {
           console.log('Error getting location', error);
         });
      }
 
-     createNewMarker(dtitle, dlongitude, dlatitude, dcontent,map)
+     addMarker(dtitle, dlongitude, dlatitude, dcontent)
      {
-       /*location object*/
        const pos = {
          lat: this.dlatitude,
          lng: this.dlongitude
        };
-    //   map.setCenter(pos);
+
        const icon = {
          url: 'https://firebasestorage.googleapis.com/v0/b/techdemofirebase.appspot.com/o/locationIcon%2Flocationpin.png?alt=media&token=a04dd171-e687-4504-a9ae-53eb1cb3986f', // image url
          scaledSize: new google.maps.Size(80, 80), // scaled size
        };
-       const marker = new google.maps.Marker({
-         position: pos,
-         map: map,
-         title: this.dtitle,
-         icon: icon
-       });
-       const contentString = dcontent;
-       const infowindow = new google.maps.InfoWindow({
-         content: contentString,
-         maxWidth: 400
-       });
+
+         const marker = new google.maps.Marker({
+           position: pos,
+           map: this.map,
+           title: this.dtitle,
+           icon: icon
+         });
+         /*
+         google.maps.event.addListener(marker, 'click', function(){
+           var infowindow = new google.maps.InfoWindow({
+             content: this.content
+           });
+           infowindow.open(this.map, marker);
+         });
+**/
 
      }
 
