@@ -166,6 +166,7 @@ export class ProfilePage implements OnInit {
           handler: data => {
             this.profileService
                 .updateEmail(data.newEmail, data.password, this.userProfileID);
+            this.refreshPage();
           },
         },
       ],
@@ -188,6 +189,7 @@ export class ProfilePage implements OnInit {
                 data.newPassword,
                 data.oldPassword, this.userProfileID
             );
+              this.refreshPage();
           },
         },
       ],
@@ -208,6 +210,7 @@ export class ProfilePage implements OnInit {
                         this.profileService.updateLocation(
                             data.newLocation, this.userProfileID
                         );
+                        this.refreshPage();
                     },
                 },
             ],
@@ -228,6 +231,7 @@ export class ProfilePage implements OnInit {
                         this.profileService.updateBio(
                             data.newBio, this.userProfileID
                         );
+                        this.refreshPage();
                     },
                 },
             ],
@@ -248,5 +252,20 @@ export class ProfilePage implements OnInit {
     this.router.navigate(['/tabs/home/', this.userProfileID ]);
   }
 
-
+  refreshPage() {
+      this.storage.get('userCode').then((val) => {
+          if (val) {
+              this.userProfileID = val;
+              const ref = this.afs.firestore.collection('users').where('code', '==', val);
+              ref.get().then((result) => {
+                  result.forEach(doc => {
+                      this.user.email = doc.get('email');
+                      this.user.password = doc.get('password');
+                      this.user.bio = doc.get('bio');
+                      this.user.location = doc.get('location');
+                  });
+              });
+          }
+      });
+  }
 }
