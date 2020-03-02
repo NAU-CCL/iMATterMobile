@@ -8,6 +8,7 @@ import { Storage } from '@ionic/storage';
 import { storage } from 'firebase';
 import 'firebase/storage';
 import * as firebase from 'firebase/app';
+import {AngularFirestore} from '@angular/fire/firestore';
 
 
 @Component({
@@ -25,6 +26,9 @@ export class SignupPage implements OnInit {
   private showImages: boolean;
   private dueDate: string;
   private currentDate = new Date().toJSON().split('T')[0];
+  private securityQ1: string;
+  private securityQ2: string;
+  private securityQ3: string;
 
   constructor(
       private authService: AuthServiceProvider,
@@ -34,8 +38,12 @@ export class SignupPage implements OnInit {
       private activatedRoute: ActivatedRoute,
       private router: Router,
       private ionicStorage: Storage,
-      private fcm: FcmService
+      private fcm: FcmService,
+      public afs: AngularFirestore
   ) {
+
+    this.getSecurityQs();
+
     const fbstorage = firebase.storage();
     const storageRef = fbstorage.ref('/ProfileImages');
     this.allPicURLs = ['https://firebasestorage.googleapis.com/v0/b/techdemofirebase.appspot.com/o/ProfileImages%2Fauto.png?alt=media&token=e5601f32-30f8-4b38-9a2c-ff2d7e6ad59a',
@@ -224,5 +232,14 @@ export class SignupPage implements OnInit {
     }
 
     return cohort;
+  }
+
+  getSecurityQs() {
+    firebase.firestore().collection('mobileSettings').doc('securityQuestions').get().then((result) => {
+      this.securityQ1 = result.get('q1');
+      this.securityQ2 = result.get('q2');
+      this.securityQ3 = result.get('q3');
+
+    });
   }
 }

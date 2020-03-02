@@ -112,7 +112,7 @@ export class HomePage implements OnInit {
     });
 
     this.userProfileID = this.storage.get('userCode');
-    this.id = this.activatedRoute.snapshot.paramMap.get('id');
+    //this.id = this.activatedRoute.snapshot.paramMap.get('id');
     this.storage.get('userCode').then((val) => {
       if (val) {
         this.userProfileID = val;
