@@ -24,7 +24,7 @@ export class LoginPage implements OnInit {
     private userID: string;
     private userEmail: boolean;
     private userPassword: string;
-
+	private daysSinceLogin: number;
 
     constructor(
         public loadingCtrl: LoadingController,
@@ -74,11 +74,13 @@ export class LoginPage implements OnInit {
                             this.storage.set('username', doc.get('username'));
                             this.storage.set('dueDate', doc.get('dueDate'));
                             this.storage.set('cohort', doc.get('cohort'));
-
+							
                             this.getCurrentPregnancyStatus(doc.get('dueDate'));
                             console.log(doc.get('dueDate'));
 
-
+							this.afs.firestore.collection('users').doc(this.userID).update({
+								daysSinceLogin: 0
+							});
                             this.router.navigate(['/tabs/home/']);
                         } else {
                             this.showToast('Password is incorrect');
