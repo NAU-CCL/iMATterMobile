@@ -28,6 +28,8 @@ export interface User {
   daysAUser: any;
   points: number;
   chatNotif: boolean;
+  learningModNotif: boolean;
+  surveyNotif: boolean;
   token: any;
 }
 
@@ -88,6 +90,8 @@ export class AuthServiceProvider {
       daysPregnant: user.daysPregnant,
       totalDaysPregnant: user.totalDaysPregnant,
       chatNotif: user.chatNotif,
+      learningModNotif: user.learningModNotif,
+      surveyNotif: user.surveyNotif,
       token: user.token});
   }
 
