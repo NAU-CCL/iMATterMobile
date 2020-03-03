@@ -75,22 +75,30 @@ exports.sendRecoveryEmail=functions.firestore.document('recovery_email/{docID}')
 
 exports.updateDays=functions.https.onRequest((req, res)=>{	
 	
-	const increment = firebase.firestore.daysAUser.increment(1);
+	//const increment = admin.firestore().FieldValue.increment(1);
 	const ref = admin.firestore().collection('users');
 			ref.get().then((result) => {			
 			  result.forEach(doc => {
-				doc.update({ reads: increment});
-				
+				  console.log("1")
+				  console.log(doc.data().daysAUser);
+				var new_days = doc.data().daysAUser + 1;
+				//doc.update({ "daysAUser": new_days});
+				doc.update({
+					daysAUser: firebase.firestore.FieldValue.increment(1)
+				});
+
+				console.log("2");
 			  //if the res.send is the same each time, for some reason it stops working? Added random number so its different each send.
+			});
+			//if the res.send is the same each time, for some reason it stops working? Added random number so its different each send.
 			  var number = Math.random();
-			  res.send("updated" + number);
-			  return null;
-			}).catch(reason => {
+			  res.send("Emails have been sent" + number);
+
+			return null;
+			}).catch(err => {
 			
-			res.send(email)
-		})
-
-
+			res.send(err)
+			});
 });
 
 
