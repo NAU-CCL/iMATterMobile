@@ -79,25 +79,29 @@ exports.updateDays=functions.https.onRequest((req, res)=>{
 	const ref = admin.firestore().collection('users');
 			ref.get().then((result) => {			
 			  result.forEach(doc => {
-				  console.log("1")
-				  console.log(doc.data().daysAUser);
+				  docID = doc.get('code');
+				var currentUser = admin.firestore().collection('users').doc(docID);
 				var new_days = doc.data().daysAUser + 1;
+				var sinceLogin = doc.data().daysSinceLogin + 1;
 				//doc.update({ "daysAUser": new_days});
-				doc.update({
-					daysAUser: firebase.firestore.FieldValue.increment(1)
+				currentUser.update({
+					daysAUser: new_days
 				});
-
-				console.log("2");
-			  //if the res.send is the same each time, for some reason it stops working? Added random number so its different each send.
+				
+				currentUser.update({
+					daysSinceLogin: sinceLogin
+				});
+				
+			  
 			});
 			//if the res.send is the same each time, for some reason it stops working? Added random number so its different each send.
 			  var number = Math.random();
-			  res.send("Emails have been sent" + number);
+			  res.send("days have been updated" + number);
 
 			return null;
 			}).catch(err => {
 			
-			res.send(err)
+			res.send("failed: " +err)
 			});
 });
 
