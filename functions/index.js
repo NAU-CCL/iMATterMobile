@@ -1,11 +1,7 @@
 const functions = require('firebase-functions');
 const admin=require('firebase-admin');
-<<<<<<< HEAD
-=======
-admin.initializeApp(functions.config().firebase);
 
 var newChat;
->>>>>>> master
 const nodemailer = require('nodemailer');
 admin.initializeApp(functions.config().firebase);
 
@@ -13,11 +9,7 @@ admin.initializeApp(functions.config().firebase);
 //admin.initializeApp();
 require('dotenv').config()
 
-<<<<<<< HEAD
-const {SENDER_EMAIL, SENDER_PASSWORD}= process.env;
-=======
 const {SENDER_EMAIL, SENDER_PASS}= process.env;
->>>>>>> master
 
 exports.sendEmailNotification=functions.https.onRequest((req, res)=>{	
 	let authData = nodemailer.createTransport({
@@ -26,11 +18,7 @@ exports.sendEmailNotification=functions.https.onRequest((req, res)=>{
 		secure: false,
 		auth: {
 		  user: SENDER_EMAIL, 
-<<<<<<< HEAD
-		  pass: SENDER_PASSWORD 
-=======
 		  pass: SENDER_PASS 
->>>>>>> master
 		}
 		
 		

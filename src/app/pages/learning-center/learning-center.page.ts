@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { LearningModuleService, LearningModule } from '../../services/learning-module.service';
+import { LearningModuleService, LearningModule } from '../../services/learningModule/learning-module.service';
 import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyticsService.service';
 import { Observable } from 'rxjs';
 import { Storage} from '@ionic/storage';
@@ -65,7 +65,7 @@ export class LearningCenterPage implements OnInit {
 
 
 
-  addView(){
+addView(){
 
   //this.analytic.sessionID = this.session.id;
   this.storage.get('userCode').then((val) =>{
@@ -86,7 +86,7 @@ export class LearningCenterPage implements OnInit {
           });
         });
       });
-    }
+  }
   });
 }
 
