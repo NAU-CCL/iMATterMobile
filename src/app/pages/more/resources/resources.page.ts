@@ -67,6 +67,9 @@ export class ResourcesPage implements OnInit, AfterViewInit {
             zoom: 16
           });
 
+          console.log("displayed the map");
+
+
         }).catch((error) => {
           console.log('Error getting location', error);
         });
@@ -107,8 +110,6 @@ export class ResourcesPage implements OnInit, AfterViewInit {
            });
            infowindow.open(this.map, marker);
          });
-
-
      }
 
   }
