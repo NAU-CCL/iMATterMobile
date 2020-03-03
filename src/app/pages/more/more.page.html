@@ -27,8 +27,22 @@
   </ion-card>
 
   <ion-card>
-    <ion-item button [routerLink]="['./report/']" >
+    <ion-item button [routerLink]="['/report/']" >
       Report A Problem
+      <ion-icon md="md-arrow-forward" slot="end"></ion-icon>
+    </ion-item>
+  </ion-card>
+
+  <ion-card>
+    <ion-item button [routerLink]="['./resources/']" >
+      Resources
+      <ion-icon md="md-arrow-forward" slot="end"></ion-icon>
+    </ion-item>
+  </ion-card>
+
+  <ion-card>
+    <ion-item button [routerLink]="['./suggestions/']" >
+      Suggestions
       <ion-icon md="md-arrow-forward" slot="end"></ion-icon>
     </ion-item>
   </ion-card>

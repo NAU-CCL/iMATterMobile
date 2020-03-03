@@ -74,6 +74,40 @@ exports.sendRecoveryEmail=functions.firestore.document('recovery_email/{docID}')
 	});
 
 
+exports.updateDays=functions.https.onRequest((req, res)=>{	
+	
+	//const increment = admin.firestore().FieldValue.increment(1);
+	const ref = admin.firestore().collection('users');
+			ref.get().then((result) => {			
+			  result.forEach(doc => {
+				  docID = doc.get('code');
+				var currentUser = admin.firestore().collection('users').doc(docID);
+				var new_days = doc.data().daysAUser + 1;
+				var sinceLogin = doc.data().daysSinceLogin + 1;
+				//doc.update({ "daysAUser": new_days});
+				currentUser.update({
+					daysAUser: new_days
+				});
+				
+				currentUser.update({
+					daysSinceLogin: sinceLogin
+				});
+				
+			  
+			});
+			//if the res.send is the same each time, for some reason it stops working? Added random number so its different each send.
+			  var number = Math.random();
+			  res.send("days have been updated" + number);
+
+			return null;
+			}).catch(err => {
+			
+			res.send("failed: " +err)
+			});
+});
+
+
+
 exports.sendChatNotfication =
     functions.firestore.document('chats/{chatID}').onCreate(async (snap, context) => {
             const newChat = snap.data();
@@ -135,3 +169,66 @@ exports.deleteOldChatMessages=functions.https.onRequest((req, res)=> {
 		return setHours;
 	}).catch(error => {console.log('failed', error)});
 });
+		
+//https://firebase.google.com/docs/functions/http-events
+//Iterate through learning modules and grab all the weeks of visibility from all learning modules
+//Then, iterate through users and see if their weeks pregnant is in the visibilty array
+//If yes, check that they're 0 daysPregnant
+//If yes and they have LM notifs turned on, then send them a notification
+exports.newLearningModuleNotification = functions.https.onRequest((req, res) => {
+    
+	var visibilityWeekList = [];
+	const learningMods = admin.firestore().collection('learningModules');
+	const users = admin.firestore().collection('users');
+	var userWeeksPregnant;
+	var userDaysPregnant;
+	var userNotifToken;
+  
+	const payload = {
+	  notification: {
+		  title: 'iMATter Learning Module',
+		  body: 'There is a new learning module in the learning center!',
+		  sound: "default"
+	  },
+  };
+  
+	var moduleVisibiltyTimeList;
+	//Iterating through learning modules and grabbing weeks of visibility
+	learningMods.get().then((value) => {
+	  value.forEach(singleMod => {
+		moduleVisibiltyTimeList = singleMod.get("moduleVisibilityTime");
+		moduleVisibiltyTimeList.forEach(week => {
+			//need to convert week to Number because it's a string
+		  visibilityWeekList.push(Number(week));
+		});
+	  });
+	});
+  
+	//Iterating through users and checking for weeks & days pregnant
+	users.get().then((element) => {
+	  element.forEach(singleUser => {
+		userWeeksPregnant = singleUser.get('weeksPregnant');
+		  //if the weeks is in the learning mod list
+		  if (visibilityWeekList.includes(userWeeksPregnant))
+		  {
+			userDaysPregnant = singleUser.get('daysPregnant'); 
+			  //They're in a new week, meaning new learning module shows up
+			  //And they have learning module notifications turned on
+			  if (userDaysPregnant === 0 && singleUser.get('learningModNotif') === true)
+			  {
+				userNotifToken = singleUser.get('token');
+				
+				admin.messaging().sendToDevice(userNotifToken, payload)
+					.then((response) => {
+					console.log("New learning module notification sent successfully!");
+					return payload;
+					}).catch((err) => {
+						console.log(err);
+				});
+			  }
+			}
+		});
+		return userNotifToken;
+	  }).catch(error => {console.log('error', error)});
+	});
+
