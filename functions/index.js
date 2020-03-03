@@ -71,22 +71,84 @@ exports.sendRecoveryEmail=functions.firestore.document('recovery_email/{docID}')
 		}).then(res=>console.log('successfully sent that mail')).catch(err=>console.log(err));
 	});
 
-
-//https://firebase.google.com/docs/firestore/extend-with-functions
-exports.newLearningModuleNotification = functions.firestore.document('users/{userID}').onUpdate((change, content) => {
-    const newData = change.after.data();
-    const previousData = change.before.data();
-
-    console.log("MOOD HAS CHANGED");
-    console.log(newData);
-    console.log("OLD DATA: ");
-    console.log(previousData);
-})
-
   
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//  response.send("Hello from Firebase!");
-// });
+//https://firebase.google.com/docs/functions/http-events
+//Once a day, iterate through learning modules and grab all the weeks of visibility from all LMS
+//Then, iterate through users and see if their weeks pregnant is in the visibilty array
+//If yes, check that they're 0 daysPregnant
+//If yes, then send them a notification
+
+exports.cronTest = functions.https.onRequest((req, res) => {
+    
+	var visibilityWeekList = [];
+	const learningMods = admin.firestore().collection('learningModules');
+	const users = admin.firestore().collection('users');
+  
+	const payload = {
+	  notification: {
+		  title: 'iMATter Learning Module',
+		  body: 'There is a new learning module in the learning center!',
+		  sound: "default"
+	  },
+  };
+  
+	var moduleVisibiltyTimeList;
+  
+	learningMods.get().then((value) => {
+	  console.log("LEARNING MOD VALUE: ");
+	  console.log(value);
+	  value.forEach(singleMod => {
+		console.log("SINGLE MOD:");
+		console.log(singleMod);
+		//singleMod['moduleVisibilityTime']; WILL COME BACK UNDEFINED
+		moduleVisibiltyTimeList = singleMod.get("moduleVisibilityTime");
+		console.log("TYPE OF MOD VIS TIME: " + typeof(moduleVisibiltyTimeList));
+		console.log(moduleVisibiltyTimeList);
+		moduleVisibiltyTimeList.forEach(week => {
+		  console.log("LM WEEK: " + week);
+		  visibilityWeekList.push(week);
+		  console.log(visibilityWeekList);
+		});
+	  });
+	});
+  
+	console.log("LEARNING MODULE LIST: " + visibilityWeekList);
+  
+	var userWeeksPregnant;
+	var userDaysPregnant;
+	var userNotifToken;
+  
+	users.get().then((element) => {
+	  console.log("USERS ELEMENT: ");
+	  console.log(element);
+  
+	  element.forEach(singleUser => {
+		console.log("SINGLE USER: ");
+		console.log(singleUser);
+		userWeeksPregnant = singleUser.get('weeksPregnant');
+		console.log("USER WEEKS PREGNANT: " + userWeeksPregnant);
+  
+		  //if the weeks is in the learning mod list
+		  if (visibilityWeekList.includes(userWeeksPregnant))
+		  {
+			userDaysPregnant = singleUser.get('daysPregnant'); 
+			console.log("USER DAYS PREGNANT: " + userDaysPregnant);
+			  //They're in a new week, meaning new learning module shows up
+			  if (userDaysPregnant == 0)
+			  {
+				userNotifToken = singleUser.get('token');
+				//Send notification if they have notifications on
+				if (userNotifToken)
+				{
+				  admin.messaging().sendToDevice(userNotifToken, payload).then((response) => {
+					console.log("New learning module notification sent successfully!");
+					return payload;
+				  }).catch((err) => {
+					console.log(err);
+				  })
+				}
+			  }
+			}
+		});
+	  });
+	});
