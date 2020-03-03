@@ -32,6 +32,8 @@ export class ViewableProfilePage implements OnInit {
     daysAUser: 0,
     points: 0,
     chatNotif: true,
+    learningModNotif: true,
+    surveyNotif: true,
     token: ''
   };
 
