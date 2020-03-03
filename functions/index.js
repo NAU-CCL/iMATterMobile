@@ -105,16 +105,18 @@ functions.firestore.document('chats/{chatID}').onCreate(async (snap, context) =>
 	});
 		
 //https://firebase.google.com/docs/functions/http-events
-//Once a day, iterate through learning modules and grab all the weeks of visibility from all LMS
+//Iterate through learning modules and grab all the weeks of visibility from all learning modules
 //Then, iterate through users and see if their weeks pregnant is in the visibilty array
 //If yes, check that they're 0 daysPregnant
-//If yes, then send them a notification
-
-exports.cronTest = functions.https.onRequest((req, res) => {
+//If yes and they have LM notifs turned on, then send them a notification
+exports.newLearningModuleNotification = functions.https.onRequest((req, res) => {
     
 	var visibilityWeekList = [];
 	const learningMods = admin.firestore().collection('learningModules');
 	const users = admin.firestore().collection('users');
+	var userWeeksPregnant;
+	var userDaysPregnant;
+	var userNotifToken;
   
 	const payload = {
 	  notification: {
@@ -125,62 +127,41 @@ exports.cronTest = functions.https.onRequest((req, res) => {
   };
   
 	var moduleVisibiltyTimeList;
-  
+	//Iterating through learning modules and grabbing weeks of visibility
 	learningMods.get().then((value) => {
-	  console.log("LEARNING MOD VALUE: ");
-	  console.log(value);
 	  value.forEach(singleMod => {
-		console.log("SINGLE MOD:");
-		console.log(singleMod);
-		//singleMod['moduleVisibilityTime']; WILL COME BACK UNDEFINED
 		moduleVisibiltyTimeList = singleMod.get("moduleVisibilityTime");
-		console.log("TYPE OF MOD VIS TIME: " + typeof(moduleVisibiltyTimeList));
-		console.log(moduleVisibiltyTimeList);
 		moduleVisibiltyTimeList.forEach(week => {
-		  console.log("LM WEEK: " + week);
-		  visibilityWeekList.push(week);
-		  console.log(visibilityWeekList);
+			//need to convert week to Number because it's a string
+		  visibilityWeekList.push(Number(week));
 		});
 	  });
 	});
   
-	console.log("LEARNING MODULE LIST: " + visibilityWeekList);
-  
-	var userWeeksPregnant;
-	var userDaysPregnant;
-	var userNotifToken;
-  
+	//Iterating through users and checking for weeks & days pregnant
 	users.get().then((element) => {
-	  console.log("USERS ELEMENT: ");
-	  console.log(element);
-  
 	  element.forEach(singleUser => {
-		console.log("SINGLE USER: ");
-		console.log(singleUser);
 		userWeeksPregnant = singleUser.get('weeksPregnant');
-		console.log("USER WEEKS PREGNANT: " + userWeeksPregnant);
-  
 		  //if the weeks is in the learning mod list
 		  if (visibilityWeekList.includes(userWeeksPregnant))
 		  {
 			userDaysPregnant = singleUser.get('daysPregnant'); 
-			console.log("USER DAYS PREGNANT: " + userDaysPregnant);
 			  //They're in a new week, meaning new learning module shows up
-			  if (userDaysPregnant == 0)
+			  //And they have learning module notifications turned on
+			  if (userDaysPregnant === 0 && singleUser.get('learningModNotif') === true)
 			  {
 				userNotifToken = singleUser.get('token');
-				//Send notification if they have notifications on
-				if (userNotifToken)
-				{
-				  admin.messaging().sendToDevice(userNotifToken, payload).then((response) => {
+				
+				admin.messaging().sendToDevice(userNotifToken, payload)
+					.then((response) => {
 					console.log("New learning module notification sent successfully!");
 					return payload;
-				  }).catch((err) => {
-					console.log(err);
-				  })
-				}
+					}).catch((err) => {
+						console.log(err);
+				});
 			  }
 			}
 		});
-	  });
+		return userNotifToken;
+	  }).catch(error => {console.log('error', error)});
 	});
