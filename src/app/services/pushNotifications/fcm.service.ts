@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Firebase } from '@ionic-native/firebase/ngx';
 import { FirebaseX } from '@ionic-native/firebase-x/ngx';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Platform } from '@ionic/angular';
@@ -11,17 +10,17 @@ export class FcmService {
 
   constructor(private firebase: FirebaseX,
               private angularFirestore: AngularFirestore,
-              private platform: Platform) {
-  }
-
+              private platform: Platform) { }
 
   async getToken(userID) {
     let token;
     if (this.platform.is('android')) {
       console.log('android in got token');
       token = await this.firebase.getToken();
+    } else {
+      token = await this.firebase.getToken();
     }
-    console.log('right before save');
+
     this.saveToken(token, userID);
   }
 

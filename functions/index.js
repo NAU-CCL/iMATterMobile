@@ -1,6 +1,5 @@
 const functions = require('firebase-functions');
 const admin=require('firebase-admin');
-admin.initializeApp(functions.config().firebase);
 
 var newChat;
 const nodemailer = require('nodemailer');
@@ -8,7 +7,7 @@ admin.initializeApp(functions.config().firebase);
 
 
 //admin.initializeApp();
-require('dotenv').config()
+require('dotenv').config();
 
 const {SENDER_EMAIL, SENDER_PASS}= process.env;
 
@@ -91,16 +90,34 @@ exports.sendChatNotfication =
                 result.forEach(doc => {
                     if(doc.get('chatNotif') === true && newChat.userID !== doc.get('code')) {
                         token = doc.get('token');
-
                         admin.messaging().sendToDevice(token, payload)
-                            .then((response) => {
-                                console.log('worked');
-                                return payload;
-                            }).catch((err) => {
-                            console.log(err);
-                        });
-                    }
+							.then((response) => {
+								console.log('worked');
+								return payload;
+							}).catch((err) => {
+								console.log('entered', err);
+							});
+						}
                 });
                 return token;
-            }).catch(error => {console.log('error', error)});
+            }).catch(error => {console.log('did not enter', error)});
         });
+
+
+exports.deleteOldChatMessages=functions.https.onRequest((req, res)=> {
+	const now = new Date();
+	const setHours = Number(admin.firestore().collection('mobileSettings').doc('chatHours').get()) * 60 * 60 * 1000;
+
+	const ref = admin.firestore().collection('chats');
+	ref.get().then((result) => {
+		result.forEach(doc => {
+			var timestamp = new Date(doc.get('timestamp'));
+			var difference = now.getTime() - timestamp.getTime();
+
+			if(difference >= setHours) {
+				doc.delete();
+			}
+		});
+		return setHours;
+	}).catch(error => {console.log('did not check', error)});
+});
