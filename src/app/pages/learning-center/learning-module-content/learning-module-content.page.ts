@@ -238,7 +238,7 @@ export class LearningModuleContentPage implements OnInit {
   quizRadioChange(questionName, event)
   {
     this.learningModule.moduleQuiz.forEach(element => {
-      if (element.questionText == questionName)
+      if (element.questionText === questionName)
       {
         element.userSelection = event.detail.value;
       }
@@ -264,7 +264,7 @@ export class LearningModuleContentPage implements OnInit {
       //Check if user's selections are correct
       //Increment number of questions correct
       this.learningModule.moduleQuiz.forEach(element => {
-        if (element.correctAnswer == element.userSelection)
+        if (element.correctAnswer === element.userSelection)
         {
           this.numberQuestionsCorrect += 1;
           this.storage.set(this.learningModule.id + "numberQuestionsCorrect", this.numberQuestionsCorrect);
