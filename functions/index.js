@@ -106,18 +106,32 @@ exports.sendChatNotfication =
 
 exports.deleteOldChatMessages=functions.https.onRequest((req, res)=> {
 	const now = new Date();
-	const setHours = Number(admin.firestore().collection('mobileSettings').doc('chatHours').get()) * 60 * 60 * 1000;
+	console.log('now', now);
 
-	const ref = admin.firestore().collection('chats');
-	ref.get().then((result) => {
-		result.forEach(doc => {
-			var timestamp = new Date(doc.get('timestamp'));
-			var difference = now.getTime() - timestamp.getTime();
+	admin.firestore().collection('mobileSettings').doc('chatHours').get().then(function(doc) {
+		let setHours = Number(doc.get('hours'));
+		console.log('setHours', setHours);
+		setHours = setHours * 60 * 60 * 1000;
+		console.log('setHours', setHours);
 
-			if(difference >= setHours) {
-				doc.delete();
-			}
-		});
+		const ref = admin.firestore().collection('chats');
+		ref.get().then((result) => {
+			let batch = admin.firestore().batch();
+			result.forEach(doc => {
+				const timestamp = new Date(doc.get('timestamp').toDate());
+				console.log('timestamp', timestamp);
+				const difference = now.getTime() - timestamp.getTime();
+				console.log('difference', difference);
+				console.log('setHours', setHours);
+
+				if(difference >= setHours) {
+					batch.delete(doc.ref);
+				}
+
+			});
+			batch.commit();
+			return setHours;
+		}).catch(error => {console.log('did not check', error)});
 		return setHours;
-	}).catch(error => {console.log('did not check', error)});
+	}).catch(error => {console.log('failed', error)});
 });
