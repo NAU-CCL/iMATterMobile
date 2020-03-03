@@ -14,8 +14,10 @@ ion-list-header {
   color: #cccccc;
 }
 
-.dob-label {
-  color: #000000;
-  padding: 10px;
-  max-width: 50%;
+.ion-text-button {
+  --color: var(--main-color);
+}
+
+.logout {
+  color: var(--main-color);
 }

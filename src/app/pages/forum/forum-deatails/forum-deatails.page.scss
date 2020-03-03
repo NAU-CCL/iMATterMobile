@@ -1,3 +1,17 @@
 .box-format {
   border: 1px solid lightgray;
 }
+
+.ion-text-button {
+  --color: var(--main-color);
+}
+
+.create-post-button {
+  --background: var(--main-color);
+  --background-activated: var(--secondary-color);
+  --background-hover: var(--secondary-color);
+}
+
+ion-toggle {
+  --color: var(--main-color);
+}
