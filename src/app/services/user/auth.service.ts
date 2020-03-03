@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
+import {LearningModule} from "../learning-module.service";
 
 export interface User {
   id?: string;
@@ -45,6 +46,11 @@ export interface Provider {
   dob: string;
   bio: string;
   type: string;
+}
+
+export interface SecurityQ {
+  id?: string;
+  securityQ: string;
 }
 
 @Injectable({
@@ -93,11 +99,6 @@ export class AuthServiceProvider {
       learningModNotif: user.learningModNotif,
       surveyNotif: user.surveyNotif,
       token: user.token});
-  }
-
-
-  resetPassword(email: string): Promise<void> {
-    return firebase.auth().sendPasswordResetEmail(email);
   }
 
 

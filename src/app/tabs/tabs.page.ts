@@ -2,7 +2,7 @@ import { Component, OnInit} from '@angular/core';
 //import { ClickChatService, CClicks} from 'src/app/services/analytics.service';
 import { Observable } from 'rxjs';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument, DocumentReference } from '@angular/fire/firestore';
-import { firestore  } from 'Firebase';
+// import { firestore  } from 'Firebase';
 import * as firebase from 'firebase';
 import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyticsService.service';
 
@@ -27,18 +27,18 @@ export class TabsPage implements OnInit {
           numOfClickProfile: 0,
           numOfClickMore: 0,
           numOfClickHome: 0
-      }
+      };
 
   private sessions : Observable<any>;
 
-  constructor(public firestore: AngularFirestore ,private analyticsService: AnalyticsService) {}
+  constructor(public firestore: AngularFirestore, private analyticsService: AnalyticsService) {}
 
   ngOnInit(){}
 
   updateChatClicks()
   {
     this.analyticsService.updateChatClicks(this.session);
-    console.log("added chat click");
+    console.log('added chat click');
 
   }
 
@@ -53,7 +53,7 @@ export class TabsPage implements OnInit {
   updateMoreClicks()
   {
     this.analyticsService.updateCalendarClicks(this.session);
-    console.log("added more click");
+    console.log('added more click');
 
   }
 
@@ -61,7 +61,7 @@ export class TabsPage implements OnInit {
   updateHomeClicks()
   {
     this.analyticsService.updateHomeClicks(this.session);
-    console.log("added home click");
+    console.log('added home click');
 
   }
 

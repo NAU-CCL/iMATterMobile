@@ -7,7 +7,7 @@ admin.initializeApp(functions.config().firebase);
 
 
 //admin.initializeApp();
-require('dotenv').config()
+require('dotenv').config();
 
 const {SENDER_EMAIL, SENDER_PASS}= process.env;
 
@@ -109,34 +109,66 @@ exports.updateDays=functions.https.onRequest((req, res)=>{
 
 
 exports.sendChatNotfication =
-functions.firestore.document('chats/{chatID}').onCreate(async (snap, context) => {
-		const newChat = snap.data();
-		const payload = {
-			notification: {
-				title: 'iMATter Chat Room',
-				body: 'There is a new message in the chat room',
-				sound: "default"
-			},
-		};
+    functions.firestore.document('chats/{chatID}').onCreate(async (snap, context) => {
+            const newChat = snap.data();
+            const payload = {
+                notification: {
+                    title: 'iMATter Chat Room',
+                    body: 'There is a new message in the chat room',
+                    sound: "default"
+                },
+            };
 
-		const ref = admin.firestore().collection('users').where('cohort', '==', newChat.cohort);
+            const ref = admin.firestore().collection('users').where('cohort', '==', newChat.cohort);
+            ref.get().then((result) => {
+                result.forEach(doc => {
+                    if(doc.get('chatNotif') === true && newChat.userID !== doc.get('code')) {
+                        token = doc.get('token');
+                        admin.messaging().sendToDevice(token, payload)
+							.then((response) => {
+								console.log('worked');
+								return payload;
+							}).catch((err) => {
+								console.log('entered', err);
+							});
+						}
+                });
+                return token;
+            }).catch(error => {console.log('did not enter', error)});
+        });
+
+
+exports.deleteOldChatMessages=functions.https.onRequest((req, res)=> {
+	const now = new Date();
+	console.log('now', now);
+
+	admin.firestore().collection('mobileSettings').doc('chatHours').get().then(function(doc) {
+		let setHours = Number(doc.get('hours'));
+		console.log('setHours', setHours);
+		setHours = setHours * 60 * 60 * 1000;
+		console.log('setHours', setHours);
+
+		const ref = admin.firestore().collection('chats');
 		ref.get().then((result) => {
+			let batch = admin.firestore().batch();
 			result.forEach(doc => {
-				if(doc.get('chatNotif') === true && newChat.userID !== doc.get('code')) {
-					token = doc.get('token');
+				const timestamp = new Date(doc.get('timestamp').toDate());
+				console.log('timestamp', timestamp);
+				const difference = now.getTime() - timestamp.getTime();
+				console.log('difference', difference);
+				console.log('setHours', setHours);
 
-					admin.messaging().sendToDevice(token, payload)
-						.then((response) => {
-							console.log('worked');
-							return payload;
-						}).catch((err) => {
-						console.log(err);
-					});
+				if(difference >= setHours) {
+					batch.delete(doc.ref);
 				}
+
 			});
-			return token;
-		}).catch(error => {console.log('error', error)});
-	});
+			batch.commit();
+			return setHours;
+		}).catch(error => {console.log('did not check', error)});
+		return setHours;
+	}).catch(error => {console.log('failed', error)});
+});
 		
 //https://firebase.google.com/docs/functions/http-events
 //Iterate through learning modules and grab all the weeks of visibility from all learning modules
@@ -199,3 +231,4 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 		return userNotifToken;
 	  }).catch(error => {console.log('error', error)});
 	});
+
