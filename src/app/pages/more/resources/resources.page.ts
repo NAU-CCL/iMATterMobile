@@ -77,6 +77,8 @@ export class ResourcesPage implements OnInit, AfterViewInit {
 
      addMarker(dtitle, dlongitude, dlatitude, dcontent)
      {
+       console.log('added pin');
+
        const pos = {
          lat: this.dlatitude,
          lng: this.dlongitude
