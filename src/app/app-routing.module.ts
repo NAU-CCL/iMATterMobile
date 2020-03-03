@@ -66,7 +66,6 @@ const routes: Routes = [
     path: 'recovery-code',
     loadChildren: () => import('./pages/handleUserPages/recovery-code/recovery-code.module').then( m => m.RecoveryCodePageModule)
   }
-
 ];
 @NgModule({
   imports: [
