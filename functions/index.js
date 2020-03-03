@@ -1,5 +1,11 @@
 const functions = require('firebase-functions');
 const admin=require('firebase-admin');
+<<<<<<< HEAD
+=======
+admin.initializeApp(functions.config().firebase);
+
+var newChat;
+>>>>>>> master
 const nodemailer = require('nodemailer');
 admin.initializeApp(functions.config().firebase);
 
@@ -7,7 +13,11 @@ admin.initializeApp(functions.config().firebase);
 //admin.initializeApp();
 require('dotenv').config()
 
+<<<<<<< HEAD
 const {SENDER_EMAIL, SENDER_PASSWORD}= process.env;
+=======
+const {SENDER_EMAIL, SENDER_PASS}= process.env;
+>>>>>>> master
 
 exports.sendEmailNotification=functions.https.onRequest((req, res)=>{	
 	let authData = nodemailer.createTransport({
@@ -16,7 +26,11 @@ exports.sendEmailNotification=functions.https.onRequest((req, res)=>{
 		secure: false,
 		auth: {
 		  user: SENDER_EMAIL, 
+<<<<<<< HEAD
 		  pass: SENDER_PASSWORD 
+=======
+		  pass: SENDER_PASS 
+>>>>>>> master
 		}
 		
 		
@@ -55,7 +69,7 @@ exports.sendRecoveryEmail=functions.firestore.document('recovery_email/{docID}')
 		secure: false,
 		auth: {
 		  user: SENDER_EMAIL, 
-		  pass: SENDER_PASSWORD 
+		  pass: SENDER_PASS
 		}
 		
 		
@@ -71,7 +85,37 @@ exports.sendRecoveryEmail=functions.firestore.document('recovery_email/{docID}')
 		}).then(res=>console.log('successfully sent that mail')).catch(err=>console.log(err));
 	});
 
-  
+
+exports.sendChatNotfication =
+functions.firestore.document('chats/{chatID}').onCreate(async (snap, context) => {
+		const newChat = snap.data();
+		const payload = {
+			notification: {
+				title: 'iMATter Chat Room',
+				body: 'There is a new message in the chat room',
+				sound: "default"
+			},
+		};
+
+		const ref = admin.firestore().collection('users').where('cohort', '==', newChat.cohort);
+		ref.get().then((result) => {
+			result.forEach(doc => {
+				if(doc.get('chatNotif') === true && newChat.userID !== doc.get('code')) {
+					token = doc.get('token');
+
+					admin.messaging().sendToDevice(token, payload)
+						.then((response) => {
+							console.log('worked');
+							return payload;
+						}).catch((err) => {
+						console.log(err);
+					});
+				}
+			});
+			return token;
+		}).catch(error => {console.log('error', error)});
+	});
+		
 //https://firebase.google.com/docs/functions/http-events
 //Once a day, iterate through learning modules and grab all the weeks of visibility from all LMS
 //Then, iterate through users and see if their weeks pregnant is in the visibilty array

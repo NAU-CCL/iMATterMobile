@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthServiceProvider, User } from '../../../services/user/auth.service';
+import { FcmService } from '../../../services/pushNotifications/fcm.service';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -33,6 +34,7 @@ export class SignupPage implements OnInit {
       private activatedRoute: ActivatedRoute,
       private router: Router,
       private ionicStorage: Storage,
+      private fcm: FcmService
   ) {
     const fbstorage = firebase.storage();
     const storageRef = fbstorage.ref('/ProfileImages');
@@ -75,11 +77,11 @@ export class SignupPage implements OnInit {
       ],
       securityQ: [
         '',
-        Validators.compose([Validators.nullValidator, Validators.maxLength(300)]),
+        Validators.compose([Validators.required, Validators.maxLength(300)]),
       ],
       securityA: [
         '',
-        Validators.compose([Validators.nullValidator, Validators.maxLength(300)]),
+        Validators.compose([Validators.required, Validators.maxLength(300)]),
       ],
     });
   }
@@ -92,13 +94,19 @@ export class SignupPage implements OnInit {
     dueDate: '',
     location: 0,
     cohort: '',
+    weeksPregnant: '',
+    daysPregnant: '',
+    totalDaysPregnant: '',
     bio:  '',
     securityQ: '',
     securityA: '',
     currentEmotion: '',
     profilePic: '',
     joined: '',
-    daysAUser: 0
+    daysAUser: 0,
+    points: 0,
+    chatNotif: true,
+    token: ''
   };
 
   ngOnInit() {}
@@ -136,6 +144,11 @@ export class SignupPage implements OnInit {
       this.user.securityA = securityA;
       this.user.joined = firebase.firestore.FieldValue.serverTimestamp();
       this.user.daysAUser = 0;
+      this.user.weeksPregnant = 0;
+      this.user.totalDaysPregnant = 0;
+      this.user.daysPregnant = 0;
+      this.user.chatNotif = true;
+      this.user.points = 0;
 
       // find user cohort
       const tempCohort = this.user.dueDate.split('-');

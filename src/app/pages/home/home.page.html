@@ -2,58 +2,64 @@
   <ion-toolbar>
     <ion-title> iMATter </ion-title>
     <ion-buttons slot="end">
-      <ion-button [routerLink]="['/profile']">
+      <ion-button (click) ="updateProfileClicks()" [routerLink]="['/profile']">
         <ion-icon slot="icon-only" name="person"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-<ion-text class="ion-padding-horizontal"> Currently I am feeling: {{user.currentEmotion}} </ion-text>
 
-<ion-row class="ion-justify-content-center">
-  <ion-col size="1.5">
-    <ion-button [class.highlight]="this.user.currentEmotion == 'excited'" size = "small" fill = "clear" (click)="saveEmotion('excited')">
-      🤗
-    </ion-button>
-  </ion-col>
-  <ion-col size="1.5">
-  <ion-button [class.highlight]="this.user.currentEmotion == 'happy'" size = "small" fill = "clear" (click)="saveEmotion('happy')">
-      😃
-    </ion-button>
-  </ion-col>
-  <ion-col size="1.5">
-  <ion-button [class.highlight]="this.user.currentEmotion == 'loved'" size = "small" fill = "clear" (click)="saveEmotion('loved')">
-      🥰
-    </ion-button>
-  </ion-col>
-  <ion-col size="1.5">
-  <ion-button [class.highlight]="this.user.currentEmotion == 'indifferent'" size = "small" fill = "clear" (click)="saveEmotion('indifferent')">
-      😐
-    </ion-button>
-  </ion-col>
-  <ion-col size="1.5">
-    <ion-button [class.highlight]="this.user.currentEmotion == 'overwhelmed'" size = "small" fill = "clear"(click)="saveEmotion('overwhelmed')">
-      😩
-    </ion-button>
-  </ion-col>
-  <ion-col size="1.5">
-  <ion-button [class.highlight]="this.user.currentEmotion == 'sad'" size = "small" fill = "clear" (click)="saveEmotion('sad')">
-      😢
-    </ion-button>
-  </ion-col>
-  <ion-col size="1.5">
-  <ion-button [class.highlight]="this.user.currentEmotion == 'angry'" size = "small" fill = "clear" (click)="saveEmotion('angry')">
-      😡
-    </ion-button>
-  </ion-col>
-</ion-row>
+<ion-header>
+  <ion-toolbar class="emotion-toolbar">
+  <ion-text class="ion-padding-horizontal"> Currently I am feeling: {{user.currentEmotion}} </ion-text>
+
+  <ion-row class="ion-justify-content-center">
+    <ion-col size="1.5">
+      <ion-button [class.noHighlight]="this.user.currentEmotion != 'excited'"
+                  size = "small" fill = "clear" (click)="saveEmotion('excited')">
+        🤗
+      </ion-button>
+    </ion-col>
+    <ion-col size="1.5">
+    <ion-button [class.noHighlight]="this.user.currentEmotion != 'happy'" size = "small" fill = "clear" (click)="saveEmotion('happy')">
+        😃
+      </ion-button>
+    </ion-col>
+    <ion-col size="1.5">
+    <ion-button [class.noHighlight]="this.user.currentEmotion != 'loved'" size = "small" fill = "clear" (click)="saveEmotion('loved')">
+        🥰
+      </ion-button>
+    </ion-col>
+    <ion-col size="1.5">
+    <ion-button [class.noHighlight]="this.user.currentEmotion != 'indifferent'" size = "small" fill = "clear" (click)="saveEmotion('indifferent')">
+        😐
+      </ion-button>
+    </ion-col>
+    <ion-col size="1.5">
+      <ion-button [class.noHighlight]="this.user.currentEmotion != 'overwhelmed'" size = "small" fill = "clear"(click)="saveEmotion('overwhelmed')">
+        😩
+      </ion-button>
+    </ion-col>
+    <ion-col size="1.5">
+    <ion-button [class.noHighlight]="this.user.currentEmotion != 'sad'" size = "small" fill = "clear" (click)="saveEmotion('sad')">
+        😢
+      </ion-button>
+    </ion-col>
+    <ion-col size="1.5">
+    <ion-button [class.noHighlight]="this.user.currentEmotion != 'angry'" size = "small" fill = "clear" (click)="saveEmotion('angry')">
+        😡
+      </ion-button>
+    </ion-col>
+  </ion-row>
+  </ion-toolbar>
+</ion-header>
 
 <ion-content>
     <ion-card>
       <img [src]="pregnancyCard.picture" alt="" />
       <ion-card-header>
-        <ion-card-subtitle>Baby Update: {{totalDaysPregnant}} Days</ion-card-subtitle>
-        <ion-card-title> {{ weeksPregnant }} Weeks and {{ daysPregnant }} Days </ion-card-title>
+        <ion-card-subtitle>Baby Update: {{user.totalDaysPregnant}} Days</ion-card-subtitle>
+        <ion-card-title> {{ user.weeksPregnant }} Weeks and {{ user.daysPregnant }} Days </ion-card-title>
       </ion-card-header>
       <ion-card-content>
         <p> {{pregnancyCard.description}} </p>
@@ -67,7 +73,7 @@
     <ion-card-content>
       The learning center offers modules you can take to learn and earn points.
     </ion-card-content>
-    <ion-item button [routerLink]="['/learning-center']">
+    <ion-item class="ion-text-button" button [routerLink]="['/learning-center']"  (click)= "updateLModuleClicks()"     >
       Go to Learning Center
       <ion-icon md="md-arrow-forward" slot="end"></ion-icon>
     </ion-item>

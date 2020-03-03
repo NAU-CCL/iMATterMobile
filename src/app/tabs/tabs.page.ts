@@ -2,8 +2,9 @@ import { Component, OnInit} from '@angular/core';
 //import { ClickChatService, CClicks} from 'src/app/services/analytics.service';
 import { Observable } from 'rxjs';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument, DocumentReference } from '@angular/fire/firestore';
-//import { firestore  } from 'Firebase';
+import { firestore  } from 'Firebase';
 import * as firebase from 'firebase';
+import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyticsService.service';
 
 @Component({
   selector: 'app-tabs',
@@ -13,25 +14,58 @@ import * as firebase from 'firebase';
 
 export class TabsPage implements OnInit {
 
-  constructor(public firestore: AngularFirestore) {}
+  session : Sessions =
+      {
+          userID: '',
+          LogOutTime: '',
+          LoginTime: '',
+          numOfClickChat: 0,
+          numOfClickCalendar: 0,
+          numOfClickLModule: 0,
+          numOfClickInfo: 0,
+          numOfClickSurvey: 0,
+          numOfClickProfile: 0,
+          numOfClickMore: 0,
+          numOfClickHome: 0
+      }
+
+  private sessions : Observable<any>;
+
+  constructor(public firestore: AngularFirestore ,private analyticsService: AnalyticsService) {}
 
   ngOnInit(){}
 
-addClick(){
-  const now = new Date();
-  var date = now.toISOString().slice(0,10);
-
-  var fireStoreRef = this.firestore.collection('analyticsStorage/chatClicks/year2020').doc('February');
-  fireStoreRef.update({
-    //numberOfClicks: firestore.FieldValue.increment(1)
-  });
-
-  //const arrayValue = fireStoreRef.documentSnapshot.get('numberOfClicks')
-  //var arrUnion = fireStoreRef.update({
-  //  dataChatClicksArray: firestore.FieldValue.arrayUnion(date)
- // });
+  updateChatClicks()
+  {
+    this.analyticsService.updateChatClicks(this.session);
+    console.log("added chat click");
 
   }
+
+  updateCalendarClicks()
+  {
+    this.analyticsService.updateCalendarClicks(this.session);
+    console.log("added calendar click");
+
+  }
+
+
+  updateMoreClicks()
+  {
+    this.analyticsService.updateCalendarClicks(this.session);
+    console.log("added more click");
+
+  }
+
+
+  updateHomeClicks()
+  {
+    this.analyticsService.updateHomeClicks(this.session);
+    console.log("added home click");
+
+  }
+
+
 
 
 

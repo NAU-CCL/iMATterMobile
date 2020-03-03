@@ -1,12 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-
+import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyticsService.service';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { AuthServiceProvider, User} from '../../../services/user/auth.service';
+import { FcmService } from '../../../services/pushNotifications/fcm.service';
 import { Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
 import {ToastController} from '@ionic/angular';
 import { Storage } from '@ionic/storage';
+import * as firebase from 'firebase/app';
 
 @Component({
     selector: 'app-login',
@@ -26,6 +29,34 @@ export class LoginPage implements OnInit {
     private userPassword: string;
 
 
+    analytic: Analytics =
+  {
+    page: '',
+    userID: '',
+    timestamp: '',
+    sessionID: ''
+  }
+
+  session : Sessions =
+      {
+          userID: '',
+          LogOutTime: '',
+          LoginTime: '',
+          numOfClickChat: 0,
+          numOfClickCalendar: 0,
+          numOfClickLModule: 0,
+          numOfClickInfo: 0,
+          numOfClickSurvey: 0,
+          numOfClickProfile: 0,
+          numOfClickMore: 0,
+          numOfClickHome: 0
+      }
+
+
+  private analyticss : string;
+  private sessions : Observable<any>;
+
+
     constructor(
         public loadingCtrl: LoadingController,
         public alertCtrl: AlertController,
@@ -34,7 +65,9 @@ export class LoginPage implements OnInit {
         private formBuilder: FormBuilder,
         public afs: AngularFirestore,
         private toastCtrl: ToastController,
-        private storage: Storage
+        private storage: Storage,
+        private fcm: FcmService,
+        private analyticsService: AnalyticsService
     ) {
         this.loginForm = this.formBuilder.group({
             email: ['',
@@ -48,9 +81,40 @@ export class LoginPage implements OnInit {
 
     ngOnInit() {
         this.storage.set('authenticated', 'false');
-
-
     }
+
+    private notificationSetup(userID) {
+        console.log(userID);
+        this.fcm.getToken(userID);
+        /*
+        this.fcm.onNotifications().subscribe(
+            (msg) => {
+                this.presentToast(msg.body);
+            });*/
+    }
+
+  addSession(){
+  this.storage.get('userCode').then((val) => {
+    if(val){
+      const ref = this.afs.firestore.collection('users').where('code', '==',val);
+      ref.get().then((result)=> {
+        result.forEach(doc =>{
+
+          this.session.userID= val;
+          this.session.LoginTime = firebase.firestore.FieldValue.serverTimestamp();
+          this.analyticsService.addSession(this.session).then(()=> {
+
+          }, err => {
+          console.log('trouble adding session');
+
+        });
+      });
+    });
+  }
+});
+console.log('successful session creation');
+
+}
 
 
     validateUser(loginForm: FormGroup) {
@@ -77,7 +141,9 @@ export class LoginPage implements OnInit {
 
                             this.getCurrentPregnancyStatus(doc.get('dueDate'));
                             console.log(doc.get('dueDate'));
+                            this.addSession();
 
+                            this.notificationSetup(this.userID);
 
                             this.router.navigate(['/tabs/home/']);
                         } else {
@@ -104,22 +170,15 @@ export class LoginPage implements OnInit {
     getCurrentPregnancyStatus(dueDate) {
         const currentDateString = new Date().toJSON().split('T')[0];
         const currentDate = new Date(currentDateString);
-        console.log(currentDate);
         const userDueDate = new Date(dueDate);
-        console.log(dueDate);
-        console.log(userDueDate);
         const dateDiff = Math.abs(currentDate.getTime() - userDueDate.getTime());
         const diffInDays = Math.ceil(dateDiff / (24 * 3600 * 1000));
-        console.log(diffInDays);
-        const totalDays = 280 - diffInDays - 1;
+        const totalDays = 280 - diffInDays;
         this.storage.set('totalDaysPregnant', totalDays);
-        console.log(totalDays);
         const weeksPregnant = Math.floor(totalDays / 7);
         this.storage.set('weeksPregnant', weeksPregnant);
-        console.log(weeksPregnant);
         const daysPregnant = totalDays % 7;
         this.storage.set('daysPregnant', daysPregnant);
-        console.log(daysPregnant);
 
         this.storage.get('userCode').then((val) => {
             if (val) {
@@ -127,11 +186,19 @@ export class LoginPage implements OnInit {
                     .get().then(snapshot => {
                     snapshot.forEach(doc => {
                         this.afs.firestore.collection('users')
-                            .doc(val).update({weeksPregnant: weeksPregnant});
+                            .doc(val).update({weeksPregnant: weeksPregnant, daysPregnant: daysPregnant, totalDaysPregnant: totalDays});
                     });
                 });
             }
         });
+    }
+
+    private async presentToast(message) {
+        const toast = await this.toastCtrl.create({
+            message,
+            duration: 3000
+        });
+        toast.present();
     }
 
 }
