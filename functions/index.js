@@ -74,6 +74,40 @@ exports.sendRecoveryEmail=functions.firestore.document('recovery_email/{docID}')
 	});
 
 
+exports.updateDays=functions.https.onRequest((req, res)=>{	
+	
+	//const increment = admin.firestore().FieldValue.increment(1);
+	const ref = admin.firestore().collection('users');
+			ref.get().then((result) => {			
+			  result.forEach(doc => {
+				  docID = doc.get('code');
+				var currentUser = admin.firestore().collection('users').doc(docID);
+				var new_days = doc.data().daysAUser + 1;
+				var sinceLogin = doc.data().daysSinceLogin + 1;
+				//doc.update({ "daysAUser": new_days});
+				currentUser.update({
+					daysAUser: new_days
+				});
+				
+				currentUser.update({
+					daysSinceLogin: sinceLogin
+				});
+				
+			  
+			});
+			//if the res.send is the same each time, for some reason it stops working? Added random number so its different each send.
+			  var number = Math.random();
+			  res.send("days have been updated" + number);
+
+			return null;
+			}).catch(err => {
+			
+			res.send("failed: " +err)
+			});
+});
+
+
+
 exports.sendChatNotfication =
 functions.firestore.document('chats/{chatID}').onCreate(async (snap, context) => {
 		const newChat = snap.data();

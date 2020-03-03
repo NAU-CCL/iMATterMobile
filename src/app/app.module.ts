@@ -17,6 +17,7 @@ import { FirebaseX } from '@ionic-native/firebase-x/ngx';
 
 import { HttpClientModule } from '@angular/common/http';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 
 
 @NgModule({
@@ -35,6 +36,7 @@ import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 	LocalNotifications,
     AngularFirestore,
     FirebaseX,
+    Geolocation,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: FirestoreSettingsToken, useValue: {} },
     InAppBrowser

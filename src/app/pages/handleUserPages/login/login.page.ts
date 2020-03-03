@@ -27,7 +27,7 @@ export class LoginPage implements OnInit {
     private userID: string;
     private userEmail: boolean;
     private userPassword: string;
-
+	private daysSinceLogin: number;
 
     analytic: Analytics =
   {
@@ -138,13 +138,15 @@ console.log('successful session creation');
                             this.storage.set('username', doc.get('username'));
                             this.storage.set('dueDate', doc.get('dueDate'));
                             this.storage.set('cohort', doc.get('cohort'));
-
+							
                             this.getCurrentPregnancyStatus(doc.get('dueDate'));
                             console.log(doc.get('dueDate'));
                             this.addSession();
 
+                          this.afs.firestore.collection('users').doc(this.userID).update({
+                            daysSinceLogin: 0
+                          });
                             this.notificationSetup(this.userID);
-
                             this.router.navigate(['/tabs/home/']);
                         } else {
                             this.showToast('Password is incorrect');

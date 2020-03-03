@@ -78,4 +78,18 @@
       <ion-icon md="md-arrow-forward" slot="end"></ion-icon>
     </ion-item>
   </ion-card>
+
+  <ion-card>
+    <ion-card-title class="ion-padding-horizontal">
+      Surveys
+    </ion-card-title>
+    <ion-card-content>
+	  Surveys are a way to provide useful information and help earn points
+    </ion-card-content>
+    <ion-item class="ion-text-button" button [routerLink]="['/available']"  (click)= "updateLModuleClicks()"     >
+      Go to your surveys
+      <ion-icon md="md-arrow-forward" slot="end"></ion-icon>
+    </ion-item>
+  </ion-card>
 </ion-content>
+
