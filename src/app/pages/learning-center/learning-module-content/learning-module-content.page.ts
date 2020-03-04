@@ -71,6 +71,7 @@ export class LearningModuleContentPage implements OnInit {
     public toastController: ToastController,
     private storage: Storage) 
     { 
+      //Used for resetting the quiz selections when the user wants to retake a quiz
       this.quizForm = new FormGroup({
         "quizSelections": new FormControl()});
     }
