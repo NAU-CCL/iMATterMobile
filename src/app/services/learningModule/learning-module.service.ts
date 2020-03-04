@@ -30,6 +30,7 @@ export interface Question
   choice3: string,
   choice4: string,
   correctAnswer: string,
+  pointsWorth: number,
   userSelection: string
 }
 

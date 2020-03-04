@@ -4,6 +4,8 @@ import { LearningModuleService, LearningModule, Question } from '../../../servic
 import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
 import { ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
+import { FormGroup, FormControl } from '@angular/forms'
+import { userInfo } from 'os';
 
 @Component({
   selector: 'app-learning-module-content',
@@ -39,6 +41,7 @@ export class LearningModuleContentPage implements OnInit {
     choice3: '',
     choice4: '',
     correctAnswer: '',
+    pointsWorth: 0,
     userSelection: ''
   }
 
@@ -50,6 +53,10 @@ export class LearningModuleContentPage implements OnInit {
   numberQuestionsCorrect;
   numberTimesQuizTaken;
   quizSubmissionLimit = 3; //if changed, change this hardcoded number in presentPreventSubmit()
+  didSubmit; //boolean to enable/disable quiz submit button
+  quizForm; //used for quiz form in order to be able to clear selections
+  quizSelections;
+  correctQuestions; //list of questions user got correct
 
   //YouTube Video variables
   public YT: any;
@@ -62,7 +69,11 @@ export class LearningModuleContentPage implements OnInit {
     private learningModuleService: LearningModuleService,
     public domSanitizer: DomSanitizer,
     public toastController: ToastController,
-    private storage: Storage) { }
+    private storage: Storage) 
+    { 
+      this.quizForm = new FormGroup({
+        "quizSelections": new FormControl()});
+    }
 
   ngOnInit() 
   {}
@@ -161,6 +172,42 @@ export class LearningModuleContentPage implements OnInit {
       console.log('error retrieving numberTimesQuizTaken: '+ e);
       
       });
+
+    //DidSubmit - whether they've submitted quiz
+    this.storage.get(this.learningModule.id + "didSubmit").then(value => {
+      if (value != null) //not first time in module
+      {
+        this.didSubmit = value;
+        console.log('didSubmit: '+ this.didSubmit);
+      }
+      else //first time in module
+      {
+        this.didSubmit = false;
+      }
+      
+      }).catch(e => {
+      
+      console.log('error retrieving didSubmit: '+ e);
+      
+      });
+
+    //CorrectQuestions (quiz)
+    this.storage.get(this.learningModule.id + "correctQuestions").then(value => {
+      if (value != null) //not first time in module
+      {
+        this.correctQuestions = value;
+        console.log('correctQuestions: '+ this.correctQuestions);
+      }
+      else //first time in module
+      {
+        this.correctQuestions = [''];
+      }
+      
+      }).catch(e => {
+      
+      console.log('error retrieving correctQuestions: '+ e);
+      
+      });
   }
 
   /**
@@ -195,7 +242,7 @@ export class LearningModuleContentPage implements OnInit {
         fs: 1, //fullscreen allowed
         playsinline: 1,
         modestbranding: 1,
-        rel: 0, //related videos only from same youtube channel
+        rel: 0, //related videos only from same youtube channel - can't completely disable all related videos
         disablekb: 1, //disable keyboard controls so can't use keys to skip forward
         autoplay: 0
       },
@@ -252,25 +299,34 @@ export class LearningModuleContentPage implements OnInit {
    */
   quizSubmit()
   {
+    this.didSubmit = true;
+    this.storage.set(this.learningModule.id + "didSubmit", this.didSubmit);
+
     //Check quiz limit has not been reached
     if (this.numberTimesQuizTaken < this.quizSubmissionLimit)
     {
-      //reset this number for each submit
+      //reset this number for each submit AND reset list of correct questions
       if (this.numberQuestionsCorrect > 0)
       {
+        this.correctQuestions = [''];
         this.numberQuestionsCorrect = 0;
-        this.storage.set(this.learningModule.id + "numberQuestionsCorrect", this.numberQuestionsCorrect);
       }
       //Check if user's selections are correct
       //Increment number of questions correct
       this.learningModule.moduleQuiz.forEach(element => {
         if (element.correctAnswer === element.userSelection)
         {
+          //Add this question to the list of ones they got correct
+          this.correctQuestions.push(element.questionText);
+
           this.numberQuestionsCorrect += 1;
           this.storage.set(this.learningModule.id + "numberQuestionsCorrect", this.numberQuestionsCorrect);
         }
 
       });
+
+      //Store the list of questions they got correct
+      this.storage.set(this.learningModule.id + "correctQuestions", this.correctQuestions);
 
       this.numberTimesQuizTaken += 1;
       this.storage.set(this.learningModule.id + "numberTimesQuizTaken", this.numberTimesQuizTaken);
@@ -280,6 +336,17 @@ export class LearningModuleContentPage implements OnInit {
       //If the quiz taking limit is exceeded
       this.presentPreventSubmit();
     }
+  }
+
+  /**
+   * If user clicks on button to retake the quiz, radio selections and didSubmit will be reset
+   */
+  retakeQuiz()
+  {
+    this.quizForm.controls.quizSelections.reset();
+    this.didSubmit = false;
+    this.storage.set(this.learningModule.id + "didSubmit", this.didSubmit);
+
   }
 
   /**
