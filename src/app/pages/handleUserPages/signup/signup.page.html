@@ -49,17 +49,17 @@
     <ion-item>
       <ion-row>
       <ion-thumbnail class="profilePic">
-        <ion-img *ngIf="!showImages" src='{{ picURL }}' ></ion-img>
+        <ion-img *ngIf="!showImages" src="{{ picURL }}" ></ion-img>
       </ion-thumbnail>
       <ion-button class= "ion-button-background" *ngIf="!showImages" (click)="showPics()"> Change Profile Picture </ion-button>
       </ion-row>
       <ion-item *ngIf="showImages">
-        <ion-button class="thumbnail" fill="clear"  *ngFor="let pic of allPicURLs" (click)="changePic(pic)">
-          <ion-thumbnail>
-            <ion-img src="{{pic}}" ></ion-img>
-          </ion-thumbnail>
-        </ion-button>
-        </ion-item>
+        <ion-row>
+        <ion-thumbnail class="thumbnail" *ngFor="let pic of allPicURLs" (click)="changePic(pic)">
+          <ion-img src="{{pic}}" ></ion-img>
+        </ion-thumbnail>
+        </ion-row>
+      </ion-item>
       <ion-label position="stacked">Email</ion-label>
       <ion-input formControlName="email" type="email" placeholder="Your email address"
               [class.invalid]="!signupForm.controls['email'].valid && signupForm.controls['email'].touched">
@@ -100,35 +100,23 @@
 
     <ion-item>
       <ion-label position="stacked">Security Question</ion-label>
-
       <ion-select interface="action-sheet" placeholder="Pick a Question" formControlName="securityQ">
-        <ion-select-option value=securityQ1>
-          {{securityQ1}}
-        </ion-select-option>
-        <ion-select-option value=securityQ2>
-          {{securityQ2}}
-        </ion-select-option>
-        <ion-select-option value=securityQ3>
-          {{securityQ3}}
+        <ion-select-option value = q *ngFor="let q of securityQs">
+          {{q}}
         </ion-select-option>
       </ion-select>
     </ion-item>
 
+
     <ion-item>
       <ion-label position="stacked">Answer to Security Question</ion-label>
-      <ion-input
-              formControlName="securityA"
-              placeholder="Answer"
-      >
+      <ion-input formControlName="securityA" placeholder="Answer">
       </ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label position="stacked">Short Bio (Optional)</ion-label>
-      <ion-input
-              formControlName="bio"
-              placeholder="Say Something About Yourself "
-      >
+      <ion-input formControlName="bio" placeholder="Say Something About Yourself ">
       </ion-input>
     </ion-item>
 
