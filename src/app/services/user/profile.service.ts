@@ -18,6 +18,10 @@ export class ProfileService {
 
   }
 
+  addToRedeemTable(adminEmail, email, username, gcType) {
+      this.afs.firestore.collection('usersPointsRedeem').add({adminEmail: adminEmail, email: email, username: username, gcType: gcType});
+  }
+
   updateEmail(newEmail: string, password: string, userID: string) {
       this.afs.firestore.collection('users').where('code', '==', userID)
           .get().then(snapshot => {
@@ -45,6 +49,9 @@ export class ProfileService {
   }
 
 
+
+
+
   updateLocation(newLocation: number, userID: string) {
       return this.afs.firestore.collection('users')
           .doc(userID).update({location: newLocation});
@@ -60,7 +67,5 @@ export class ProfileService {
       return this.afs.firestore.collection('users')
             .doc(userID).update({points: newPointTotal});
     }
-
-
 
 }

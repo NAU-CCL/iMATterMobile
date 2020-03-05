@@ -107,6 +107,7 @@ export class ForumDeatailsPage implements OnInit {
       duration: 2000
     }).then(toast => toast.present());
   }
+
   sendEmail(){
 	this.http.get('https://us-central1-techdemofirebase.cloudfunctions.net/sendEmailNotification').subscribe((response) => {
 		console.log(response);

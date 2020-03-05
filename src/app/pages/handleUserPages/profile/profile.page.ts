@@ -8,7 +8,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import * as firebase from 'firebase/app';
 import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyticsService.service';
-
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-profile',
@@ -41,7 +41,6 @@ export class ProfilePage implements OnInit {
       infoDeskNotif: true,
       token: ''
   };
-
 
   analytic: Analytics =
   {
@@ -90,6 +89,7 @@ export class ProfilePage implements OnInit {
       private analyticsService: AnalyticsService,
       private alertController: AlertController,
       private toastCtrl: ToastController,
+      private http: HttpClient
   ) {}
 
   ngOnInit() {
@@ -306,14 +306,22 @@ export class ProfilePage implements OnInit {
       await alert.present();
     }
 
-    redeemGiftCard(currentPoints, pointsUsed, gcType) {
-
-        // send an email
+    redeemGiftCard(currentPoints, pointsUsed, gcType, email, username) {
 
         this.profileService.updatePoints(currentPoints, pointsUsed, this.userProfileID);
         this.displayRedeemOptions = false;
 
+        // this.sendEmailToAdmin();
         this.refreshPage();
+
+        // send an email
+        firebase.firestore().collection('mobileSettings').doc('giftCardSettings').get().then((result) => {
+            const adminEmail = result.get('email');
+            console.log(adminEmail);
+
+            this.profileService.addToRedeemTable(adminEmail, email, username, gcType);
+        });
+
         this.showToast('An email was sent for your gift card request!');
 
     }
@@ -325,6 +333,14 @@ export class ProfilePage implements OnInit {
         }).then(toast => toast.present());
     }
 
+/*
+    sendEmailToAdmin(userEmail, gcType) {
+        const data = {'userEmail': userEmail, 'gcType': gcType}
+
+        this.http.get('https://us-central1-techdemofirebase.cloudfunctions.net/sendEmailNotification').subscribe((response) => {
+            console.log(response);
+        });
+    }*/
 }
 
 

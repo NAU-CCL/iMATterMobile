@@ -124,7 +124,6 @@ export class SettingsPage implements OnInit {
     });
   }
 
-
   setInfoDeskNotification(notifSetting) {
     this.storage.get('userCode').then((val) => {
       if (val) {

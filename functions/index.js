@@ -74,6 +74,33 @@ exports.sendRecoveryEmail=functions.firestore.document('recovery_email/{docID}')
 	});
 
 
+exports.sendGCRequestEmail = functions.firestore.document('usersPointsRedeem/{docID}').onCreate((snap,context)=> {
+	const data = snap.data();
+
+	let authData = nodemailer.createTransport({
+		host: 'smtp.gmail.com',
+		port: 587,
+		secure: false,
+		auth: {
+			user: SENDER_EMAIL,
+			pass: SENDER_PASS
+		}
+	});
+
+	email = data.adminEmail;
+	console.log(email);
+	authData.sendMail({
+		from: 'imatternotification@gmail.com',
+		to: email, // admin set receiver
+		subject: "iMATter Gift Card Request", // Subject line
+		text: "There is a new request for a gift card.", // plain text body
+		html: "User " + data.username + " with the email: " + data.email + " has redeemed points for a(n) " + data.gcType
+			+ "gift card."// html body
+	}).then(res => console.log('successfully sent that mail')).catch(err => console.log(err));
+
+});
+
+
 exports.updateDays=functions.https.onRequest((req, res)=>{	
 	
 	//const increment = admin.firestore().FieldValue.increment(1);
