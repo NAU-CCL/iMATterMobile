@@ -116,6 +116,7 @@ export class SignupPage implements OnInit {
     chatNotif: true,
     learningModNotif: true,
     surveyNotif: true,
+    infoDeskNotif: true,
     token: ''
   };
 

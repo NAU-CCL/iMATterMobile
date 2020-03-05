@@ -31,6 +31,7 @@ export interface User {
   chatNotif: boolean;
   learningModNotif: boolean;
   surveyNotif: boolean;
+  infoDeskNotif: boolean;
   token: any;
 }
 
@@ -98,6 +99,7 @@ export class AuthServiceProvider {
       chatNotif: user.chatNotif,
       learningModNotif: user.learningModNotif,
       surveyNotif: user.surveyNotif,
+      infoDeskNotif: user.infoDeskNotif,
       token: user.token,
       points: user.points});
   }

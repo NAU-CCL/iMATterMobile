@@ -13,12 +13,10 @@ export class SettingsPage implements OnInit {
   private chatNotif: boolean;
   private learningModNotif: boolean;
   private surveyNotif: boolean;
-
+  private infoDeskNotif: boolean
   constructor(public afs: AngularFirestore, private storage: Storage, private fcm: FcmService) {
 
-  }
 
-  ngOnInit() {
     this.storage.get('userCode').then((val) => {
       if (val) {
         this.afs.firestore.collection('users').where('code', '==', val)
@@ -42,10 +40,22 @@ export class SettingsPage implements OnInit {
             } else {
               this.surveyNotif = true;
             }
+
+            //infoDesk notification
+            if (doc.get('infoDeskNotif') === false) {
+              this.infoDeskNotif = false;
+            } else {
+              this.infoDeskNotif = true;
+            }
           });
         });
       }
     });
+
+  }
+
+  ngOnInit() {
+
   }
 
 
@@ -113,4 +123,26 @@ export class SettingsPage implements OnInit {
       }
     });
   }
+
+
+  setInfoDeskNotification(notifSetting) {
+    this.storage.get('userCode').then((val) => {
+      if (val) {
+        this.afs.firestore.collection('users').where('code', '==', val)
+            .get().then(snapshot => {
+          snapshot.forEach(doc => {
+            if (notifSetting === false) {
+              this.afs.firestore.collection('users')
+                  .doc(val).update({infoDeskNotif: false});
+            } else {
+              this.afs.firestore.collection('users')
+                  .doc(val).update({infoDeskNotif: true});
+              this.notificationSetup(val);
+            }
+          });
+        });
+      }
+    });
+  }
+
 }

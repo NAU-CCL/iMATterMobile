@@ -106,6 +106,36 @@ exports.updateDays=functions.https.onRequest((req, res)=>{
 			});
 });
 
+exports.sendInfoDeskNotification =
+	functions.firestore.document('questions/{questionID}').onCreate(async (snap, context) => {
+		const newPost = snap.data();
+		const payload = {
+			notification: {
+				title: 'iMATter Information Desk',
+				body: 'There is a new post in the InformationDesk',
+				sound: "default"
+			},
+		};
+
+		const ref = admin.firestore().collection('users').where('infoDeskNotif', '==', 'true');
+			ref.get().then((result) => {
+				result.forEach(doc => {
+					if(newPost.userID !== doc.get('code')) {
+						token = doc.get('token');
+						admin.messaging().sendToDevice(token, payload)
+							.then((response) => {
+								console.log('sent notification');
+								return payload;
+							}).catch((err) => {
+							console.log('entered doc, but did not send', err);
+						});
+					}
+				});
+				return 'true';
+			}).catch(error => {console.log('did not send', error)});
+		return 'true';
+	});
+
 
 exports.sendChatNotification =
 	functions.firestore.document('chats/{chatID}').onCreate(async (snap, context) => {
@@ -117,7 +147,6 @@ exports.sendChatNotification =
 				sound: "default"
 			},
 		};
-		console.log(newChat.type);
 
 		if(newChat.type !== 'auto'){
 			const ref = admin.firestore().collection('users').where('cohort', '==', newChat.cohort);

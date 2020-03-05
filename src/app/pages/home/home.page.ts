@@ -59,6 +59,7 @@ export class HomePage implements OnInit {
     chatNotif: true,
     learningModNotif: true,
     surveyNotif: true,
+    infoDeskNotif: true,
     token: ''
   };
 
