@@ -107,8 +107,42 @@ exports.updateDays=functions.https.onRequest((req, res)=>{
 });
 
 
+exports.sendChatNotification =
+	functions.firestore.document('chats/{chatID}').onCreate(async (snap, context) => {
+		const newChat = snap.data();
+		const payload = {
+			notification: {
+				title: 'iMATter Chat Room',
+				body: 'There is a new message in the chat room',
+				sound: "default"
+			},
+		};
+		console.log(newChat.type);
 
-exports.sendChatNotfication =
+		if(newChat.type !== 'auto'){
+			const ref = admin.firestore().collection('users').where('cohort', '==', newChat.cohort);
+			ref.get().then((result) => {
+				result.forEach(doc => {
+					if(doc.get('chatNotif') === true && newChat.userID !== doc.get('code')) {
+						token = doc.get('token');
+						admin.messaging().sendToDevice(token, payload)
+							.then((response) => {
+								console.log('sent notification');
+								return payload;
+							}).catch((err) => {
+							console.log('entered doc, but did not send', err);
+						});
+					}
+				});
+				return 'true';
+			}).catch(error => {console.log('did not send', error)});
+		}
+		return 'true';
+	});
+
+
+//exports.sendChatNotfication =
+	/*
     functions.firestore.document('chats/{chatID}').onCreate(async (snap, context) => {
             const newChat = snap.data();
             const payload = {
@@ -136,7 +170,7 @@ exports.sendChatNotfication =
                 return token;
             }).catch(error => {console.log('did not send', error)});
 
-        });
+        });*/
 
 
 exports.deleteOldChatMessages=functions.https.onRequest((req, res)=> {
