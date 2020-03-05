@@ -5,7 +5,7 @@
       </ion-buttons>
     <ion-title>Profile Page</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click) = "updateLogOut()" (click)="logOut()" >
+      <ion-button class="logout" (click) = "updateLogOut()" (click)="logOut()" >
         Log Out
       </ion-button>
     </ion-buttons>
@@ -13,10 +13,13 @@
 </ion-header>
 
 <ion-content>
-    <ion-item>
+    <ion-item lines="none">
+        <ion-icon name="information-circle" (click)="displayPointInfo()"> </ion-icon>
         Points Earned: {{user.points}}
+        <ion-button slot="end" class="redeem-button" *ngIf="canRedeemPoints"> Redeem </ion-button>
     </ion-item>
 
+    <!-- Viewable profile to all users -->
     <ion-card>
         <ion-img src="{{ user.profilePic }}"></ion-img>
         <ion-card-title padding-horizontal>
@@ -33,6 +36,7 @@
         </ion-card-content>
     </ion-card>
 
+    <!-- Personal User info -->
   <ion-list>
     <ion-list-header> Personal Information (Tap to Edit) </ion-list-header>
     <ion-item (click)="updateEmail()">

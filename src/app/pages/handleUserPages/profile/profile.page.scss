@@ -18,6 +18,16 @@ ion-list-header {
   --color: var(--main-color);
 }
 
+.redeem-button {
+  --background: var(--main-color);
+  --background-activated: var(--secondary-color);
+  --background-hover: var(--secondary-color);
+  }
+
 .logout {
+  color: var(--main-color);
+}
+
+ion-icon {
   color: var(--main-color);
 }

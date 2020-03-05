@@ -48,9 +48,7 @@ export class ProfilePage implements OnInit {
     userID: '',
     timestamp: '',
     sessionID: ''
-  }
-
-
+  };
 
   session : Sessions =
       {
@@ -65,11 +63,17 @@ export class ProfilePage implements OnInit {
           numOfClickProfile: 0,
           numOfClickMore: 0,
           numOfClickHome: 0
-      }
+      };
 
   private userProfileID: any;
-  private analyticss : string;
-  private sessions : Observable<any>;
+  private pointsForRedemption: any;
+  private analyticss: string;
+  private sessions: Observable<any>;
+  private canRedeemPoints: boolean;
+
+    static checkUserPoints(userPoints, pointsNeeded): boolean {
+        return userPoints >= pointsNeeded;
+    }
 
   constructor(
       private alertCtrl: AlertController,
@@ -79,7 +83,8 @@ export class ProfilePage implements OnInit {
       private activatedRoute: ActivatedRoute,
       private afs: AngularFirestore,
       private storage: Storage,
-      private analyticsService: AnalyticsService
+      private analyticsService: AnalyticsService,
+      private alertController: AlertController,
   ) {}
 
   ngOnInit() {
@@ -88,7 +93,6 @@ export class ProfilePage implements OnInit {
               this.router.navigate(['/login/']);
           }
       });
-    // this.refreshUserProfile();
   }
 
   ionViewWillEnter() {
@@ -106,22 +110,30 @@ export class ProfilePage implements OnInit {
                       this.user.cohort = doc.get('cohort');
                       this.user.currentEmotion = doc.get('mood');
                       this.user.profilePic = doc.get('profilePic');
+                      this.user.points = doc.get('points');
+
+                      const pointRef = firebase.firestore().collection('mobileSettings').doc('giftCardPoints').get();
+                      pointRef.then((res) => {
+                          this.pointsForRedemption =  res.get('points');
+                          this.canRedeemPoints = ProfilePage.checkUserPoints(this.user.points, this.pointsForRedemption)
+                      });
 
                   });
               });
           }
       });
-          this.addView();
+
+      this.addView();
   }
 
-  updateLogOut(){
+  updateLogOut() {
    this.analyticsService.updateLogOut(this.session);
    console.log('added LogOutTime');
 
   }
 
 
-  addView(){
+  addView() {
 
   //this.analytic.sessionID = this.session.id;
   this.storage.get('userCode').then((val) =>{
@@ -241,19 +253,6 @@ export class ProfilePage implements OnInit {
         await alert.present();
     }
 
-  /*refreshUserProfile() {
-    this.profileService
-        .this.userProfileID
-        .get()
-        .then(userProfileSnapshot => {
-          this.userProfileID = userProfileSnapshot.data();
-        });
-  }*/
-
-  goHome() {
-    this.router.navigate(['/tabs/home/', this.userProfileID ]);
-  }
-
   refreshPage() {
       this.storage.get('userCode').then((val) => {
           if (val) {
@@ -265,9 +264,33 @@ export class ProfilePage implements OnInit {
                       this.user.password = doc.get('password');
                       this.user.bio = doc.get('bio');
                       this.user.location = doc.get('location');
+                      this.user.points = doc.get('points');
                   });
               });
           }
       });
   }
+
+  displayPointInfo() {
+      const pointRef = firebase.firestore().collection('mobileSettings').doc('giftCardPoints').get();
+      pointRef.then((res) => {
+          const points = res.get('points');
+          this.presentAlert('Earning Points',
+              'You can earn points by completing surveys and answering learning module questions. Once you have earned ' +
+              + points + ' points, you will see a redeem button, which you may press to use your points to get a gift card for $5');
+      });
+  }
+
+  async presentAlert(header: string, message: string) {
+      const alert = await this.alertController.create({
+            header,
+            message,
+            buttons: ['OK']
+        });
+
+      await alert.present();
+    }
+    
 }
+
+

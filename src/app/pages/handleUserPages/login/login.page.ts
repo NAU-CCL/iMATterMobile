@@ -35,9 +35,9 @@ export class LoginPage implements OnInit {
     userID: '',
     timestamp: '',
     sessionID: ''
-  }
+  };
 
-  session : Sessions =
+  session: Sessions =
       {
           userID: '',
           LogOutTime: '',
@@ -50,7 +50,7 @@ export class LoginPage implements OnInit {
           numOfClickProfile: 0,
           numOfClickMore: 0,
           numOfClickHome: 0
-      }
+      };
 
 
   private analyticss : string;
@@ -96,7 +96,7 @@ export class LoginPage implements OnInit {
   addSession(){
   this.storage.get('userCode').then((val) => {
     if(val){
-      const ref = this.afs.firestore.collection('users').where('code', '==',val);
+      const ref = this.afs.firestore.collection('users').where('code', '==', val);
       ref.get().then((result)=> {
         result.forEach(doc =>{
 

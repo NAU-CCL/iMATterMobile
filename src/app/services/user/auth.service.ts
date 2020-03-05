@@ -98,7 +98,8 @@ export class AuthServiceProvider {
       chatNotif: user.chatNotif,
       learningModNotif: user.learningModNotif,
       surveyNotif: user.surveyNotif,
-      token: user.token});
+      token: user.token,
+      points: user.points});
   }
 
 

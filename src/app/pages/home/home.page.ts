@@ -192,11 +192,7 @@ export class HomePage implements OnInit {
 
   }
 
-
-
-
-  updateProfileClicks()
-  {
+  updateProfileClicks() {
     this.analyticsService.updateProfileClicks(this.session);
     console.log("added profile click");
 
@@ -235,7 +231,6 @@ export class HomePage implements OnInit {
     }
   });
 }
-
 
 
   saveEmotion(emotion: string) {
