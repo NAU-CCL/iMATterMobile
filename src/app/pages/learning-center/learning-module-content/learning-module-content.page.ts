@@ -4,8 +4,8 @@ import { LearningModuleService, LearningModule, Question } from '../../../servic
 import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
 import { ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
-import { FormGroup, FormControl } from '@angular/forms'
-import { userInfo } from 'os';
+import { FormGroup, FormControl } from '@angular/forms';
+import { AngularFirestore } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-learning-module-content',
@@ -58,6 +58,10 @@ export class LearningModuleContentPage implements OnInit {
   quizSelections;
   correctQuestions; //list of questions user got correct
 
+  //Point System (Rewards System) variables
+  currentPoints;
+  previousAttemptPoints; //to subtract from the points if they've reattempted a quiz
+
   //YouTube Video variables
   public YT: any;
   public video: any;
@@ -69,7 +73,8 @@ export class LearningModuleContentPage implements OnInit {
     private learningModuleService: LearningModuleService,
     public domSanitizer: DomSanitizer,
     public toastController: ToastController,
-    private storage: Storage) 
+    private storage: Storage,
+    public afs: AngularFirestore) 
     { 
       //Used for resetting the quiz selections when the user wants to retake a quiz
       this.quizForm = new FormGroup({
@@ -77,7 +82,19 @@ export class LearningModuleContentPage implements OnInit {
     }
 
   ngOnInit() 
-  {}
+  {
+    this.storage.get('userCode').then((val) => {
+      if (val) {
+        const ref = this.afs.firestore.collection('users').where('code', '==', val);
+        ref.get().then((result) => {
+          result.forEach(doc => {
+            this.emotion = doc.get('mood');
+            this.joined = doc.get('joined');
+          });
+        });
+      }
+    });
+  }
   
   ionViewWillEnter()
   {
