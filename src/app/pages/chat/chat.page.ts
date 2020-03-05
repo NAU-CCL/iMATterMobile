@@ -36,7 +36,8 @@ export class ChatPage implements OnInit {
   timestamp: '',
   message: '',
   profilePic: '',
-  type: ''
+  type: '',
+  visibility: true
 };
 
 analytic: Analytics =
@@ -45,7 +46,7 @@ analytic: Analytics =
   userID: '',
   timestamp: '',
   sessionID: ''
-}
+};
 
 
   private cohortChat: string;
@@ -96,6 +97,7 @@ analytic: Analytics =
             this.chat.timestamp = firebase.firestore.FieldValue.serverTimestamp();
             this.chat.message = this.chat.username + ' has entered the chat';
             this.chat.type = 'auto';
+            this.chat.visibility = true;
 
             this.chatService.addChat(this.chat).then(() => {
               this.chat.message = '';
@@ -182,6 +184,7 @@ analytic: Analytics =
             this.chat.profilePic = doc.get('profilePic');
             this.chat.timestamp = firebase.firestore.FieldValue.serverTimestamp();
             this.chat.type = 'user';
+            this.chat.visibility = true;
 
             this.chatService.addChat(this.chat).then(() => {
               this.chat.message = '';
@@ -214,6 +217,7 @@ analytic: Analytics =
             this.chat.timestamp = firebase.firestore.FieldValue.serverTimestamp();
             this.chat.message = this.chat.username + ' has left the chat';
             this.chat.type = 'auto';
+            this.chat.visibility = true;
 
             this.chatService.addChat(this.chat).then(() => {
               this.chat.message = '';

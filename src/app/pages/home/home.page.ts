@@ -34,7 +34,8 @@ export class HomePage implements OnInit {
     timestamp: '',
     message: '',
     profilePic: '',
-    type: ''
+    type: '',
+    visibility: true
   };
 
   user: User = {
@@ -247,6 +248,7 @@ export class HomePage implements OnInit {
     this.chat.timestamp = firebase.firestore.FieldValue.serverTimestamp();
     this.chat.message = this.chat.username + ' is currently feeling ' + emotion;
     this.chat.type = 'emotion';
+    this.chat.visibility = true;
 
     this.chatService.addChat(this.chat).then(() => {
       this.chat.message = '';

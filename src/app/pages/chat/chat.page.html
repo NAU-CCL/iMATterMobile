@@ -8,8 +8,9 @@
 
 
 <ion-content #content>
-  <div *ngFor="let chat of (chats | async)" class="message-wrap">
 
+  <div *ngFor="let chat of (chats | async)" class="message-wrap">
+    <div *ngIf="chat.visibility == true">
     <!-- Automatic message -->
     <div *ngIf="chat.type == 'auto' || chat.type == 'emotion'; else elseBlock">
       <div align-self-center class="timestamp">
@@ -55,6 +56,7 @@
       </div>
      </div>
     </ng-template>
+    </div>
     </div>
 </ion-content>
 
