@@ -108,6 +108,7 @@ exports.updateDays=functions.https.onRequest((req, res)=>{
 
 exports.sendInfoDeskNotification =
 	functions.firestore.document('questions/{questionID}').onCreate(async (snap, context) => {
+		console.log('entered the function');
 		const newPost = snap.data();
 		const payload = {
 			notification: {
@@ -117,22 +118,22 @@ exports.sendInfoDeskNotification =
 			},
 		};
 
-		const ref = admin.firestore().collection('users').where('infoDeskNotif', '==', 'true');
-			ref.get().then((result) => {
-				result.forEach(doc => {
-					if(newPost.userID !== doc.get('code')) {
-						token = doc.get('token');
-						admin.messaging().sendToDevice(token, payload)
-							.then((response) => {
-								console.log('sent notification');
-								return payload;
-							}).catch((err) => {
-							console.log('entered doc, but did not send', err);
+		const ref = admin.firestore().collection('users');
+		ref.get().then((result) => {
+			result.forEach(doc => {
+				if(doc.get('infoDeskNotif') === true) {
+					if(newPost.userID !== doc.get('code'))
+					token = doc.get('token');
+					admin.messaging().sendToDevice(token, payload)
+						.then((response) => {
+							console.log('sent notification');
+							return payload;
+						}).catch((err) => {console.log('entered doc, but did not send', err);
 						});
-					}
-				});
-				return 'true';
-			}).catch(error => {console.log('did not send', error)});
+				}
+			});
+			return 'true';
+		}).catch(error => {console.log('did not send', error)});
 		return 'true';
 	});
 

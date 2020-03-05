@@ -44,6 +44,7 @@
   </ion-button>
 </div>
 </ion-text>
+
 <ion-content>
   <form [formGroup]="signupForm">
     <ion-item>
@@ -69,7 +70,6 @@
               *ngIf="!signupForm.controls['email'].valid && signupForm.controls['email'].touched">
       <ion-label>Please enter a valid email.</ion-label>
     </ion-item>
-
     <ion-item>
       <ion-label position="stacked">Password</ion-label>
       <ion-input formControlName="password" type="password" placeholder="Your password"
