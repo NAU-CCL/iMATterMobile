@@ -126,15 +126,16 @@ exports.sendChatNotfication =
                         token = doc.get('token');
                         admin.messaging().sendToDevice(token, payload)
 							.then((response) => {
-								console.log('worked');
+								console.log('sent notification');
 								return payload;
 							}).catch((err) => {
-								console.log('entered', err);
+								console.log('entered doc, but did not send', err);
 							});
 						}
                 });
                 return token;
-            }).catch(error => {console.log('did not enter', error)});
+            }).catch(error => {console.log('did not send', error)});
+
         });
 
 

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController } from '@ionic/angular';
+import {AlertController, ToastController} from '@ionic/angular';
 import {AuthServiceProvider, User} from '../../../services/user/auth.service';
 import { ProfileService } from '../../../services/user/profile.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -70,6 +70,9 @@ export class ProfilePage implements OnInit {
   private analyticss: string;
   private sessions: Observable<any>;
   private canRedeemPoints: boolean;
+  private displayRedeemOptions: boolean;
+  private chosenGCType: string;
+  private gcTypes: Array<string>;
 
     static checkUserPoints(userPoints, pointsNeeded): boolean {
         return userPoints >= pointsNeeded;
@@ -85,6 +88,7 @@ export class ProfilePage implements OnInit {
       private storage: Storage,
       private analyticsService: AnalyticsService,
       private alertController: AlertController,
+      private toastCtrl: ToastController,
   ) {}
 
   ngOnInit() {
@@ -93,6 +97,8 @@ export class ProfilePage implements OnInit {
               this.router.navigate(['/login/']);
           }
       });
+
+      this.displayRedeemOptions = false;
   }
 
   ionViewWillEnter() {
@@ -112,10 +118,11 @@ export class ProfilePage implements OnInit {
                       this.user.profilePic = doc.get('profilePic');
                       this.user.points = doc.get('points');
 
-                      const pointRef = firebase.firestore().collection('mobileSettings').doc('giftCardPoints').get();
+                      const pointRef = firebase.firestore().collection('mobileSettings').doc('giftCardSettings').get();
                       pointRef.then((res) => {
                           this.pointsForRedemption =  res.get('points');
-                          this.canRedeemPoints = ProfilePage.checkUserPoints(this.user.points, this.pointsForRedemption)
+                          this.gcTypes = res.get('types');
+                          this.canRedeemPoints = ProfilePage.checkUserPoints(this.user.points, this.pointsForRedemption);
                       });
 
                   });
@@ -265,6 +272,13 @@ export class ProfilePage implements OnInit {
                       this.user.bio = doc.get('bio');
                       this.user.location = doc.get('location');
                       this.user.points = doc.get('points');
+
+                      const pointRef = firebase.firestore().collection('mobileSettings').doc('giftCardSettings').get();
+                      pointRef.then((res) => {
+                          this.pointsForRedemption =  res.get('points');
+                          this.gcTypes = res.get('types');
+                          this.canRedeemPoints = ProfilePage.checkUserPoints(this.user.points, this.pointsForRedemption);
+                      });
                   });
               });
           }
@@ -272,7 +286,7 @@ export class ProfilePage implements OnInit {
   }
 
   displayPointInfo() {
-      const pointRef = firebase.firestore().collection('mobileSettings').doc('giftCardPoints').get();
+      const pointRef = firebase.firestore().collection('mobileSettings').doc('giftCardSettings').get();
       pointRef.then((res) => {
           const points = res.get('points');
           this.presentAlert('Earning Points',
@@ -290,7 +304,26 @@ export class ProfilePage implements OnInit {
 
       await alert.present();
     }
-    
+
+    redeemGiftCard(currentPoints, pointsUsed, gcType) {
+
+        // send an email
+
+        this.profileService.updatePoints(currentPoints, pointsUsed, this.userProfileID);
+        this.displayRedeemOptions = false;
+
+        this.refreshPage();
+        this.showToast('An email was sent for your gift card request!');
+
+    }
+
+    showToast(msg) {
+        this.toastCtrl.create({
+            message: msg,
+            duration: 2000
+        }).then(toast => toast.present());
+    }
+
 }
 
 

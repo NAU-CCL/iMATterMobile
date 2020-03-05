@@ -245,7 +245,7 @@ export class HomePage implements OnInit {
     this.chat.profilePic = this.user.profilePic;
     this.chat.timestamp = firebase.firestore.FieldValue.serverTimestamp();
     this.chat.message = this.chat.username + ' is currently feeling ' + emotion;
-    this.chat.type = 'auto';
+    this.chat.type = 'emotion';
 
     this.chatService.addChat(this.chat).then(() => {
       this.chat.message = '';

@@ -197,6 +197,7 @@ analytic: Analytics =
         });
       }
     });
+    this.scrollToBottom();
   }
 
   ionViewWillLeave() {
@@ -212,6 +213,7 @@ analytic: Analytics =
             this.chat.profilePic = doc.get('profilePic');
             this.chat.timestamp = firebase.firestore.FieldValue.serverTimestamp();
             this.chat.message = this.chat.username + ' has left the chat';
+            this.chat.type = 'auto';
 
             this.chatService.addChat(this.chat).then(() => {
               this.chat.message = '';

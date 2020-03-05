@@ -11,7 +11,7 @@
   <div *ngFor="let chat of (chats | async)" class="message-wrap">
 
     <!-- Automatic message -->
-    <div *ngIf="chat.type == 'auto'; else elseBlock">
+    <div *ngIf="chat.type == 'auto' || chat.type == 'emotion'; else elseBlock">
       <div align-self-center class="timestamp">
         {{ chat.timestamp.seconds * 1000 | date:'MM-dd-yyyy h:mm a' }}
       </div>

@@ -50,9 +50,17 @@ export class ProfileService {
           .doc(userID).update({location: newLocation});
   }
 
-    updateBio(newBio: string, userID: string) {
-        return this.afs.firestore.collection('users')
-            .doc(userID).update({bio: newBio});
+  updateBio(newBio: string, userID: string) {
+      return this.afs.firestore.collection('users')
+          .doc(userID).update({bio: newBio});
+  }
+
+    updatePoints(currentPointTotal, pointsUsed, userID) {
+      const newPointTotal = currentPointTotal - pointsUsed;
+      return this.afs.firestore.collection('users')
+            .doc(userID).update({points: newPointTotal});
     }
+
+
 
 }
