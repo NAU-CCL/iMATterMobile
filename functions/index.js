@@ -190,7 +190,7 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 		  body: 'There is a new learning module in the learning center!',
 		  sound: "default"
 	  },
-  };
+  	};
   
 	var moduleVisibiltyTimeList;
 	//Iterating through learning modules and grabbing weeks of visibility
@@ -231,4 +231,53 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 		return userNotifToken;
 	  }).catch(error => {console.log('error', error)});
 	});
+
+exports.emotionSurveyNotification = functions.firestore.document('users/{userID}').onUpdate((change, context) => {
+	const newValue = change.after.data();
+	const previousValue = change.before.data();
+	const surveys = admin.firestore().collection('surveys');
+	var surveyType;
+	var emotionType;
+	var userNotifToken;
+
+	const payload = {
+		notification: {
+			title: 'iMATter Survey',
+			body: 'There is a new survey available!',
+			sound: "default"
+		},
+	};
+
+	//If the user's mood has changed
+	if (newValue.mood !== previousValue.mood)
+	{
+		surveys.get().then((value) => {
+			value.forEach(singleSurvey => {
+				surveyType = singleSurvey.get("type");
+				if (surveyType == "Emotion")
+				{
+					//The type of emotion this survey is for
+					emotionType = singleSurvey.get("emotionChosen");
+					//If this user's emotion matches survey's emotion type and their survey notifs are on
+					if (newValue.mood == emotionType && newValue.surveyNotif == true)
+					{
+						userNotifToken = newValue.token;
+						admin.messaging().sendToDevice(userNotifToken, payload)
+							.then((response) => {
+								console.log("New survey notification sent successfully!");
+								return payload;
+							}).catch((err) => {
+								console.log(err);
+							});
+
+					}
+				}
+			});
+		});
+		//for the sake of needing to return something
+		return true;
+	}
+
+	return false;
+});
 
