@@ -6,6 +6,7 @@ import { ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { FormGroup, FormControl } from '@angular/forms';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { ProfileService } from '../../../services/user/profile.service';
 
 @Component({
   selector: 'app-learning-module-content',
@@ -59,8 +60,10 @@ export class LearningModuleContentPage implements OnInit {
   correctQuestions; //list of questions user got correct
 
   //Point System (Rewards System) variables
-  currentPoints;
-  previousAttemptPoints; //to subtract from the points if they've reattempted a quiz
+  userProfileID;
+  totalUserPoints; //total points they have stored in database
+  currentQuizPoints;
+  previousQuizAttemptPoints; //to subtract from the points if they've reattempted a quiz
 
   //YouTube Video variables
   public YT: any;
@@ -74,7 +77,8 @@ export class LearningModuleContentPage implements OnInit {
     public domSanitizer: DomSanitizer,
     public toastController: ToastController,
     private storage: Storage,
-    public afs: AngularFirestore) 
+    public afs: AngularFirestore,
+    public profileService: ProfileService) 
     { 
       //Used for resetting the quiz selections when the user wants to retake a quiz
       this.quizForm = new FormGroup({
@@ -82,22 +86,24 @@ export class LearningModuleContentPage implements OnInit {
     }
 
   ngOnInit() 
+  {  }
+  
+  ionViewWillEnter()
   {
     this.storage.get('userCode').then((val) => {
       if (val) {
+        this.userProfileID = val;
+        console.log(this.userProfileID);
         const ref = this.afs.firestore.collection('users').where('code', '==', val);
         ref.get().then((result) => {
           result.forEach(doc => {
-            this.emotion = doc.get('mood');
-            this.joined = doc.get('joined');
+            this.totalUserPoints = doc.get('points');
+            console.log("TOTAL USER POINTS: " + this.totalUserPoints);
           });
         });
       }
     });
-  }
-  
-  ionViewWillEnter()
-  {
+
     let id = this.activatedRoute.snapshot.paramMap.get('id');
     if (id)
     {
@@ -226,6 +232,42 @@ export class LearningModuleContentPage implements OnInit {
       console.log('error retrieving correctQuestions: '+ e);
       
       });
+
+    //PreviousQuizAttemptPoints
+    this.storage.get(this.learningModule.id + "previousQuizAttemptPoints").then(value => {
+      if (value != null) //not first time in module
+      {
+        this.previousQuizAttemptPoints = value;
+        console.log('previousQuizAttemptPoints: '+ this.previousQuizAttemptPoints);
+      }
+      else //first time in module
+      {
+        this.previousQuizAttemptPoints = 0;
+      }
+      
+      }).catch(e => {
+      
+      console.log('error retrieving previousQuizAttemptPoints: '+ e);
+      
+      });
+
+    //CurrentQuizPoints
+    this.storage.get(this.learningModule.id + "currentQuizPoints").then(value => {
+      if (value != null) //not first time in module
+      {
+        this.currentQuizPoints = value;
+        console.log('currentQuizPoints: '+ this.currentQuizPoints);
+      }
+      else //first time in module
+      {
+        this.currentQuizPoints = 0;
+      }
+      
+      }).catch(e => {
+      
+      console.log('error retrieving currentQuizPoints: '+ e);
+      
+      });
   }
 
   /**
@@ -312,8 +354,8 @@ export class LearningModuleContentPage implements OnInit {
   }
 
   /**
-   * If the user hasn't exceeded quiz submission limit, handles checking their selections
-   * against the correct answers and counting the number of questions that are correct.
+   * Handles checking user selections against the correct answers and counting the number of questions that are correct.
+   * This function will not be called if quiz limit is reached
    */
   quizSubmit()
   {
@@ -321,11 +363,13 @@ export class LearningModuleContentPage implements OnInit {
     this.storage.set(this.learningModule.id + "didSubmit", this.didSubmit);
 
     //Check quiz limit has not been reached
+    //Used as a backup check since it's already primarily checked in HTML
     if (this.numberTimesQuizTaken < this.quizSubmissionLimit)
     {
-      //reset this number for each submit AND reset list of correct questions
+      //reset some values for each submission
       if (this.numberQuestionsCorrect > 0)
       {
+        this.currentQuizPoints = 0;
         this.correctQuestions = [''];
         this.numberQuestionsCorrect = 0;
       }
@@ -336,6 +380,8 @@ export class LearningModuleContentPage implements OnInit {
         {
           //Add this question to the list of ones they got correct
           this.correctQuestions.push(element.questionText);
+          //Add this question's points worth to current quiz points
+          this.currentQuizPoints += element.pointsWorth;
 
           this.numberQuestionsCorrect += 1;
           this.storage.set(this.learningModule.id + "numberQuestionsCorrect", this.numberQuestionsCorrect);
@@ -345,6 +391,16 @@ export class LearningModuleContentPage implements OnInit {
 
       //Store the list of questions they got correct
       this.storage.set(this.learningModule.id + "correctQuestions", this.correctQuestions);
+
+      //Calculate how many total points the user should have after taking this module
+      //This takes into account if they've taken it before
+      var calculatePoints = (this.totalUserPoints - this.previousQuizAttemptPoints) + this.currentQuizPoints;
+
+      //this is necessary in case the user leaves and comes back (used for display purposes)
+      this.storage.set(this.learningModule.id + "currentQuizPoints", this.currentQuizPoints);
+
+      this.storage.set(this.learningModule.id + "previousQuizAttemptPoints", this.currentQuizPoints);
+      this.profileService.editRewardPoints(calculatePoints, this.userProfileID);
 
       this.numberTimesQuizTaken += 1;
       this.storage.set(this.learningModule.id + "numberTimesQuizTaken", this.numberTimesQuizTaken);

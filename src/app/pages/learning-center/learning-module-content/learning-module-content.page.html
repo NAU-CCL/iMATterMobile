@@ -33,7 +33,7 @@
       *ngFor="let quizQuestion of ( learningModule.moduleQuiz )"
       formControlName="quizSelections">
         <ion-list-header>
-          <ion-label>{{quizQuestion.questionText}}</ion-label>
+          <ion-label>{{quizQuestion.questionText}} - {{quizQuestion.pointsWorth}} point(s)</ion-label>
         </ion-list-header>
 
         <ion-item>
@@ -73,6 +73,10 @@
 
     <ion-card-content *ngIf="numberQuestionsCorrect > 0"> Questions Correct:
       <ng-container *ngFor="let question of correctQuestions">{{question}}<br></ng-container>
+    </ion-card-content>
+
+    <ion-card-content>
+      You've earned {{currentQuizPoints}} points for this module
     </ion-card-content>
 
   </ion-card>

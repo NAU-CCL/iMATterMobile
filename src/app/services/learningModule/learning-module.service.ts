@@ -56,10 +56,10 @@ export class LearningModuleService {
     );
   }
 
-getAllLearningModules(): Observable<LearningModule[]>
-{
-  return this.learningModules;
-}
+  getAllLearningModules(): Observable<LearningModule[]>
+  {
+    return this.learningModules;
+  }
 
   getLearningModule(id:string): Observable<LearningModule>
   {
