@@ -23,8 +23,13 @@ export class AvailablePage implements OnInit {
   dueDate;
   emotion;
   joined;
+  surveyInterval;
 
-  constructor(private fs: FireService, private storage: Storage, private router: Router, public afs: AngularFirestore) { }
+  constructor(private fs: FireService,
+              private storage: Storage, 
+              private router: Router, 
+              public afs: AngularFirestore
+              ) { }
 
   ngOnInit() {
     this.storage.get('authenticated').then((val) => {
@@ -90,7 +95,13 @@ export class AvailablePage implements OnInit {
 
       for(var index in daysArray){
         if(daysSinceJoined >= parseInt(daysArray[index]) && daysSinceJoined < parseInt(daysArray[index]) + expirationDays){
+          this.surveyInterval = daysArray[index];
           isDisplayed = true;
+          this.storage.get(survey.id).then((val) => {
+            if (val === this.surveyInterval) {
+              isDisplayed = false;
+            }
+          });
         }
       }
     }
@@ -100,7 +111,13 @@ export class AvailablePage implements OnInit {
 
       for(var index in daysArray){
         if(daysBeforeDue <= parseInt(daysArray[index]) && daysBeforeDue > parseInt(daysArray[index]) - expirationDays){
+          this.surveyInterval = daysArray[index];
           isDisplayed = true;
+          this.storage.get(survey.id).then((val) => {
+            if (val === this.surveyInterval) {
+              isDisplayed = false;
+            }
+          });
         }
       }
     }
@@ -108,37 +125,101 @@ export class AvailablePage implements OnInit {
     if(survey.type == 'Inactive'){
       if(inactiveDays >= survey.daysInactive){
         isDisplayed = true;
+        this.storage.get(survey.id).then((val) => {
+          if (val === 'false') {
+            isDisplayed = false;
+          }
+        });
       }
     }
 
     if(survey.type == 'Emotion'){
       if(survey.emotionChosen == 'excited' && this.emotion == 'excited'){
         isDisplayed = true;
+        this.storage.get(survey.id).then((val) => {
+          if (val === 'false') {
+            isDisplayed = false;
+          }
+        });
       }
 
       if(survey.emotionChosen == 'happy' && this.emotion == 'happy'){
         isDisplayed = true;
+        this.storage.get(survey.id).then((val) => {
+          if (val === 'false') {
+            isDisplayed = false;
+          }
+        });
       }
 
       if(survey.emotionChosen == 'loved' && this.emotion == 'loved'){
         isDisplayed = true;
+        this.storage.get(survey.id).then((val) => {
+          if (val === 'false') {
+            isDisplayed = false;
+          }
+        });
       }
       if(survey.emotionChosen == 'indifferent' && this.emotion == 'indifferent'){
         isDisplayed = true;
+        this.storage.get(survey.id).then((val) => {
+          if (val === 'false') {
+            isDisplayed = false;
+          }
+        });
       }
 
       if(survey.emotionChosen == 'overwhelmed' && this.emotion == 'overwhelmed'){
         isDisplayed = true;
+        this.storage.get(survey.id).then((val) => {
+          if (val === 'false') {
+            isDisplayed = false;
+          }
+        });
       }
 
       if(survey.emotionChosen == 'sad' && this.emotion == 'sad'){
         isDisplayed = true;
+        this.storage.get(survey.id).then((val) => {
+          if (val === 'false') {
+            isDisplayed = false;
+          }
+        });
       }
       if(survey.emotionChosen == 'angry' && this.emotion == 'angry'){
         isDisplayed = true;
+        this.storage.get(survey.id).then((val) => {
+          if (val === 'false') {
+            isDisplayed = false;
+          }
+        });
       }
     }
 
     return isDisplayed;
+  }
+
+  updateAccess(survey: Survey){
+    // If the survey type is After Joining store the survey id and the Interval to signify that is has been taken
+    if(survey.type == 'After Joining'){
+      this.storage.set(survey.id, this.surveyInterval);
+    }
+
+    // If the survey type is Due Date store the survey id and the Interval to signify that is has been taken
+    if(survey.type == 'Due Date'){
+      this.storage.set(survey.id, this.surveyInterval);
+    }
+
+    // If the survey type is Inactive store the survey id and false to signify that is has been taken
+    if(survey.type == 'Inactive'){
+      if(inactiveDays >= survey.daysInactive){
+        this.storage.set(survey.id, 'false');
+      }
+    }
+
+    // If the survey type is Emotion store the survey id and false to signify that is has been taken
+    if(survey.type == 'Emotion'){
+      this.storage.set(survey.id, 'false');
+    }
   }
 }
