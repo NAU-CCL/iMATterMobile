@@ -106,6 +106,7 @@ export class ProfilePage implements OnInit {
                       this.user.cohort = doc.get('cohort');
                       this.user.currentEmotion = doc.get('mood');
                       this.user.profilePic = doc.get('profilePic');
+                      this.user.points = doc.get('points');
 
                   });
               });
