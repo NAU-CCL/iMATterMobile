@@ -23,6 +23,8 @@ export class ResourcesPage implements OnInit, AfterViewInit {
     icon: any;
     pos: any;
 
+    dicon: any;
+
     @ViewChild('mapElement', {static: false}) mapNativeElement;
     constructor(private geolocation: Geolocation) { }
 
@@ -39,6 +41,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
 
      getLocations ()
      {
+
       firebase.firestore().collection("resourceLocations").get()
       .then(querySnapshot => {
 
@@ -47,8 +50,12 @@ export class ResourcesPage implements OnInit, AfterViewInit {
         this.dlongitude = doc.get("longitude");
         this.dlatitude = doc.get("latitude");
         this.dcontent = doc.get("content");
-        this.addMarker(this.dtitle, this.dlongitude, this.dlatitude, this.dcontent);
+        this.dicon = doc.get("type");
+
+        this.addMarker(this.dtitle, this.dlongitude, this.dlatitude, this.dcontent, this.dicon);
         console.log(this.dlongitude);
+        console.log(this.dicon);
+
 
       });
     });
@@ -75,7 +82,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
         });
      }
 
-     addMarker(dtitle, dlongitude, dlatitude, dcontent)
+     addMarker(dtitle, dlongitude, dlatitude, dcontent , dicon)
      {
        console.log('added pin');
 
@@ -84,16 +91,35 @@ export class ResourcesPage implements OnInit, AfterViewInit {
          lng: this.dlongitude
        };
 
-       const icon = {
-         url: 'https://firebasestorage.googleapis.com/v0/b/techdemofirebase.appspot.com/o/locationIcon%2Flocationpin.png?alt=media&token=a04dd171-e687-4504-a9ae-53eb1cb3986f', // image url
-         scaledSize: new google.maps.Size(80, 80), // scaled size
-       };
+
+       if (this.dicon === "hospital")
+       {
+         this.icon = {
+           url: 'https://firebasestorage.googleapis.com/v0/b/techdemofirebase.appspot.com/o/locationIcon%2FhospitalPin.png?alt=media&token=c37b5cb1-efd4-4472-ae79-7f1492930f49', // image url
+           scaledSize: new google.maps.Size(80, 80), // scaled size
+         };
+
+       }else if (this.dicon === "clinic")
+       {
+         this.icon = {
+           url: 'https://firebasestorage.googleapis.com/v0/b/techdemofirebase.appspot.com/o/locationIcon%2Flocationpin.png?alt=media&token=a04dd171-e687-4504-a9ae-53eb1cb3986f', // image url
+           scaledSize: new google.maps.Size(80, 80), // scaled size
+         };
+       }
+       else if (this.dicon === "therapy")
+       {
+         this.icon = {
+           url: 'https://firebasestorage.googleapis.com/v0/b/techdemofirebase.appspot.com/o/locationIcon%2Flocationpin.png?alt=media&token=a04dd171-e687-4504-a9ae-53eb1cb3986f', // image url
+           scaledSize: new google.maps.Size(80, 80), // scaled size
+         };
+       }
+
 
          const marker = new google.maps.Marker({
            position: pos,
            map: this.map,
            title: this.dtitle,
-           icon: icon
+           icon: this.icon
          });
 
          const contentString = '<div id="content">'+
