@@ -19,6 +19,11 @@ export class ResourcesPage implements OnInit, AfterViewInit {
     dlongitude: string;
     dlatitude: string;
     dcontent: string;
+    dphone: string;
+    doperationSunday: string;
+    doperationWeekday: string;
+    doperationSaturday: string;
+
     map: any;
     icon: any;
     pos: any;
@@ -51,6 +56,10 @@ export class ResourcesPage implements OnInit, AfterViewInit {
         this.dlatitude = doc.get("latitude");
         this.dcontent = doc.get("content");
         this.dicon = doc.get("type");
+        this.doperationSunday = doc.get("operationSunday");
+        this.doperationSaturday = doc.get("operationSaturday");
+        this.dphone = doc.get("phone");
+        this.doperationWeekday = doc.get("operationMF");
 
         this.addMarker(this.dtitle, this.dlongitude, this.dlatitude, this.dcontent, this.dicon);
         console.log(this.dlongitude);
@@ -113,6 +122,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
            scaledSize: new google.maps.Size(80, 80), // scaled size
          };
        }
+
          const marker = new google.maps.Marker({
            position: pos,
            map: this.map,
@@ -120,13 +130,20 @@ export class ResourcesPage implements OnInit, AfterViewInit {
            icon: this.icon
          });
 
-         const contentString = '<div id="content">'+
+         const contentString =
+         '<div id="content">'+
          '<div id= "siteNotice" ' +
          '</div>' +
          '<h1 id="firstHeading" class="firstHeading">' + this.dtitle  + '</h1>' +
          '<div id="bodyContent">' +
          '<p>' + this.dcontent + '</p>' +
          '</div>'+
+         '<div id = "phone">'+ 'Phone :' + this.dphone+ '</div>'+
+         '<div id = "operation">'+ 'Hours of Operation' + '</div>' +
+         '<div id = "weekday">'+ 'Monday - Friday:'+ this.doperationWeekday + '</div>'+
+         '<div id = "weekend">'+ 'Saturday:' +  this.doperationSaturday + '</div>'+
+         '<div id = "weekend">'+ 'Sunday:' + this.doperationSunday + '</div>'+
+         +
          '</div>';
 
          google.maps.event.addListener(marker, 'click', function(){
