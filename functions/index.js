@@ -297,9 +297,9 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 	const users = admin.firestore().collection('users');
 	var surveyType;
 	var userNotifToken;
-	var surveyVisibility = [''];
+	var surveyVisibility = [];
 	var userCode;
-	var storedSurveyVisibility
+	var storedSurveyVisibility;
 
 	const payload = {
 		notification: {
@@ -314,6 +314,8 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 
 			surveyType = singleSurvey.get("type");
 			storedSurveyVisibility = singleSurvey.get("userVisibility");
+			console.log("STORE SURVEY VISIBILITY");
+			console.log(storedSurveyVisibility);
 
 			if (surveyType == "After Joining")
 			{
@@ -325,6 +327,13 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 					element.forEach(singleUser => {
 
 						var daysSinceJoined = singleUser.get("daysSinceJoined");
+						//Checks that this value is valid/exists
+						//covers the case where a user account exists with a code but hasn't been filled out yet
+						if (daysSinceJoined == null)
+						{
+							//in a forEach loop, return acts as "continue"
+							return;
+						}
 						userCode = singleUser.get("code");
 
 						for(var index in afterJoiningDaysArray){
@@ -332,6 +341,8 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 								daysSinceJoined < parseInt(afterJoiningDaysArray[index]) + expirationDays)
 							{
 								surveyVisibility.push(userCode);
+								console.log("pushed at afterJoiningDaysArray " + singleUser.get('username'));
+								console.log(surveyVisibility);
 
 								if (!storedSurveyVisibility.includes(userCode) && singleUser.get("surveyNotif") == true)
 								{
@@ -363,8 +374,19 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 				users.get().then((element) => {
 					element.forEach(singleUser => {
 
-						this.dueDate = singleUser.get("dueDate").toString().split('-');
-						var dateDue = new Date(this.dueDate[1] + "/" + this.dueDate[2] + "/" + this.dueDate[0]);
+						console.log(singleUser);
+						var userDueDate = singleUser.get("dueDate");
+
+						//Check that this value is valid/exists
+						if (userDueDate == null)
+						{
+							//in a forEach loop, return acts as "continue"
+							return;
+						}
+						userDueDate = userDueDate.toString().split('-');
+						console.log(userDueDate);
+						console.log(typeof(userDueDate));
+						var dateDue = new Date(userDueDate[1] + "/" + userDueDate[2] + "/" + userDueDate[0]);
 						var timeBeforeDue =  dateDue.getTime() - now.getTime();
 						var daysBeforeDue = timeBeforeDue / (1000 * 3600 * 24);
 
@@ -374,6 +396,9 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 								daysBeforeDue > parseInt(dueDateDaysArray[index]) - expirationDays)
 							{
 								surveyVisibility.push(singleUser.get("code"));
+								console.log("pushed at dueDateDaysArray " + singleUser.get('username'));
+								console.log(surveyVisibility);
+
 								if (!storedSurveyVisibility.includes(userCode) && singleUser.get("surveyNotif") == true)
 								{
 									userNotifToken = singleUser.get("token");
@@ -400,9 +425,20 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 				users.get().then((element) => {
 					element.forEach(singleUser => {
 						daysSinceLogin = singleUser.get("daysSinceLogin");
+
+						//Check that this value is valid/exists
+						if (daysSinceLogin == null)
+						{
+							//in a forEach loop, return acts as "continue"
+							return;
+						}
+
 						if (daysSinceLogin >= surveyDaysInactive)
 						{
 							surveyVisibility.push(singleUser.get("code"));
+							console.log("pushed at surveyDaysInactive " + singleUser.get('username'));
+							console.log(surveyVisibility);
+
 							if (!storedSurveyVisibility.includes(userCode) && singleUser.get("surveyNotif") == true)
 							{
 								userNotifToken = singleUser.get("token");
@@ -419,13 +455,15 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 				});
 			}
 
-			//admin.firestore().collection('surveys').doc(singleSurvey.id).
+			console.log("SURVEY VISIBILITY");
+			console.log(surveyVisibility);
 			surveys.doc(singleSurvey.id).update({
 				userVisibility: surveyVisibility
-			})
+			});
 		});
 	});
-
+	//for the sake of returning something
+	return true;
 });
 
 
