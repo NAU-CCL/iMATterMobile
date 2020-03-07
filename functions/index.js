@@ -99,13 +99,17 @@ exports.updateDays=functions.https.onRequest((req, res)=>{
 				const diffInDays = Math.ceil(dateDiff / (24 * 3600 * 1000));
 				console.log(diffInDays);
 				const totalDays = 280 - diffInDays - 1;
-				currentUser.storage.set('totalDaysPregnant', totalDays);
+				console.log(totalDays);				
+				currentUser.update({
+					totalDaysPregnant: totalDays
+				});
 				console.log(totalDays);
 				const weeksPregnant = Math.floor(totalDays / 7);
-				currentUser.storage.set('weeksPregnant', weeksPregnant);
 				console.log(weeksPregnant);
 				const daysPregnant = totalDays % 7;
-				currentUser.storage.set('daysPregnant', daysPregnant);
+				currentUser.update({
+					daysPregnant: daysPregnant
+				});
 				console.log(daysPregnant);
 				currentUser.update({
 					weeksPregnant: weeksPregnant
