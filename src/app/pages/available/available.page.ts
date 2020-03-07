@@ -24,6 +24,8 @@ export class AvailablePage implements OnInit {
   emotion;
   joined;
   surveyInterval;
+  tempArray = <any>[];
+  tempArray2 = <any>[];
 
   constructor(private fs: FireService,
               private storage: Storage, 
@@ -39,6 +41,37 @@ export class AvailablePage implements OnInit {
     });
 
     this.surveys = this.fs.getSurveys();
+    
+    // this.surveys.forEach(value => {
+    //   for(var index in value){
+    //     this.storage.set(value[index].id, "test");
+    //   }
+    // });
+
+
+     this.surveys.forEach(value => {
+       for(var index = 0; index < value.length; index++){
+        console.log(index);
+        this.storage.get(value[index].id).then((val) =>{
+          if(val != null){
+            console.log("value length is: ", value.length);
+            console.log("val is: ", val + ",  index is: " + index);
+            //this.tempArray.push(value[index].id + ":" + val);
+          }
+          else{
+            console.log("val is: ", value[index].id + ",  index is: " + index);
+            this.storage.set(value[index].id, "test");
+            console.log("val is: ", value[index].id + ",  index is: " + index);
+          }
+        });
+       }
+     });
+
+     //console.log(this.tempArray);
+
+    //  this.tempArray.push("test");
+    //console.log(this.tempArray.includes('test'));
+
 
     this.storage.get('userCode').then((val) => {
       if (val) {
@@ -68,7 +101,7 @@ export class AvailablePage implements OnInit {
     let isDisplayed = false;
     // dateJoined of the user
     let dateJoined = new Date( this.joined.toDate().getMonth()+1 + "/" + this.joined.toDate().getDate() + "/" + this.joined.toDate().getFullYear());
-    console.log("testDate: " + dateJoined);
+    //console.log("testDate: " + dateJoined);
     // dueDate of the user
     let dateDue = new Date(this.dueDate[1] + "/" + this.dueDate[2] + "/" + this.dueDate[0]);
     // todaysDate string split into an array
@@ -90,6 +123,8 @@ export class AvailablePage implements OnInit {
     // array of days that will determine when the survey is displayed
     let daysArray;
 
+    //console.log("Test: " , this.tempArray);
+
     if(survey.type == 'After Joining'){
       daysArray = survey.daysTillRelease.split(/(?:,| )+/);
 
@@ -97,11 +132,13 @@ export class AvailablePage implements OnInit {
         if(daysSinceJoined >= parseInt(daysArray[index]) && daysSinceJoined < parseInt(daysArray[index]) + expirationDays){
           this.surveyInterval = daysArray[index];
           isDisplayed = true;
-          this.storage.get(survey.id).then((val) => {
-            if (val === this.surveyInterval) {
-              isDisplayed = false;
-            }
-          });
+
+          //  this.storage.get(survey.id).then((val) => {
+          //    if (val === this.surveyInterval) {
+          //      isDisplayed = false;
+          //    }
+          //  });
+
         }
       }
     }
@@ -113,11 +150,11 @@ export class AvailablePage implements OnInit {
         if(daysBeforeDue <= parseInt(daysArray[index]) && daysBeforeDue > parseInt(daysArray[index]) - expirationDays){
           this.surveyInterval = daysArray[index];
           isDisplayed = true;
-          this.storage.get(survey.id).then((val) => {
-            if (val === this.surveyInterval) {
-              isDisplayed = false;
-            }
-          });
+          // this.storage.get(survey.id).then((val) => {
+          //   if (val === this.surveyInterval) {
+          //     isDisplayed = false;
+          //   }
+          // });
         }
       }
     }
@@ -125,74 +162,74 @@ export class AvailablePage implements OnInit {
     if(survey.type == 'Inactive'){
       if(inactiveDays >= survey.daysInactive){
         isDisplayed = true;
-        this.storage.get(survey.id).then((val) => {
-          if (val === 'false') {
-            isDisplayed = false;
-          }
-        });
+        // this.storage.get(survey.id).then((val) => {
+        //   if (val === 'false') {
+        //     isDisplayed = false;
+        //   }
+        // });
       }
     }
 
     if(survey.type == 'Emotion'){
       if(survey.emotionChosen == 'excited' && this.emotion == 'excited'){
         isDisplayed = true;
-        this.storage.get(survey.id).then((val) => {
-          if (val === 'false') {
-            isDisplayed = false;
-          }
-        });
+        // this.storage.get(survey.id).then((val) => {
+        //   if (val === 'false') {
+        //     isDisplayed = false;
+        //   }
+        // });
       }
 
       if(survey.emotionChosen == 'happy' && this.emotion == 'happy'){
         isDisplayed = true;
-        this.storage.get(survey.id).then((val) => {
-          if (val === 'false') {
-            isDisplayed = false;
-          }
-        });
+        // this.storage.get(survey.id).then((val) => {
+        //   if (val === 'false') {
+        //     isDisplayed = false;
+        //   }
+        // });
       }
 
       if(survey.emotionChosen == 'loved' && this.emotion == 'loved'){
         isDisplayed = true;
-        this.storage.get(survey.id).then((val) => {
-          if (val === 'false') {
-            isDisplayed = false;
-          }
-        });
+        // this.storage.get(survey.id).then((val) => {
+        //   if (val === 'false') {
+        //     isDisplayed = false;
+        //   }
+        // });
       }
       if(survey.emotionChosen == 'indifferent' && this.emotion == 'indifferent'){
         isDisplayed = true;
-        this.storage.get(survey.id).then((val) => {
-          if (val === 'false') {
-            isDisplayed = false;
-          }
-        });
+        // this.storage.get(survey.id).then((val) => {
+        //   if (val === 'false') {
+        //     isDisplayed = false;
+        //   }
+        // });
       }
 
       if(survey.emotionChosen == 'overwhelmed' && this.emotion == 'overwhelmed'){
         isDisplayed = true;
-        this.storage.get(survey.id).then((val) => {
-          if (val === 'false') {
-            isDisplayed = false;
-          }
-        });
+        // this.storage.get(survey.id).then((val) => {
+        //   if (val === 'false') {
+        //     isDisplayed = false;
+        //   }
+        // });
       }
 
       if(survey.emotionChosen == 'sad' && this.emotion == 'sad'){
         isDisplayed = true;
-        this.storage.get(survey.id).then((val) => {
-          if (val === 'false') {
-            isDisplayed = false;
-          }
-        });
+        // this.storage.get(survey.id).then((val) => {
+        //   if (val === 'false') {
+        //     isDisplayed = false;
+        //   }
+        // });
       }
       if(survey.emotionChosen == 'angry' && this.emotion == 'angry'){
         isDisplayed = true;
-        this.storage.get(survey.id).then((val) => {
-          if (val === 'false') {
-            isDisplayed = false;
-          }
-        });
+        // this.storage.get(survey.id).then((val) => {
+        //   if (val === 'false') {
+        //     isDisplayed = false;
+        //   }
+        // });
       }
     }
 
