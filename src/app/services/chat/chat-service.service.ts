@@ -55,41 +55,7 @@ export class ChatService {
   }
 
   getChatCollection(cohortID) {
-
-    firebase.firestore().collection('mobileSettings').doc('chatHours').get().then((result) => {
-      // get admin set time for chats to last
-      let setHours = Number(result.get('hours'));
-      console.log('setHours', setHours);
-      // convert to ms
-      setHours = setHours * 60 * 60 * 1000;
-      console.log('setHours', setHours);
-      // get todays date
-      const now = new Date();
-      console.log('now', now);
-
-      // go into all chats
-      const ref = firebase.firestore().collection('chats').where('cohort', '==', cohortID);
-      ref.get().then((res) => {
-        res.forEach(doc => {
-          const timestamp = new Date(doc.get('timestamp').toDate());
-          console.log('timestamp', timestamp);
-          const difference = now.getTime() - timestamp.getTime();
-          console.log('difference', difference);
-          console.log('setHours', setHours);
-
-          if (difference >= setHours) {
-            this.updateChatVisibility(doc.get(doc.id));
-          }
-        });
-      });
-
-      // create a visible boolean field
-      // automatically all are set to true
-      // then here, loop through all existing chats, if they are older than set time, change field to false
-      // grab all chats that are visible - can i call .where twice? who knows, but i have to do all of this first to
-      // find out
-
-    });
+    this.iterateChats(cohortID);
 
     this.chatCollection = this.afs.collection('chats',
         reference => reference.where('cohort', '==', cohortID).orderBy('timestamp'));
@@ -122,6 +88,37 @@ export class ChatService {
   updateChatVisibility(docID) {
     return this.afs.firestore.collection('chats')
         .doc(docID).update({visibility: false});
+  }
+
+  iterateChats(cohortID) {
+    firebase.firestore().collection('mobileSettings').doc('chatHours').get().then((result) => {
+      // get admin set time for chats to last
+      let setHours = Number(result.get('hours'));
+      console.log('setHours', setHours);
+      // convert to ms
+      setHours = setHours * 60 * 60 * 1000;
+      console.log('setHours', setHours);
+      // get todays date
+      const now = new Date();
+      console.log('now', now);
+
+      // go into all chats
+      const ref = firebase.firestore().collection('chats').where('cohort', '==', cohortID);
+      ref.get().then((res) => {
+        res.forEach(doc => {
+          const timestamp = new Date(doc.get('timestamp').toDate());
+          console.log('timestamp', timestamp);
+          const difference = now.getTime() - timestamp.getTime();
+          console.log('difference', difference);
+          console.log('setHours', setHours);
+
+          if (difference >= setHours) {
+            this.updateChatVisibility(doc.id);
+          }
+        });
+      });
+
+    });
   }
 
 }
