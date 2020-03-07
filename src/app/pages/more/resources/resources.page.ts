@@ -139,11 +139,12 @@ export class ResourcesPage implements OnInit, AfterViewInit {
          '<p>' + this.dcontent + '</p>' +
          '</div>'+
          '<div id = "phone">'+ 'Phone :' + this.dphone+ '</div>'+
+         '<div id = "blank">'+ '                   ' + '</div>' +
+
          '<div id = "operation">'+ 'Hours of Operation' + '</div>' +
          '<div id = "weekday">'+ 'Monday - Friday:'+ this.doperationWeekday + '</div>'+
-         '<div id = "weekend">'+ 'Saturday:' +  this.doperationSaturday + '</div>'+
-         '<div id = "weekend">'+ 'Sunday:' + this.doperationSunday + '</div>'+
-         +
+         '<div id = "saturday">'+ 'Saturday:' +  this.doperationSaturday + '</div>'+
+         '<div id = "sunday">'+ 'Sunday:' + this.doperationSunday + '</div>'+
          '</div>';
 
          google.maps.event.addListener(marker, 'click', function(){
