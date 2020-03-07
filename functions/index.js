@@ -79,7 +79,7 @@ exports.updateDays=functions.https.onRequest((req, res)=>{
 	const ref = admin.firestore().collection('users');
 			ref.get().then((result) => {			
 			  result.forEach(doc => {
-				  docID = doc.get('code');
+				docID = doc.get('code');
 				var currentUser = admin.firestore().collection('users').doc(docID);
 				var new_days = doc.data().daysAUser + 1;
 				var sinceLogin = doc.data().daysSinceLogin + 1;
@@ -88,9 +88,30 @@ exports.updateDays=functions.https.onRequest((req, res)=>{
 					daysAUser: new_days
 				});
 				
+				var dueDate = doc.data().dueDate;
+				const currentDateString = new Date().toJSON().split('T')[0];
+				const currentDate = new Date(currentDateString);
+				console.log(currentDate);
+				const userDueDate = new Date(dueDate);
+				console.log(dueDate);
+				console.log(userDueDate);
+				const dateDiff = Math.abs(currentDate.getTime() - userDueDate.getTime());
+				const diffInDays = Math.ceil(dateDiff / (24 * 3600 * 1000));
+				console.log(diffInDays);
+				const totalDays = 280 - diffInDays - 1;
+				currentUser.storage.set('totalDaysPregnant', totalDays);
+				console.log(totalDays);
+				const weeksPregnant = Math.floor(totalDays / 7);
+				currentUser.storage.set('weeksPregnant', weeksPregnant);
+				console.log(weeksPregnant);
+				const daysPregnant = totalDays % 7;
+				currentUser.storage.set('daysPregnant', daysPregnant);
+				console.log(daysPregnant);
 				currentUser.update({
-					daysSinceLogin: sinceLogin
+					weeksPregnant: weeksPregnant
 				});
+
+
 				
 			  
 			});
