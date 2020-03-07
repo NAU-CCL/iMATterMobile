@@ -232,6 +232,10 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 	  }).catch(error => {console.log('error', error)});
 	});
 
+/**
+ * Specifically for sending emotion survey notifications
+ * Triggered whenever user's profile changes, and checks to see if it was their mood that changed
+ */
 exports.emotionSurveyNotification = functions.firestore.document('users/{userID}').onUpdate((change, context) => {
 	const newValue = change.after.data();
 	const previousValue = change.before.data();
