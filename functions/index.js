@@ -285,3 +285,147 @@ exports.emotionSurveyNotification = functions.firestore.document('users/{userID}
 	return false;
 });
 
+/**
+ * Used for checking surveys that aren't emotion surveys
+ * Iterates through all surveys and within each survey iterates through all users to see if they match criteria
+ */
+exports.newSurveyNotification = functions.https.onRequest((req, res) => {
+	console.log(req);
+	console.log(res);
+
+	const surveys = admin.firestore().collection('surveys');
+	const users = admin.firestore().collection('users');
+	var surveyType;
+	var userNotifToken;
+	var surveyVisibility = [''];
+	var userCode;
+	var storedSurveyVisibility
+
+	const payload = {
+		notification: {
+			title: 'iMATter Survey',
+			body: 'There is a new survey available!',
+			sound: "default"
+		},
+	};
+
+	surveys.get().then((value) => {
+		value.forEach(singleSurvey => {
+
+			surveyType = singleSurvey.get("type");
+			storedSurveyVisibility = singleSurvey.get("userVisibility");
+
+			if (surveyType == "After Joining")
+			{
+				var afterJoiningDaysArray = singleSurvey.get("daysTillRelease").split(/(?:,| )+/);
+				var expirationDays = singleSurvey.get("daysTillExpire");
+
+				//iterate through users
+				users.get().then((element) => {
+					element.forEach(singleUser => {
+
+						var daysSinceJoined = singleUser.get("daysSinceJoined");
+						userCode = singleUser.get("code");
+
+						for(var index in afterJoiningDaysArray){
+							if(daysSinceJoined >= parseInt(afterJoiningDaysArray[index]) && 
+								daysSinceJoined < parseInt(afterJoiningDaysArray[index]) + expirationDays)
+							{
+								surveyVisibility.push(userCode);
+
+								if (!storedSurveyVisibility.includes(userCode) && singleUser.get("surveyNotif") == true)
+								{
+									userNotifToken = singleUser.get("token");
+									admin.messaging().sendToDevice(userNotifToken, payload)
+										.then((response) => {
+											console.log("New survey notification sent successfully!");
+											return payload;
+									}).catch((err) => {
+										console.log(err);
+									});
+								}
+							}
+						  }
+					});
+				});
+
+			}
+			else if (surveyType == "Due Date")
+			{
+				var dueDateDaysArray = singleSurvey.get("daysBeforeDueDate").split(/(?:,| )+/);
+				var expirationDays = singleSurvey.get("daysTillExpire");
+
+				var currentDate = new Date();
+				var dateString = currentDate.getMonth() + "/" + currentDate.getDate() + "/" + currentDate.getFullYear();
+				var now = new Date(dateString);
+				
+				//iterate through users
+				users.get().then((element) => {
+					element.forEach(singleUser => {
+
+						this.dueDate = singleUser.get("dueDate").toString().split('-');
+						var dateDue = new Date(this.dueDate[1] + "/" + this.dueDate[2] + "/" + this.dueDate[0]);
+						var timeBeforeDue =  dateDue.getTime() - now.getTime();
+						var daysBeforeDue = timeBeforeDue / (1000 * 3600 * 24);
+
+						for(var index in dueDateDaysArray)
+						{
+							if(daysBeforeDue <= parseInt(dueDateDaysArray[index]) && 
+								daysBeforeDue > parseInt(dueDateDaysArray[index]) - expirationDays)
+							{
+								surveyVisibility.push(singleUser.get("code"));
+								if (!storedSurveyVisibility.includes(userCode) && singleUser.get("surveyNotif") == true)
+								{
+									userNotifToken = singleUser.get("token");
+									admin.messaging().sendToDevice(userNotifToken, payload)
+										.then((response) => {
+											console.log("New survey notification sent successfully!");
+											return payload;
+									}).catch((err) => {
+										console.log(err);
+									});
+								}
+							}
+						}
+					});
+				});
+
+			}
+			else if (surveyType == "Inactive")
+			{
+				var daysSinceLogin;
+				var surveyDaysInactive = singleSurvey.get("daysInactive");
+
+				//iterate through users
+				users.get().then((element) => {
+					element.forEach(singleUser => {
+						daysSinceLogin = singleUser.get("daysSinceLogin");
+						if (daysSinceLogin >= surveyDaysInactive)
+						{
+							surveyVisibility.push(singleUser.get("code"));
+							if (!storedSurveyVisibility.includes(userCode) && singleUser.get("surveyNotif") == true)
+							{
+								userNotifToken = singleUser.get("token");
+								admin.messaging().sendToDevice(userNotifToken, payload)
+									.then((response) => {
+										console.log("New survey notification sent successfully!");
+										return payload;
+								}).catch((err) => {
+									console.log(err);
+								});
+							}
+						}
+					});
+				});
+			}
+
+			//admin.firestore().collection('surveys').doc(singleSurvey.id).
+			surveys.doc(singleSurvey.id).update({
+				userVisibility: surveyVisibility
+			})
+		});
+	});
+
+});
+
+
