@@ -109,12 +109,10 @@ export class ResourcesPage implements OnInit, AfterViewInit {
        else if (this.dicon === "therapy")
        {
          this.icon = {
-           url: 'https://firebasestorage.googleapis.com/v0/b/techdemofirebase.appspot.com/o/locationIcon%2Flocationpin.png?alt=media&token=a04dd171-e687-4504-a9ae-53eb1cb3986f', // image url
+           url: 'https://firebasestorage.googleapis.com/v0/b/techdemofirebase.appspot.com/o/locationIcon%2FtherapyPin.png?alt=media&token=96c62651-a76f-463d-a7cd-4f403eb75f68', // image url
            scaledSize: new google.maps.Size(80, 80), // scaled size
          };
        }
-
-
          const marker = new google.maps.Marker({
            position: pos,
            map: this.map,
