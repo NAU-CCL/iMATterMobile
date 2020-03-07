@@ -105,6 +105,30 @@ exports.updateDays=functions.https.onRequest((req, res)=>{
 			});
 });
 
+exports.sendProviderRecoveryEmail=functions.firestore.document('provider_recovery_email/{docID}').onCreate((snap,context)=>{	
+	const data=snap.data();
+	let authData = nodemailer.createTransport({
+		host:'smtp.gmail.com',
+		port:587,
+		secure: false,
+		auth: {
+		  user: SENDER_EMAIL, 
+		  pass: SENDER_PASS
+		}
+		
+		
+});
+
+	authData.sendMail({
+		from: 'imatternotification@gmail.com',
+		to: data.email, // list of receivers
+		subject: "Imatter InfoDesk", // Subject line
+		text: "Here is your recovery code: " + data.code, // plain text body
+		html: "Here is your recovery code: " + data.code // html body
+		//res.send("sent");
+		}).then(res=>console.log('successfully sent that mail')).catch(err=>console.log(err));
+	});
+
 
 
 // // Create and Deploy Your First Cloud Functions
