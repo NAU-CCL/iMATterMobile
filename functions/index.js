@@ -288,6 +288,8 @@ exports.emotionSurveyNotification = functions.firestore.document('users/{userID}
 /**
  * Used for checking surveys that aren't emotion surveys
  * Iterates through all surveys and within each survey iterates through all users to see if they match criteria
+ * Keeps track of who has been sent notifications before using the userVisibility array 
+ * (this array also implies that anyone new added to it just had the survey become available to them)
  */
 exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 
@@ -296,7 +298,6 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 	var surveyType;
 	var userNotifToken;
 	var userCode;
-	var storedSurveyVisibility;
 
 	const payload = {
 		notification: {
@@ -310,24 +311,19 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 		value.forEach(singleSurvey => {
 
 			surveyType = singleSurvey.get("type");
-			storedSurveyVisibility = singleSurvey.get("userVisibility");
-			console.log("STORE SURVEY VISIBILITY");
-			console.log(storedSurveyVisibility);
 			var surveyVisibility = []; //reset this for each survey
+			var storedSurveyVisibility = singleSurvey.get("userVisibility");;
 
 			if (surveyType == "After Joining")
 			{
 				//iterate through users
 				users.get().then((element) => {
 					var afterJoiningDaysArray = singleSurvey.get("daysTillRelease").split(/(?:,| )+/);
-					console.log("After joining days array: ");
-					console.log(afterJoiningDaysArray);
 					var expirationDays = singleSurvey.get("daysTillExpire");
 
 					element.forEach(singleUser => {
-						//seems like it's not entering here!!!!!!!!!!!!
-						
-						var daysSinceJoined = singleUser.get("daysSinceJoined");
+						var daysSinceJoined = singleUser.get("daysAUser");
+
 						//Checks that this value is valid/exists
 						//covers the case where a user account exists with a code but hasn't been filled out yet
 						if (daysSinceJoined == null)
@@ -335,25 +331,18 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 							//in a forEach loop, return acts as "continue"
 							return;
 						}
+
 						userCode = singleUser.get("code");
 
-						console.log("DAYS SINCE JOINED: " + daysSinceJoined);
-						if (afterJoiningDaysArray.length == 0)
-						{
-							console.log("AFTER JOINING dAYS ARRAY LENGTH IS 0");
-						}
-
 						afterJoiningDaysArray.forEach(dayValue => {
-							
-							console.log("AFTERJOINING INDEX VALUE: " + parseInt(dayValue));
 							if(daysSinceJoined >= parseInt(dayValue) && 
 								daysSinceJoined < parseInt(dayValue) + expirationDays)
 							{
 								surveyVisibility.push(userCode);
-								console.log("pushed at afterJoiningDaysArray " + singleUser.get('username'));
-								console.log(surveyVisibility);
 
-								if (!storedSurveyVisibility.includes(userCode) && singleUser.get("surveyNotif") == true)
+								//If this user was not already in the user visibility array (meaning that a notif hasn't been sent yet)
+								//and their notifications are on, send them the notif
+								if ((!storedSurveyVisibility.includes(userCode)) && singleUser.get("surveyNotif") == true)
 								{
 									userNotifToken = singleUser.get("token");
 									admin.messaging().sendToDevice(userNotifToken, payload)
@@ -367,8 +356,7 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 							}
 						});
 					});
-					console.log("SURVEY VISIBILITY inside afterJoining");
-					console.log(surveyVisibility);
+					//IMPORTANT: Update the userVisibility array for this survey
 					surveys.doc(singleSurvey.id).update({userVisibility: surveyVisibility});
 				});
 			}
@@ -376,16 +364,12 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 			{
 				var dueDateDaysArray = singleSurvey.get("daysBeforeDueDate").split(/(?:,| )+/);
 				var expirationDays = singleSurvey.get("daysTillExpire");
-
 				var currentDate = new Date();
-				var dateString = currentDate.getMonth() + "/" + currentDate.getDate() + "/" + currentDate.getFullYear();
-				var now = new Date(dateString);
-				
+
 				//iterate through users
 				users.get().then((element) => {
 					element.forEach(singleUser => {
 
-						console.log(singleUser);
 						var userDueDate = singleUser.get("dueDate");
 
 						//Check that this value is valid/exists
@@ -395,10 +379,8 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 							return;
 						}
 						userDueDate = userDueDate.toString().split('-');
-						console.log(userDueDate);
-						console.log(typeof(userDueDate));
 						var dateDue = new Date(userDueDate[1] + "/" + userDueDate[2] + "/" + userDueDate[0]);
-						var timeBeforeDue =  dateDue.getTime() - now.getTime();
+						var timeBeforeDue =  dateDue.getTime() - currentDate.getTime();
 						var daysBeforeDue = timeBeforeDue / (1000 * 3600 * 24);
 
 						for(var index in dueDateDaysArray)
@@ -407,10 +389,8 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 								daysBeforeDue > parseInt(dueDateDaysArray[index]) - expirationDays)
 							{
 								surveyVisibility.push(singleUser.get("code"));
-								console.log("pushed at dueDateDaysArray " + singleUser.get('username'));
-								console.log(surveyVisibility);
 
-								if (!storedSurveyVisibility.includes(userCode) && singleUser.get("surveyNotif") == true)
+								if ((!storedSurveyVisibility.includes(userCode)) && singleUser.get("surveyNotif") == true)
 								{
 									userNotifToken = singleUser.get("token");
 									admin.messaging().sendToDevice(userNotifToken, payload)
@@ -424,8 +404,7 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 							}
 						}
 					});
-					console.log("SURVEY VISIBILITY inside dueDate");
-					console.log(surveyVisibility);
+					//IMPORTANT: Update the userVisibility array for this survey
 					surveys.doc(singleSurvey.id).update({userVisibility: surveyVisibility});
 				});
 			}
@@ -449,10 +428,8 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 						if (daysSinceLogin >= surveyDaysInactive)
 						{
 							surveyVisibility.push(singleUser.get("code"));
-							console.log("pushed at surveyDaysInactive " + singleUser.get('username'));
-							console.log(surveyVisibility);
 
-							if (!storedSurveyVisibility.includes(userCode) && singleUser.get("surveyNotif") == true)
+							if ((!storedSurveyVisibility.includes(userCode)) && singleUser.get("surveyNotif") == true)
 							{
 								userNotifToken = singleUser.get("token");
 								admin.messaging().sendToDevice(userNotifToken, payload)
@@ -465,8 +442,7 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 							}
 						}
 					});
-					console.log("SURVEY VISIBILITY inside inactive");
-					console.log(surveyVisibility);
+					//IMPORTANT: Update the userVisibility array for this survey
 					surveys.doc(singleSurvey.id).update({userVisibility: surveyVisibility});
 				});
 			}
