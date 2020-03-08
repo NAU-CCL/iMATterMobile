@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
       <ion-buttons slot="start">
-          <ion-back-button  class="ion-text-button" defaultHref="/tabs/home"></ion-back-button>
+          <ion-back-button  class="text-button" defaultHref="/tabs/home"></ion-back-button>
       </ion-buttons>
     <ion-title>Profile Page</ion-title>
     <ion-buttons slot="end">
@@ -16,7 +16,7 @@
     <ion-item lines="none">
         <ion-icon name="information-circle" (click)="displayPointInfo()"> </ion-icon>
         Points Earned: {{user.points}}
-        <ion-button slot="end" class="redeem-button" *ngIf="canRedeemPoints" (click)="displayRedeemOptions = true"> Redeem </ion-button>
+        <ion-button slot="end" class="fill-button" *ngIf="canRedeemPoints" (click)="displayRedeemOptions = true"> Redeem </ion-button>
     </ion-item>
 
     <div *ngIf="displayRedeemOptions == true">
@@ -28,7 +28,7 @@
                 </ion-select-option>
             </ion-select>
         </ion-item>
-        <ion-button slot="end" class="redeem-button" (click)="redeemGiftCard(user.points, pointsForRedemption, chosenGCType, user.email, user.username)"> Confirm </ion-button>
+        <ion-button slot="end" class="fill-button" (click)="redeemGiftCard(user.points, pointsForRedemption, chosenGCType, user.email, user.username)"> Confirm </ion-button>
     </div>
 
 

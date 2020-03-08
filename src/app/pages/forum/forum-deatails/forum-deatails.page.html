@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button class="ion-text-button" defaultHref="/forum"></ion-back-button>
+      <ion-back-button class="text-button" defaultHref="/forum"></ion-back-button>
     </ion-buttons>
     <ion-title>Create Post</ion-title>
   </ion-toolbar>
@@ -28,7 +28,7 @@
 
 <ion-footer *ngIf="!question.id">
   <ion-toolbar>
-    <ion-button expand="full" class="create-post-button" (click)="addQuestion()" (click)="sendEmail()">
+    <ion-button expand="full" class="fill-button" (click)="addQuestion()" (click)="sendEmail()">
       Post
     </ion-button>
   </ion-toolbar>

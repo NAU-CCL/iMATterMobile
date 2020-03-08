@@ -15,7 +15,7 @@
     Press 'read more' if you would like to know why we are
     asking for this information.
   </p>
-  <ion-button class="ion-link" fill = "clear" expand="block" *ngIf="!readMore" (click)="showMore()">
+  <ion-button class="text-button" fill = "clear" expand="block" *ngIf="!readMore" (click)="showMore()">
     Read More
   </ion-button>
 
@@ -39,7 +39,7 @@
     yourself, feel free to do so, but we ask you to not put any identifiable personal information here.
   </p>
 
-  <ion-button class="ion-link" fill = "clear" expand="block" (click)="showLess()">
+  <ion-button class="text-button" fill = "clear" expand="block" (click)="showLess()">
     Show Less
   </ion-button>
 </div>
@@ -52,7 +52,7 @@
       <ion-thumbnail class="profilePic">
         <ion-img *ngIf="!showImages" src="{{ picURL }}" ></ion-img>
       </ion-thumbnail>
-      <ion-button class= "ion-button-background" *ngIf="!showImages" (click)="showPics()"> Change Profile Picture </ion-button>
+      <ion-button class= "fill-button" *ngIf="!showImages" (click)="showPics()"> Change Profile Picture </ion-button>
       </ion-row>
       <ion-item *ngIf="showImages">
         <ion-row>
@@ -120,7 +120,7 @@
       </ion-input>
     </ion-item>
 
-    <ion-button class= "ion-button-background" expand="block" (click)="signupUser(signupForm)">
+    <ion-button class= "fill-button" expand="block" (click)="signupUser(signupForm)">
       Create Account
     </ion-button>
   </form>

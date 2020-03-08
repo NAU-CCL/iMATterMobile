@@ -4,7 +4,7 @@
       Information Desk
     </ion-title>
     <ion-buttons slot="start">
-      <ion-back-button class="ion-text-button" defaultHref="/forum"></ion-back-button>
+      <ion-back-button class="text-button" defaultHref="/forum"></ion-back-button>
     </ion-buttons>
     <ion-title></ion-title>
   </ion-toolbar>
@@ -45,7 +45,7 @@
       </ion-row>
     </ion-card>
 
-  <ion-button padding-horizontal class="ion-button-background" (click)="displayCommentBox();">
+  <ion-button padding-horizontal class="fill-button" (click)="displayCommentBox();">
     Comment
   </ion-button>
   <div *ngIf="showCommentBox">
@@ -57,7 +57,7 @@
       <ion-label> Comment Anonymously? </ion-label>
       <ion-toggle color="dark" [(ngModel)]="anon"></ion-toggle>
     </ion-item>
-    <ion-button class="ion-button-background" float-end size="small" (click)="addComment()"> Submit </ion-button>
+    <ion-button class="fill-button" float-end size="small" (click)="addComment()"> Submit </ion-button>
   </div>
 
   <h6 padding-horizontal> Answers: </h6>

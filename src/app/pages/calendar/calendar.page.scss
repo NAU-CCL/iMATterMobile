@@ -16,7 +16,7 @@
     --background-hover: var(--secondary-color);
   }
 
-  .ion-text-press {
+  .text-press {
     color: var(--main-color);
   }
 
@@ -25,7 +25,7 @@
   }
 
   .noHighlight{
-    opacity: 50%;
+    --background: var(--secondary-color);
   }
 
 
