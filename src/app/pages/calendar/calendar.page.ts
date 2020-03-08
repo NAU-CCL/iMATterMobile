@@ -102,6 +102,7 @@ export class CalendarPage implements OnInit {
       endTime: new Date(this.event.endTime),
       allDay: this.event.allDay,
       desc: this.event.desc
+	  
     };
 
     if (eventCopy.allDay) {
@@ -121,9 +122,11 @@ export class CalendarPage implements OnInit {
 	});
 	
 	
-	this.eventList.push({eventCopy});
-	localStorage.setItem('event', JSON.stringify(this.eventList));
+	this.eventList.push(eventCopy);
+	
     this.eventSource.push(eventCopy);
+	this.test = localStorage.setItem('event', JSON.stringify(this.eventSource));
+	console.log(JSON.stringify(this.eventSource));
     this.myCal.loadEvents();
     this.resetEvent();
     this.showAddEvent = false;
