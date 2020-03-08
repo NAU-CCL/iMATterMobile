@@ -101,7 +101,7 @@
     <ion-item>
       <ion-label position="stacked">Security Question</ion-label>
       <ion-select interface="action-sheet" placeholder="Pick a Question" formControlName="securityQ">
-        <ion-select-option value = q *ngFor="let q of securityQs">
+        <ion-select-option *ngFor="let q of securityQs">
           {{q}}
         </ion-select-option>
       </ion-select>
