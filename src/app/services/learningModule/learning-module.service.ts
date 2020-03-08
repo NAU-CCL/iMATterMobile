@@ -17,6 +17,8 @@ export interface LearningModule
   modulePPTurl?: string, //powerpoint URL, optional
   moduleContent: string,
   moduleVisibilityTime: string[],
+  moduleExpiration: number,
+  moduleActive: boolean,
   moduleQuiz: Question[],
   modulePointsWorth: number,
   moduleNext?: string //ID of next learning module to go to, optional
