@@ -85,9 +85,14 @@ export class ChatService {
   }
 
 
-  updateChatVisibility(docID) {
-    return this.afs.firestore.collection('chats')
-        .doc(docID).update({visibility: false});
+  updateChatVisibility(docID, bool) {
+    if (bool === false) {
+      return this.afs.firestore.collection('chats')
+          .doc(docID).update({visibility: false});
+    } else {
+      return this.afs.firestore.collection('chats')
+          .doc(docID).update({visibility: true});
+    }
   }
 
   iterateChats(cohortID) {
@@ -113,7 +118,9 @@ export class ChatService {
           console.log('setHours', setHours);
 
           if (difference >= setHours) {
-            this.updateChatVisibility(doc.id);
+            this.updateChatVisibility(doc.id, false);
+          } else {
+            this.updateChatVisibility(doc.id, true);
           }
         });
       });
