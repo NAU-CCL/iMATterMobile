@@ -290,14 +290,11 @@ exports.emotionSurveyNotification = functions.firestore.document('users/{userID}
  * Iterates through all surveys and within each survey iterates through all users to see if they match criteria
  */
 exports.newSurveyNotification = functions.https.onRequest((req, res) => {
-	console.log(req);
-	console.log(res);
 
 	const surveys = admin.firestore().collection('surveys');
 	const users = admin.firestore().collection('users');
 	var surveyType;
 	var userNotifToken;
-	var surveyVisibility = [];
 	var userCode;
 	var storedSurveyVisibility;
 
@@ -316,16 +313,20 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 			storedSurveyVisibility = singleSurvey.get("userVisibility");
 			console.log("STORE SURVEY VISIBILITY");
 			console.log(storedSurveyVisibility);
+			var surveyVisibility = []; //reset this for each survey
 
 			if (surveyType == "After Joining")
 			{
-				var afterJoiningDaysArray = singleSurvey.get("daysTillRelease").split(/(?:,| )+/);
-				var expirationDays = singleSurvey.get("daysTillExpire");
-
 				//iterate through users
 				users.get().then((element) => {
-					element.forEach(singleUser => {
+					var afterJoiningDaysArray = singleSurvey.get("daysTillRelease").split(/(?:,| )+/);
+					console.log("After joining days array: ");
+					console.log(afterJoiningDaysArray);
+					var expirationDays = singleSurvey.get("daysTillExpire");
 
+					element.forEach(singleUser => {
+						//seems like it's not entering here!!!!!!!!!!!!
+						
 						var daysSinceJoined = singleUser.get("daysSinceJoined");
 						//Checks that this value is valid/exists
 						//covers the case where a user account exists with a code but hasn't been filled out yet
@@ -336,9 +337,17 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 						}
 						userCode = singleUser.get("code");
 
-						for(var index in afterJoiningDaysArray){
-							if(daysSinceJoined >= parseInt(afterJoiningDaysArray[index]) && 
-								daysSinceJoined < parseInt(afterJoiningDaysArray[index]) + expirationDays)
+						console.log("DAYS SINCE JOINED: " + daysSinceJoined);
+						if (afterJoiningDaysArray.length == 0)
+						{
+							console.log("AFTER JOINING dAYS ARRAY LENGTH IS 0");
+						}
+
+						afterJoiningDaysArray.forEach(dayValue => {
+							
+							console.log("AFTERJOINING INDEX VALUE: " + parseInt(dayValue));
+							if(daysSinceJoined >= parseInt(dayValue) && 
+								daysSinceJoined < parseInt(dayValue) + expirationDays)
 							{
 								surveyVisibility.push(userCode);
 								console.log("pushed at afterJoiningDaysArray " + singleUser.get('username'));
@@ -356,10 +365,12 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 									});
 								}
 							}
-						  }
+						});
 					});
+					console.log("SURVEY VISIBILITY inside afterJoining");
+					console.log(surveyVisibility);
+					surveys.doc(singleSurvey.id).update({userVisibility: surveyVisibility});
 				});
-
 			}
 			else if (surveyType == "Due Date")
 			{
@@ -413,8 +424,10 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 							}
 						}
 					});
+					console.log("SURVEY VISIBILITY inside dueDate");
+					console.log(surveyVisibility);
+					surveys.doc(singleSurvey.id).update({userVisibility: surveyVisibility});
 				});
-
 			}
 			else if (surveyType == "Inactive")
 			{
@@ -452,18 +465,13 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 							}
 						}
 					});
+					console.log("SURVEY VISIBILITY inside inactive");
+					console.log(surveyVisibility);
+					surveys.doc(singleSurvey.id).update({userVisibility: surveyVisibility});
 				});
 			}
-
-			console.log("SURVEY VISIBILITY");
-			console.log(surveyVisibility);
-			surveys.doc(singleSurvey.id).update({
-				userVisibility: surveyVisibility
-			});
 		});
 	});
-	//for the sake of returning something
-	return true;
 });
 
 
