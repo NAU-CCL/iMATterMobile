@@ -26,7 +26,9 @@ import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
   imports: [BrowserModule,
       IonicModule.forRoot(),
 	  HttpClientModule,
-      IonicStorageModule.forRoot(),
+      IonicStorageModule.forRoot({
+		  name: 'exdb'
+	  }),
       AppRoutingModule,
       AngularFirestoreModule,
       AngularFireModule.initializeApp(environment.firebase)],

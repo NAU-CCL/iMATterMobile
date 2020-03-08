@@ -31,6 +31,7 @@ export class CalendarPage implements OnInit {
   days: any[];
   chosenHours: number;
   chosenMinutes: number;
+  eventList: any[] = [];
 
   minDate = new Date().toISOString();
 
@@ -54,6 +55,8 @@ export class CalendarPage implements OnInit {
 		this.chosenHours = new Date().getHours();
 		this.chosenMinutes = new Date().getMinutes();
 		
+		
+		
 		this.days = [
             {title: 'Monday', dayCode: 1, checked: false},
             {title: 'Tuesday', dayCode: 2, checked: false},
@@ -65,6 +68,7 @@ export class CalendarPage implements OnInit {
         ];
 	
 	}
+	
 
   ngOnInit() {
     this.storage.get('authenticated').then((val) => {
@@ -76,7 +80,7 @@ export class CalendarPage implements OnInit {
     this.resetEvent();
   }
 
-
+  
   resetEvent() {
     this.event = {
       title: '',
@@ -85,6 +89,9 @@ export class CalendarPage implements OnInit {
       endTime: new Date().toISOString(),
       allDay: false
     };
+  }
+  deleteEvent(){
+	  //window.plugins.calendar.deleteEvent(newTitle,eventLocation,notes,startDate,endDate,success,error);
   }
 
   // Create the right event format and reload source
@@ -113,10 +120,37 @@ export class CalendarPage implements OnInit {
 	   sound: null
 	});
 	
+	
+	this.eventList.push({eventCopy});
+	localStorage.setItem('event', JSON.stringify(this.eventList));
     this.eventSource.push(eventCopy);
     this.myCal.loadEvents();
     this.resetEvent();
     this.showAddEvent = false;
+  }
+  
+  cancelNotification(){
+	  /*LocalNotifications.getPending().then( res => {
+      var index = res.notifications.map(x => {
+        return x["id"];
+      }).indexOf("10000000");
+      res.notifications.splice(index, 1);
+      LocalNotifications.cancel(res);
+    }, err => {
+      console.log(err);
+    })*/
+  }
+
+//showEvents(){
+	//this.storage.get(this.key).then(value => {
+    //this.user = JSON.parse(value);
+//});
+//}
+
+  showEvent(){
+	  this.storage.get('event').then( (val) =>{
+		  console.log("value is " + val)
+	  })
   }
 
   next() {
