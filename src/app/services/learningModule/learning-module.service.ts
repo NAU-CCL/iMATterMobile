@@ -16,7 +16,7 @@ export interface LearningModule
   moduleVideoID?: string, //YouTube video ID, optional
   modulePPTurl?: string, //powerpoint URL, optional
   moduleContent: string,
-  moduleVisibilityTime: string[],
+  moduleVisibilityTime: string,
   moduleExpiration: number,
   moduleActive: boolean,
   moduleQuiz: Question[],
