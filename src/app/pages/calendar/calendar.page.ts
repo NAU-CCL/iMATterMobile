@@ -49,6 +49,7 @@ export class CalendarPage implements OnInit {
   };
 
   private showAddEvent: boolean;
+  
 
   items: Item[] = [];
   newItem: Item = <Item>{};
@@ -158,11 +159,8 @@ export class CalendarPage implements OnInit {
      this.eventSource = items;
       }
       else{
-        console.log('No events Yet');
+        console.log('No events');
       }
-
-
-      console.log(this.eventSource);
     });
   
   }
@@ -227,7 +225,7 @@ export class CalendarPage implements OnInit {
     // Use Angular date pipe for conversion
     let start = formatDate(event.startTime, 'medium', this.locale);
     let end = formatDate(event.endTime, 'medium', this.locale);
-
+    
     const alert = await this.alertCtrl.create({
       header: event.title,
       subHeader: event.desc,
