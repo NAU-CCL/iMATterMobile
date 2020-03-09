@@ -50,6 +50,8 @@ export class CalendarPage implements OnInit {
 
   private showAddEvent: boolean;
 
+  items: Item[] = [];
+  newItem: Item = <Item>{};
   // @ts-ignore
   @ViewChild(CalendarComponent) myCal: CalendarComponent;
 
@@ -83,6 +85,7 @@ export class CalendarPage implements OnInit {
     });
     this.showAddEvent = false;
     this.resetEvent();
+	this.loadItems();
   }
 
   
@@ -137,9 +140,9 @@ export class CalendarPage implements OnInit {
 	
 	
 	this.storageService.addItem(eventCopy).then(item => {
-      eventCopy = <Item>{};
-      this.showToast('Event Added!');
-
+      //eventCopy = <Item>{};
+      //this.showToast('Event Added!');
+		console.log('?');
       this.loadItems();
 	});
 	
