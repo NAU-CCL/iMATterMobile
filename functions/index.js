@@ -171,66 +171,119 @@ exports.deleteOldChatMessages=functions.https.onRequest((req, res)=> {
 });
 		
 //https://firebase.google.com/docs/functions/http-events
-//Iterate through learning modules and grab all the weeks of visibility from all learning modules
-//Then, iterate through users and see if their weeks pregnant is in the visibilty array
-//If yes, check that they're 0 daysPregnant
-//If yes and they have LM notifs turned on, then send them a notification
+/**
+ * Iterate through learning modules and get the times of visibility for active LMs
+ * Convert the times of visibility to a range of days pregnant
+ * Iterate through users, checking if they're within the range of days pregnant for a learning module
+ * If they are and haven't yet been notified/added to userVisibility array, send push notif and add them
+ */
 exports.newLearningModuleNotification = functions.https.onRequest((req, res) => {
-    
-	var visibilityWeekList = [];
-	const learningMods = admin.firestore().collection('learningModules');
+	
+	const learningModules = admin.firestore().collection('learningModules');
 	const users = admin.firestore().collection('users');
-	var userWeeksPregnant;
-	var userDaysPregnant;
 	var userNotifToken;
-  
+	var userCode;
+
 	const payload = {
-	  notification: {
-		  title: 'iMATter Learning Module',
-		  body: 'There is a new learning module in the learning center!',
-		  sound: "default"
-	  },
-  	};
-  
-	var moduleVisibiltyTimeList;
-	//Iterating through learning modules and grabbing weeks of visibility
-	learningMods.get().then((value) => {
-	  value.forEach(singleMod => {
-		moduleVisibiltyTimeList = singleMod.get("moduleVisibilityTime");
-		moduleVisibiltyTimeList.forEach(week => {
-			//need to convert week to Number because it's a string
-		  visibilityWeekList.push(Number(week));
-		});
-	  });
-	});
-  
-	//Iterating through users and checking for weeks & days pregnant
-	users.get().then((element) => {
-	  element.forEach(singleUser => {
-		userWeeksPregnant = singleUser.get('weeksPregnant');
-		  //if the weeks is in the learning mod list
-		  if (visibilityWeekList.includes(userWeeksPregnant))
-		  {
-			userDaysPregnant = singleUser.get('daysPregnant'); 
-			  //They're in a new week, meaning new learning module shows up
-			  //And they have learning module notifications turned on
-			  if (userDaysPregnant === 0 && singleUser.get('learningModNotif') === true)
-			  {
-				userNotifToken = singleUser.get('token');
-				
-				admin.messaging().sendToDevice(userNotifToken, payload)
-					.then((response) => {
-					console.log("New learning module notification sent successfully!");
-					return payload;
-					}).catch((err) => {
-						console.log(err);
-				});
-			  }
+		notification: {
+			title: 'iMATter Learning Module',
+			body: 'There is a new learning module available!',
+			sound: "default"
+		},
+	};
+
+	learningModules.get().then((value) => {
+		value.forEach(learningModule => {
+			
+			var moduleActive = learningModule.get("moduleActive");
+			//Skip over this module if it's not active
+			if (moduleActive == false)
+			{
+				return; //return acts as "continue" in forEach loop
 			}
+
+			var lmUserVisibility = []; //reset this for each learningModule
+			var storedLMUserVisibility = learningModule.get("userVisibility");
+			//overdoing the splitting but does the job
+			var moduleVisibility = learningModule.get("moduleVisibilityTime").split(/(?:,| )+/);
+			var moduleExpiration = learningModule.get("moduleExpiration");
+
+			//iterate through users
+			users.get().then((element) => {
+				element.forEach(singleUser => {
+					var userDaysPregnant = singleUser.get("totalDaysPregnant");
+
+					//Check to see this value exists/is valid
+					if (userDaysPregnant == null)
+					{
+						//return as as "continue" in forEach loop
+						return;
+					}
+
+					userCode = singleUser.get("code");
+					userNotifToken = singleUser.get("token");
+
+					//for each week in the module visibility list
+					moduleVisibility.forEach(week => {
+
+						//if module is to always be displayed
+						if (week == 0)
+						{
+							lmUserVisibility.push(userCode);
+
+							//if user hasn't yet been notified and user's notifications are turned on, send push notif
+							//Covers case where new module is added
+							if ((!storedLMUserVisibility.includes(userCode)) && singleUser.get("learningModNotif") == true)
+							{
+								admin.messaging().sendToDevice(userNotifToken, payload)
+									.then((response) => {
+										console.log("New learning module notification sent successfully to " + singleUser.get("username"));
+									return payload;
+									}).catch((err) => {
+										console.log(err);
+								});
+							}
+						}
+						else
+						{
+							var daysStart = 7 * week; //number of days pregnant this module would start at
+
+							//if the module is never supposed to expire
+							if (moduleExpiration == 0)
+							{
+								var daysEnd = daysStart + 100000; //add a large number of days (274 years)
+							}
+							else
+							{
+								var daysEnd = daysStart + moduleExpiration; //number of days pregnant this module would end
+							}
+
+							//If user is within the days this LM should be visible to them
+							if (userDaysPregnant >= daysStart && userDaysPregnant <= daysEnd)
+							{
+								lmUserVisibility.push(userCode);
+
+								//if user hasn't yet been notified and user's notifications are turned on, send push notif
+								if ((!storedLMUserVisibility.includes(userCode)) && singleUser.get("learningModNotif") == true)
+								{
+									admin.messaging().sendToDevice(userNotifToken, payload)
+										.then((response) => {
+											console.log("New learning module notification sent successfully to " + singleUser.get("username"));
+										return payload;
+										}).catch((err) => {
+											console.log(err);
+									});
+								}
+							}
+						}
+					});
+				});
+				//IMPORTANT: update the userVisibility array
+				learningModules.doc(learningModule.id).update({userVisibility: lmUserVisibility});
+			});
 		});
-		return userNotifToken;
-	  }).catch(error => {console.log('error', error)});
 	});
+});
 
 /**
  * Specifically for sending emotion survey notifications
@@ -312,7 +365,7 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 
 			surveyType = singleSurvey.get("type");
 			var surveyVisibility = []; //reset this for each survey
-			var storedSurveyVisibility = singleSurvey.get("userVisibility");;
+			var storedSurveyVisibility = singleSurvey.get("userVisibility");
 
 			if (surveyType == "After Joining")
 			{
@@ -347,7 +400,7 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 									userNotifToken = singleUser.get("token");
 									admin.messaging().sendToDevice(userNotifToken, payload)
 										.then((response) => {
-											console.log("New survey notification sent successfully!");
+											console.log("New survey notification for After Joining sent successfully to " + singleUser.get("username"));
 											return payload;
 									}).catch((err) => {
 										console.log(err);
@@ -390,12 +443,17 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 							{
 								surveyVisibility.push(singleUser.get("code"));
 
+								console.log("STORED SURVUEY FOR DUE DATE");
+								console.log(storedSurveyVisibility);
+								console.log("USER " + singleUser.get("userCode") + " " + singleUser.get("username"));
+								console.log((!storedSurveyVisibility.includes(userCode)));
+
 								if ((!storedSurveyVisibility.includes(userCode)) && singleUser.get("surveyNotif") == true)
 								{
 									userNotifToken = singleUser.get("token");
 									admin.messaging().sendToDevice(userNotifToken, payload)
 										.then((response) => {
-											console.log("New survey notification sent successfully!");
+											console.log("New survey notification for Due Date sent successfully to " + singleUser.get("username"));
 											return payload;
 									}).catch((err) => {
 										console.log(err);
@@ -434,7 +492,7 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 								userNotifToken = singleUser.get("token");
 								admin.messaging().sendToDevice(userNotifToken, payload)
 									.then((response) => {
-										console.log("New survey notification sent successfully!");
+										console.log("New survey notification for Inactivity sent successfully to " + singleUser.get("username"));
 										return payload;
 								}).catch((err) => {
 									console.log(err);
@@ -451,3 +509,56 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 });
 
 
+	/*var visibilityWeekList = [];
+	const learningMods = admin.firestore().collection('learningModules');
+	const users = admin.firestore().collection('users');
+	var userWeeksPregnant;
+	var userDaysPregnant;
+	var userNotifToken;
+  
+	const payload = {
+	  notification: {
+		  title: 'iMATter Learning Module',
+		  body: 'There is a new learning module in the learning center!',
+		  sound: "default"
+	  },
+  	};
+  
+	var moduleVisibiltyTimeList;
+	//Iterating through learning modules and grabbing weeks of visibility
+	learningMods.get().then((value) => {
+	  value.forEach(singleMod => {
+		moduleVisibiltyTimeList = singleMod.get("moduleVisibilityTime");
+		moduleVisibiltyTimeList.forEach(week => {
+			//need to convert week to Number because it's a string
+		  visibilityWeekList.push(Number(week));
+		});
+	  });
+	});
+  
+	//Iterating through users and checking for weeks & days pregnant
+	users.get().then((element) => {
+	  element.forEach(singleUser => {
+		userWeeksPregnant = singleUser.get('weeksPregnant');
+		  //if the weeks is in the learning mod list
+		  if (visibilityWeekList.includes(userWeeksPregnant))
+		  {
+			userDaysPregnant = singleUser.get('daysPregnant'); 
+			  //They're in a new week, meaning new learning module shows up
+			  //And they have learning module notifications turned on
+			  if (userDaysPregnant === 0 && singleUser.get('learningModNotif') === true)
+			  {
+				userNotifToken = singleUser.get('token');
+				
+				admin.messaging().sendToDevice(userNotifToken, payload)
+					.then((response) => {
+					console.log("New learning module notification sent successfully!");
+					return payload;
+					}).catch((err) => {
+						console.log(err);
+				});
+			  }
+			}
+		});
+		return userNotifToken;
+	  }).catch(error => {console.log('error', error)});*/
