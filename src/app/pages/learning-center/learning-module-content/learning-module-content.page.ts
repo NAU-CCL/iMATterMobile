@@ -28,7 +28,8 @@ export class LearningModuleContentPage implements OnInit {
     moduleVisibilityTime: [''],
     moduleQuiz: [],
     modulePointsWorth: 0,
-    moduleNext: ''
+    moduleNext: '',
+    userVisibility: ['']
   }
 
   quizQuestions: Question =
