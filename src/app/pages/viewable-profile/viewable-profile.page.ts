@@ -48,7 +48,8 @@ export class ViewableProfilePage implements OnInit {
   profilePic: '',
   dob: '',
   bio: '',
-  type: ''
+  type: '',
+  providerType: ''
 };
 
   private userProfileID: any;
@@ -117,6 +118,7 @@ export class ViewableProfilePage implements OnInit {
                 this.provider.username = doc.get('username');
                 this.provider.bio = doc.get('bio');
                 this.provider.profilePic = doc.get('profilePic');
+                this.provider.providerType = doc.get('providerType');
               });
             });
           }
