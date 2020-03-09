@@ -7,9 +7,13 @@ import { Router } from '@angular/router';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import * as moment from 'moment';
 
+import { StorageService, Item } from '../../services/storage.service';
+
 /**
  * This code written with the help of this tutorial:
  * https://devdactic.com/ionic-4-calendar-app/
+ *and this stackoverflow:
+ *https://stackoverflow.com/questions/56214875/ionic-calendar-event-does-not-load-on-device
  * Used for the general build and functionality of the calendar
  */
 
@@ -35,6 +39,7 @@ export class CalendarPage implements OnInit {
 
   minDate = new Date().toISOString();
 
+  test = [];
   eventSource = [];
   viewTitle;
 
@@ -49,7 +54,7 @@ export class CalendarPage implements OnInit {
   @ViewChild(CalendarComponent) myCal: CalendarComponent;
 
   constructor(private localNotifications: LocalNotifications, private alertCtrl: AlertController, @Inject(LOCALE_ID) private locale: string,
-              private storage: Storage, private router: Router) {
+              private storage: Storage, private storageService: StorageService, private router: Router) {
 		this.notifyTime = moment(new Date()).format();
 		
 		this.chosenHours = new Date().getHours();
@@ -96,7 +101,7 @@ export class CalendarPage implements OnInit {
 
   // Create the right event format and reload source
   addEvent() {
-    const eventCopy = {
+    let eventCopy = {
       title: this.event.title,
       startTime:  new Date(this.event.startTime),
       endTime: new Date(this.event.endTime),
@@ -125,11 +130,44 @@ export class CalendarPage implements OnInit {
 	this.eventList.push(eventCopy);
 	
     this.eventSource.push(eventCopy);
-	this.test = localStorage.setItem('event', JSON.stringify(this.eventSource));
+	this.test.push('1');
+	//this.test = localStorage.setItem('event', JSON.stringify(this.eventSource));
 	console.log(JSON.stringify(this.eventSource));
     this.myCal.loadEvents();
+	
+	
+	this.storageService.addItem(eventCopy).then(item => {
+      eventCopy = <Item>{};
+      this.showToast('Event Added!');
+
+      this.loadItems();
+	});
+	
     this.resetEvent();
     this.showAddEvent = false;
+	
+  }
+  
+  loadItems() {
+    this.storageService.getItems().then(items => {
+      this.items = items;
+      if (items) {
+     this.eventSource = items;
+      }
+      else{
+        console.log('No events Yet');
+      }
+
+
+      console.log(this.eventSource);
+    });
+  
+  }
+  
+  getStorage(){
+  this.storage.get('name').then((val) => {
+    return ['name'];
+  });
   }
   
   cancelNotification(){
