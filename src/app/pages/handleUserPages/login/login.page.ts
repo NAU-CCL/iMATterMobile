@@ -148,6 +148,7 @@ console.log('successful session creation');
                           });
                             this.notificationSetup(this.userID);
                             this.router.navigate(['/tabs/home/']);
+                            this.loginForm.reset();
                         } else {
                             this.showToast('Password is incorrect');
                         }
