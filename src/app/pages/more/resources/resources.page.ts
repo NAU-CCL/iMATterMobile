@@ -1,6 +1,8 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { Storage } from '@ionic/storage';
+import { NativeGeocoder, NativeGeocoderOptions, NativeGeocoderResult } from '@ionic-native/native-geocoder/ngx';
 import * as firebase from 'firebase/app';
 
 
@@ -23,24 +25,63 @@ export class ResourcesPage implements OnInit, AfterViewInit {
     doperationSunday: string;
     doperationWeekday: string;
     doperationSaturday: string;
+    userLocation: any;
+    userLocationHolder: number;
+    userProfileID: any;
+    specialNote: any;
 
     map: any;
     icon: any;
     pos: any;
+    position: any;
 
     dicon: any;
 
     @ViewChild('mapElement', {static: false}) mapNativeElement;
-    constructor(private geolocation: Geolocation) { }
+    constructor(private geolocation: Geolocation,
+                private nativeGeocoder: NativeGeocoder,
+                public afs: AngularFirestore,
+                private storage: Storage,) { }
 
     ngOnInit() {
+
+
+        this.storage.get('userCode').then((val) => {
+        if (val) {
+          this.userProfileID = val;
+          const ref = this.afs.firestore.collection('users').where('code', '==', val);
+          ref.get().then((result) => {
+            result.forEach(doc => {
+              this.userLocationHolder = doc.get('location');
+
+
+              console.log(this.userLocationHolder);
+
+            });
+          });
+        }
+
+        this.saveUserLocation(this.userLocationHolder);
+
+      });
+
+    }
+
+
+    saveUserLocation(userLocationHolder)
+    {
+      this.userLocation = this.userLocationHolder;
     }
 
     ngAfterViewInit(): void {
-      this.geoMaps();
+      this.geoMaps(this.userLocation);
       this.getLocations();
 
+
      }
+
+
+
 
 
 
@@ -62,6 +103,8 @@ export class ResourcesPage implements OnInit, AfterViewInit {
         this.doperationWeekday = doc.get("operationMF");
 
         this.addMarker(this.dtitle, this.dlongitude, this.dlatitude, this.dcontent, this.dicon);
+
+
         console.log(this.dlongitude);
         console.log(this.dicon);
 
@@ -72,7 +115,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
 
 
 
-
+/*
      geoMaps()
      {
        this.geolocation.getCurrentPosition().then((resp) => {
@@ -90,6 +133,75 @@ export class ResourcesPage implements OnInit, AfterViewInit {
           console.log('Error getting location', error);
         });
      }
+
+
+     **/
+
+
+     geoMaps(userLocation)
+     {
+
+       if(this.userLocation !== '')
+       {
+
+
+
+          let options: NativeGeocoderOptions = {
+              useLocale: true,
+              maxResults: 5
+          };
+
+          this.nativeGeocoder.reverseGeocode(52.5072095, 13.1452818, options)
+            .then((result: NativeGeocoderResult[]) => console.log(JSON.stringify(result[0])))
+            .catch((error: any) => console.log(error));
+
+          this.nativeGeocoder.forwardGeocode('Berlin', options)
+            .then((result: NativeGeocoderResult[]) => console.log('The coordinates are latitude=' + result[0].latitude + ' and longitude=' + result[0].longitude))
+            .catch((error: any) => console.log(error));
+
+
+
+
+
+/*       this.userLocationHolder = Number(this.userLocationHolder);
+
+         this.geoCoder.geocode({ 'address': this.userLocation }, (results, status) => {
+           if (status === 'OK') {
+             this.position = {
+               "lat": results[0].geometry.location.lat(),
+               "lng": results[0].geometry.location.lng()
+             }
+        //     this.userLat = this.position[0];
+          //   this.userLng = this.position[1];
+           } else {
+             console.log('Geocode was not successful for the following reason: ' + status);
+           }
+         });
+**/
+       }
+
+       else
+       {
+         this.geolocation.getCurrentPosition().then((resp) => {
+            this.latitude = resp.coords.latitude;
+            this.longitude = resp.coords.longitude;
+            this.map = new google.maps.Map(this.mapNativeElement.nativeElement, {
+              center: {lat: this.latitude, lng: this.longitude},
+              zoom: 16
+            });
+
+            console.log("displayed the map");
+
+          }).catch((error) => {
+            console.log('Error getting location', error);
+          });
+       }
+
+     }
+
+
+
+
 
      addMarker(dtitle, dlongitude, dlatitude, dcontent , dicon)
      {
