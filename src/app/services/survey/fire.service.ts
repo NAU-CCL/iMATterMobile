@@ -13,6 +13,7 @@ export interface Survey {
   daysTillExpire: number;
   daysInactive: number;
   emotionChosen: string;
+  pointsWorth: number;
 }
 
 export interface User {
@@ -90,5 +91,15 @@ export class FireService {
     var dateChose = year + " " + month + " " + day + " " + hour + " " + minute;
     
     return dateChose;
+  }
+
+  updateAnsweredSurveys(userID: string, answered: any[]){
+    return this.angularfs.firestore.collection('users')
+    .doc(userID).update({answeredSurveys: answered});
+  }
+
+  updateRecentNot(userID: string, recent: any[]){
+    return this.angularfs.firestore.collection('users')
+    .doc(userID).update({recentNotifications: recent});
   }
 }
