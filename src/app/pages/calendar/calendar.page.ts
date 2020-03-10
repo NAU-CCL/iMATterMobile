@@ -48,11 +48,16 @@ export class CalendarPage implements OnInit {
     currentDate: new Date(),
   };
 
+  length : number;
   private showAddEvent: boolean;
   
 
   items: Item[] = [];
   newItem: Item = <Item>{};
+  
+  deleteIndex : number;
+  
+  
   // @ts-ignore
   @ViewChild(CalendarComponent) myCal: CalendarComponent;
 
@@ -234,6 +239,18 @@ export class CalendarPage implements OnInit {
       desc: event.desc
 	  
     };
+	
+	console.log(this.eventSource.length);
+	console.log(this.eventList.length);
+	length = this.eventSource.length;
+	for (let i = 0; i < 3; i++) {
+		if (eventSource[i] == eventCopy){
+			deleteIndex = i;
+		}
+	}
+	
+	this.eventSource.splice(deleteIndex, 1);
+	storage.set('key',data);
 	
 	//this.storageService.deleteItem(event);
 	
