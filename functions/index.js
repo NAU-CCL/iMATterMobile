@@ -241,3 +241,7 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 	  }).catch(error => {console.log('error', error)});
 	});
 
+exports.newSurveyNotification = functions.https.onRequest((req, res) => {
+	const surveys = admin.firestore().collection('surveys');
+
+});
