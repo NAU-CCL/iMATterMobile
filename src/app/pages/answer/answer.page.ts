@@ -82,7 +82,7 @@ export class AnswerPage implements OnInit {
 
   submit(){
     let newPointValue = this.userPoints + this.survey.pointsWorth;
-    //this.profile.editRewardPoints(newPointValue, this.userCode);
+    this.profile.editRewardPoints(newPointValue, this.userCode);
     this.router.navigateByUrl('/available');
   }
 }

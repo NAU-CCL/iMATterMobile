@@ -59,7 +59,7 @@ export class AvailablePage implements OnInit {
             this.userCode = val;
             this.emotion = doc.get('mood');
             this.joined = doc.get('joined');
-            this.dueDate = doc.get('dueDate');
+            this.dueDate = doc.get('dueDate').split('-');
             this.answeredSurveys = doc.get('answeredSurveys');
             console.log("TEST: ", this.answeredSurveys);
           });
