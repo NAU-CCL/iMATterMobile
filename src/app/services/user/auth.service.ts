@@ -32,6 +32,8 @@ export interface User {
   surveyNotif: boolean;
   infoDeskNotif: boolean;
   token: any;
+  recentNotifications: any[];
+  answeredSurveys: any[];
 }
 
 export interface Provider {

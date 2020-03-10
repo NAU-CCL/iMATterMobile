@@ -11,7 +11,7 @@
   
   <div *ngFor="let survey of (surveys | async)">
     <div *ngIf="isDisplayed(survey) == true">
-      <ion-item button [routerLink]="['/answer', survey.id]">
+      <ion-item button (click)="updateAccess(survey)" [routerLink]="['/answer', survey.id]">
         {{ survey.title }}
       </ion-item>
     </div>

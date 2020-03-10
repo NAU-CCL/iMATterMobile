@@ -91,5 +91,23 @@
       <ion-icon md="md-arrow-forward" slot="end"></ion-icon>
     </ion-item>
   </ion-card>
+
+  <ion-card (click)="expandItem(drop)" *ngFor="let drop of dropDown">
+    <ion-card-header>
+      <ion-card-title>Recent Notifications</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <app-expandable expandHeight="150px" [expanded]="drop.expanded">
+        <div>
+          <ion-button fill="clear"(click)="clearArray()" >clear</ion-button>
+        </div>
+        <div *ngFor="let notif of user.recentNotifications">
+          {{notif}}
+        </div>
+      </app-expandable>
+    </ion-card-content>
+  </ion-card>
+
 </ion-content>
 

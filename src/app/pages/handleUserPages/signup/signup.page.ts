@@ -104,7 +104,9 @@ export class SignupPage implements OnInit {
     learningModNotif: true,
     surveyNotif: true,
     infoDeskNotif: true,
-    token: ''
+    token: '',
+    recentNotifications: [],
+    answeredSurveys: [],
   };
 
   ngOnInit() {}

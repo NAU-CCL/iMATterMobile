@@ -68,4 +68,14 @@ export class ProfileService {
             .doc(userID).update({points: newPointTotal});
     }
 
+    /**
+     * Update the number of points a user has
+     * Not called updatePoints because that's for redeeming points
+     */
+    editRewardPoints(newPointValue: number, userID: string)
+    {
+        return this.afs.firestore.collection('users')
+            .doc(userID).update({points: newPointValue});
+    }
+
 }
