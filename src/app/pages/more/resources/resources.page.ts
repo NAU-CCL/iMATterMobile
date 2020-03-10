@@ -141,6 +141,8 @@ export class ResourcesPage implements OnInit, AfterViewInit {
      geoMaps(userLocation)
      {
 
+       /*
+
        if(this.userLocation !== '')
        {
 
@@ -160,7 +162,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
             .catch((error: any) => console.log(error));
 
 
-
+**/
 
 
 /*       this.userLocationHolder = Number(this.userLocationHolder);
@@ -178,10 +180,10 @@ export class ResourcesPage implements OnInit, AfterViewInit {
            }
          });
 **/
-       }
+    //   }
 
-       else
-       {
+  //     else
+  //     {
          this.geolocation.getCurrentPosition().then((resp) => {
             this.latitude = resp.coords.latitude;
             this.longitude = resp.coords.longitude;
@@ -195,7 +197,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
           }).catch((error) => {
             console.log('Error getting location', error);
           });
-       }
+    //   }
 
      }
 
