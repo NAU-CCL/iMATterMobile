@@ -226,15 +226,24 @@ export class CalendarPage implements OnInit {
     let start = formatDate(event.startTime, 'medium', this.locale);
     let end = formatDate(event.endTime, 'medium', this.locale);
     
+	let eventCopy = {
+      title: event.title,
+      startTime:  event.startTime,
+      endTime: event.endTime,
+      allDay: event.allDay,
+      desc: event.desc
+	  
+    };
+	
 	//this.storageService.deleteItem(event);
 	
-    const alert = await this.alertCtrl.create({
-      header: event.title,
-      subHeader: event.desc,
-      message: 'From: ' + start + '<br><br>To: ' + end,
-      buttons: ['OK']
-    });
-    alert.present();
+    //const alert = await this.alertCtrl.create({
+     // header: event.title,
+     // subHeader: event.desc,
+     // message: 'From: ' + start + '<br><br>To: ' + end,
+      //buttons: ['OK']
+    //});
+   // alert.present();
 	
   }
 
