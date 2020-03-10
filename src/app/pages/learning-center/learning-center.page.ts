@@ -110,7 +110,7 @@ export class LearningCenterPage implements OnInit {
 
 //Checks to see if a given module should be displayed to the user
 //Returns boolean
-displayToUser(moduleVisibility, moduleExpiration)
+/*displayToUser(moduleVisibility, moduleExpiration)
 {
   console.log("in displayToUser");
   console.log("moduleVisibility: " + moduleVisibility);
@@ -155,6 +155,6 @@ displayToUser(moduleVisibility, moduleExpiration)
     }
   }
   return false;
-}
+}*/
 
 }
