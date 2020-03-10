@@ -226,6 +226,8 @@ export class CalendarPage implements OnInit {
     let start = formatDate(event.startTime, 'medium', this.locale);
     let end = formatDate(event.endTime, 'medium', this.locale);
     
+	//this.storageService.deleteItem(event);
+	
     const alert = await this.alertCtrl.create({
       header: event.title,
       subHeader: event.desc,
@@ -233,6 +235,7 @@ export class CalendarPage implements OnInit {
       buttons: ['OK']
     });
     alert.present();
+	
   }
 
 // Time slot was clicked
