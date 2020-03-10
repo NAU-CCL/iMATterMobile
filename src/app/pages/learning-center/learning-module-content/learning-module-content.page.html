@@ -30,26 +30,26 @@
   <ion-list>
     <ion-radio-group (ionChange)="quizRadioChange(quizQuestion.questionText, $event)" *ngFor="let quizQuestion of ( learningModule.moduleQuiz )">
       <ion-list-header>
-        <ion-label>{{quizQuestion.questionText}}</ion-label>
+        <ion-label [text-wrap]>{{quizQuestion.questionText}}</ion-label>
       </ion-list-header>
 
       <ion-item>
-        <ion-label>{{quizQuestion.choice1}}</ion-label>
+        <ion-label [text-wrap]>{{quizQuestion.choice1}}</ion-label>
         <ion-radio slot="start" value="{{quizQuestion.choice1}}"></ion-radio>
       </ion-item>
 
       <ion-item *ngIf="quizQuestion.choice2">
-        <ion-label>{{quizQuestion.choice2}}</ion-label>
+        <ion-label [text-wrap]>{{quizQuestion.choice2}}</ion-label>
         <ion-radio slot="start" value="{{quizQuestion.choice2}}"></ion-radio>
       </ion-item>
 
       <ion-item *ngIf="quizQuestion.choice3">
-        <ion-label>{{quizQuestion.choice3}}</ion-label>
+        <ion-label [text-wrap]>{{quizQuestion.choice3}}</ion-label>
         <ion-radio slot="start" value="{{quizQuestion.choice3}}"></ion-radio>
       </ion-item>
 
       <ion-item *ngIf="quizQuestion.choice4">
-        <ion-label>{{quizQuestion.choice4}}</ion-label>
+        <ion-label [text-wrap]>{{quizQuestion.choice4}}</ion-label>
         <ion-radio slot="start" value="{{quizQuestion.choice4}}"></ion-radio>
       </ion-item>
     </ion-radio-group>
