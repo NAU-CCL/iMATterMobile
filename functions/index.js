@@ -117,13 +117,14 @@ exports.sendChatNotfication =
                     body: 'There is a new message in the chat room',
                     sound: "default"
                 },
-            };
+			};
+			var recentNotifications = [];
 
             const ref = admin.firestore().collection('users').where('cohort', '==', newChat.cohort);
             ref.get().then((result) => {
                 result.forEach(doc => {
                     if(doc.get('chatNotif') === true && newChat.userID !== doc.get('code')) {
-                        token = doc.get('token');
+						token = doc.get('token');
                         admin.messaging().sendToDevice(token, payload)
 							.then((response) => {
 								console.log('worked');
@@ -183,6 +184,7 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 	var userWeeksPregnant;
 	var userDaysPregnant;
 	var userNotifToken;
+	var recentNotifications = [];
   
 	const payload = {
 	  notification: {
@@ -217,6 +219,13 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 			  if (userDaysPregnant === 0 && singleUser.get('learningModNotif') === true)
 			  {
 				userNotifToken = singleUser.get('token');
+
+				recentNotifications = singleUser.get('recentNotifications');
+				recentNotifications.push(payload.body);
+				currentUser = singleUser.get('code');
+				currentUser.update({
+					recentNotifications: admin.firestore.FieldValue.arrayUnion(recentNotifications)
+				});
 				
 				admin.messaging().sendToDevice(userNotifToken, payload)
 					.then((response) => {

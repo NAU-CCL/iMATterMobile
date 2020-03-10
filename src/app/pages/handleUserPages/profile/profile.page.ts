@@ -38,7 +38,9 @@ export class ProfilePage implements OnInit {
       chatNotif: true,
       learningModNotif: true,
       surveyNotif: true,
-      token: ''
+      token: '',
+      recentNotifications: [],
+      answeredSurveys: [],
   };
 
 

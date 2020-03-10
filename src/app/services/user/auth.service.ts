@@ -32,6 +32,8 @@ export interface User {
   learningModNotif: boolean;
   surveyNotif: boolean;
   token: any;
+  recentNotifications: any[];
+  answeredSurveys: any[];
 }
 
 export interface Provider {
