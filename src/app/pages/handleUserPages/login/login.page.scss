@@ -33,3 +33,18 @@ ion-input {
     border-bottom: 0 !important;
   }
 }
+
+.title {
+  text-align: center;
+}
+
+.login-button {
+  --background: var(--main-color);
+  --background-activated: var(--secondary-color);
+  --background-hover: var(--secondary-color);
+}
+
+.ion-link {
+  --color: var(--main-color);
+}
+

@@ -1,11 +1,11 @@
 <ion-header>
   <ion-toolbar>
-    <ion-item button [routerLink]="['/tabs/home/']" slot="start">
-      <ion-icon md="md-arrow-back"></ion-icon>
-    </ion-item>
+      <ion-buttons slot="start">
+          <ion-back-button  class="ion-text-button" defaultHref="/tabs/home"></ion-back-button>
+      </ion-buttons>
     <ion-title>Profile Page</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="logOut()">
+      <ion-button (click) = "updateLogOut()" (click)="logOut()" >
         Log Out
       </ion-button>
     </ion-buttons>
@@ -13,6 +13,10 @@
 </ion-header>
 
 <ion-content>
+    <ion-item>
+        Points Earned: {{user.points}}
+    </ion-item>
+
     <ion-card>
         <ion-img src="{{ user.profilePic }}"></ion-img>
         <ion-card-title padding-horizontal>
@@ -75,8 +79,7 @@
                       <ion-col
                               size="7"
                               class="placeholder-profile text-center"
-                              *ngIf="!user.location"
-                      >
+                              *ngIf="!user.location">
 
                       </ion-col>
                   </ion-row>

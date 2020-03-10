@@ -19,6 +19,9 @@ export class ViewableProfilePage implements OnInit {
     password: '',
     dueDate: '',
     location: 0,
+    weeksPregnant: '',
+    daysPregnant: '',
+    totalDaysPregnant: '',
     cohort: '',
     bio:  '',
     securityQ: '',
@@ -26,7 +29,14 @@ export class ViewableProfilePage implements OnInit {
     currentEmotion: '',
     profilePic: '',
     joined: '',
-    daysAUser: 0
+    daysAUser: 0,
+    points: 0,
+    chatNotif: true,
+    learningModNotif: true,
+    surveyNotif: true,
+    token: '',
+    recentNotifications: [],
+    answeredSurveys: [],
   };
 
   provider: Provider = {

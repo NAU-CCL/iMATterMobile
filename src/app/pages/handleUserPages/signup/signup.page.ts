@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthServiceProvider, User } from '../../../services/user/auth.service';
+import { FcmService } from '../../../services/pushNotifications/fcm.service';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -7,6 +8,7 @@ import { Storage } from '@ionic/storage';
 import { storage } from 'firebase';
 import 'firebase/storage';
 import * as firebase from 'firebase/app';
+import {AngularFirestore} from '@angular/fire/firestore';
 
 
 @Component({
@@ -24,6 +26,9 @@ export class SignupPage implements OnInit {
   private showImages: boolean;
   private dueDate: string;
   private currentDate = new Date().toJSON().split('T')[0];
+  private securityQ1: string;
+  private securityQ2: string;
+  private securityQ3: string;
 
   constructor(
       private authService: AuthServiceProvider,
@@ -33,7 +38,12 @@ export class SignupPage implements OnInit {
       private activatedRoute: ActivatedRoute,
       private router: Router,
       private ionicStorage: Storage,
+      private fcm: FcmService,
+      public afs: AngularFirestore
   ) {
+
+    this.getSecurityQs();
+
     const fbstorage = firebase.storage();
     const storageRef = fbstorage.ref('/ProfileImages');
     this.allPicURLs = ['https://firebasestorage.googleapis.com/v0/b/techdemofirebase.appspot.com/o/ProfileImages%2Fauto.png?alt=media&token=e5601f32-30f8-4b38-9a2c-ff2d7e6ad59a',
@@ -75,11 +85,11 @@ export class SignupPage implements OnInit {
       ],
       securityQ: [
         '',
-        Validators.compose([Validators.nullValidator, Validators.maxLength(300)]),
+        Validators.compose([Validators.required, Validators.maxLength(300)]),
       ],
       securityA: [
         '',
-        Validators.compose([Validators.nullValidator, Validators.maxLength(300)]),
+        Validators.compose([Validators.required, Validators.maxLength(300)]),
       ],
     });
   }
@@ -92,13 +102,23 @@ export class SignupPage implements OnInit {
     dueDate: '',
     location: 0,
     cohort: '',
+    weeksPregnant: '',
+    daysPregnant: '',
+    totalDaysPregnant: '',
     bio:  '',
     securityQ: '',
     securityA: '',
     currentEmotion: '',
     profilePic: '',
     joined: '',
-    daysAUser: 0
+    daysAUser: 0,
+    points: 0,
+    chatNotif: true,
+    learningModNotif: true,
+    surveyNotif: true,
+    token: '',
+    recentNotifications: [],
+    answeredSurveys: [],
   };
 
   ngOnInit() {}
@@ -136,6 +156,11 @@ export class SignupPage implements OnInit {
       this.user.securityA = securityA;
       this.user.joined = firebase.firestore.FieldValue.serverTimestamp();
       this.user.daysAUser = 0;
+      this.user.weeksPregnant = 0;
+      this.user.totalDaysPregnant = 0;
+      this.user.daysPregnant = 0;
+      this.user.chatNotif = true;
+      this.user.points = 0;
 
       // find user cohort
       const tempCohort = this.user.dueDate.split('-');
@@ -211,5 +236,14 @@ export class SignupPage implements OnInit {
     }
 
     return cohort;
+  }
+
+  getSecurityQs() {
+    firebase.firestore().collection('mobileSettings').doc('securityQuestions').get().then((result) => {
+      this.securityQ1 = result.get('q1');
+      this.securityQ2 = result.get('q2');
+      this.securityQ3 = result.get('q3');
+
+    });
   }
 }

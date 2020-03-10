@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Settings</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button class="ion-text-button" defaultHref="/tabs/more"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-list-header> Notifications </ion-list-header>
+    <ion-item>
+      <ion-label> Chat Notifications </ion-label>
+      <ion-toggle [(ngModel)]="chatNotif" color="dark" (ionChange)= setChatNotification(chatNotif) ></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label> Learning Module Notifications </ion-label>
+      <ion-toggle [(ngModel)]="learningModNotif" color="dark" (ionChange)= setLearningModuleNotification(learningModNotif) ></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label> Survey Notifications </ion-label>
+      <ion-toggle [(ngModel)]="surveyNotif" color="dark" (ionChange)= setSurveyNotification(surveyNotif) ></ion-toggle>
+    </ion-item>
+  </ion-list>
+
+</ion-content>

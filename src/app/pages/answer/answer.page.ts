@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FireService, Survey } from 'src/app/services/survey/fire.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { InAppBrowser, InAppBrowserOptions } from '@ionic-native/in-app-browser/ngx';
+import { ProfileService } from 'src/app/services/user/profile.service';
+import { Storage} from '@ionic/storage';
+import { AngularFirestore } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-answer',
@@ -11,18 +14,37 @@ import { InAppBrowser, InAppBrowserOptions } from '@ionic-native/in-app-browser/
 export class AnswerPage implements OnInit {
   survey: Survey = {
     title: '',
-    daysTillRelease: 0,
-    surveyLink: ''
+    surveyLink: '',
+    type: '',
+    daysTillRelease: '',
+    daysBeforeDueDate: '',
+    daysTillExpire: 0,
+    daysInactive: 0,
+    emotionChosen: '',
+    pointsWorth: 0
   }
 
   isDisabled = true;
+
+  userPoints;
+  userCode;
+  
   constructor(private activatedRoute: ActivatedRoute, 
               private fs: FireService,
               private browser: InAppBrowser,
-              private router: Router
+              private router: Router,
+              private profile: ProfileService,
+              private storage: Storage,
+              public afs: AngularFirestore
               ) { }
 
   ngOnInit() {
+    this.storage.get('authenticated').then((val) => {
+      if (val === 'false') {
+        this.router.navigate(['/login/']);
+      }
+    });
+
     let id = this.activatedRoute.snapshot.paramMap.get('id');
 
     if(id){
@@ -30,6 +52,19 @@ export class AnswerPage implements OnInit {
         this.survey = survey;
       });
     }
+
+    this.storage.get('userCode').then((val) => {
+      if (val) {
+        const ref = this.afs.firestore.collection('users').where('code', '==', val);
+        ref.get().then((result) => {
+          result.forEach(doc => {
+            this.userPoints = doc.get('points');
+            this.userCode = doc.get('code');
+          });
+        });
+      }
+    });
+
   }
 
   openPage(url: string) {
@@ -40,9 +75,14 @@ export class AnswerPage implements OnInit {
     this.isDisabled = false;
   }
 
+  returnToPage(){
+    this.storage.remove(this.survey.id);
+    this.router.navigateByUrl('/available');
+  }
+
   submit(){
-    this.fs.deleteSurvey(this.survey.id).then(() => {
-      this.router.navigateByUrl('/available');
-    },);
+    let newPointValue = this.userPoints + this.survey.pointsWorth;
+    this.profile.editRewardPoints(newPointValue, this.userCode);
+    this.router.navigateByUrl('/available');
   }
 }

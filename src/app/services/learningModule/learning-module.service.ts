@@ -16,7 +16,9 @@ export interface LearningModule
   moduleVideoID?: string, //YouTube video ID, optional
   modulePPTurl?: string, //powerpoint URL, optional
   moduleContent: string,
-  moduleVisibilityTime: string[],
+  moduleVisibilityTime: string,
+  moduleExpiration: number,
+  moduleActive: boolean,
   moduleQuiz: Question[],
   modulePointsWorth: number,
   moduleNext?: string //ID of next learning module to go to, optional
@@ -30,6 +32,7 @@ export interface Question
   choice3: string,
   choice4: string,
   correctAnswer: string,
+  pointsWorth: number,
   userSelection: string
 }
 
@@ -55,10 +58,10 @@ export class LearningModuleService {
     );
   }
 
-getAllLearningModules(): Observable<LearningModule[]>
-{
-  return this.learningModules;
-}
+  getAllLearningModules(): Observable<LearningModule[]>
+  {
+    return this.learningModules;
+  }
 
   getLearningModule(id:string): Observable<LearningModule>
   {

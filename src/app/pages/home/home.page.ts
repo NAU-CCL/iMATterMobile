@@ -5,7 +5,10 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { ToastController, AlertController } from '@ionic/angular';
 import { User } from '../../services/user/auth.service';
 import { ChatService, Cohort, Chat } from '../../services/chat/chat-service.service';
+import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyticsService.service';
 import * as firebase from 'firebase/app';
+import {Observable} from 'rxjs';
+import { FireService } from 'src/app/services/survey/fire.service';
 
 
 @Component({
@@ -43,27 +46,69 @@ export class HomePage implements OnInit {
     dueDate: '',
     location: 0,
     cohort: '',
+    weeksPregnant: '',
+    daysPregnant: '',
+    totalDaysPregnant: '',
     bio:  '',
     securityQ: '',
     securityA: '',
     currentEmotion: '',
     profilePic: '',
     joined: '',
-    daysAUser: 0
+    daysAUser: 0,
+    points: 0,
+    chatNotif: true,
+    learningModNotif: true,
+    surveyNotif: true,
+    token: '',
+    recentNotifications: [],
+    answeredSurveys: [],
   };
 
+
+    analytic: Analytics =
+  {
+    page: '',
+    userID: '',
+    timestamp: '',
+    sessionID: ''
+  }
+
+
+
+  session : Sessions =
+      {
+          userID: '',
+          LogOutTime: '',
+          LoginTime: '',
+          numOfClickChat: 0,
+          numOfClickCalendar: 0,
+          numOfClickLModule: 0,
+          numOfClickInfo: 0,
+          numOfClickSurvey: 0,
+          numOfClickProfile: 0,
+          numOfClickMore: 0,
+          numOfClickHome: 0
+      }
+      
+  public dropDown: any = [];
   private userProfileID: any;
   private id: any;
   private weeksPregnant: any;
   private daysPregnant: any;
   private totalDaysPregnant: any;
+  private analyticss : string;
+  private sessions : Observable<any>;
 
   constructor(private activatedRoute: ActivatedRoute, public afs: AngularFirestore,
               private toastCtrl: ToastController,
               private storage: Storage,
               private  router: Router,
               private chatService: ChatService,
-              private alertController: AlertController) {
+              private alertController: AlertController,
+              private analyticsService: AnalyticsService,
+              private fs: FireService) {
+                this.dropDown = [{ expanded: false }];
   }
 
   ngOnInit() {
@@ -75,7 +120,7 @@ export class HomePage implements OnInit {
     });
 
     this.userProfileID = this.storage.get('userCode');
-    this.id = this.activatedRoute.snapshot.paramMap.get('id');
+    //this.id = this.activatedRoute.snapshot.paramMap.get('id');
     this.storage.get('userCode').then((val) => {
       if (val) {
         this.userProfileID = val;
@@ -86,17 +131,34 @@ export class HomePage implements OnInit {
             this.user.profilePic = doc.get('profilePic');
             this.user.email = doc.get('email');
             this.user.dueDate = doc.get('dueDate');
+            this.user.weeksPregnant = doc.get('weeksPregnant');
+            this.user.daysPregnant = doc.get('daysPregnant');
+            this.user.totalDaysPregnant = doc.get('totalDaysPregnant');
             this.user.password = doc.get('password');
             this.user.bio = doc.get('bio');
             this.user.location = doc.get('location');
             this.user.cohort = doc.get('cohort');
             this.user.currentEmotion = doc.get('mood');
             this.user.code = doc.get('code');
+            this.user.recentNotifications = doc.get('recentNotifications');
+
+            const pregUpdateRef = this.afs.firestore.collection('pregnancyUpdates')
+                .where('day', '==', this.user.totalDaysPregnant);
+            pregUpdateRef.get().then((res) => {
+              res.forEach(document => {
+                this.pregnancyCard.day = document.get('day');
+                this.pregnancyCard.picture = document.get('picture');
+                this.pregnancyCard.description = document.get('description');
+              });
+            });
 
           });
         });
       }
     });
+
+
+    /*
 
     this.storage.get('weeksPregnant').then((val) => {
       if (val) {
@@ -128,14 +190,60 @@ export class HomePage implements OnInit {
           });
         });
       }
-    });
+    });*/
 
   }
 
   ionViewWillEnter() {
-
+  this.addView();
 
   }
+
+
+
+
+  updateProfileClicks()
+  {
+    this.analyticsService.updateProfileClicks(this.session);
+    console.log("added profile click");
+
+  }
+
+
+  updateLModuleClicks()
+  {
+    this.analyticsService.updateLModuleClicks(this.session);
+    console.log("added learning module click");
+
+  }
+
+
+  addView(){
+
+  //this.analytic.sessionID = this.session.id;
+  this.storage.get('userCode').then((val) =>{
+    if (val) {
+      const ref = this.afs.firestore.collection('users').where('code', '==', val);
+      ref.get().then((result) =>{
+        result.forEach(doc =>{
+          this.analytic.page = 'home';
+          this.analytic.userID = val;
+          this.analytic.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+          //this.analytic.sessionID = this.idReference;
+          this.analyticsService.addView(this.analytic).then (() =>{
+            console.log('successful added view: home');
+
+          }, err =>{
+            console.log('unsucessful added view: home');
+
+          });
+        });
+      });
+    }
+  });
+}
+
+
 
   saveEmotion(emotion: string) {
     this.afs.firestore.collection('users').doc(this.userProfileID)
@@ -171,5 +279,23 @@ export class HomePage implements OnInit {
 
     await alert.present();
   }
+  expandItem(drop): void {
+    if (drop.expanded) {
+      drop.expanded = false;
+    } else {
+      this.dropDown.map(listItem => {
+        if (drop == listItem) {
+          listItem.expanded = !listItem.expanded;
+        } else {
+          listItem.expanded = false;
+        }
+        return listItem;
+      });
+    }
+  }
 
+  clearArray(){
+    this.user.recentNotifications = [];
+    this.fs.updateRecentNot(this.user.code, this.user.recentNotifications);
+  }
 }

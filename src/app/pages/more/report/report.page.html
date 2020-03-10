@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Report A Problem</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button class="ion-text-button" defaultHref="/tabs/more"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-item>
+    <ion-label position="stacked">Title</ion-label>
+    <ion-input [(ngModel)]="submission.title"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">What is the problem?</ion-label>
+    <ion-textarea [(ngModel)]="submission.description" rows="8"></ion-textarea>
+  </ion-item>
+
+</ion-content>
+
+<ion-footer >
+  <ion-toolbar>
+    <ion-button *ngIf="submission.title == '' || submission.description == ''" class="ion-button-background" disabled="true" expand="full" (click)="submitSubmission()">
+      Submit
+    </ion-button>
+    <ion-button *ngIf="submission.title != '' && submission.description != ''" class="ion-button-background" expand="full" (click)="submitSubmission()">
+      Submit
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>
+
