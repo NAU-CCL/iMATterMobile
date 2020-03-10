@@ -28,7 +28,7 @@ export class LearningModuleContentPage implements OnInit {
     moduleContent: '',
     moduleVideoID: '',
     modulePPTurl: '',
-    moduleVisibilityTime: string,
+    moduleVisibilityTime: '',
     moduleExpiration: 0,
     moduleActive: null,
     moduleQuiz: [],
@@ -447,7 +447,13 @@ export class LearningModuleContentPage implements OnInit {
 
   clearStorage()
   {
-    this.storage.clear();
+    this.storage.remove(this.learningModule.id + "videoHasEnded");
+    this.storage.remove(this.learningModule.id + "numberTimesQuizTaken");
+    this.storage.remove(this.learningModule.id + "numberQuestionsCorrect");
+    this.storage.remove(this.learningModule.id + "didSubmit");
+    this.storage.remove(this.learningModule.id + "correctQuestions");
+    this.storage.remove(this.learningModule.id + "previousQuizAttemptPoints");
+    this.storage.remove(this.learningModule.id + "currentQuizPoints");
   }
 
 }
