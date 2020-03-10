@@ -26,6 +26,7 @@ export class LearningModuleContentPage implements OnInit {
     moduleVideoID: '',
     modulePPTurl: '',
     moduleVisibilityTime: [''],
+    moduleExpiration: 0,
     moduleQuiz: [],
     modulePointsWorth: 0,
     moduleNext: '',
@@ -305,7 +306,9 @@ export class LearningModuleContentPage implements OnInit {
 
   clearStorage()
   {
-    this.storage.clear();
+    this.storage.remove(this.learningModule.id + "videoHasEnded");
+    this.storage.remove(this.learningModule.id + "numberTimesQuizTaken");
+    this.storage.remove(this.learningModule.id + "numberQuestionsCorrect");
   }
 
 }
