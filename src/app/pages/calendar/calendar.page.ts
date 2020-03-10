@@ -242,16 +242,16 @@ export class CalendarPage implements OnInit {
 	
 	console.log(this.eventSource.length);
 	console.log(this.eventList.length);
-	length = this.eventSource.length;
-	for (let i = 0; i < 3; i++) {
-		if (eventSource[i] == eventCopy){
-			deleteIndex = i;
+	this.length = this.eventSource.length;
+	for (let i = 0; i < this.length; i++) {
+		if (this.eventSource[i] == eventCopy){
+			this.deleteIndex = i;
 		}
 	}
 	
-	this.eventSource.splice(deleteIndex, 1);
-	storage.set('key',data);
-	
+	this.eventSource.splice(this.deleteIndex, 1);
+	this.storage.set('my-items', this.eventSource);
+	this.loadItems();
 	//this.storageService.deleteItem(event);
 	
     //const alert = await this.alertCtrl.create({
