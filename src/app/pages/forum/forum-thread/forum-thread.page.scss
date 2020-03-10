@@ -37,13 +37,12 @@
   }
 }
 
-.ion-text-button {
-  --color: var(--main-color);
+ion-card{
+  width: 100% !important;
 }
 
-.ion-button-background {
-  --background: var(--main-color);
-  --background-activated: var(--secondary-color);
-  --background-hover: var(--secondary-color);
+.comment-type {
+  color: var(--main-color);
 }
+
 

@@ -30,6 +30,7 @@ export interface User {
   chatNotif: boolean;
   learningModNotif: boolean;
   surveyNotif: boolean;
+  infoDeskNotif: boolean;
   token: any;
   recentNotifications: any[];
   answeredSurveys: any[];
@@ -47,6 +48,7 @@ export interface Provider {
   dob: string;
   bio: string;
   type: string;
+  providerType: string;
 }
 
 export interface SecurityQ {
@@ -99,7 +101,9 @@ export class AuthServiceProvider {
       chatNotif: user.chatNotif,
       learningModNotif: user.learningModNotif,
       surveyNotif: user.surveyNotif,
-      token: user.token});
+      infoDeskNotif: user.infoDeskNotif,
+      token: user.token,
+      points: user.points});
   }
 
 

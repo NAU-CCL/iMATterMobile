@@ -35,9 +35,9 @@ export class LoginPage implements OnInit {
     userID: '',
     timestamp: '',
     sessionID: ''
-  }
+  };
 
-  session : Sessions =
+  session: Sessions =
       {
           userID: '',
           LogOutTime: '',
@@ -50,7 +50,7 @@ export class LoginPage implements OnInit {
           numOfClickProfile: 0,
           numOfClickMore: 0,
           numOfClickHome: 0
-      }
+      };
 
 
   private analyticss : string;
@@ -96,7 +96,7 @@ export class LoginPage implements OnInit {
   addSession(){
   this.storage.get('userCode').then((val) => {
     if(val){
-      const ref = this.afs.firestore.collection('users').where('code', '==',val);
+      const ref = this.afs.firestore.collection('users').where('code', '==', val);
       ref.get().then((result)=> {
         result.forEach(doc =>{
 
@@ -138,9 +138,10 @@ console.log('successful session creation');
                             this.storage.set('username', doc.get('username'));
                             this.storage.set('dueDate', doc.get('dueDate'));
                             this.storage.set('cohort', doc.get('cohort'));
-							
-                            this.getCurrentPregnancyStatus(doc.get('dueDate'));
-                            console.log(doc.get('dueDate'));
+                            this.storage.set('totalDaysPregnant', doc.get('totalDays'));
+                            this.storage.set('weeksPregnant', doc.get('weeksPregnant'));
+                            this.storage.set('daysPregnant', doc.get('daysPregnant'));
+
                             this.addSession();
 
                           this.afs.firestore.collection('users').doc(this.userID).update({
@@ -148,6 +149,7 @@ console.log('successful session creation');
                           });
                             this.notificationSetup(this.userID);
                             this.router.navigate(['/tabs/home/']);
+                            this.loginForm.reset();
                         } else {
                             this.showToast('Password is incorrect');
                         }
@@ -169,31 +171,6 @@ console.log('successful session creation');
         }).then(toast => toast.present());
     }
 
-    getCurrentPregnancyStatus(dueDate) {
-        const currentDateString = new Date().toJSON().split('T')[0];
-        const currentDate = new Date(currentDateString);
-        const userDueDate = new Date(dueDate);
-        const dateDiff = Math.abs(currentDate.getTime() - userDueDate.getTime());
-        const diffInDays = Math.ceil(dateDiff / (24 * 3600 * 1000));
-        const totalDays = 280 - diffInDays;
-        this.storage.set('totalDaysPregnant', totalDays);
-        const weeksPregnant = Math.floor(totalDays / 7);
-        this.storage.set('weeksPregnant', weeksPregnant);
-        const daysPregnant = totalDays % 7;
-        this.storage.set('daysPregnant', daysPregnant);
-
-        this.storage.get('userCode').then((val) => {
-            if (val) {
-                this.afs.firestore.collection('users').where('code', '==', val)
-                    .get().then(snapshot => {
-                    snapshot.forEach(doc => {
-                        this.afs.firestore.collection('users')
-                            .doc(val).update({weeksPregnant: weeksPregnant, daysPregnant: daysPregnant, totalDaysPregnant: totalDays});
-                    });
-                });
-            }
-        });
-    }
 
     private async presentToast(message) {
         const toast = await this.toastCtrl.create({

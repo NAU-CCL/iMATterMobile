@@ -36,7 +36,8 @@ export class ChatPage implements OnInit {
   timestamp: '',
   message: '',
   profilePic: '',
-  type: ''
+  type: '',
+  visibility: true
 };
 
 analytic: Analytics =
@@ -45,24 +46,29 @@ analytic: Analytics =
   userID: '',
   timestamp: '',
   sessionID: ''
-}
+};
 
 
   private cohortChat: string;
   private chats: Observable<any>;
   private hasEntered: boolean;
 
-  private analyticss : string;
-  private sessions : Observable<any>;
+  private analyticss: string;
+  private sessions: Observable<any>;
 
-  constructor(public _zone: NgZone, private router: Router, private storage: Storage, private chatService: ChatService
-    , private afs: AngularFirestore , private analyticsService: AnalyticsService ) {
+  constructor(public _zone: NgZone,
+              private router: Router,
+              private storage: Storage,
+              private chatService: ChatService,
+              private afs: AngularFirestore ,
+              private analyticsService: AnalyticsService ) {
 
     this.storage.get('cohort').then((val) => {
       if (val) {
         this.cohortChat = val;
         this.chats = this.chatService.getChats(this.cohortChat);
       }
+      this.scrollToBottom();
     });
   }
 
@@ -72,15 +78,11 @@ analytic: Analytics =
         this.router.navigate(['/login/']);
       }
     });
-
-
     this.chat.message = '';
     this.scrollToBottom();
-
   }
 
   ionViewDidEnter() {
-
     this.getCohort();
 
     this.chat.cohort = this.cohortChat;
@@ -96,6 +98,7 @@ analytic: Analytics =
             this.chat.timestamp = firebase.firestore.FieldValue.serverTimestamp();
             this.chat.message = this.chat.username + ' has entered the chat';
             this.chat.type = 'auto';
+            this.chat.visibility = true;
 
             this.chatService.addChat(this.chat).then(() => {
               this.chat.message = '';
@@ -118,21 +121,18 @@ analytic: Analytics =
     this.addView();
   }
 
-
-
-
   addView(){
 
-  //this.analytic.sessionID = this.session.id;
-  this.storage.get('userCode').then((val) =>{
+  // this.analytic.sessionID = this.session.id;
+  this.storage.get('userCode').then((val) => {
     if (val) {
       const ref = this.afs.firestore.collection('users').where('code', '==', val);
-      ref.get().then((result) =>{
-        result.forEach(doc =>{
+      ref.get().then((result) => {
+        result.forEach(doc => {
           this.analytic.page = 'chat';
           this.analytic.userID = val;
           this.analytic.timestamp = firebase.firestore.FieldValue.serverTimestamp();
-          //this.analytic.sessionID = this.idReference;
+          // this.analytic.sessionID = this.idReference;
           this.analyticsService.addView(this.analytic).then (() =>{
             console.log('successful added view: chat');
 
@@ -182,6 +182,7 @@ analytic: Analytics =
             this.chat.profilePic = doc.get('profilePic');
             this.chat.timestamp = firebase.firestore.FieldValue.serverTimestamp();
             this.chat.type = 'user';
+            this.chat.visibility = true;
 
             this.chatService.addChat(this.chat).then(() => {
               this.chat.message = '';
@@ -197,6 +198,7 @@ analytic: Analytics =
         });
       }
     });
+    this.scrollToBottom();
   }
 
   ionViewWillLeave() {
@@ -212,6 +214,8 @@ analytic: Analytics =
             this.chat.profilePic = doc.get('profilePic');
             this.chat.timestamp = firebase.firestore.FieldValue.serverTimestamp();
             this.chat.message = this.chat.username + ' has left the chat';
+            this.chat.type = 'auto';
+            this.chat.visibility = true;
 
             this.chatService.addChat(this.chat).then(() => {
               this.chat.message = '';

@@ -26,9 +26,8 @@ export class SignupPage implements OnInit {
   private showImages: boolean;
   private dueDate: string;
   private currentDate = new Date().toJSON().split('T')[0];
-  private securityQ1: string;
-  private securityQ2: string;
-  private securityQ3: string;
+  private securityQs: Array<string>;
+  private autoProfilePic: any;
 
   constructor(
       private authService: AuthServiceProvider,
@@ -43,20 +42,8 @@ export class SignupPage implements OnInit {
   ) {
 
     this.getSecurityQs();
-
-    const fbstorage = firebase.storage();
-    const storageRef = fbstorage.ref('/ProfileImages');
-    this.allPicURLs = ['https://firebasestorage.googleapis.com/v0/b/techdemofirebase.appspot.com/o/ProfileImages%2Fauto.png?alt=media&token=e5601f32-30f8-4b38-9a2c-ff2d7e6ad59a',
-      'https://firebasestorage.googleapis.com/v0/b/techdemofirebase.appspot.com/o/ProfileImages%2Fbabyfeet.png?alt=media&token=8d49bc52-416a-453b-b8a2-5d539451e107',
-      'https://firebasestorage.googleapis.com/v0/b/techdemofirebase.appspot.com/o/ProfileImages%2Fbird.png?alt=media&token=b5fd7b2f-e144-4882-b0d4-ec1cee437a1c',
-      'https://firebasestorage.googleapis.com/v0/b/techdemofirebase.appspot.com/o/ProfileImages%2Fbutterfly.png?alt=media&token=48df652b-f133-46b2-9d56-2102cf473c11',
-      'https://firebasestorage.googleapis.com/v0/b/techdemofirebase.appspot.com/o/ProfileImages%2Fheart.png?alt=media&token=351f8425-190b-4158-91ac-2bf282051d38',
-      'https://firebasestorage.googleapis.com/v0/b/techdemofirebase.appspot.com/o/ProfileImages%2Fpeacock.png?alt=media&token=27ed19f3-3a01-464d-843d-7cfca96e0281',
-      'https://firebasestorage.googleapis.com/v0/b/techdemofirebase.appspot.com/o/ProfileImages%2Fpurpleflower.png?alt=media&token=f863d5b3-0d92-4ce0-b1b4-ac643f7c3728',
-      'https://firebasestorage.googleapis.com/v0/b/techdemofirebase.appspot.com/o/ProfileImages%2Fredflower.png?alt=media&token=36754216-f5cf-4a38-967a-f024fb60cce7',
-    ];
-
-    this.picURL = 'https://firebasestorage.googleapis.com/v0/b/techdemofirebase.appspot.com/o/ProfileImages%2Fauto.png?alt=media&token=e5601f32-30f8-4b38-9a2c-ff2d7e6ad59a';
+    this.getAutoProfilePic();
+    this.getProfilePictureChoices();
 
     this.signupForm = this.formBuilder.group({
       email: [
@@ -116,6 +103,7 @@ export class SignupPage implements OnInit {
     chatNotif: true,
     learningModNotif: true,
     surveyNotif: true,
+    infoDeskNotif: true,
     token: '',
     recentNotifications: [],
     answeredSurveys: [],
@@ -156,11 +144,23 @@ export class SignupPage implements OnInit {
       this.user.securityA = securityA;
       this.user.joined = firebase.firestore.FieldValue.serverTimestamp();
       this.user.daysAUser = 0;
-      this.user.weeksPregnant = 0;
-      this.user.totalDaysPregnant = 0;
-      this.user.daysPregnant = 0;
       this.user.chatNotif = true;
       this.user.points = 0;
+
+      // find user current pregnancy status
+      const currentDateString = new Date().toJSON().split('T')[0];
+      const currentDate = new Date(currentDateString);
+      const userDueDate = new Date(this.user.dueDate);
+      const dateDiff = Math.abs(currentDate.getTime() - userDueDate.getTime());
+      const diffInDays = Math.ceil(dateDiff / (24 * 3600 * 1000));
+      const totalDays = 280 - diffInDays;
+      this.user.totalDaysPregnant = totalDays;
+
+      const weeksPregnant = Math.floor(totalDays / 7);
+      this.user.weeksPregnant = weeksPregnant;
+      const daysPregnant = totalDays % 7;
+      this.user.daysPregnant = daysPregnant;
+      
 
       // find user cohort
       const tempCohort = this.user.dueDate.split('-');
@@ -239,11 +239,21 @@ export class SignupPage implements OnInit {
   }
 
   getSecurityQs() {
-    firebase.firestore().collection('mobileSettings').doc('securityQuestions').get().then((result) => {
-      this.securityQ1 = result.get('q1');
-      this.securityQ2 = result.get('q2');
-      this.securityQ3 = result.get('q3');
-
+    firebase.firestore().collection('mobileSettings').doc('userSignUpSettings').get().then((result) => {
+      this.securityQs = result.get('securityQs');
     });
   }
+
+  getAutoProfilePic() {
+    firebase.firestore().collection('mobileSettings').doc('userSignUpSettings').get().then((result) => {
+      this.picURL = result.get('autoProfilePic');
+    });
+  }
+
+  getProfilePictureChoices() {
+    firebase.firestore().collection('mobileSettings').doc('userSignUpSettings').get().then((result) => {
+      this.allPicURLs = result.get('profilePictures');
+    });
+  }
+
 }

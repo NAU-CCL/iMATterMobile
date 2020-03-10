@@ -2,7 +2,7 @@
   <ion-toolbar>
     <ion-title>Report A Problem</ion-title>
     <ion-buttons slot="start">
-      <ion-back-button class="ion-text-button" defaultHref="/tabs/more"></ion-back-button>
+      <ion-back-button class="text-button" defaultHref="/tabs/more"></ion-back-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -22,10 +22,10 @@
 
 <ion-footer >
   <ion-toolbar>
-    <ion-button *ngIf="submission.title == '' || submission.description == ''" class="ion-button-background" disabled="true" expand="full" (click)="submitSubmission()">
+    <ion-button *ngIf="submission.title == '' || submission.description == ''" class="fill-button" disabled="true" expand="full" (click)="submitSubmission()">
       Submit
     </ion-button>
-    <ion-button *ngIf="submission.title != '' && submission.description != ''" class="ion-button-background" expand="full" (click)="submitSubmission()">
+    <ion-button *ngIf="submission.title != '' && submission.description != ''" class="fill-button" expand="full" (click)="submitSubmission()">
       Submit
     </ion-button>
   </ion-toolbar>

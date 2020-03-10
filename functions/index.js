@@ -74,6 +74,33 @@ exports.sendRecoveryEmail=functions.firestore.document('recovery_email/{docID}')
 	});
 
 
+exports.sendGCRequestEmail = functions.firestore.document('usersPointsRedeem/{docID}').onCreate((snap,context)=> {
+	const data = snap.data();
+
+	let authData = nodemailer.createTransport({
+		host: 'smtp.gmail.com',
+		port: 587,
+		secure: false,
+		auth: {
+			user: SENDER_EMAIL,
+			pass: SENDER_PASS
+		}
+	});
+
+	email = data.adminEmail;
+	console.log(email);
+	authData.sendMail({
+		from: 'imatternotification@gmail.com',
+		to: email, // admin set receiver
+		subject: "iMATter Gift Card Request", // Subject line
+		text: "There is a new request for a gift card.", // plain text body
+		html: "User " + data.username + " with the email: " + data.email + " has redeemed points for a(n) " + data.gcType
+			+ "gift card."// html body
+	}).then(res => console.log('successfully sent that mail')).catch(err => console.log(err));
+
+});
+
+
 exports.updateDays=functions.https.onRequest((req, res)=>{	
 	
 	//const increment = admin.firestore().FieldValue.increment(1);
@@ -134,6 +161,71 @@ exports.updateDays=functions.https.onRequest((req, res)=>{
 			});
 });
 
+exports.sendInfoDeskNotification =
+	functions.firestore.document('questions/{questionID}').onCreate(async (snap, context) => {
+		console.log('entered the function');
+		const newPost = snap.data();
+		const payload = {
+			notification: {
+				title: 'iMATter Information Desk',
+				body: 'There is a new post in the InformationDesk',
+				sound: "default"
+			},
+		};
+
+		const ref = admin.firestore().collection('users');
+		ref.get().then((result) => {
+			result.forEach(doc => {
+				if(doc.get('infoDeskNotif') === true) {
+					if(newPost.userID !== doc.get('code'))
+					token = doc.get('token');
+					admin.messaging().sendToDevice(token, payload)
+						.then((response) => {
+							console.log('sent notification');
+							return payload;
+						}).catch((err) => {console.log('entered doc, but did not send', err);
+						});
+				}
+			});
+			return 'true';
+		}).catch(error => {console.log('did not send', error)});
+		return 'true';
+	});
+
+
+exports.sendChatNotification =
+	functions.firestore.document('chats/{chatID}').onCreate(async (snap, context) => {
+		const newChat = snap.data();
+		const payload = {
+			notification: {
+				title: 'iMATter Chat Room',
+				body: 'There is a new message in the chat room',
+				sound: "default"
+			},
+		};
+
+		if(newChat.type !== 'auto'){
+			const ref = admin.firestore().collection('users').where('cohort', '==', newChat.cohort);
+			ref.get().then((result) => {
+				result.forEach(doc => {
+					if(doc.get('chatNotif') === true && newChat.userID !== doc.get('code')) {
+						token = doc.get('token');
+
+						admin.messaging().sendToDevice(token, payload)
+							.then((response) => {
+								console.log('sent notification');
+								return payload;
+							}).catch((err) => {
+							console.log('entered doc, but did not send', err);
+						});
+					}
+				});
+				return 'true';
+			}).catch(error => {console.log('did not send', error)});
+		}
+		return 'true';
+	});
+
 exports.sendProviderRecoveryEmail=functions.firestore.document('provider_recovery_email/{docID}').onCreate((snap,context)=>{	
 	const data=snap.data();
 	let authData = nodemailer.createTransport({
@@ -158,9 +250,8 @@ exports.sendProviderRecoveryEmail=functions.firestore.document('provider_recover
 		}).then(res=>console.log('successfully sent that mail')).catch(err=>console.log(err));
 	});
 
-
-
-exports.sendChatNotfication =
+//exports.sendChatNotfication =
+	/*
     functions.firestore.document('chats/{chatID}').onCreate(async (snap, context) => {
             const newChat = snap.data();
             const payload = {
@@ -179,18 +270,20 @@ exports.sendChatNotfication =
 						token = doc.get('token');
                         admin.messaging().sendToDevice(token, payload)
 							.then((response) => {
-								console.log('worked');
+								console.log('sent notification');
 								return payload;
 							}).catch((err) => {
-								console.log('entered', err);
+								console.log('entered doc, but did not send', err);
 							});
 						}
                 });
                 return token;
-            }).catch(error => {console.log('did not enter', error)});
-        });
+            }).catch(error => {console.log('did not send', error)});
+
+        });*/
 
 
+	/*
 exports.deleteOldChatMessages=functions.https.onRequest((req, res)=> {
 	const now = new Date();
 	console.log('now', now);
@@ -221,7 +314,7 @@ exports.deleteOldChatMessages=functions.https.onRequest((req, res)=> {
 		}).catch(error => {console.log('did not check', error)});
 		return setHours;
 	}).catch(error => {console.log('failed', error)});
-});
+});*/
 		
 //https://firebase.google.com/docs/functions/http-events
 /**

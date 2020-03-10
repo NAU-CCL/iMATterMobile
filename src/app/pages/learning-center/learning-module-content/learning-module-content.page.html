@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot=start>
-    <ion-back-button class="ion-text-button"  defaultHref="/learning-center"></ion-back-button>
+    <ion-back-button class="text-button"  defaultHref="/learning-center"></ion-back-button>
   </ion-buttons>
     <ion-title>{{learningModule.moduleTitle}} Module</ion-title>
   </ion-toolbar>
@@ -26,8 +26,7 @@
 </ion-card>
  
 <ion-card *ngIf="videoHasEnded == true || sanitizedPPTurl">
-  <ion-card-header color="medium">Questions</ion-card-header>
-  
+  <ion-card-header color="medium">Questions</ion-card-header>  
   <form [formGroup]="quizForm">
     <ion-list>
       <ion-radio-group (ionChange)="quizRadioChange(quizQuestion.questionText, $event)" 
@@ -84,6 +83,6 @@
 
 </ion-card>
 
-<ion-button class="submit-button" [routerLink]="['/learning-module-content', learningModule.moduleNext]" *ngIf="numberTimesQuizTaken > 0 && learningModule.moduleNext" expand="block">Next Module</ion-button>
+<ion-button class="fill-button" [routerLink]="['/learning-module-content', learningModule.moduleNext]" *ngIf="numberTimesQuizTaken > 0 && learningModule.moduleNext" expand="block">Next Module</ion-button>
 
 </ion-content>

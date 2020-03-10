@@ -35,7 +35,8 @@ export class HomePage implements OnInit {
     timestamp: '',
     message: '',
     profilePic: '',
-    type: ''
+    type: '',
+    visibility: true
   };
 
   user: User = {
@@ -60,6 +61,7 @@ export class HomePage implements OnInit {
     chatNotif: true,
     learningModNotif: true,
     surveyNotif: true,
+    infoDeskNotif: true,
     token: '',
     recentNotifications: [],
     answeredSurveys: [],
@@ -199,11 +201,7 @@ export class HomePage implements OnInit {
 
   }
 
-
-
-
-  updateProfileClicks()
-  {
+  updateProfileClicks() {
     this.analyticsService.updateProfileClicks(this.session);
     console.log("added profile click");
 
@@ -244,7 +242,6 @@ export class HomePage implements OnInit {
 }
 
 
-
   saveEmotion(emotion: string) {
     this.afs.firestore.collection('users').doc(this.userProfileID)
         .update({mood: emotion});
@@ -257,7 +254,8 @@ export class HomePage implements OnInit {
     this.chat.profilePic = this.user.profilePic;
     this.chat.timestamp = firebase.firestore.FieldValue.serverTimestamp();
     this.chat.message = this.chat.username + ' is currently feeling ' + emotion;
-    this.chat.type = 'auto';
+    this.chat.type = 'emotion';
+    this.chat.visibility = true;
 
     this.chatService.addChat(this.chat).then(() => {
       this.chat.message = '';

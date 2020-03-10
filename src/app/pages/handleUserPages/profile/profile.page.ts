@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController } from '@ionic/angular';
+import {AlertController, ToastController} from '@ionic/angular';
 import {AuthServiceProvider, User} from '../../../services/user/auth.service';
 import { ProfileService } from '../../../services/user/profile.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -8,7 +8,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import * as firebase from 'firebase/app';
 import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyticsService.service';
-
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-profile',
@@ -38,11 +38,11 @@ export class ProfilePage implements OnInit {
       chatNotif: true,
       learningModNotif: true,
       surveyNotif: true,
+      infoDeskNotif: true,
       token: '',
       recentNotifications: [],
       answeredSurveys: [],
   };
-
 
   analytic: Analytics =
   {
@@ -50,9 +50,7 @@ export class ProfilePage implements OnInit {
     userID: '',
     timestamp: '',
     sessionID: ''
-  }
-
-
+  };
 
   session : Sessions =
       {
@@ -67,11 +65,20 @@ export class ProfilePage implements OnInit {
           numOfClickProfile: 0,
           numOfClickMore: 0,
           numOfClickHome: 0
-      }
+      };
 
   private userProfileID: any;
-  private analyticss : string;
-  private sessions : Observable<any>;
+  private pointsForRedemption: any;
+  private analyticss: string;
+  private sessions: Observable<any>;
+  private canRedeemPoints: boolean;
+  private displayRedeemOptions: boolean;
+  private chosenGCType: string;
+  private gcTypes: Array<string>;
+
+    static checkUserPoints(userPoints, pointsNeeded): boolean {
+        return userPoints >= pointsNeeded;
+    }
 
   constructor(
       private alertCtrl: AlertController,
@@ -81,7 +88,10 @@ export class ProfilePage implements OnInit {
       private activatedRoute: ActivatedRoute,
       private afs: AngularFirestore,
       private storage: Storage,
-      private analyticsService: AnalyticsService
+      private analyticsService: AnalyticsService,
+      private alertController: AlertController,
+      private toastCtrl: ToastController,
+      private http: HttpClient
   ) {}
 
   ngOnInit() {
@@ -90,7 +100,8 @@ export class ProfilePage implements OnInit {
               this.router.navigate(['/login/']);
           }
       });
-    // this.refreshUserProfile();
+
+      this.displayRedeemOptions = false;
   }
 
   ionViewWillEnter() {
@@ -110,21 +121,29 @@ export class ProfilePage implements OnInit {
                       this.user.profilePic = doc.get('profilePic');
                       this.user.points = doc.get('points');
 
+                      const pointRef = firebase.firestore().collection('mobileSettings').doc('giftCardSettings').get();
+                      pointRef.then((res) => {
+                          this.pointsForRedemption =  res.get('points');
+                          this.gcTypes = res.get('types');
+                          this.canRedeemPoints = ProfilePage.checkUserPoints(this.user.points, this.pointsForRedemption);
+                      });
+
                   });
               });
           }
       });
-          this.addView();
+
+      this.addView();
   }
 
-  updateLogOut(){
+  updateLogOut() {
    this.analyticsService.updateLogOut(this.session);
    console.log('added LogOutTime');
 
   }
 
 
-  addView(){
+  addView() {
 
   //this.analytic.sessionID = this.session.id;
   this.storage.get('userCode').then((val) =>{
@@ -194,7 +213,7 @@ export class ProfilePage implements OnInit {
                 data.newPassword,
                 data.oldPassword, this.userProfileID
             );
-              this.refreshPage();
+            this.refreshPage();
           },
         },
       ],
@@ -244,19 +263,6 @@ export class ProfilePage implements OnInit {
         await alert.present();
     }
 
-  /*refreshUserProfile() {
-    this.profileService
-        .this.userProfileID
-        .get()
-        .then(userProfileSnapshot => {
-          this.userProfileID = userProfileSnapshot.data();
-        });
-  }*/
-
-  goHome() {
-    this.router.navigate(['/tabs/home/', this.userProfileID ]);
-  }
-
   refreshPage() {
       this.storage.get('userCode').then((val) => {
           if (val) {
@@ -268,9 +274,75 @@ export class ProfilePage implements OnInit {
                       this.user.password = doc.get('password');
                       this.user.bio = doc.get('bio');
                       this.user.location = doc.get('location');
+                      this.user.points = doc.get('points');
+
+                      const pointRef = firebase.firestore().collection('mobileSettings').doc('giftCardSettings').get();
+                      pointRef.then((res) => {
+                          this.pointsForRedemption =  res.get('points');
+                          this.gcTypes = res.get('types');
+                          this.canRedeemPoints = ProfilePage.checkUserPoints(this.user.points, this.pointsForRedemption);
+                      });
                   });
               });
           }
       });
   }
+
+  displayPointInfo() {
+      const pointRef = firebase.firestore().collection('mobileSettings').doc('giftCardSettings').get();
+      pointRef.then((res) => {
+          const points = res.get('points');
+          this.presentAlert('Earning Points',
+              'You can earn points by completing surveys and answering learning module questions. Once you have earned ' +
+              + points + ' points, you will see a redeem button, which you may press to use your points to get a gift card for $5');
+      });
+  }
+
+  async presentAlert(header: string, message: string) {
+      const alert = await this.alertController.create({
+            header,
+            message,
+            buttons: ['OK']
+        });
+
+      await alert.present();
+    }
+
+    redeemGiftCard(currentPoints, pointsUsed, gcType, email, username) {
+
+        this.profileService.updatePoints(currentPoints, pointsUsed, this.userProfileID);
+        this.displayRedeemOptions = false;
+
+        // this.sendEmailToAdmin();
+        this.refreshPage();
+
+        // send an email
+        firebase.firestore().collection('mobileSettings').doc('giftCardSettings').get().then((result) => {
+            const adminEmail = result.get('email');
+            console.log(adminEmail);
+
+            this.profileService.addToRedeemTable(adminEmail, email, username, gcType);
+        });
+
+        this.showToast('An email was sent for your gift card request!');
+
+    }
+
+    showToast(msg) {
+        this.toastCtrl.create({
+            message: msg,
+            duration: 2000
+        }).then(toast => toast.present());
+    }
+
+/*
+    sendEmailToAdmin(userEmail, gcType) {
+        const data = {'userEmail': userEmail, 'gcType': gcType}
+
+        this.http.get('https://us-central1-techdemofirebase.cloudfunctions.net/sendEmailNotification').subscribe((response) => {
+            console.log(response);
+        });
+    }*/
 }
+
+
