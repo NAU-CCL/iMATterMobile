@@ -6,7 +6,6 @@ import { Observable } from 'rxjs';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
-import { LearningModule } from "../learningModule/learning-module.service";
 
 export interface User {
   id?: string;
