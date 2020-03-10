@@ -142,11 +142,23 @@ export class SignupPage implements OnInit {
       this.user.securityA = securityA;
       this.user.joined = firebase.firestore.FieldValue.serverTimestamp();
       this.user.daysAUser = 0;
-      this.user.weeksPregnant = 0;
-      this.user.totalDaysPregnant = 0;
-      this.user.daysPregnant = 0;
       this.user.chatNotif = true;
       this.user.points = 0;
+
+      // find user current pregnancy status
+      const currentDateString = new Date().toJSON().split('T')[0];
+      const currentDate = new Date(currentDateString);
+      const userDueDate = new Date(this.user.dueDate);
+      const dateDiff = Math.abs(currentDate.getTime() - userDueDate.getTime());
+      const diffInDays = Math.ceil(dateDiff / (24 * 3600 * 1000));
+      const totalDays = 280 - diffInDays;
+      this.user.totalDaysPregnant = totalDays;
+
+      const weeksPregnant = Math.floor(totalDays / 7);
+      this.user.weeksPregnant = weeksPregnant;
+      const daysPregnant = totalDays % 7;
+      this.user.daysPregnant = daysPregnant;
+      
 
       // find user cohort
       const tempCohort = this.user.dueDate.split('-');
@@ -241,4 +253,5 @@ export class SignupPage implements OnInit {
       this.allPicURLs = result.get('profilePictures');
     });
   }
+
 }
