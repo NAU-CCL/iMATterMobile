@@ -110,6 +110,9 @@ exports.updateDays=functions.https.onRequest((req, res)=>{
 				currentUser.update({
 					daysPregnant: daysPregnant
 				});
+				currentUser.update({
+					daysSinceLogin: sinceLogin
+				});
 				console.log(daysPregnant);
 				currentUser.update({
 					weeksPregnant: weeksPregnant
