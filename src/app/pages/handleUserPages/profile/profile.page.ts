@@ -211,7 +211,7 @@ export class ProfilePage implements OnInit {
                 data.newPassword,
                 data.oldPassword, this.userProfileID
             );
-              this.refreshPage();
+            this.refreshPage();
           },
         },
       ],

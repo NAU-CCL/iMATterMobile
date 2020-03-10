@@ -64,6 +64,7 @@ analytic: Analytics =
         this.cohortChat = val;
         this.chats = this.chatService.getChats(this.cohortChat);
       }
+      this.scrollToBottom();
     });
   }
 
