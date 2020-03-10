@@ -182,6 +182,7 @@ exports.sendChatNotification =
 				result.forEach(doc => {
 					if(doc.get('chatNotif') === true && newChat.userID !== doc.get('code')) {
 						token = doc.get('token');
+
 						admin.messaging().sendToDevice(token, payload)
 							.then((response) => {
 								console.log('sent notification');
@@ -230,6 +231,7 @@ exports.sendChatNotification =
         });*/
 
 
+	/*
 exports.deleteOldChatMessages=functions.https.onRequest((req, res)=> {
 	const now = new Date();
 	console.log('now', now);
@@ -260,7 +262,7 @@ exports.deleteOldChatMessages=functions.https.onRequest((req, res)=> {
 		}).catch(error => {console.log('did not check', error)});
 		return setHours;
 	}).catch(error => {console.log('failed', error)});
-});
+});*/
 		
 //https://firebase.google.com/docs/functions/http-events
 //Iterate through learning modules and grab all the weeks of visibility from all learning modules
