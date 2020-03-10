@@ -80,7 +80,7 @@ exports.updateDays=functions.https.onRequest((req, res)=>{
 	const ref = admin.firestore().collection('users');
 			ref.get().then((result) => {			
 			  result.forEach(doc => {
-				  docID = doc.get('code');
+				docID = doc.get('code');
 				var currentUser = admin.firestore().collection('users').doc(docID);
 				var new_days = doc.data().daysAUser + 1;
 				var sinceLogin = doc.data().daysSinceLogin + 1;
@@ -89,9 +89,37 @@ exports.updateDays=functions.https.onRequest((req, res)=>{
 					daysAUser: new_days
 				});
 				
+				var dueDate = doc.data().dueDate;
+				const currentDateString = new Date().toJSON().split('T')[0];
+				const currentDate = new Date(currentDateString);
+				console.log(currentDate);
+				const userDueDate = new Date(dueDate);
+				console.log(dueDate);
+				console.log(userDueDate);
+				const dateDiff = Math.abs(currentDate.getTime() - userDueDate.getTime());
+				const diffInDays = Math.ceil(dateDiff / (24 * 3600 * 1000));
+				console.log(diffInDays);
+				const totalDays = 280 - diffInDays - 1;
+				console.log(totalDays);				
+				currentUser.update({
+					totalDaysPregnant: totalDays
+				});
+				console.log(totalDays);
+				const weeksPregnant = Math.floor(totalDays / 7);
+				console.log(weeksPregnant);
+				const daysPregnant = totalDays % 7;
+				currentUser.update({
+					daysPregnant: daysPregnant
+				});
 				currentUser.update({
 					daysSinceLogin: sinceLogin
 				});
+				console.log(daysPregnant);
+				currentUser.update({
+					weeksPregnant: weeksPregnant
+				});
+
+
 				
 			  
 			});
@@ -105,6 +133,30 @@ exports.updateDays=functions.https.onRequest((req, res)=>{
 			res.send("failed: " +err)
 			});
 });
+
+exports.sendProviderRecoveryEmail=functions.firestore.document('provider_recovery_email/{docID}').onCreate((snap,context)=>{	
+	const data=snap.data();
+	let authData = nodemailer.createTransport({
+		host:'smtp.gmail.com',
+		port:587,
+		secure: false,
+		auth: {
+		  user: SENDER_EMAIL, 
+		  pass: SENDER_PASS
+		}
+		
+		
+});
+
+	authData.sendMail({
+		from: 'imatternotification@gmail.com',
+		to: data.email, // list of receivers
+		subject: "Imatter InfoDesk", // Subject line
+		text: "Here is your recovery code: " + data.code, // plain text body
+		html: "Here is your recovery code: " + data.code // html body
+		//res.send("sent");
+		}).then(res=>console.log('successfully sent that mail')).catch(err=>console.log(err));
+	});
 
 
 
