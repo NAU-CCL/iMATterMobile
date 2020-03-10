@@ -21,7 +21,8 @@ export interface LearningModule
   moduleActive: boolean,
   moduleQuiz: Question[],
   modulePointsWorth: number,
-  moduleNext?: string //ID of next learning module to go to, optional
+  moduleNext?: string, //ID of next learning module to go to, optional
+  userVisibility: string[]
 }
 
 export interface Question

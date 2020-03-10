@@ -27,32 +27,33 @@
  
 <ion-card *ngIf="videoHasEnded == true || sanitizedPPTurl">
   <ion-card-header color="medium">Questions</ion-card-header>
+  
   <form [formGroup]="quizForm">
     <ion-list>
       <ion-radio-group (ionChange)="quizRadioChange(quizQuestion.questionText, $event)" 
       *ngFor="let quizQuestion of ( learningModule.moduleQuiz )"
       formControlName="quizSelections">
         <ion-list-header>
-          <ion-label>{{quizQuestion.questionText}} - {{quizQuestion.pointsWorth}} point(s)</ion-label>
+          <ion-label class="ion-text-wrap">{{quizQuestion.questionText}} - {{quizQuestion.pointsWorth}} point(s)</ion-label>
         </ion-list-header>
 
         <ion-item>
-          <ion-label>{{quizQuestion.choice1}}</ion-label>
+          <ion-label class="ion-text-wrap">{{quizQuestion.choice1}}</ion-label>
           <ion-radio slot="start" value="{{quizQuestion.choice1}}" [disabled]="didSubmit"></ion-radio>
         </ion-item>
 
         <ion-item *ngIf="quizQuestion.choice2">
-          <ion-label>{{quizQuestion.choice2}}</ion-label>
+          <ion-label class="ion-text-wrap">{{quizQuestion.choice2}}</ion-label>
           <ion-radio slot="start" value="{{quizQuestion.choice2}}" [disabled]="didSubmit"></ion-radio>
         </ion-item>
 
         <ion-item *ngIf="quizQuestion.choice3">
-          <ion-label>{{quizQuestion.choice3}}</ion-label>
+          <ion-label class="ion-text-wrap">{{quizQuestion.choice3}}</ion-label>
           <ion-radio slot="start" value="{{quizQuestion.choice3}}" [disabled]="didSubmit"></ion-radio>
         </ion-item>
 
         <ion-item *ngIf="quizQuestion.choice4">
-          <ion-label>{{quizQuestion.choice4}}</ion-label>
+          <ion-label class="ion-text-wrap">{{quizQuestion.choice4}}</ion-label>
           <ion-radio slot="start" value="{{quizQuestion.choice4}}" [disabled]="didSubmit"></ion-radio>
         </ion-item>
       </ion-radio-group>
