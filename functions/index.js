@@ -117,13 +117,14 @@ exports.sendChatNotfication =
                     body: 'There is a new message in the chat room',
                     sound: "default"
                 },
-            };
+			};
+			var recentNotifications = [];
 
             const ref = admin.firestore().collection('users').where('cohort', '==', newChat.cohort);
             ref.get().then((result) => {
                 result.forEach(doc => {
                     if(doc.get('chatNotif') === true && newChat.userID !== doc.get('code')) {
-                        token = doc.get('token');
+						token = doc.get('token');
                         admin.messaging().sendToDevice(token, payload)
 							.then((response) => {
 								console.log('worked');
@@ -183,7 +184,8 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 	const users = admin.firestore().collection('users');
 	var userNotifToken;
 	var userCode;
-
+	var recentNotifications = [];
+ 
 	const payload = {
 		notification: {
 			title: 'iMATter Learning Module',
@@ -235,6 +237,13 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 							//Covers case where new module is added
 							if ((!storedLMUserVisibility.includes(userCode)) && singleUser.get("learningModNotif") == true)
 							{
+                	recentNotifications = singleUser.get('recentNotifications');
+				          recentNotifications.push(payload.body);
+                  currentUser = singleUser.get('code');
+                  currentUser.update({
+                    recentNotifications: admin.firestore.FieldValue.arrayUnion(recentNotifications)
+                  });
+                
 								admin.messaging().sendToDevice(userNotifToken, payload)
 									.then((response) => {
 										console.log("New learning module notification sent successfully to " + singleUser.get("username"));
@@ -266,6 +275,12 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 								//if user hasn't yet been notified and user's notifications are turned on, send push notif
 								if ((!storedLMUserVisibility.includes(userCode)) && singleUser.get("learningModNotif") == true)
 								{
+                  	recentNotifications = singleUser.get('recentNotifications');
+                    recentNotifications.push(payload.body);
+                    currentUser = singleUser.get('code');
+                    currentUser.update({
+                      recentNotifications: admin.firestore.FieldValue.arrayUnion(recentNotifications)
+                    });
 									admin.messaging().sendToDevice(userNotifToken, payload)
 										.then((response) => {
 											console.log("New learning module notification sent successfully to " + singleUser.get("username"));

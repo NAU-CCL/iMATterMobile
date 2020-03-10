@@ -8,6 +8,7 @@ import { ChatService, Cohort, Chat } from '../../services/chat/chat-service.serv
 import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyticsService.service';
 import * as firebase from 'firebase/app';
 import {Observable} from 'rxjs';
+import { FireService } from 'src/app/services/survey/fire.service';
 
 
 @Component({
@@ -59,7 +60,9 @@ export class HomePage implements OnInit {
     chatNotif: true,
     learningModNotif: true,
     surveyNotif: true,
-    token: ''
+    token: '',
+    recentNotifications: [],
+    answeredSurveys: [],
   };
 
 
@@ -87,7 +90,8 @@ export class HomePage implements OnInit {
           numOfClickMore: 0,
           numOfClickHome: 0
       }
-
+      
+  public dropDown: any = [];
   private userProfileID: any;
   private id: any;
   private weeksPregnant: any;
@@ -102,7 +106,9 @@ export class HomePage implements OnInit {
               private  router: Router,
               private chatService: ChatService,
               private alertController: AlertController,
-              private analyticsService: AnalyticsService) {
+              private analyticsService: AnalyticsService,
+              private fs: FireService) {
+                this.dropDown = [{ expanded: false }];
   }
 
   ngOnInit() {
@@ -134,6 +140,7 @@ export class HomePage implements OnInit {
             this.user.cohort = doc.get('cohort');
             this.user.currentEmotion = doc.get('mood');
             this.user.code = doc.get('code');
+            this.user.recentNotifications = doc.get('recentNotifications');
 
             const pregUpdateRef = this.afs.firestore.collection('pregnancyUpdates')
                 .where('day', '==', this.user.totalDaysPregnant);
@@ -272,6 +279,23 @@ export class HomePage implements OnInit {
 
     await alert.present();
   }
+  expandItem(drop): void {
+    if (drop.expanded) {
+      drop.expanded = false;
+    } else {
+      this.dropDown.map(listItem => {
+        if (drop == listItem) {
+          listItem.expanded = !listItem.expanded;
+        } else {
+          listItem.expanded = false;
+        }
+        return listItem;
+      });
+    }
+  }
 
-
+  clearArray(){
+    this.user.recentNotifications = [];
+    this.fs.updateRecentNot(this.user.code, this.user.recentNotifications);
+  }
 }

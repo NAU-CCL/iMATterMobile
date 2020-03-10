@@ -38,7 +38,9 @@ export class ProfilePage implements OnInit {
       chatNotif: true,
       learningModNotif: true,
       surveyNotif: true,
-      token: ''
+      token: '',
+      recentNotifications: [],
+      answeredSurveys: [],
   };
 
 
@@ -106,6 +108,7 @@ export class ProfilePage implements OnInit {
                       this.user.cohort = doc.get('cohort');
                       this.user.currentEmotion = doc.get('mood');
                       this.user.profilePic = doc.get('profilePic');
+                      this.user.points = doc.get('points');
 
                   });
               });
