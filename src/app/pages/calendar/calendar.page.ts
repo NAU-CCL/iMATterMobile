@@ -240,16 +240,20 @@ export class CalendarPage implements OnInit {
 	  
     };
 	
-	console.log(this.eventSource.length);
-	console.log(this.eventList.length);
+	//console.log(this.eventSource.length);
+	console.log(eventCopy);
 	this.length = this.eventSource.length;
 	for (let i = 0; i < this.length; i++) {
-		if (this.eventSource[i] == eventCopy){
+		console.log(this.eventSource[i]);
+		if (this.eventSource[i] = eventCopy){
+			//not working
+			console.log("in here?");
 			this.deleteIndex = i;
 		}
 	}
 	
-	this.eventSource.splice(this.deleteIndex, 1);
+	//this.eventSource.splice(this.deleteIndex, 1);
+	console.log(this.deleteIndex);
 	this.storage.set('my-items', this.eventSource);
 	this.loadItems();
 	//this.storageService.deleteItem(event);
