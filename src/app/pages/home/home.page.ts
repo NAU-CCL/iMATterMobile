@@ -9,6 +9,7 @@ import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyti
 import * as firebase from 'firebase/app';
 import {Observable} from 'rxjs';
 import { FireService } from 'src/app/services/survey/fire.service';
+import { MoodProviderNotifService, EmotionNotif } from "../../services/mood-provider-notif.service";
 
 
 @Component({
@@ -67,6 +68,12 @@ export class HomePage implements OnInit {
     answeredSurveys: [],
   };
 
+  emotionNotif: EmotionNotif = {
+    userID: '',
+    username: '',
+    emotionEntered: '',
+    viewed: false
+};
 
     analytic: Analytics =
   {
@@ -74,7 +81,7 @@ export class HomePage implements OnInit {
     userID: '',
     timestamp: '',
     sessionID: ''
-  }
+  };
 
 
 
@@ -109,7 +116,8 @@ export class HomePage implements OnInit {
               private chatService: ChatService,
               private alertController: AlertController,
               private analyticsService: AnalyticsService,
-              private fs: FireService) {
+              private fs: FireService,
+              private mpnService: MoodProviderNotifService) {
                 this.dropDown = [{ expanded: false }];
   }
 
@@ -264,6 +272,11 @@ export class HomePage implements OnInit {
     if (emotion === 'sad' || emotion === 'overwhelmed' || emotion === 'angry') {
       this.presentAlert('Stay Strong!',
           'Remember you have your cohort to support you and health modules available to you!');
+
+      this.emotionNotif.userID = this.userProfileID;
+      this.emotionNotif.username = this.user.username;
+      this.emotionNotif.emotionEntered = emotion;
+      this.mpnService.addEmotionNotif(this.emotionNotif);
     }
   }
 

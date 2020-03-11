@@ -44,6 +44,10 @@ export class LearningCenterPage implements OnInit {
         this.router.navigate(['/login/']);
       }
     });
+
+  }
+
+  ionViewDidEnter() {
     this.learningModules = this.learningModService.getAllLearningModules();
 
     //WeeksPregnant
@@ -56,13 +60,13 @@ export class LearningCenterPage implements OnInit {
         this.userWeeksPregnant = this.userWeeksPregnant.toString();
       }
 
-      }).catch(e => {
+    }).catch(e => {
 
       console.log('error retrieving userweekspregnant: '+ e);
 
-      });
+    });
 
-      //WeeksPregnant
+    //WeeksPregnant
     this.storage.get("totalDaysPregnant").then(value => {
       if (value != null)
       {
@@ -72,13 +76,13 @@ export class LearningCenterPage implements OnInit {
         this.userTotalDaysPregnant = Number(this.userTotalDaysPregnant);
       }
 
-      }).catch(e => {
+    }).catch(e => {
 
       console.log('error retrieving totalDaysPregnant: '+ e);
 
-      });
+    });
 
-      this.addView();
+    this.addView();
   }
 
 
