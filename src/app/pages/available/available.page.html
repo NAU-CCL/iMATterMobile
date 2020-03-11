@@ -9,12 +9,34 @@
 
 <ion-content>
   
-  <div *ngFor="let survey of (surveys | async)">
+  <!-- <div *ngFor="let survey of (surveys | async)">
     <div *ngIf="isDisplayed(survey) == true">
       <ion-item button (click)="updateAccess(survey)" [routerLink]="['/answer', survey.id]">
         {{ survey.title }}
       </ion-item>
     </div>
-  </div>
-  
+  </div> -->
+  <ion-list>
+    <ng-container *ngFor="let survey of (surveys | async)">
+
+      <ion-card button [routerLink]="['/answer', survey.id]" 
+      *ngIf="isDisplayed(survey) == true">
+        
+      <ion-card-header>
+          <ion-card-title>
+            {{ survey.title }}
+          </ion-card-title>
+          <ion-card-content>
+            Temporary Description PlaceHolder
+          </ion-card-content>
+          <ion-card-subtitle>
+            Points: {{ survey.pointsWorth }}
+          </ion-card-subtitle>
+      </ion-card-header>
+
+      </ion-card>
+
+    </ng-container>
+
+  </ion-list>
 </ion-content>

@@ -46,10 +46,7 @@ export class AvailablePage implements OnInit {
         this.router.navigate(['/login/']);
       }
     });
-
-    // get all existing surveys
-    this.surveys = this.fs.getSurveys();
-    
+        
     // obtain the user's emotion, duedate, joined date, answered surveys, and user code
     this.storage.get('userCode').then((val) => {
       if (val) {
@@ -66,6 +63,11 @@ export class AvailablePage implements OnInit {
         });
       }
     });
+  }
+
+ ionViewDidEnter(){
+    // get all existing surveys
+    this.surveys = this.fs.getSurveys();
   }
   
   // isDisplayed determines if the survey shows up for the user or not
@@ -162,14 +164,14 @@ export class AvailablePage implements OnInit {
     if(survey.type == 'Inactive'){
 
       if(inactiveDays >= survey.daysInactive){
-        this.surveyInterval.push(survey.id + ":" + "false");
+        this.surveyInterval.push(survey.id + ":" + currentTime[2]);
         isDisplayed = true;
       }
 
       this.answeredSurveys.forEach( val => {
-        if(val.split(":")[1] === "false" && val.split(":").includes(survey.id)){
+        if(val.split(":")[1] == currentTime[2] && val.split(":").includes(survey.id)){
           isDisplayed = false;
-        }
+        } 
       })
     }
 
@@ -178,44 +180,44 @@ export class AvailablePage implements OnInit {
     if(survey.type == 'Emotion'){
 
       if(survey.emotionChosen == 'excited' && this.emotion == 'excited'){
-        this.surveyInterval.push(survey.id + ":" + "false");
+        this.surveyInterval.push(survey.id + ":" + currentTime[2]);
         isDisplayed = true;
       }
 
       if(survey.emotionChosen == 'happy' && this.emotion == 'happy'){
-        this.surveyInterval.push(survey.id + ":" + "false");
+        this.surveyInterval.push(survey.id + ":" + currentTime[2]);
         isDisplayed = true;
       }
 
       if(survey.emotionChosen == 'loved' && this.emotion == 'loved'){
-        this.surveyInterval.push(survey.id + ":" + "false");
+        this.surveyInterval.push(survey.id + ":" + currentTime[2]);
         isDisplayed = true;
       }
 
       if(survey.emotionChosen == 'indifferent' && this.emotion == 'indifferent'){
-        this.surveyInterval.push(survey.id + ":" + "false");
+        this.surveyInterval.push(survey.id + ":" + currentTime[2]);
         isDisplayed = true;
       }
 
       if(survey.emotionChosen == 'overwhelmed' && this.emotion == 'overwhelmed'){
-        this.surveyInterval.push(survey.id + ":" + "false");
+        this.surveyInterval.push(survey.id + ":" + currentTime[2]);
         isDisplayed = true;
       }
 
       if(survey.emotionChosen == 'sad' && this.emotion == 'sad'){
-        this.surveyInterval.push(survey.id + ":" + "false");
+        this.surveyInterval.push(survey.id + ":" + currentTime[2]);
         isDisplayed = true;
       }
 
       if(survey.emotionChosen == 'angry' && this.emotion == 'angry'){
-        this.surveyInterval.push(survey.id + ":" + "false");
+        this.surveyInterval.push(survey.id + ":" + currentTime[2]);
         isDisplayed = true;
       }
       
       this.answeredSurveys.forEach( val => {
-        if(val.split(":")[1] == "false" && val.split(":").includes(survey.id)){
+        if(val.split(":")[1] == currentTime[2] && val.split(":").includes(survey.id)){
           isDisplayed = false;
-        }
+        } 
       })
     }
 

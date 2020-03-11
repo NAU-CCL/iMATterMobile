@@ -42,7 +42,7 @@ export class FireService {
     );
    }
 
-   getSurveys(){
+   getSurveys(): Observable<Survey[]>{
     return this.surveys;
   }
 

@@ -75,11 +75,6 @@ export class AnswerPage implements OnInit {
     this.isDisabled = false;
   }
 
-  returnToPage(){
-    this.storage.remove(this.survey.id);
-    this.router.navigateByUrl('/available');
-  }
-
   submit(){
     let newPointValue = this.userPoints + this.survey.pointsWorth;
     this.profile.editRewardPoints(newPointValue, this.userCode);
