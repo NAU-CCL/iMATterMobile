@@ -41,6 +41,7 @@ export class LearningCenterPage implements OnInit {
         this.router.navigate(['/login/']);
       }
     });
+
     this.learningModules = this.learningModService.getAllLearningModules();
 
     //WeeksPregnant
@@ -59,7 +60,6 @@ export class LearningCenterPage implements OnInit {
 
       this.addView();
   }
-
 
   addView()
   {
