@@ -376,18 +376,19 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 						//if module is to always be displayed
 						if (week == 0)
 						{
+							console.log("IN WEEK 0 OF VISIBILITY " + week);
 							lmUserVisibility.push(userCode);
 
 							//if user hasn't yet been notified and user's notifications are turned on, send push notif
 							//Covers case where new module is added
 							if ((!storedLMUserVisibility.includes(userCode)) && singleUser.get("learningModNotif") == true)
 							{
-								recentNotifications = singleUser.get('recentNotifications');
+								/*recentNotifications = singleUser.get('recentNotifications');
 								recentNotifications.push(payload.body);
 								currentUser = singleUser.get('code');
 								currentUser.update({
 									recentNotifications: admin.firestore.FieldValue.arrayUnion(recentNotifications)
-                 				 });
+                 				 });*/
                 
 								admin.messaging().sendToDevice(userNotifToken, payload)
 									.then((response) => {
@@ -415,17 +416,18 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 							//If user is within the days this LM should be visible to them
 							if (userDaysPregnant >= daysStart && userDaysPregnant <= daysEnd)
 							{
+								console.log("IN NON-0 WEEKS OF VISIBILITY " + week);
 								lmUserVisibility.push(userCode);
 
 								//if user hasn't yet been notified and user's notifications are turned on, send push notif
 								if ((!storedLMUserVisibility.includes(userCode)) && singleUser.get("learningModNotif") == true)
 								{
-									recentNotifications = singleUser.get('recentNotifications');
+									/*recentNotifications = singleUser.get('recentNotifications');
 									recentNotifications.push(payload.body);
 									currentUser = singleUser.get('code');
 									currentUser.update({
 										recentNotifications: admin.firestore.FieldValue.arrayUnion(recentNotifications)
-									});
+									});*/
 										
 									admin.messaging().sendToDevice(userNotifToken, payload)
 										.then((response) => {
