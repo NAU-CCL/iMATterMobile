@@ -23,11 +23,8 @@ export class LearningCenterPage implements OnInit {
     sessionID: ''
   }
 
-   //Weeks Pregnant of user (to display correct modules to them)
-   userWeeksPregnant;
-
-   //Total days pregnant of user (to calculate which learning modules should be visible to them)
-   userTotalDaysPregnant;
+   //user's code
+   userCode;
 
   private learningModules: Observable<LearningModule[]>;
 
@@ -47,34 +44,16 @@ export class LearningCenterPage implements OnInit {
     this.learningModules = this.learningModService.getAllLearningModules();
 
     //WeeksPregnant
-    this.storage.get("weeksPregnant").then(value => {
+    this.storage.get("userCode").then(value => {
       if (value != null)
       {
-        this.userWeeksPregnant = value;
-        console.log('userweekspregnant: '+ this.userWeeksPregnant);
-        //convert to string to be able to use in *ngIf in HTML
-        this.userWeeksPregnant = this.userWeeksPregnant.toString();
+        this.userCode = value;
+        console.log('userCode: '+ this.userCode);
       }
 
       }).catch(e => {
 
-      console.log('error retrieving userweekspregnant: '+ e);
-
-      });
-
-      //WeeksPregnant
-    this.storage.get("totalDaysPregnant").then(value => {
-      if (value != null)
-      {
-        this.userTotalDaysPregnant = value;
-        console.log('totalDaysPregnant: '+ this.userTotalDaysPregnant);
-        //convert to string to be able to use in *ngIf in HTML
-        this.userTotalDaysPregnant = Number(this.userTotalDaysPregnant);
-      }
-
-      }).catch(e => {
-
-      console.log('error retrieving totalDaysPregnant: '+ e);
+      console.log('error retrieving userCode: '+ e);
 
       });
 
@@ -107,54 +86,5 @@ export class LearningCenterPage implements OnInit {
     }
     });
   }
-
-//Checks to see if a given module should be displayed to the user
-//Returns boolean
-/*displayToUser(moduleVisibility, moduleExpiration)
-{
-  console.log("in displayToUser");
-  console.log("moduleVisibility: " + moduleVisibility);
-  console.log("moduleExpiration: " + moduleExpiration);
-
-  moduleVisibility = moduleVisibility.toString().split(/(?:,| )+/);
-  console.log("moduleVisibility AFTER SPLIT: ");
-  console.log(moduleVisibility);
-
-  var daysStart;
-  var daysEnd;
-  for (var index = 0; index < moduleVisibility.length; index++)
-  {
-    console.log("Module visibility length: " + moduleVisibility.length);
-    console.log("INDEX: " + index);
-    console.log("WEEK: " + moduleVisibility[index]);
-    //if module is always to be displayed
-    if (moduleVisibility[index] == 0)
-    {
-      return true;
-    }
-    else
-    {
-      daysStart = 7 * moduleVisibility[index];
-      console.log("DAYS START: " + daysStart);
-      //if module is to never expire
-      if (moduleExpiration == 0)
-      {
-        daysEnd = daysStart + 100000;
-      }
-      else
-      {
-        daysEnd = daysStart + moduleExpiration;
-      }
-
-      console.log("DAYS END: " + daysEnd); 
-
-      if (this.userTotalDaysPregnant >= daysStart && this.userTotalDaysPregnant <= daysEnd)
-      {
-        return true;
-      }
-    }
-  }
-  return false;
-}*/
 
 }

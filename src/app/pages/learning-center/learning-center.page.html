@@ -12,7 +12,7 @@
   <ion-list>
     <ng-container *ngFor="let learningMod of ( learningModules | async )">
       <ion-card button [routerLink]="['/learning-module-content', learningMod.id]" 
-      *ngIf="learningMod.moduleVisibilityTime.includes(userWeeksPregnant) || learningMod.moduleVisibilityTime.includes('Always')">
+      *ngIf="learningMod.userVisibility.includes(userCode)">
         
       <ion-card-header>
           <ion-card-title>
