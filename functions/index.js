@@ -382,12 +382,12 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 							//Covers case where new module is added
 							if ((!storedLMUserVisibility.includes(userCode)) && singleUser.get("learningModNotif") == true)
 							{
-                	recentNotifications = singleUser.get('recentNotifications');
-				          recentNotifications.push(payload.body);
-                  currentUser = singleUser.get('code');
-                  currentUser.update({
-                    recentNotifications: admin.firestore.FieldValue.arrayUnion(recentNotifications)
-                  });
+								recentNotifications = singleUser.get('recentNotifications');
+								recentNotifications.push(payload.body);
+								currentUser = singleUser.get('code');
+								currentUser.update({
+									recentNotifications: admin.firestore.FieldValue.arrayUnion(recentNotifications)
+                 				 });
                 
 								admin.messaging().sendToDevice(userNotifToken, payload)
 									.then((response) => {
@@ -420,12 +420,13 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 								//if user hasn't yet been notified and user's notifications are turned on, send push notif
 								if ((!storedLMUserVisibility.includes(userCode)) && singleUser.get("learningModNotif") == true)
 								{
-                  	recentNotifications = singleUser.get('recentNotifications');
-                    recentNotifications.push(payload.body);
-                    currentUser = singleUser.get('code');
-                    currentUser.update({
-                      recentNotifications: admin.firestore.FieldValue.arrayUnion(recentNotifications)
-                    });
+									recentNotifications = singleUser.get('recentNotifications');
+									recentNotifications.push(payload.body);
+									currentUser = singleUser.get('code');
+									currentUser.update({
+										recentNotifications: admin.firestore.FieldValue.arrayUnion(recentNotifications)
+									});
+										
 									admin.messaging().sendToDevice(userNotifToken, payload)
 										.then((response) => {
 											console.log("New learning module notification sent successfully to " + singleUser.get("username"));
