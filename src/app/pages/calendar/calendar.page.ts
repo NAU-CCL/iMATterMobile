@@ -244,28 +244,19 @@ export class CalendarPage implements OnInit {
 	console.log(eventCopy);
 	this.length = this.eventSource.length;
 	for (let i = 0; i < this.length; i++) {
-		console.log(this.eventSource[i]);
-		if (this.eventSource[i] = eventCopy){
+		console.log("eventSource " + this.eventSource[i]);
+		console.log("eventCopy" + JSON.stringify(this.eventSource[i]));
+		if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
 			//not working
 			console.log("in here?");
 			this.deleteIndex = i;
 		}
 	}
 	
-	//this.eventSource.splice(this.deleteIndex, 1);
+	this.eventSource.splice(this.deleteIndex, 1);
 	console.log(this.deleteIndex);
 	this.storage.set('my-items', this.eventSource);
-	this.loadItems();
-	//this.storageService.deleteItem(event);
-	
-    //const alert = await this.alertCtrl.create({
-     // header: event.title,
-     // subHeader: event.desc,
-     // message: 'From: ' + start + '<br><br>To: ' + end,
-      //buttons: ['OK']
-    //});
-   // alert.present();
-	
+	this.loadItems();	
   }
 
 // Time slot was clicked
