@@ -210,7 +210,8 @@ export class AvailablePage implements OnInit {
       })      
     }
     
-    // since the inactive surveys are dealt with differently, just add the survey id with a 0
+    // since the inactive and emotion surveys are dealt with differently, 
+    // just add the survey id with a 0
     if(survey.type == 'Inactive' || survey.type == 'Emotion'){
       submitData = survey.id + ":" + "0";
     }
