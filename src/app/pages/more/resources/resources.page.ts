@@ -39,7 +39,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
 
     @ViewChild('mapElement', {static: false}) mapNativeElement;
     constructor(private geolocation: Geolocation,
-                private nativeGeocoder: NativeGeocoder,
+            //    private nativeGeocoder: NativeGeocoder,
                 public afs: AngularFirestore,
                 private storage: Storage,) { }
 
