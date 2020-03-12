@@ -46,7 +46,10 @@ export class LearningModuleService {
   private learningModuleCollection: AngularFirestoreCollection<LearningModule>;
 
   constructor(private afs: AngularFirestore) 
-  { 
+  {  }
+
+  getLMCollection()
+  {
     this.learningModuleCollection = this.afs.collection<LearningModule>('learningModules');
     this.learningModules = this.learningModuleCollection.snapshotChanges().pipe(
       map(actions => {
@@ -61,6 +64,7 @@ export class LearningModuleService {
 
   getAllLearningModules(): Observable<LearningModule[]>
   {
+    this.getLMCollection();
     return this.learningModules;
   }
 
