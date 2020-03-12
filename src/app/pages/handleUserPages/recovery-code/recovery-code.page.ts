@@ -122,27 +122,7 @@ export class RecoveryCodePage implements OnInit {
             }
         });
     }
-	async updatePassword(): Promise<void> {
-    const alert = await this.alertCtrl.create({
-      inputs: [
-        { name: 'newPassword', placeholder: 'New password', type: 'password' },
-        { name: 'oldPassword', placeholder: 'Old password', type: 'password' },
-      ],
-      buttons: [
-        { text: 'Cancel' },
-        {
-          text: 'Save',
-          handler: data => {
-            this.profileService.updatePassword(
-                data.newPassword,
-                data.oldPassword, this.userID
-            );
-          },
-        },
-      ],
-    });
-    await alert.present();
-  }
+	
 	
 
 }

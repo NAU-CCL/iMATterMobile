@@ -132,33 +132,30 @@ export class CalendarPage implements OnInit {
 	// add notification when creating event
 	if(this.notificationIndex == null){
 		this.notificationIndex = 0;
-		console.log("made it");
+		
 	}
-	this.localNotifications.schedule({ 
-	   id: this.notificationIndex + 1,
-	   text: 'You have an event, check your calendar!',
-	   trigger: {at: new Date(this.event.startTime)},
-	   led: 'FF0000',
-	   sound: null
-	});
-	
 	
 	this.eventList.push(eventCopy);
 	
     this.eventSource.push(eventCopy);
 	this.test.push('1');
-	//this.test = localStorage.setItem('event', JSON.stringify(this.eventSource));
+
 	console.log(JSON.stringify(this.eventSource));
     this.myCal.loadEvents();
-	
+	console.log("notification index" +this.notificationIndex);
 	
 	this.storageService.addItem(eventCopy).then(item => {
-      //eventCopy = <Item>{};
-      //this.showToast('Event Added!');
+
 		console.log('?');
       this.loadItems();
 	});
-	
+	this.localNotifications.schedule({ 
+	   id: this.notificationIndex++,
+	   text: 'You have an event, check your calendar!',
+	   trigger: {at: new Date(this.event.startTime)},
+	   led: 'FF0000',
+	   sound: null
+	});
     this.resetEvent();
     this.showAddEvent = false;
 	
@@ -183,23 +180,7 @@ export class CalendarPage implements OnInit {
   });
   }
   
-  cancelNotification(){
-	  /*LocalNotifications.getPending().then( res => {
-      var index = res.notifications.map(x => {
-        return x["id"];
-      }).indexOf("10000000");
-      res.notifications.splice(index, 1);
-      LocalNotifications.cancel(res);
-    }, err => {
-      console.log(err);
-    })*/
-  }
-
-//showEvents(){
-	//this.storage.get(this.key).then(value => {
-    //this.user = JSON.parse(value);
-//});
-//}
+  
 
   showEvent(){
 	  this.storage.get('event').then( (val) =>{
@@ -255,13 +236,12 @@ export class CalendarPage implements OnInit {
 			this.deleteIndex = i;
 		}
 	}
-	//var temp = this.deleteIndex;
-	//this.localNotifications.clear(1);
-	
-	//console.log("localNotification index deleted at: " + temp);
-	//this.notificationIndex = this.notificationIndex - 1;
+	var temp = this.deleteIndex;
+	this.localNotifications.clear(temp++);
+
 	this.eventSource.splice(this.deleteIndex, 1);
-	console.log(this.deleteIndex);
+	console.log("notification index");
+	console.log("delete Index" + this.deleteIndex);
 	this.storage.set('my-items', this.eventSource);
 	this.loadItems();	
   }
