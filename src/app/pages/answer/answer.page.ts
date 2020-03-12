@@ -12,6 +12,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
   styleUrls: ['./answer.page.scss'],
 })
 export class AnswerPage implements OnInit {
+  // survey object and its fields
   survey: Survey = {
     title: '',
     surveyLink: '',
@@ -26,11 +27,16 @@ export class AnswerPage implements OnInit {
     surveyDescription: '',
   }
 
+  // determines wether or not the submit button can be pressed
   isDisabled = true;
+  // number of points the user currently has
   userPoints;
+  // user's unique code for identification
   userCode;
-  data;
-  userTakenArrays;
+  // survey id and interval is taking
+  surveyData;
+  // current user's taken surveys
+  userSurveysTaken;
   
   constructor(private activatedRoute: ActivatedRoute, 
               private fs: FireService,
@@ -42,21 +48,24 @@ export class AnswerPage implements OnInit {
               ) { }
 
   ngOnInit() {
+    // if the user is not authenticated, sends the user to login page
     this.storage.get('authenticated').then((val) => {
       if (val === 'false') {
         this.router.navigate(['/login/']);
       }
     });
-    this.data = this.activatedRoute.snapshot.paramMap.get('id');
-    
-    let id = this.data.split(":")[0];
-
+    // surveyData is initialized to the id that will be taken from the available page
+    this.surveyData = this.activatedRoute.snapshot.paramMap.get('id');
+    // survey id is taken
+    let id = this.surveyData.split(":")[0];
+    // if the id exists, assign the survey object to the survey for which the id belongs to
     if(id){
       this.fs.getSurvey(id).subscribe(survey => {
         this.survey = survey;
       });
     }
 
+    // using the current user's unique code, obtain the user's points, code, and taken surveys
     this.storage.get('userCode').then((val) => {
       if (val) {
         const ref = this.afs.firestore.collection('users').where('code', '==', val);
@@ -64,7 +73,7 @@ export class AnswerPage implements OnInit {
           result.forEach(doc => {
             this.userPoints = doc.get('points');
             this.userCode = doc.get('code');
-            this.userTakenArrays = doc.get('answeredSurveys');
+            this.userSurveysTaken = doc.get('answeredSurveys');
           });
         });
       }
@@ -72,36 +81,50 @@ export class AnswerPage implements OnInit {
 
   }
 
+  // opens survey link
   openPage(url: string) {
+    // option to hide survey url
     const options: InAppBrowserOptions = {
       hideurlbar: 'yes'
     }
+    // open the browser inside of the app, using the url, and the options
     this.browser.create(url, `_blank`, options);
+    // make isDisabled false so that the user can submit the survey once they are done
     this.isDisabled = false;
   }
 
+  // submits survey
   submit(){
+    // boolean to check if current survey is inluded in the userSurveysTaken
     let includes = false;
 
-    if(this.userTakenArrays.length != 0){
-      this.userTakenArrays.forEach(taken =>{
+    // if the userSurveysTaken is not empty, check if the current survey is included
+    // if the current survey is included, set includes to true and change the
+    // old survey interval to the current one to signfy that the survey has been
+    // taken for the current interval and update the user's userSurveysTaken
+    if(this.userSurveysTaken.length != 0){
+      this.userSurveysTaken.forEach(taken =>{
         if(taken.split(":")[0].includes(this.survey.id)){
           includes = true;
-          this.userTakenArrays[this.userTakenArrays.indexOf(taken)] = this.data;
-          console.log(this.userTakenArrays)
-          this.fs.updateAnsweredSurveys(this.userCode, this.userTakenArrays);
+          this.userSurveysTaken[this.userSurveysTaken.indexOf(taken)] = this.surveyData;
+          this.fs.updateAnsweredSurveys(this.userCode, this.userSurveysTaken);
         }
       })
     }
 
-    if(this.userTakenArrays.length == 0 || !includes){
-      this.userTakenArrays.push(this.data)
-      console.log(this.userTakenArrays)
-      this.fs.updateAnsweredSurveys(this.userCode, this.userTakenArrays);
+    // if the userSurveysTaken is not empty or it does not include the current survey
+    // then simply add it to the array with the current survey interval
+    // and update the user's userSurveysTaken
+    if(this.userSurveysTaken.length == 0 || !includes){
+      this.userSurveysTaken.push(this.surveyData)
+      console.log(this.userSurveysTaken)
+      this.fs.updateAnsweredSurveys(this.userCode, this.userSurveysTaken);
     }
 
+    // then increase the user's current points by the amount that the current
+    // survey is worth, then navigate back
     let newPointValue = this.userPoints + this.survey.pointsWorth;
     this.profile.editRewardPoints(newPointValue, this.userCode);
-    this.router.navigateByUrl('/available');
+    this.router.navigateByUrl('/home');
   }
 }

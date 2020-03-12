@@ -18,11 +18,6 @@ export interface Survey {
   surveyDescription: string;
 }
 
-export interface User {
-  id?: string;
-  answered: [];
-}
-
 @Injectable({
   providedIn: 'root'
 })
