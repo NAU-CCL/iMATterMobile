@@ -9,7 +9,7 @@ import { Platform } from '@ionic/angular';
 export class FcmService {
 
   constructor(private firebase: FirebaseX,
-              private angularFirestore: AngularFirestore,
+              private afs: AngularFirestore,
               private platform: Platform) { }
 
   async getToken(userID) {
@@ -26,12 +26,15 @@ export class FcmService {
 
   private saveToken(token, userID) {
     if (!token) return;
-    const devicesDatabaseReference = this.angularFirestore.collection('users').doc(userID);
+    const devicesDatabaseReference = this.afs.collection('users').doc(userID);
     const data = {
       token,
       userId: userID,
     };
-    return devicesDatabaseReference.set({token: token}, { merge: true });
+    return devicesDatabaseReference.set({token: token}, { merge: true }).then((res) => {
+      console.log('after save');
+    });
+
   }
 
   /*
