@@ -45,7 +45,7 @@ export class FireService {
      );
    }
 
-   getSurveys(){
+   getSurveys() {
     this.getSurveyCollection();
     return this.surveys;
   }
