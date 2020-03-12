@@ -47,10 +47,6 @@ export class AvailablePage implements OnInit {
       }
     });
 
-  }
-
-  ionViewDidEnter() {
-
     // get all existing surveys
     this.surveys = this.fs.getSurveys();
 
@@ -71,6 +67,8 @@ export class AvailablePage implements OnInit {
       }
     });
   }
+
+
 
   // isDisplayed determines if the survey shows up for the user or not
   isDisplayed(survey: Survey){

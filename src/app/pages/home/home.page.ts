@@ -72,7 +72,8 @@ export class HomePage implements OnInit {
     userID: '',
     username: '',
     emotionEntered: '',
-    viewed: false
+    viewed: false,
+    timestamp: ''
 };
 
     analytic: Analytics =
@@ -276,6 +277,7 @@ export class HomePage implements OnInit {
       this.emotionNotif.userID = this.userProfileID;
       this.emotionNotif.username = this.user.username;
       this.emotionNotif.emotionEntered = emotion;
+      this.emotionNotif.timestamp = firebase.firestore.FieldValue.serverTimestamp();
       this.mpnService.addEmotionNotif(this.emotionNotif);
     }
   }

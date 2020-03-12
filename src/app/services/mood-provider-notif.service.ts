@@ -10,6 +10,7 @@ export interface EmotionNotif {
   userID: string;
   emotionEntered: string;
   viewed: boolean;
+  timestamp: any;
 }
 
 @Injectable({
