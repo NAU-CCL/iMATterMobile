@@ -14,6 +14,8 @@ export interface Survey {
   daysInactive: number;
   emotionChosen: string;
   pointsWorth: number;
+  userVisibility: string[];
+  surveyDescription: string;
 }
 
 export interface User {
@@ -30,6 +32,9 @@ export class FireService {
   private surveyCollection: AngularFirestoreCollection<Survey>;
   
   constructor(private angularfs: AngularFirestore) {
+   }
+
+   getSurveyCollection(){
     this.surveyCollection = this.angularfs.collection<Survey>('surveys');
     this.surveys = this.surveyCollection.snapshotChanges().pipe(
       map(actions => {
@@ -43,6 +48,7 @@ export class FireService {
    }
 
    getSurveys(): Observable<Survey[]>{
+     this.getSurveyCollection();
     return this.surveys;
   }
 

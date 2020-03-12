@@ -21,7 +21,9 @@ export class AnswerPage implements OnInit {
     daysTillExpire: 0,
     daysInactive: 0,
     emotionChosen: '',
-    pointsWorth: 0
+    pointsWorth: 0,
+    userVisibility: [],
+    surveyDescription: '',
   }
 
   isDisabled = true;
@@ -44,8 +46,9 @@ export class AnswerPage implements OnInit {
         this.router.navigate(['/login/']);
       }
     });
-
-    let id = this.activatedRoute.snapshot.paramMap.get('id');
+    let data = this.activatedRoute.snapshot.paramMap.get('submitData');
+    console.log(data);
+    let id = data.split(":")[0];
 
     if(id){
       this.fs.getSurvey(id).subscribe(survey => {
