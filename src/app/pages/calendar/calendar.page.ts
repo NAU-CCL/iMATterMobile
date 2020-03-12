@@ -56,6 +56,8 @@ export class CalendarPage implements OnInit {
   newItem: Item = <Item>{};
   
   deleteIndex : number;
+  notificationIndex : number;
+  deleteNotificationIndex : number;
   
   
   // @ts-ignore
@@ -118,7 +120,7 @@ export class CalendarPage implements OnInit {
       desc: this.event.desc
 	  
     };
-
+	console.log(this.notificationIndex);
     if (eventCopy.allDay) {
       let start = eventCopy.startTime;
       let end = eventCopy.endTime;
@@ -128,7 +130,12 @@ export class CalendarPage implements OnInit {
     }
 
 	// add notification when creating event
-	this.localNotifications.schedule({
+	if(this.notificationIndex == null){
+		this.notificationIndex = 0;
+		console.log("made it");
+	}
+	this.localNotifications.schedule({ 
+	   id: this.notificationIndex + 1,
 	   text: 'You have an event, check your calendar!',
 	   trigger: {at: new Date(this.event.startTime)},
 	   led: 'FF0000',
@@ -240,19 +247,19 @@ export class CalendarPage implements OnInit {
 	  
     };
 	
-	//console.log(this.eventSource.length);
-	console.log(eventCopy);
 	this.length = this.eventSource.length;
 	for (let i = 0; i < this.length; i++) {
 		console.log("eventSource " + this.eventSource[i]);
 		console.log("eventCopy" + JSON.stringify(this.eventSource[i]));
 		if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
-			//not working
-			console.log("in here?");
 			this.deleteIndex = i;
 		}
 	}
+	//var temp = this.deleteIndex;
+	//this.localNotifications.clear(1);
 	
+	//console.log("localNotification index deleted at: " + temp);
+	//this.notificationIndex = this.notificationIndex - 1;
 	this.eventSource.splice(this.deleteIndex, 1);
 	console.log(this.deleteIndex);
 	this.storage.set('my-items', this.eventSource);

@@ -71,7 +71,7 @@
       </ion-button>
     </ion-col>
   </ion-row>
-
+<p>Tap to delete event</p>
   <calendar
           [eventSource]="eventSource"
           [calendarMode]="calendar.mode"
@@ -84,7 +84,7 @@
           step="30"
           startingDayWeek="1">
   </calendar>
-      
+      <p>Tap to delete event</p>
 	  
 	  <ion-item *ngFor="let item of items">
   <label> {{item.startTime}}</label>
