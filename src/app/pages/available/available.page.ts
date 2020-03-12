@@ -77,7 +77,7 @@ export class AvailablePage implements OnInit {
     var canDisplay = false;
     var includes = false;
 
-    if(survey.userVisibility.includes(this.userCode)){
+    //if(survey.userVisibility.includes(this.userCode)){
       if(survey.type == 'After Joining'){
         daysArray = survey.daysTillRelease.split(/(?:,| )+/);
         daysArray.forEach(day => {
@@ -154,7 +154,7 @@ export class AvailablePage implements OnInit {
           }
         }
       }
-    }
+   // }
 
     return canDisplay;
   }
@@ -173,6 +173,8 @@ export class AvailablePage implements OnInit {
     if(survey.type == 'Inactive'){
       submitData = survey.id + ":" + "0";
     }
+
+    console.log(submitData);
 
     this.router.navigate(['/answer/' + submitData])
   }

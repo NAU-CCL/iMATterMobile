@@ -19,15 +19,14 @@
   <ion-list>
     <ng-container *ngFor="let survey of (surveys | async)">
 
-      <ion-card button [routerLink]="['/answer', survey.id]">
-      <!-- *ngIf="isDisplayed(survey) == true" -->
+      <ion-card button *ngIf="isDisplayed(survey) == true" (click)="answerSurvey(survey)">
         
       <ion-card-header>
           <ion-card-title>
             {{ survey.title }}
           </ion-card-title>
           <ion-card-content>
-            Temporary Description PlaceHolder
+            {{ survey.surveyDescription }}
           </ion-card-content>
           <ion-card-subtitle>
             Points: {{ survey.pointsWorth }}

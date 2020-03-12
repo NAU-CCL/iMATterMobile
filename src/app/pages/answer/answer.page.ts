@@ -27,9 +27,10 @@ export class AnswerPage implements OnInit {
   }
 
   isDisabled = true;
-
   userPoints;
   userCode;
+  data;
+  userTakenArrays;
   
   constructor(private activatedRoute: ActivatedRoute, 
               private fs: FireService,
@@ -46,9 +47,9 @@ export class AnswerPage implements OnInit {
         this.router.navigate(['/login/']);
       }
     });
-    let data = this.activatedRoute.snapshot.paramMap.get('submitData');
-    console.log(data);
-    let id = data.split(":")[0];
+    this.data = this.activatedRoute.snapshot.paramMap.get('id');
+    
+    let id = this.data.split(":")[0];
 
     if(id){
       this.fs.getSurvey(id).subscribe(survey => {
@@ -63,6 +64,7 @@ export class AnswerPage implements OnInit {
           result.forEach(doc => {
             this.userPoints = doc.get('points');
             this.userCode = doc.get('code');
+            this.userTakenArrays = doc.get('answeredSurveys');
           });
         });
       }
@@ -79,6 +81,25 @@ export class AnswerPage implements OnInit {
   }
 
   submit(){
+    let includes = false;
+
+    if(this.userTakenArrays.length != 0){
+      this.userTakenArrays.forEach(taken =>{
+        if(taken.split(":")[0].includes(this.survey.id)){
+          includes = true;
+          this.userTakenArrays[this.userTakenArrays.indexOf(taken)] = this.data;
+          console.log(this.userTakenArrays)
+          this.fs.updateAnsweredSurveys(this.userCode, this.userTakenArrays);
+        }
+      })
+    }
+
+    if(this.userTakenArrays.length == 0 || !includes){
+      this.userTakenArrays.push(this.data)
+      console.log(this.userTakenArrays)
+      this.fs.updateAnsweredSurveys(this.userCode, this.userTakenArrays);
+    }
+
     let newPointValue = this.userPoints + this.survey.pointsWorth;
     this.profile.editRewardPoints(newPointValue, this.userCode);
     this.router.navigateByUrl('/available');
