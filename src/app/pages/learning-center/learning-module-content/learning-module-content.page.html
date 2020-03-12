@@ -83,7 +83,7 @@
 
 </ion-card>
 
-<ion-button class="fill-button" [routerLink]="['/learning-module-content', learningModule.moduleNext]" 
+<ion-button class="fill-button ion-text-wrap" [routerLink]="['/learning-module-content', learningModule.moduleNext]" 
   *ngIf="numberTimesQuizTaken > 0 && learningModule.moduleNext" 
   expand="block">Next Module - {{nextModuleTitle}}</ion-button>
 
