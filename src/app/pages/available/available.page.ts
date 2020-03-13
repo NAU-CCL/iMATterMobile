@@ -108,7 +108,7 @@ export class AvailablePage implements OnInit {
       if(survey.type == 'After Joining'){
         daysArray = survey.daysTillRelease.split(/(?:,| )+/);
         daysArray.forEach(day => {
-          if(this.daysAUser >= parseInt(day) && this.daysAUser < parseInt(day) + expirationDays){
+          if(this.daysAUser >= parseInt(day) && this.daysAUser <= parseInt(day) + expirationDays){
             this.answeredSurveys.forEach( answered => {
               if(answered.split(":")[0] == survey.id && answered.split(":")[1] == day){
                 canDisplay = false;
@@ -136,7 +136,7 @@ export class AvailablePage implements OnInit {
       if(survey.type == 'Due Date'){
         daysArray = survey.daysBeforeDueDate.split(/(?:,| )+/);
         daysArray.forEach(day => {
-          if(daysBeforeDue <= parseInt(day) && daysBeforeDue > parseInt(day) - expirationDays){
+          if(daysBeforeDue <= parseInt(day) && daysBeforeDue >= parseInt(day) - expirationDays){
             this.answeredSurveys.forEach( answered => {
               if(answered.split(":")[0] == survey.id && answered.split(":")[1] == day){
                 canDisplay = false;
