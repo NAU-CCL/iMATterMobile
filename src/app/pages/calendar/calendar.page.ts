@@ -106,10 +106,7 @@ analytic: Analytics =
     this.showAddEvent = false;
     this.resetEvent();
 	this.loadItems();
-  }
-
-  
-    this.addView();
+      this.addView();
   }
 
   addView(){
