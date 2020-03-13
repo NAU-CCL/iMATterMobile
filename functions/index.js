@@ -555,7 +555,7 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 
 						afterJoiningDaysArray.forEach(dayValue => {
 							if(daysSinceJoined >= parseInt(dayValue) && 
-								daysSinceJoined < parseInt(dayValue) + expirationDays)
+								daysSinceJoined <= parseInt(dayValue) + expirationDays)
 							{
 								surveyVisibility.push(userCode);
 
@@ -605,7 +605,7 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 						for(var index in dueDateDaysArray)
 						{
 							if(daysBeforeDue <= parseInt(dueDateDaysArray[index]) && 
-								daysBeforeDue > parseInt(dueDateDaysArray[index]) - expirationDays)
+								daysBeforeDue >= parseInt(dueDateDaysArray[index]) - expirationDays)
 							{
 								surveyVisibility.push(singleUser.get("code"));
 
