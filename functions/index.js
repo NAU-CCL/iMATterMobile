@@ -385,7 +385,7 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 								recentNotifications = singleUser.get('recentNotifications');
 								recentNotifications.push(payload.body);
 								currentUser = singleUser.get('code');
-								currentUser.update({recentNotifications: recentNotifications});
+								currentUser.update({recentNotifications: admin.firestore.FieldValue.arrayUnion(recentNotifications)});
                 
 								admin.messaging().sendToDevice(userNotifToken, payload)
 									.then((response) => {
@@ -421,7 +421,10 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 									recentNotifications = singleUser.get('recentNotifications');
 									recentNotifications.push(payload.body);
 									currentUser = singleUser.get('code');
-									currentUser.update({recentNotifications: recentNotifications});
+
+									currentUser.update({recentNotifications: admin.firestore.FieldValue.arrayUnion(recentNotifications)});
+										
+
 									admin.messaging().sendToDevice(userNotifToken, payload)
 										.then((response) => {
 											console.log("New learning module notification sent successfully to " + singleUser.get("username"));
