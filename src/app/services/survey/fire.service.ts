@@ -26,8 +26,7 @@ export class FireService {
   private surveys: Observable<Survey[]>;
   private surveyCollection: AngularFirestoreCollection<Survey>;
   
-  constructor(private angularfs: AngularFirestore) {
-   }
+  constructor(private angularfs: AngularFirestore) {}
 
    getSurveyCollection(){
     this.surveyCollection = this.angularfs.collection<Survey>('surveys');

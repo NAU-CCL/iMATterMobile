@@ -147,7 +147,9 @@ console.log('successful session creation');
                           this.afs.firestore.collection('users').doc(this.userID).update({
                             daysSinceLogin: 0
                           });
+                          console.log('before token');
                             this.notificationSetup(this.userID);
+                            console.log('after token');
                             this.router.navigate(['/tabs/home/']);
                             this.loginForm.reset();
                         } else {
@@ -169,15 +171,6 @@ console.log('successful session creation');
             message: msg,
             duration: 2000
         }).then(toast => toast.present());
-    }
-
-
-    private async presentToast(message) {
-        const toast = await this.toastCtrl.create({
-            message,
-            duration: 3000
-        });
-        toast.present();
     }
 
 }

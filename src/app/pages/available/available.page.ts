@@ -71,7 +71,9 @@ export class AvailablePage implements OnInit {
       }
     });
   }
-  
+
+
+
   // isDisplayed determines if the survey shows up for the user or not
   isDisplayed(survey: Survey){
     // array which includes the userId of all of users who can take this survey

@@ -61,6 +61,8 @@ export class LearningCenterPage implements OnInit {
   }
 
 
+
+
   addView()
   {
 

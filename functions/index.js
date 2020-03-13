@@ -146,9 +146,6 @@ exports.updateDays=functions.https.onRequest((req, res)=>{
 					weeksPregnant: weeksPregnant
 				});
 
-
-				
-			  
 			});
 			//if the res.send is the same each time, for some reason it stops working? Added random number so its different each send.
 			  var number = Math.random();

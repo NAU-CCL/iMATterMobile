@@ -7,7 +7,12 @@ const routes: Routes = [
   {
     path: '',
     component: ResourcesPage
+  },
+  {
+    path: 'suggestions',
+    loadChildren: () => import('./suggestions/suggestions.module').then( m => m.SuggestionsPageModule)
   }
+
 ];
 
 @NgModule({
