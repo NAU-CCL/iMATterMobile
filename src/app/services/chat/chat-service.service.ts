@@ -3,6 +3,7 @@ import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument,
 import { map, take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { Storage } from '@ionic/storage';
+import * as firebase from 'firebase/app';
 
 export interface Cohort {
   id?: string;
@@ -18,6 +19,7 @@ export interface Chat {
   message: string;
   profilePic: any;
   type: any;
+  visibility: boolean;
 }
 
 @Injectable({
@@ -53,9 +55,10 @@ export class ChatService {
   }
 
   getChatCollection(cohortID) {
+    // this.iterateChats(cohortID);
 
     this.chatCollection = this.afs.collection('chats',
-            ref => ref.where('cohort', '==', cohortID).orderBy('timestamp'));
+        reference => reference.where('cohort', '==', cohortID).orderBy('timestamp'));
 
     this.chats = this.chatCollection.snapshotChanges().pipe(
         map(actions => {
@@ -68,10 +71,6 @@ export class ChatService {
     );
   }
 
-  deleteChat(id: string): Promise<void> {
-    return this.chatCollection.doc(id).delete();
-  }
-
   async addChat(chat: Chat) {
     this.afs.collection('chats').add({
       username: chat.username,
@@ -80,7 +79,53 @@ export class ChatService {
       cohort: chat.cohort,
       timestamp: chat.timestamp,
       profilePic: chat.profilePic,
-      type: chat.type
+      type: chat.type,
+      visibility: chat.visibility
     });
   }
+
+
+  updateChatVisibility(docID, bool) {
+    if (bool === false) {
+      return this.afs.firestore.collection('chats')
+          .doc(docID).update({visibility: false});
+    } else {
+      return this.afs.firestore.collection('chats')
+          .doc(docID).update({visibility: true});
+    }
+  }
+
+  iterateChats(cohortID) {
+    firebase.firestore().collection('mobileSettings').doc('chatHours').get().then((result) => {
+      // get admin set time for chats to last
+      let setHours = Number(result.get('hours'));
+      console.log('setHours', setHours);
+      // convert to ms
+      setHours = setHours * 60 * 60 * 1000;
+      console.log('setHours', setHours);
+      // get todays date
+      const now = new Date();
+      console.log('now', now);
+
+      // go into all chats
+      const ref = firebase.firestore().collection('chats').where('cohort', '==', cohortID);
+      ref.get().then((res) => {
+        res.forEach(doc => {
+          const timestamp = new Date(doc.get('timestamp').toDate());
+          console.log('timestamp', timestamp);
+          const difference = now.getTime() - timestamp.getTime();
+          console.log('difference', difference);
+          console.log('setHours', setHours);
+
+          if (difference >= setHours) {
+            this.updateChatVisibility(doc.id, false);
+          } else {
+            this.updateChatVisibility(doc.id, true);
+          }
+        });
+      });
+
+    });
+  }
+
 }

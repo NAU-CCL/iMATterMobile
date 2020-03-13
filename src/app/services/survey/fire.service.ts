@@ -6,13 +6,16 @@ import { Observable } from 'rxjs';
 export interface Survey {
   id?: string;
   title: string;
-  daysTillRelease: number;
   surveyLink: string;
-}
-
-export interface User {
-  id?: string;
-  answered: [];
+  type: string;
+  daysTillRelease: string;
+  daysBeforeDueDate: string;
+  daysTillExpire: number;
+  daysInactive: number;
+  emotionChosen: string;
+  pointsWorth: number;
+  userVisibility: string[];
+  surveyDescription: string;
 }
 
 @Injectable({
@@ -23,7 +26,9 @@ export class FireService {
   private surveys: Observable<Survey[]>;
   private surveyCollection: AngularFirestoreCollection<Survey>;
   
-  constructor(private angularfs: AngularFirestore) {
+  constructor(private angularfs: AngularFirestore) {}
+
+   getSurveyCollection(){
     this.surveyCollection = this.angularfs.collection<Survey>('surveys');
     this.surveys = this.surveyCollection.snapshotChanges().pipe(
       map(actions => {
@@ -36,7 +41,8 @@ export class FireService {
     );
    }
 
-   getSurveys(){
+   getSurveys(): Observable<Survey[]>{
+     this.getSurveyCollection();
     return this.surveys;
   }
 
@@ -57,8 +63,13 @@ export class FireService {
   updateSurvey(survey: Survey): Promise<void>{
     return this.surveyCollection.doc(survey.id).update({ 
       title: survey.title,
+      surveyLink: survey.surveyLink,
+      type: survey.type,
       daysTillRelease: survey.daysTillRelease,
-      surveyLink: survey.surveyLink });
+      daysBeforeDueDate: survey.daysBeforeDueDate,
+      daysTillExpire: survey.daysTillExpire,
+      daysInactive: survey.daysInactive,
+      emotionChosen: survey.emotionChosen });
   }
 
   deleteSurvey(id: string): Promise<void>{
@@ -80,5 +91,15 @@ export class FireService {
     var dateChose = year + " " + month + " " + day + " " + hour + " " + minute;
     
     return dateChose;
+  }
+
+  updateAnsweredSurveys(userID: string, answered: any[]){
+    return this.angularfs.firestore.collection('users')
+    .doc(userID).update({answeredSurveys: answered});
+  }
+
+  updateRecentNot(userID: string, recent: any[]){
+    return this.angularfs.firestore.collection('users')
+    .doc(userID).update({recentNotifications: recent});
   }
 }

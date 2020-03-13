@@ -16,10 +16,13 @@ export interface LearningModule
   moduleVideoID?: string, //YouTube video ID, optional
   modulePPTurl?: string, //powerpoint URL, optional
   moduleContent: string,
-  moduleVisibilityTime: string[],
+  moduleVisibilityTime: string,
+  moduleExpiration: number,
+  moduleActive: boolean,
   moduleQuiz: Question[],
   modulePointsWorth: number,
-  moduleNext?: string //ID of next learning module to go to, optional
+  moduleNext?: string, //ID of next learning module to go to, optional
+  userVisibility: string[]
 }
 
 export interface Question
@@ -30,6 +33,7 @@ export interface Question
   choice3: string,
   choice4: string,
   correctAnswer: string,
+  pointsWorth: number,
   userSelection: string
 }
 
@@ -42,23 +46,28 @@ export class LearningModuleService {
   private learningModuleCollection: AngularFirestoreCollection<LearningModule>;
 
   constructor(private afs: AngularFirestore) 
-  { 
+
+  {
+  }
+
+  getLearningModuleCollection() {
     this.learningModuleCollection = this.afs.collection<LearningModule>('learningModules');
     this.learningModules = this.learningModuleCollection.snapshotChanges().pipe(
-      map(actions => {
-        return actions.map(a => {
-          const data = a.payload.doc.data();
-          const id = a.payload.doc.id;
-          return { id, ...data };
-        });
-      })
+        map(actions => {
+          return actions.map(a => {
+            const data = a.payload.doc.data();
+            const id = a.payload.doc.id;
+            return { id, ...data };
+          });
+        })
     );
   }
 
-getAllLearningModules(): Observable<LearningModule[]>
-{
-  return this.learningModules;
-}
+
+  getAllLearningModules(): Observable<LearningModule[]> {
+    this.getLearningModuleCollection();
+    return this.learningModules;
+  }
 
   getLearningModule(id:string): Observable<LearningModule>
   {
@@ -66,7 +75,7 @@ getAllLearningModules(): Observable<LearningModule[]>
       take(1),
       map(learningModule => {
         learningModule.id = id;
-        return learningModule
+        return learningModule;
       })
     );
   }

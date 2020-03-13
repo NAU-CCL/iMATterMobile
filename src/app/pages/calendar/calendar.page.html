@@ -4,10 +4,10 @@
       {{ viewTitle }}
     </ion-title>
     <ion-buttons slot="start">
-      <ion-button (click)="showAddEvent = true">Add Event</ion-button>
+      <ion-button class="text-press" (click)="showAddEvent = true">Add Event</ion-button>
     </ion-buttons>
     <ion-buttons slot="end">
-      <ion-button (click)="today()">Today</ion-button>
+      <ion-button class="text-press"  (click)="today()">Today</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -48,13 +48,13 @@
   <ion-row>
     <!-- Change the displayed calendar mode -->
     <ion-col size="4">
-      <ion-button expand="block" [color]="calendar.mode == 'month' ? 'primary' : 'secondary'" (click)="changeMode('month')">Month</ion-button>
+      <ion-button class="fill-button" expand="block" [class.noHighlight]="calendar.mode != 'month'" (click)="changeMode('month')">Month</ion-button>
     </ion-col>
     <ion-col size="4">
-      <ion-button expand="block" [color]="calendar.mode == 'week' ? 'primary' : 'secondary'" (click)="changeMode('week')">Week</ion-button>
+      <ion-button class="fill-button" expand="block" [class.noHighlight]="calendar.mode != 'week'" (click)="changeMode('week')">Week</ion-button>
     </ion-col>
     <ion-col size="4">
-      <ion-button expand="block" [color]="calendar.mode == 'day' ? 'primary' : 'secondary'" (click)="changeMode('day')">Day</ion-button>
+      <ion-button class="fill-button" expand="block" [class.noHighlight]="calendar.mode != 'day'" (click)="changeMode('day')">Day</ion-button>
     </ion-col>
 
     <!-- Move back one screen of the slides -->
@@ -84,7 +84,6 @@
           step="30"
           startingDayWeek="1">
   </calendar>
-      
-	  
 	  
 </ion-content>
+

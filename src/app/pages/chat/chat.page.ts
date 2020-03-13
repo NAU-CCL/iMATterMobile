@@ -5,12 +5,14 @@ import { ChatService, Cohort, Chat } from '../../services/chat/chat-service.serv
 import {Observable} from 'rxjs';
 import * as firebase from 'firebase/app';
 import {AngularFirestore} from '@angular/fire/firestore';
+import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyticsService.service';
 import {IonContent} from '@ionic/angular';
 import {
   Plugins,
   PushNotification,
   PushNotificationToken,
   PushNotificationActionPerformed } from '@capacitor/core';
+import {sendChatNotification} from "../../../../functions/src";
 
 const { PushNotifications } = Plugins;
 
@@ -23,7 +25,6 @@ export class ChatPage implements OnInit {
 
   @ViewChild('content', {static: true}) content: IonContent;
 
-
   cohort: Cohort = {
     name: ''
   };
@@ -35,22 +36,39 @@ export class ChatPage implements OnInit {
   timestamp: '',
   message: '',
   profilePic: '',
-  type: ''
+  type: '',
+  visibility: true
 };
+
+analytic: Analytics =
+{
+  page: '',
+  userID: '',
+  timestamp: '',
+  sessionID: ''
+};
+
 
   private cohortChat: string;
   private chats: Observable<any>;
   private hasEntered: boolean;
 
-  constructor(public _zone: NgZone, private router: Router, private storage: Storage, private chatService: ChatService, private afs: AngularFirestore) {
+  private analyticss: string;
+  private sessions: Observable<any>;
 
+  constructor(public _zone: NgZone,
+              private router: Router,
+              private storage: Storage,
+              private chatService: ChatService,
+              private afs: AngularFirestore ,
+              private analyticsService: AnalyticsService ) {
 
     this.storage.get('cohort').then((val) => {
       if (val) {
-        this.router.navigate(['/tabs/chat/', val]);
         this.cohortChat = val;
         this.chats = this.chatService.getChats(this.cohortChat);
       }
+      this.scrollToBottom();
     });
   }
 
@@ -61,41 +79,10 @@ export class ChatPage implements OnInit {
       }
     });
 
-    console.log('Initializing HomePage');
-
-    // Register with Apple / Google to receive push via APNS/FCM
-    PushNotifications.register();
-
-    // On success, we should be able to receive notifications
-    PushNotifications.addListener('registration',
-        (token: PushNotificationToken) => {
-          alert('Push registration success, token: ' + token.value);
-        }
-    );
-
-    // Some issue with our setup and push will not work
-    PushNotifications.addListener('registrationError',
-        (error: any) => {
-          alert('Error on registration: ' + JSON.stringify(error));
-        }
-    );
-
-    // Show us the notification payload if the app is open on our device
-    PushNotifications.addListener('pushNotificationReceived',
-        (notification: PushNotification) => {
-          alert('Push received: ' + JSON.stringify(notification));
-        }
-    );
-
-    // Method called when tapping on a notification
-    PushNotifications.addListener('pushNotificationActionPerformed',
-        (notification: PushNotificationActionPerformed) => {
-          alert('Push action performed: ' + JSON.stringify(notification));
-        }
-    );
 
     this.getCohort();
-    this.scrollToBottom();
+
+
   }
 
   ionViewDidEnter() {
@@ -112,22 +99,57 @@ export class ChatPage implements OnInit {
             this.chat.timestamp = firebase.firestore.FieldValue.serverTimestamp();
             this.chat.message = this.chat.username + ' has entered the chat';
             this.chat.type = 'auto';
+            this.chat.visibility = true;
 
             this.chatService.addChat(this.chat).then(() => {
               this.chat.message = '';
+              // sendChatNotification();
               this._zone.run(() => {
                 setTimeout(() => {
                   this.content.scrollToBottom(300);
                 });
               });
+              this.chat.message = '';
+              this.scrollToBottom();
             }, err => {
 
             });
           });
         });
       }
+      this.chat.message = '';
+      this.scrollToBottom();
     });
+    this.chat.message = '';
+    this.scrollToBottom();
+    this.addView();
+
   }
+
+  addView(){
+
+  // this.analytic.sessionID = this.session.id;
+  this.storage.get('userCode').then((val) => {
+    if (val) {
+      const ref = this.afs.firestore.collection('users').where('code', '==', val);
+      ref.get().then((result) => {
+        result.forEach(doc => {
+          this.analytic.page = 'chat';
+          this.analytic.userID = val;
+          this.analytic.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+          // this.analytic.sessionID = this.idReference;
+          this.analyticsService.addView(this.analytic).then (() =>{
+            console.log('successful added view: chat');
+
+          }, err =>{
+            console.log('unsucessful added view: chat');
+
+          });
+        });
+      });
+    }
+  });
+}
 
   scrollToBottom() {
     setTimeout(() => {
@@ -165,6 +187,7 @@ export class ChatPage implements OnInit {
             this.chat.profilePic = doc.get('profilePic');
             this.chat.timestamp = firebase.firestore.FieldValue.serverTimestamp();
             this.chat.type = 'user';
+            this.chat.visibility = true;
 
             this.chatService.addChat(this.chat).then(() => {
               this.chat.message = '';
@@ -180,6 +203,7 @@ export class ChatPage implements OnInit {
         });
       }
     });
+    this.scrollToBottom();
   }
 
   ionViewWillLeave() {
@@ -195,6 +219,8 @@ export class ChatPage implements OnInit {
             this.chat.profilePic = doc.get('profilePic');
             this.chat.timestamp = firebase.firestore.FieldValue.serverTimestamp();
             this.chat.message = this.chat.username + ' has left the chat';
+            this.chat.type = 'auto';
+            this.chat.visibility = true;
 
             this.chatService.addChat(this.chat).then(() => {
               this.chat.message = '';

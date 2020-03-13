@@ -1,11 +1,11 @@
 <ion-header>
   <ion-toolbar>
-    <ion-item button [routerLink]="['/tabs/home/']" slot="start">
-      <ion-icon md="md-arrow-back"></ion-icon>
-    </ion-item>
+      <ion-buttons slot="start">
+          <ion-back-button  class="text-button" defaultHref="/tabs/home"></ion-back-button>
+      </ion-buttons>
     <ion-title>Profile Page</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="logOut()">
+      <ion-button class="logout" (click) = "updateLogOut()" (click)="logOut()" >
         Log Out
       </ion-button>
     </ion-buttons>
@@ -13,6 +13,26 @@
 </ion-header>
 
 <ion-content>
+    <ion-item lines="none">
+        <ion-icon name="information-circle" (click)="displayPointInfo()"> </ion-icon>
+        Points Earned: {{user.points}}
+        <ion-button slot="end" class="fill-button" *ngIf="canRedeemPoints" (click)="displayRedeemOptions = true"> Redeem </ion-button>
+    </ion-item>
+
+    <div *ngIf="displayRedeemOptions == true">
+        <ion-item>
+            <ion-label position="stacked">Which type of gift card?</ion-label>
+            <ion-select interface="action-sheet" placeholder="Pick a Gift Card" [(ngModel)]="chosenGCType">
+                <ion-select-option *ngFor="let type of gcTypes">
+                    {{type}}
+                </ion-select-option>
+            </ion-select>
+        </ion-item>
+        <ion-button slot="end" class="fill-button" (click)="redeemGiftCard(user.points, pointsForRedemption, chosenGCType, user.email, user.username)"> Confirm </ion-button>
+    </div>
+
+
+    <!-- Viewable profile to all users -->
     <ion-card>
         <ion-img src="{{ user.profilePic }}"></ion-img>
         <ion-card-title padding-horizontal>
@@ -29,6 +49,7 @@
         </ion-card-content>
     </ion-card>
 
+    <!-- Personal User info -->
   <ion-list>
     <ion-list-header> Personal Information (Tap to Edit) </ion-list-header>
     <ion-item (click)="updateEmail()">
@@ -75,8 +96,7 @@
                       <ion-col
                               size="7"
                               class="placeholder-profile text-center"
-                              *ngIf="!user.location"
-                      >
+                              *ngIf="!user.location">
 
                       </ion-col>
                   </ion-row>

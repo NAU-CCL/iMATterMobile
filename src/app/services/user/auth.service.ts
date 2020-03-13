@@ -15,6 +15,9 @@ export interface User {
   password: string;
   dueDate: string;
   location: number;
+  weeksPregnant: any;
+  daysPregnant: any;
+  totalDaysPregnant: any;
   cohort: any;
   securityQ: string;
   securityA: string;
@@ -23,6 +26,14 @@ export interface User {
   profilePic: any;
   joined: any;
   daysAUser: any;
+  points: number;
+  chatNotif: boolean;
+  learningModNotif: boolean;
+  surveyNotif: boolean;
+  infoDeskNotif: boolean;
+  token: any;
+  recentNotifications: any[];
+  answeredSurveys: any[];
 }
 
 export interface Provider {
@@ -37,6 +48,12 @@ export interface Provider {
   dob: string;
   bio: string;
   type: string;
+  providerType: string;
+}
+
+export interface SecurityQ {
+  id?: string;
+  securityQ: string;
 }
 
 @Injectable({
@@ -77,12 +94,16 @@ export class AuthServiceProvider {
       cohort: user.cohort,
       profilePic: user.profilePic,
       joined: user.joined,
-      daysAUser: user.daysAUser});
-  }
-
-
-  resetPassword(email: string): Promise<void> {
-    return firebase.auth().sendPasswordResetEmail(email);
+      daysAUser: user.daysAUser,
+      weeksPregnant: user.weeksPregnant,
+      daysPregnant: user.daysPregnant,
+      totalDaysPregnant: user.totalDaysPregnant,
+      chatNotif: user.chatNotif,
+      learningModNotif: user.learningModNotif,
+      surveyNotif: user.surveyNotif,
+      infoDeskNotif: user.infoDeskNotif,
+      token: user.token,
+      points: user.points});
   }
 
 

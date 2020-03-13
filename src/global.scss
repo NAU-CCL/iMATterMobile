@@ -24,3 +24,23 @@
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
+
+:root {
+  --main-color: #9370DB;
+  --secondary-color: #cec1e7;
+  --tertiary-color: #d2b2e5;
+}
+
+.fill-button {
+  --background: var(--main-color);
+  --background-activated: var(--secondary-color);
+  --background-hover: var(--tertiary-color);
+}
+
+.text-button {
+  --color: var(--main-color);
+}
+
+.color-icon {
+  color: var(--main-color);
+}

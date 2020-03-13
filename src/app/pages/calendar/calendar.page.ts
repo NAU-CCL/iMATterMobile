@@ -5,6 +5,10 @@ import { formatDate } from '@angular/common';
 import { Storage } from '@ionic/storage';
 import { Router } from '@angular/router';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyticsService.service';
+import * as firebase from 'firebase/app';
+import {AngularFirestore} from '@angular/fire/firestore';
+import {Observable} from 'rxjs';
 import * as moment from 'moment';
 
 import { StorageService, Item } from '../../services/storage.service';
@@ -47,10 +51,19 @@ export class CalendarPage implements OnInit {
     mode: 'month',
     currentDate: new Date(),
   };
+analytic: Analytics =
+{
+  page: '',
+  userID: '',
+  timestamp: '',
+  sessionID: ''
+}
+
 
   length : number;
   private showAddEvent: boolean;
-  
+  private analyticss : string;
+  private sessions : Observable<any>;
 
   items: Item[] = [];
   newItem: Item = <Item>{};
@@ -64,14 +77,13 @@ export class CalendarPage implements OnInit {
   @ViewChild(CalendarComponent) myCal: CalendarComponent;
 
   constructor(private localNotifications: LocalNotifications, private alertCtrl: AlertController, @Inject(LOCALE_ID) private locale: string,
-              private storage: Storage, private storageService: StorageService, private router: Router) {
+              private storage: Storage,  private storageService: StorageService, private router: Router, private afs: AngularFirestore,
+     private analyticsService: AnalyticsService) {
+       
 		this.notifyTime = moment(new Date()).format();
-		
+
 		this.chosenHours = new Date().getHours();
 		this.chosenMinutes = new Date().getMinutes();
-		
-		
-		
 		this.days = [
             {title: 'Monday', dayCode: 1, checked: false},
             {title: 'Tuesday', dayCode: 2, checked: false},
@@ -81,7 +93,7 @@ export class CalendarPage implements OnInit {
             {title: 'Saturday', dayCode: 6, checked: false},
             {title: 'Sunday', dayCode: 0, checked: false}
         ];
-	
+
 	}
 	
 
@@ -97,6 +109,33 @@ export class CalendarPage implements OnInit {
   }
 
   
+    this.addView();
+  }
+
+  addView(){
+
+  //this.analytic.sessionID = this.session.id;
+  this.storage.get('userCode').then((val) =>{
+    if (val) {
+      const ref = this.afs.firestore.collection('users').where('code', '==', val);
+      ref.get().then((result) =>{
+        result.forEach(doc =>{
+          this.analytic.page = 'calendar';
+          this.analytic.userID = val;
+          this.analytic.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+          //this.analytic.sessionID = this.idReference;
+          this.analyticsService.addView(this.analytic).then (() =>{
+            console.log('successful added view: Calendar');
+
+          }, err =>{
+            console.log('unsucessful added view: calendar');
+
+          });
+        });
+      });
+    }
+  });
+}
   resetEvent() {
     this.event = {
       title: '',
@@ -156,6 +195,9 @@ export class CalendarPage implements OnInit {
 	   led: 'FF0000',
 	   sound: null
 	});
+
+    this.eventSource.push(eventCopy);
+    this.myCal.loadEvents();
     this.resetEvent();
     this.showAddEvent = false;
 	

@@ -15,7 +15,7 @@
     Press 'read more' if you would like to know why we are
     asking for this information.
   </p>
-  <ion-button fill = "clear" expand="block" *ngIf="!readMore" (click)="showMore()">
+  <ion-button class="text-button" fill = "clear" expand="block" *ngIf="!readMore" (click)="showMore()">
     Read More
   </ion-button>
 
@@ -39,27 +39,28 @@
     yourself, feel free to do so, but we ask you to not put any identifiable personal information here.
   </p>
 
-  <ion-button fill = "clear" expand="block" (click)="showLess()">
+  <ion-button class="text-button" fill = "clear" expand="block" (click)="showLess()">
     Show Less
   </ion-button>
 </div>
 </ion-text>
+
 <ion-content>
   <form [formGroup]="signupForm">
     <ion-item>
       <ion-row>
       <ion-thumbnail class="profilePic">
-        <ion-img *ngIf="!showImages" src='{{ picURL }}' ></ion-img>
+        <ion-img *ngIf="!showImages" src="{{ picURL }}" ></ion-img>
       </ion-thumbnail>
-      <ion-button *ngIf="!showImages" (click)="showPics()"> Change Profile Picture </ion-button>
+      <ion-button class= "fill-button" *ngIf="!showImages" (click)="showPics()"> Change Profile Picture </ion-button>
       </ion-row>
       <ion-item *ngIf="showImages">
-        <ion-button class="thumbnail" fill="clear"  *ngFor="let pic of allPicURLs" (click)="changePic(pic)">
-          <ion-thumbnail>
-            <ion-img src="{{pic}}" ></ion-img>
-          </ion-thumbnail>
-        </ion-button>
-        </ion-item>
+        <ion-row>
+        <ion-thumbnail class="thumbnail" *ngFor="let pic of allPicURLs" (click)="changePic(pic)">
+          <ion-img src="{{pic}}" ></ion-img>
+        </ion-thumbnail>
+        </ion-row>
+      </ion-item>
       <ion-label position="stacked">Email</ion-label>
       <ion-input formControlName="email" type="email" placeholder="Your email address"
               [class.invalid]="!signupForm.controls['email'].valid && signupForm.controls['email'].touched">
@@ -69,7 +70,6 @@
               *ngIf="!signupForm.controls['email'].valid && signupForm.controls['email'].touched">
       <ion-label>Please enter a valid email.</ion-label>
     </ion-item>
-
     <ion-item>
       <ion-label position="stacked">Password</ion-label>
       <ion-input formControlName="password" type="password" placeholder="Your password"
@@ -100,41 +100,27 @@
 
     <ion-item>
       <ion-label position="stacked">Security Question</ion-label>
-
       <ion-select interface="action-sheet" placeholder="Pick a Question" formControlName="securityQ">
-        <ion-select-option value="What was the name of your favorite teacher?">
-          What was the name of your favorite teacher?
-        </ion-select-option>
-        <ion-select-option value="What was the name of your first pet?">
-          What was the name of your first pet?
-        </ion-select-option>
-        <ion-select-option value="What is your mother's maiden name?">
-          What is your mother's maiden name?
+        <ion-select-option *ngFor="let q of securityQs">
+          {{q}}
         </ion-select-option>
       </ion-select>
     </ion-item>
 
+
     <ion-item>
       <ion-label position="stacked">Answer to Security Question</ion-label>
-      <ion-input
-              formControlName="securityA"
-              placeholder="Answer"
-      >
+      <ion-input formControlName="securityA" placeholder="Answer">
       </ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label position="stacked">Short Bio (Optional)</ion-label>
-      <ion-input
-              formControlName="bio"
-              placeholder="Say Something About Yourself "
-      >
+      <ion-input formControlName="bio" placeholder="Say Something About Yourself ">
       </ion-input>
     </ion-item>
 
-    <ion-button
-            expand="block"
-            (click)="signupUser(signupForm)">
+    <ion-button class= "fill-button" expand="block" (click)="signupUser(signupForm)">
       Create Account
     </ion-button>
   </form>

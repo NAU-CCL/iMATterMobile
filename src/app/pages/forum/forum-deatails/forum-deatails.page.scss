@@ -1,3 +1,8 @@
 .box-format {
   border: 1px solid lightgray;
 }
+
+
+ion-toggle {
+  --color: var(--main-color);
+}

@@ -8,12 +8,13 @@
 
 
 <ion-content #content>
-  <div *ngFor="let chat of (chats | async)" class="message-wrap">
 
+  <div *ngFor="let chat of (chats | async)" class="message-wrap">
+    <div *ngIf="chat.visibility == true">
     <!-- Automatic message -->
-    <div *ngIf="chat.type == 'auto'; else elseBlock">
+    <div *ngIf="chat.type == 'auto' || chat.type == 'emotion'; else elseBlock">
       <div align-self-center class="timestamp">
-        {{ chat.timestamp.seconds * 1000 | date:'MM-dd-yyyy h:mm a' }}
+        {{ chat.timestamp.toDate() | date:'MM-dd-yyyy h:mm a' }}
       </div>
 
       <div class="message">
@@ -36,7 +37,7 @@
     <!-- User message -->
     <ng-template #elseBlock>
     <div align-self-center class="timestamp">
-      {{ chat.timestamp.seconds * 1000 | date:'MM-dd-yyyy h:mm a' }}
+      {{ chat.timestamp.toDate() | date:'MM-dd-yyyy h:mm:ss.SS a' }}
     </div>
 
     <div class="message">
@@ -56,11 +57,12 @@
      </div>
     </ng-template>
     </div>
+    </div>
 </ion-content>
 
 <ion-footer>
     <ion-item>
       <ion-textarea [(ngModel)]="chat.message" placeholder="Enter message"></ion-textarea>
-      <ion-button slot="end" fill="clear" (click)="addChat()"><ion-icon ios="ios-arrow-forward" md="md-arrow-forward"></ion-icon></ion-button>
+      <ion-button class="ion-text-button" slot="end" fill="clear" (click)="addChat()"><ion-icon ios="ios-arrow-forward" md="md-arrow-forward"></ion-icon></ion-button>
     </ion-item>
 </ion-footer>
