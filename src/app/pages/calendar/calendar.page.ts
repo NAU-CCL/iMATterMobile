@@ -67,19 +67,19 @@ analytic: Analytics =
 
   items: Item[] = [];
   newItem: Item = <Item>{};
-  
+
   deleteIndex : number;
   notificationIndex : number;
   deleteNotificationIndex : number;
-  
-  
+
+
   // @ts-ignore
   @ViewChild(CalendarComponent) myCal: CalendarComponent;
 
   constructor(private localNotifications: LocalNotifications, private alertCtrl: AlertController, @Inject(LOCALE_ID) private locale: string,
               private storage: Storage,  private storageService: StorageService, private router: Router, private afs: AngularFirestore,
      private analyticsService: AnalyticsService) {
-       
+
 		this.notifyTime = moment(new Date()).format();
 
 		this.chosenHours = new Date().getHours();
@@ -95,7 +95,7 @@ analytic: Analytics =
         ];
 
 	}
-	
+
 
   ngOnInit() {
     this.storage.get('authenticated').then((val) => {
@@ -106,10 +106,7 @@ analytic: Analytics =
     this.showAddEvent = false;
     this.resetEvent();
 	this.loadItems();
-  }
-
-  
-    this.addView();
+  this.addView();
   }
 
   addView(){
@@ -157,7 +154,7 @@ analytic: Analytics =
       endTime: new Date(this.event.endTime),
       allDay: this.event.allDay,
       desc: this.event.desc
-	  
+
     };
 	console.log(this.notificationIndex);
     if (eventCopy.allDay) {
@@ -171,24 +168,24 @@ analytic: Analytics =
 	// add notification when creating event
 	if(this.notificationIndex == null){
 		this.notificationIndex = 0;
-		
+
 	}
-	
+
 	this.eventList.push(eventCopy);
-	
+
     this.eventSource.push(eventCopy);
 	this.test.push('1');
 
 	console.log(JSON.stringify(this.eventSource));
     this.myCal.loadEvents();
 	console.log("notification index" +this.notificationIndex);
-	
+
 	this.storageService.addItem(eventCopy).then(item => {
 
 		console.log('?');
       this.loadItems();
 	});
-	this.localNotifications.schedule({ 
+	this.localNotifications.schedule({
 	   id: this.notificationIndex++,
 	   text: 'You have an event, check your calendar!',
 	   trigger: {at: new Date(this.event.startTime)},
@@ -200,9 +197,9 @@ analytic: Analytics =
     this.myCal.loadEvents();
     this.resetEvent();
     this.showAddEvent = false;
-	
+
   }
-  
+
   loadItems() {
     this.storageService.getItems().then(items => {
       this.items = items;
@@ -213,16 +210,16 @@ analytic: Analytics =
         console.log('No events');
       }
     });
-  
+
   }
-  
+
   getStorage(){
   this.storage.get('name').then((val) => {
     return ['name'];
   });
   }
-  
-  
+
+
 
   showEvent(){
 	  this.storage.get('event').then( (val) =>{
@@ -260,16 +257,16 @@ analytic: Analytics =
     // Use Angular date pipe for conversion
     let start = formatDate(event.startTime, 'medium', this.locale);
     let end = formatDate(event.endTime, 'medium', this.locale);
-    
+
 	let eventCopy = {
       title: event.title,
       startTime:  event.startTime,
       endTime: event.endTime,
       allDay: event.allDay,
       desc: event.desc
-	  
+
     };
-	
+
 	this.length = this.eventSource.length;
 	for (let i = 0; i < this.length; i++) {
 		console.log("eventSource " + this.eventSource[i]);
@@ -285,7 +282,7 @@ analytic: Analytics =
 	console.log("notification index");
 	console.log("delete Index" + this.deleteIndex);
 	this.storage.set('my-items', this.eventSource);
-	this.loadItems();	
+	this.loadItems();
   }
 
 // Time slot was clicked
