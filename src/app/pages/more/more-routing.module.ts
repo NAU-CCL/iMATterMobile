@@ -24,10 +24,7 @@ const routes: Routes = [
     path: 'resources',
     loadChildren: () => import('./resources/resources.module').then( m => m.ResourcesPageModule)
   }
-  ,  {
-      path: 'suggestions',
-      loadChildren: () => import('./suggestions/suggestions.module').then( m => m.SuggestionsPageModule)
-    }
+
 ];
 
 @NgModule({

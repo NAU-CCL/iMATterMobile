@@ -78,13 +78,14 @@ analytic: Analytics =
         this.router.navigate(['/login/']);
       }
     });
-    this.chat.message = '';
-    this.scrollToBottom();
+
+
+    this.getCohort();
+
+
   }
 
   ionViewDidEnter() {
-    this.getCohort();
-
     this.chat.cohort = this.cohortChat;
     this.storage.get('userCode').then((val) => {
       if (val) {
@@ -108,17 +109,21 @@ analytic: Analytics =
                   this.content.scrollToBottom(300);
                 });
               });
+              this.chat.message = '';
+              this.scrollToBottom();
             }, err => {
 
             });
           });
         });
       }
+      this.chat.message = '';
+      this.scrollToBottom();
     });
-
     this.chat.message = '';
     this.scrollToBottom();
     this.addView();
+
   }
 
   addView(){

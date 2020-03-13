@@ -52,7 +52,7 @@ export class SignupPage implements OnInit {
       ],
       password: [
         '',
-        Validators.compose([Validators.minLength(6), Validators.required]),
+        Validators.compose([Validators.minLength(8), Validators.required]),
       ],
       username: [
         '',
