@@ -14,11 +14,8 @@ export interface Survey {
   daysInactive: number;
   emotionChosen: string;
   pointsWorth: number;
-}
-
-export interface User {
-  id?: string;
-  answered: [];
+  userVisibility: string[];
+  surveyDescription: string;
 }
 
 @Injectable({
@@ -29,24 +26,23 @@ export class FireService {
   private surveys: Observable<Survey[]>;
   private surveyCollection: AngularFirestoreCollection<Survey>;
   
-  constructor(private angularfs: AngularFirestore) {
+  constructor(private angularfs: AngularFirestore) {}
+
+   getSurveyCollection(){
+    this.surveyCollection = this.angularfs.collection<Survey>('surveys');
+    this.surveys = this.surveyCollection.snapshotChanges().pipe(
+      map(actions => {
+        return actions.map(a => {
+          const data = a.payload.doc.data();
+          const id = a.payload.doc.id;
+          return { id, ...data };
+        });
+      })
+    );
    }
 
-   getSurveyCollection() {
-     this.surveyCollection = this.angularfs.collection<Survey>('surveys');
-     this.surveys = this.surveyCollection.snapshotChanges().pipe(
-         map(actions => {
-           return actions.map(a => {
-             const data = a.payload.doc.data();
-             const id = a.payload.doc.id;
-             return { id, ...data };
-           });
-         })
-     );
-   }
-
-   getSurveys() {
-    this.getSurveyCollection();
+   getSurveys(): Observable<Survey[]>{
+     this.getSurveyCollection();
     return this.surveys;
   }
 
