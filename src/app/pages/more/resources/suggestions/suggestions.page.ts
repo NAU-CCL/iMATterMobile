@@ -51,12 +51,12 @@ export class SuggestionsPage implements OnInit {
 
             this.userSubmissionService.addLocationSuggestion(this.locationSuggestion).then(() => {
               this.router.navigateByUrl('/more');
-              this.showToast('Report sent');
+              this.showToast('Suggestion sent');
               this.locationSuggestion.name = '';
               this.locationSuggestion.address = '';
               this.locationSuggestion.reason = '';
             }, err => {
-              this.showToast('There was a problem adding your post');
+              this.showToast('There was a problem sending the suggestion');
             });
 
 

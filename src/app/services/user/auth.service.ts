@@ -103,7 +103,8 @@ export class AuthServiceProvider {
       surveyNotif: user.surveyNotif,
       infoDeskNotif: user.infoDeskNotif,
       token: user.token,
-      points: user.points});
+      points: user.points,
+      answeredSurveys: user.answeredSurveys});
   }
 
 
