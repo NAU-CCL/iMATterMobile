@@ -30,9 +30,9 @@ export class AvailablePage implements OnInit {
   // user code to make updates on
   userCode;
   // array of of users that can see the survey
-  userVisibility = []
+  userVisibility = [];
   // Temporary Inactive days variable
-  inactiveDays = 20;
+  //inactiveDays = 20;
 
   constructor(private fs: FireService,
               private storage: Storage, 
@@ -163,9 +163,10 @@ export class AvailablePage implements OnInit {
       // if the survey type is inactive and the user's inactive days meets or exceeds the
       // surveys inactive days field, then display to the user
       if(survey.type == 'Inactive'){
+        /*
         if(survey.daysInactive <= this.inactiveDays){
           canDisplay = true;
-        }
+        }*/
       }
 
       // if the survey type is Emotion and the user's emotion matches the survey's
