@@ -382,9 +382,7 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 								recentNotifications = singleUser.get('recentNotifications');
 								recentNotifications.push(payload.body);
 								currentUser = singleUser.get('code');
-								currentUser.update({
-									recentNotifications: admin.firestore.FieldValue.arrayUnion(recentNotifications)
-                 				 });
+								currentUser.update({recentNotifications: admin.firestore.FieldValue.arrayUnion(recentNotifications)});
                 
 								admin.messaging().sendToDevice(userNotifToken, payload)
 									.then((response) => {
@@ -420,10 +418,10 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 									recentNotifications = singleUser.get('recentNotifications');
 									recentNotifications.push(payload.body);
 									currentUser = singleUser.get('code');
-									currentUser.update({
-										recentNotifications: admin.firestore.FieldValue.arrayUnion(recentNotifications)
-									});
+
+									currentUser.update({recentNotifications: admin.firestore.FieldValue.arrayUnion(recentNotifications)});
 										
+
 									admin.messaging().sendToDevice(userNotifToken, payload)
 										.then((response) => {
 											console.log("New learning module notification sent successfully to " + singleUser.get("username"));
@@ -454,6 +452,7 @@ exports.emotionSurveyNotification = functions.firestore.document('users/{userID}
 	var surveyType;
 	var emotionType;
 	var userNotifToken;
+	var recentNotifications;
 
 	const payload = {
 		notification: {
@@ -476,6 +475,11 @@ exports.emotionSurveyNotification = functions.firestore.document('users/{userID}
 					//If this user's emotion matches survey's emotion type and their survey notifs are on
 					if (newValue.mood == emotionType && newValue.surveyNotif == true)
 					{
+						recentNotifications = singleUser.get('recentNotifications');
+						recentNotifications.push(payload.body);
+						currentUser = singleUser.get('code');
+						currentUser.update({recentNotifications: recentNotifications});
+
 						userNotifToken = newValue.token;
 						admin.messaging().sendToDevice(userNotifToken, payload)
 							.then((response) => {
@@ -509,6 +513,7 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 	var surveyType;
 	var userNotifToken;
 	var userCode;
+	var recentNotifications;
 
 	const payload = {
 		notification: {
@@ -555,6 +560,10 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 								//and their notifications are on, send them the notif
 								if ((!storedSurveyVisibility.includes(userCode)) && singleUser.get("surveyNotif") == true)
 								{
+									recentNotifications = singleUser.get('recentNotifications');
+									recentNotifications.push(payload.body);
+									currentUser = singleUser.get('code');
+									currentUser.update({recentNotifications: recentNotifications});
 									userNotifToken = singleUser.get("token");
 									admin.messaging().sendToDevice(userNotifToken, payload)
 										.then((response) => {
@@ -608,7 +617,12 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 
 								if ((!storedSurveyVisibility.includes(userCode)) && singleUser.get("surveyNotif") == true)
 								{
+									
 									userNotifToken = singleUser.get("token");
+									recentNotifications = singleUser.get('recentNotifications');
+									recentNotifications.push(payload.body);
+									currentUser = singleUser.get('code');
+									currentUser.update({recentNotifications: recentNotifications});
 									admin.messaging().sendToDevice(userNotifToken, payload)
 										.then((response) => {
 											console.log("New survey notification for Due Date sent successfully to " + singleUser.get("username"));
@@ -647,6 +661,10 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 
 							if ((!storedSurveyVisibility.includes(userCode)) && singleUser.get("surveyNotif") == true)
 							{
+								recentNotifications = singleUser.get('recentNotifications');
+								recentNotifications.push(payload.body);
+								currentUser = singleUser.get('code');
+								currentUser.update({recentNotifications: recentNotifications});
 								userNotifToken = singleUser.get("token");
 								admin.messaging().sendToDevice(userNotifToken, payload)
 									.then((response) => {

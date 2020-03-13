@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>{{survey.title}}</ion-title>
+    <ion-title>{{ survey.title }}</ion-title>
     <ion-buttons slot="start">
       <ion-back-button class="text-button" defaultHref="/home"></ion-back-button>
     </ion-buttons>
@@ -9,6 +9,5 @@
 
 <ion-content>
   <ion-button expand="block" class="fill-button" (click)="openPage(survey.surveyLink)">Take Survey</ion-button>
-  <ion-button expand="block" class="fill-button" (click)="returnToPage()">Go Back</ion-button>
   <ion-button expand="block" class="fill-button" disabled = "{{isDisabled}}" (click) = "submit()">Submit</ion-button>
 </ion-content>
