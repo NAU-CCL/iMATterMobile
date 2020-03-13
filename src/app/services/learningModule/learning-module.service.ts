@@ -46,25 +46,26 @@ export class LearningModuleService {
   private learningModuleCollection: AngularFirestoreCollection<LearningModule>;
 
   constructor(private afs: AngularFirestore) 
-  {  }
 
-  getLMCollection()
   {
+  }
+
+  getLearningModuleCollection() {
     this.learningModuleCollection = this.afs.collection<LearningModule>('learningModules');
     this.learningModules = this.learningModuleCollection.snapshotChanges().pipe(
-      map(actions => {
-        return actions.map(a => {
-          const data = a.payload.doc.data();
-          const id = a.payload.doc.id;
-          return { id, ...data };
-        });
-      })
+        map(actions => {
+          return actions.map(a => {
+            const data = a.payload.doc.data();
+            const id = a.payload.doc.id;
+            return { id, ...data };
+          });
+        })
     );
   }
 
-  getAllLearningModules(): Observable<LearningModule[]>
-  {
-    this.getLMCollection();
+
+  getAllLearningModules(): Observable<LearningModule[]> {
+    this.getLearningModuleCollection();
     return this.learningModules;
   }
 
@@ -74,7 +75,7 @@ export class LearningModuleService {
       take(1),
       map(learningModule => {
         learningModule.id = id;
-        return learningModule
+        return learningModule;
       })
     );
   }

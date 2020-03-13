@@ -30,19 +30,23 @@ export class FireService {
   private surveyCollection: AngularFirestoreCollection<Survey>;
   
   constructor(private angularfs: AngularFirestore) {
-    this.surveyCollection = this.angularfs.collection<Survey>('surveys');
-    this.surveys = this.surveyCollection.snapshotChanges().pipe(
-      map(actions => {
-        return actions.map(a => {
-          const data = a.payload.doc.data();
-          const id = a.payload.doc.id;
-          return { id, ...data };
-        });
-      })
-    );
    }
 
-   getSurveys(){
+   getSurveyCollection() {
+     this.surveyCollection = this.angularfs.collection<Survey>('surveys');
+     this.surveys = this.surveyCollection.snapshotChanges().pipe(
+         map(actions => {
+           return actions.map(a => {
+             const data = a.payload.doc.data();
+             const id = a.payload.doc.id;
+             return { id, ...data };
+           });
+         })
+     );
+   }
+
+   getSurveys() {
+    this.getSurveyCollection();
     return this.surveys;
   }
 

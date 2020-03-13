@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Suggest a Location</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button class="text-button" defaultHref="/tabs/more"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+
+  <ion-item>
+    <ion-label position="stacked">Name</ion-label>
+    <ion-input [(ngModel)]="locationSuggestion.name"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Address</ion-label>
+    <ion-input [(ngModel)]="locationSuggestion.address"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">What do you like about this location?</ion-label>
+    <ion-textarea [(ngModel)]="locationSuggestion.reason" rows="8"></ion-textarea>
+  </ion-item>
+
+</ion-content>
+
+<ion-footer >
+  <ion-toolbar>
+    <ion-button *ngIf="locationSuggestion.name == '' || locationSuggestion.reason == '' || locationSuggestion.address == ''"
+                class="fill-button" disabled="true" expand="full" (click)="submitLocationSuggestion()">
+      Submit
+    </ion-button>
+    <ion-button *ngIf="locationSuggestion.name != '' && locationSuggestion.reason != ''  && locationSuggestion.address != ''"
+                class="fill-button" expand="full" (click)="submitLocationSuggestion()">
+      Submit
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

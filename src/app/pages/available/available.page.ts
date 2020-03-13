@@ -49,7 +49,7 @@ export class AvailablePage implements OnInit {
 
     // get all existing surveys
     this.surveys = this.fs.getSurveys();
-    
+
     // obtain the user's emotion, duedate, joined date, answered surveys, and user code
     this.storage.get('userCode').then((val) => {
       if (val) {
@@ -67,7 +67,9 @@ export class AvailablePage implements OnInit {
       }
     });
   }
-  
+
+
+
   // isDisplayed determines if the survey shows up for the user or not
   isDisplayed(survey: Survey){
     // boolean to determine if the survey will be displayed
