@@ -46,6 +46,7 @@ export class LearningModuleService {
   private learningModuleCollection: AngularFirestoreCollection<LearningModule>;
 
   constructor(private afs: AngularFirestore) 
+
   {
   }
 
@@ -61,6 +62,7 @@ export class LearningModuleService {
         })
     );
   }
+
 
   getAllLearningModules(): Observable<LearningModule[]> {
     this.getLearningModuleCollection();

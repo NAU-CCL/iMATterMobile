@@ -3,7 +3,7 @@
     <ion-buttons slot=start>
     <ion-back-button class="text-button"  defaultHref="/learning-center"></ion-back-button>
   </ion-buttons>
-    <ion-title>{{learningModule.moduleTitle}} Module</ion-title>
+    <ion-title class="ion-text-wrap">{{learningModule.moduleTitle}} Module</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -65,7 +65,7 @@
   <ion-card *ngIf="numberTimesQuizTaken > 0">
 
     <ion-card-title>
-      Quiz Score: {{numberQuestionsCorrect}} out of {{totalNumberQuizQuestions}}    
+      Quiz Results: {{numberQuestionsCorrect}} out of {{totalNumberQuizQuestions}} question(s) correct
     </ion-card-title>
     <ion-card-subtitle>
       Number of Attempts: {{numberTimesQuizTaken}} out of {{quizSubmissionLimit}}
@@ -83,6 +83,8 @@
 
 </ion-card>
 
-<ion-button class="fill-button" [routerLink]="['/learning-module-content', learningModule.moduleNext]" *ngIf="numberTimesQuizTaken > 0 && learningModule.moduleNext" expand="block">Next Module</ion-button>
+<ion-button class="fill-button ion-text-wrap" [routerLink]="['/learning-module-content', learningModule.moduleNext]" 
+  *ngIf="numberTimesQuizTaken > 0 && learningModule.moduleNext" 
+  expand="block">Next Module - {{nextModuleTitle}}</ion-button>
 
 </ion-content>
