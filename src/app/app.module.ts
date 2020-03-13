@@ -27,7 +27,9 @@ import { NativeGeocoder, NativeGeocoderOptions } from '@ionic-native/native-geoc
   imports: [BrowserModule,
       IonicModule.forRoot(),
 	  HttpClientModule,
-      IonicStorageModule.forRoot(),
+      IonicStorageModule.forRoot({
+		  name: 'exdb'
+	  }),
       AppRoutingModule,
       AngularFirestoreModule,
       AngularFireModule.initializeApp(environment.firebase)],
