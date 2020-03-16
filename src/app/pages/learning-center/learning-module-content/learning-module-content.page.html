@@ -36,24 +36,24 @@
           <ion-label class="ion-text-wrap">{{quizQuestion.questionText}} - {{quizQuestion.pointsWorth}} point(s)</ion-label>
         </ion-list-header>
 
-        <ion-item>
-          <ion-label class="ion-text-wrap">{{quizQuestion.choice1}}</ion-label>
-          <ion-radio slot="start" value="{{quizQuestion.choice1}}" [disabled]="didSubmit"></ion-radio>
+        <ion-item *ngIf="quizQuestion.choice1">
+          <ion-label class="ion-text-wrap">A. {{quizQuestion.choice1}}</ion-label>
+          <ion-radio slot="start" value="choice1" [disabled]="didSubmit"></ion-radio>
         </ion-item>
 
         <ion-item *ngIf="quizQuestion.choice2">
-          <ion-label class="ion-text-wrap">{{quizQuestion.choice2}}</ion-label>
-          <ion-radio slot="start" value="{{quizQuestion.choice2}}" [disabled]="didSubmit"></ion-radio>
+          <ion-label class="ion-text-wrap">B. {{quizQuestion.choice2}}</ion-label>
+          <ion-radio slot="start" value="choice2" [disabled]="didSubmit"></ion-radio>
         </ion-item>
 
         <ion-item *ngIf="quizQuestion.choice3">
-          <ion-label class="ion-text-wrap">{{quizQuestion.choice3}}</ion-label>
-          <ion-radio slot="start" value="{{quizQuestion.choice3}}" [disabled]="didSubmit"></ion-radio>
+          <ion-label class="ion-text-wrap">C. {{quizQuestion.choice3}}</ion-label>
+          <ion-radio slot="start" value="choice3" [disabled]="didSubmit"></ion-radio>
         </ion-item>
 
         <ion-item *ngIf="quizQuestion.choice4">
-          <ion-label class="ion-text-wrap">{{quizQuestion.choice4}}</ion-label>
-          <ion-radio slot="start" value="{{quizQuestion.choice4}}" [disabled]="didSubmit"></ion-radio>
+          <ion-label class="ion-text-wrap">D. {{quizQuestion.choice4}}</ion-label>
+          <ion-radio slot="start" value="choice4" [disabled]="didSubmit"></ion-radio>
         </ion-item>
       </ion-radio-group>
     </ion-list>
