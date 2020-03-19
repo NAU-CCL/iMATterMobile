@@ -22,6 +22,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
     dlatitude: string;
     dcontent: string;
     dphone: string;
+    dstreet: string;
     doperationSunday: string;
     doperationWeekday: string;
     doperationSaturday: string;
@@ -97,6 +98,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
         this.dlatitude = doc.get("latitude");
         this.dcontent = doc.get("content");
         this.dicon = doc.get("type");
+        this.dstreet = doc.get("street");
         this.doperationSunday = doc.get("operationSunday");
         this.doperationSaturday = doc.get("operationSaturday");
         this.dphone = doc.get("phone");
@@ -252,6 +254,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
          '<div id="bodyContent">' +
          '<p>' + this.dcontent + '</p>' +
          '</div>'+
+         '<div id= "street">'+ 'Street Address: ' + this.dstreet + '</div>' +
 
          '<div id = "operation">'+ 'Hours of Operation' + '</div>' +
          '<div id = "weekday">'+ 'Monday - Friday: '+ this.doperationWeekday + '</div>'+
