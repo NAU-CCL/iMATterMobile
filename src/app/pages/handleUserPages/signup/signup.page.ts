@@ -181,31 +181,6 @@ export class SignupPage implements OnInit {
 
       this.showToast('Please enter: ' +  signupForm.value.toString());
     } else {
-      /*
-      const email: string = signupForm.value.email;
-      const password: string = signupForm.value.password;
-      const username: string = signupForm.value.username;
-      const dateDue: string = signupForm.value.dateDue;
-      const securityQ: string = signupForm.value.securityQ;
-      const securityA: string = signupForm.value.securityA;
-      const location: number = signupForm.value.location;
-      const bio: string = signupForm.value.bio;
-
-      this.user.code = this.id;
-      this.user.username = username;
-      this.user.email =  email;
-      this.user.password = password;
-      this.user.dueDate = dateDue.split('T')[0];
-      this.user.location = location;
-      this.user.bio = bio;
-      this.user.profilePic = this.picURL;
-      this.user.securityQ = securityQ;
-      this.user.securityA = securityA;
-      this.user.joined = firebase.firestore.FieldValue.serverTimestamp();
-      this.user.daysAUser = 0;
-      this.user.chatNotif = true;
-      this.user.points = 0;
-      */
 
       this.user.code = this.id;
       this.user.username = signupForm.value.username;

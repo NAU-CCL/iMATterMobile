@@ -51,15 +51,18 @@
     Comment
   </ion-button>
   <div *ngIf="showCommentBox">
-    <ion-item>
-      <ion-label position="stacked">Enter comment:</ion-label>
-      <ion-textarea [(ngModel)]="comment.input"></ion-textarea>
-    </ion-item>
-    <ion-item>
-      <ion-label> Comment Anonymously? </ion-label>
-      <ion-toggle color="dark" [(ngModel)]="anon"></ion-toggle>
-    </ion-item>
-    <ion-button class="fill-button" float-end size="small" (click)="addComment()"> Submit </ion-button>
+    <form [formGroup]="commentForm">
+      <ion-item>
+        <ion-label position="stacked">Enter comment:</ion-label>
+        <ion-textarea formControlName="comment" placeholder="What would you like to say?">
+        </ion-textarea>
+      </ion-item>
+      <ion-item>
+        <ion-label> Comment Anonymously? </ion-label>
+        <ion-toggle color="dark" [(ngModel)]="anon"></ion-toggle>
+      </ion-item>
+      <ion-button class="fill-button" float-end size="small" (click)="addComment(commentForm)"> Submit </ion-button>
+    </form>
   </div>
 
   <h6 padding-horizontal> Answers: </h6>
