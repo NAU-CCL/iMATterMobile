@@ -125,8 +125,6 @@ export class QuestionService {
 
 
   addQuestion(question: Question): Promise<DocumentReference> {
-    this.afs.firestore.collection('users')
-        .doc(question.userID).update({submittedQuestions: firebase.firestore.FieldValue.arrayUnion(question.id)});
     return this.questionCollection.add(question);
   }
 

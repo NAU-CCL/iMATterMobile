@@ -8,6 +8,7 @@ import {AngularFirestore} from '@angular/fire/firestore';
 import * as firebase from 'firebase/app';
 import FieldValue = firebase.firestore.FieldValue;
 import { HttpClient } from '@angular/common/http';
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 
 
 @Component({
@@ -29,9 +30,25 @@ export class ForumDeatailsPage implements OnInit {
   };
 
   private anon: boolean;
+  private questionForm: FormGroup;
 
-  constructor(private afs: AngularFirestore, private activatedRoute: ActivatedRoute, private questionService: QuestionService,
-              private toastCtrl: ToastController, private router: Router, private storage: Storage, private http: HttpClient) {
+  constructor(private afs: AngularFirestore,
+              private activatedRoute: ActivatedRoute,
+              private questionService: QuestionService,
+              private toastCtrl: ToastController,
+              private router: Router,
+              private storage: Storage,
+              private http: HttpClient,
+              private formBuilder: FormBuilder) {
+
+    this.questionForm = this.formBuilder.group({
+      title: ['',
+        Validators.compose([Validators.required, Validators.minLength(1)])],
+      description: ['',
+        Validators.compose([Validators.required, Validators.minLength(1)])],
+      anon: [false,
+        Validators.compose([Validators.required])],
+    });
   }
 
   ngOnInit() {
@@ -42,46 +59,45 @@ export class ForumDeatailsPage implements OnInit {
     });
   }
 
-  addQuestion() {
-    this.question.type = 'user';
-    if (this.anon) {
-      this.question.anon = this.anon;
-    }
-    console.log(this.question.anon);
-    this.storage.get('userCode').then((val) => {
-      if (val) {
-        const ref = this.afs.firestore.collection('users').where('code', '==', val);
-        ref.get().then((result) => {
-          result.forEach(doc => {
-            this.question.userID = val;
-            this.question.timestamp = firebase.firestore.FieldValue.serverTimestamp();
-
-            if (!this.question.anon) {
-              this.question.username = doc.get('username');
-              this.question.profilePic = doc.get('profilePic');
-            } else {
-              this.question.username = 'Anonymous';
-              this.question.profilePic = 'https://firebasestorage.googleapis.com/v0/b/techdemofirebase.appspot.com/o/ProfileImages%2Fauto.png?alt=media&token=e5601f32-30f8-4b38-9a2c-ff2d7e6ad59a';
-            }
-
-            this.questionService.addQuestion(this.question).then(() => {
-              this.router.navigateByUrl('/forum');
-              this.showToast('Question posted');
-              this.question.title = '';
-              this.question.description = '';
-            }, err => {
-              this.showToast('There was a problem adding your post');
-            });
-
-          });
-        });
+  addQuestion(questionForm: FormGroup) {
+    if (!questionForm.valid) {
+      this.showToast('Please enter a title and question');
+    } else {
+      this.question.type = 'user';
+      this.question.title = questionForm.value.title;
+      this.question.description = questionForm.value.description;
+      if (questionForm.value.anon) {
+        this.question.anon = this.questionForm.value.anon;
       }
-    });
+      this.storage.get('userCode').then((val) => {
+        if (val) {
+          const ref = this.afs.firestore.collection('users').where('code', '==', val);
+          ref.get().then((result) => {
+            result.forEach(doc => {
+              this.question.userID = val;
+              this.question.timestamp = firebase.firestore.FieldValue.serverTimestamp();
 
+              if (!this.question.anon) {
+                this.question.username = doc.get('username');
+                this.question.profilePic = doc.get('profilePic');
+              } else {
+                this.question.username = 'Anonymous';
+                this.question.profilePic = 'https://firebasestorage.googleapis.com/v0/b/techdemofirebase.appspot.com/o/ProfileImages%2Fauto.png?alt=media&token=e5601f32-30f8-4b38-9a2c-ff2d7e6ad59a';
+              }
 
+              this.questionService.addQuestion(this.question).then(() => {
+                this.router.navigateByUrl('/forum');
+                this.showToast('Question posted');
+                this.questionForm.reset();
+              }, err => {
+                this.showToast('There was a problem adding your post');
+              });
 
-
-
+            });
+          });
+        }
+      });
+    }
   }
 
   deleteQuestion() {
@@ -89,15 +105,15 @@ export class ForumDeatailsPage implements OnInit {
       this.router.navigateByUrl('/');
       this.showToast('Question deleted');
     }, err => {
-      this.showToast('There was a problem deleting your post :(');
+      this.showToast('');
     });
   }
 
   updateQuestion() {
     this.questionService.updateQuestion(this.question).then(() => {
-      this.showToast('Idea updated');
+      this.showToast('');
     }, err => {
-      this.showToast('There was a problem updating your idea :(');
+      this.showToast('');
     });
   }
 
