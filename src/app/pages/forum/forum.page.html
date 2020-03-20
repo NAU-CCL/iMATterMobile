@@ -10,11 +10,27 @@
       <ion-button class="create-post-button"  routerLink="/forum/forum-deatails">Create Post</ion-button>
     </ion-buttons>
   </ion-toolbar>
+  <ion-row>
+    <ion-col>
+      <ion-button class="fill-button" [class.noHighlight]="allPosts != true" expand="block"  (click)="allPosts = true; usersPosts = false"> All Questions</ion-button>
+    </ion-col>
+    <ion-col>
+      <ion-button class="fill-button" [class.noHighlight]="usersPosts != true" expand="block"  (click)="usersPosts = true; allPosts = false"> Your Questions </ion-button>
+    </ion-col>
+  </ion-row>
 </ion-header>
 
+
 <ion-content>
-  <ion-list>
+  <ion-list *ngIf="allPosts == true">
     <ion-item  button [routerLink]="['/forum/forum-thread', question.id]" *ngFor="let question of (questions | async)">
+      {{ question.title }}
+      <ion-icon md="md-arrow-forward" slot="end"></ion-icon>
+    </ion-item>
+  </ion-list>
+
+  <ion-list *ngIf="usersPosts == true">
+    <ion-item  button [routerLink]="['/forum/forum-thread', question.id]" *ngFor="let question of (thisUsersQuestions | async)">
       {{ question.title }}
       <ion-icon md="md-arrow-forward" slot="end"></ion-icon>
     </ion-item>

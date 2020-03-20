@@ -81,30 +81,7 @@ export class AuthServiceProvider {
 
   // tslint:disable-next-line:max-line-length
   signupUser(user: User): Promise<any> {
-    return this.userCollection.doc(user.code).set({
-      code: user.code,
-      email: user.email,
-      securityQ: user.securityQ,
-      securityA: user.securityA,
-      password: user.password,
-      username: user.username,
-      dueDate: user.dueDate,
-      location: user.location,
-      bio: user.bio,
-      cohort: user.cohort,
-      profilePic: user.profilePic,
-      joined: user.joined,
-      daysAUser: user.daysAUser,
-      weeksPregnant: user.weeksPregnant,
-      daysPregnant: user.daysPregnant,
-      totalDaysPregnant: user.totalDaysPregnant,
-      chatNotif: user.chatNotif,
-      learningModNotif: user.learningModNotif,
-      surveyNotif: user.surveyNotif,
-      infoDeskNotif: user.infoDeskNotif,
-      token: user.token,
-      points: user.points,
-      answeredSurveys: user.answeredSurveys});
+    return this.userCollection.doc(user.code).set({user});
   }
 
 

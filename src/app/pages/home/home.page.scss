@@ -13,9 +13,8 @@ ion-title {
   overflow: hidden;
 }
 
-.noHighlight {
-  opacity: 40%;
-  visibility: visible;
+.highlight {
+  background-color: var(--secondary-color);
 }
 
 .emotion-toolbar {

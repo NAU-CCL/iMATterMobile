@@ -3,6 +3,7 @@ import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument,
 import { map, take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { Storage } from '@ionic/storage';
+import * as firebase from 'firebase/app';
 
 export interface Question {
   id?: string;
@@ -36,6 +37,9 @@ export class QuestionService {
   private questionCollection: AngularFirestoreCollection<Question>;
   private question: Question;
 
+  private thisUsersQuestions: Observable<Question[]>;
+  private thisUsersQsCollection: AngularFirestoreCollection<Question>;
+
   private commentCollection: AngularFirestoreCollection<Comment>;
   private comments: Observable<Comment[]>;
   private comment: Comment;
@@ -43,6 +47,10 @@ export class QuestionService {
   private username: string;
 
   constructor(private afs: AngularFirestore, private storage: Storage) {
+
+  }
+
+  getQuestionCollection() {
     this.questionCollection = this.afs.collection<Question>('questions', ref => ref.orderBy('timestamp', 'desc'));
     // this.commentCollection = this.afs.collection<Comment>('comments');
 
@@ -55,12 +63,35 @@ export class QuestionService {
           });
         })
     );
-
   }
 
   getQuestions(): Observable<Question[]> {
+    this.getQuestionCollection();
     return this.questions;
   }
+
+  getThisUsersQuestionCollection(userID) {
+    this.thisUsersQsCollection = this.afs.collection<Question>('questions',
+        reference => reference.where('userID', '==', userID).orderBy('timestamp'));
+
+    // this.commentCollection = this.afs.collection<Comment>('comments');
+
+    this.thisUsersQuestions = this.thisUsersQsCollection.snapshotChanges().pipe(
+        map(actions => {
+          return actions.map(a => {
+            const data = a.payload.doc.data();
+            data.id = a.payload.doc.id;
+            return data;
+          });
+        })
+    );
+  }
+
+  getThisUsersQuestions(userID) {
+    this.getThisUsersQuestionCollection(userID);
+    return this.thisUsersQuestions;
+  }
+
 
   getComments(postID) {
     this.getCommentCollection(postID);
@@ -94,6 +125,8 @@ export class QuestionService {
 
 
   addQuestion(question: Question): Promise<DocumentReference> {
+    this.afs.firestore.collection('users')
+        .doc(question.userID).update({submittedQuestions: firebase.firestore.FieldValue.arrayUnion(question.id)});
     return this.questionCollection.add(question);
   }
 

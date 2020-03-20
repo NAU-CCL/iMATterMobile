@@ -20,11 +20,15 @@ export class ForumPage implements OnInit {
   userID: '',
   timestamp: '',
   sessionID: ''
-}
+};
 
   private questions: Observable<Question[]>;
-  private analyticss : string;
-  private sessions : Observable<any>;
+  private analyticss: string;
+  private sessions: Observable<any>;
+  private thisUsersQuestions: Observable<Question[]>;
+
+  private allPosts: boolean;
+  private usersPosts: boolean;
 
   constructor(private questionService: QuestionService,
               private storage: Storage,
@@ -39,19 +43,22 @@ export class ForumPage implements OnInit {
         this.router.navigate(['/login/']);
       }
     });
-    this.questions = this.questionService.getQuestions();
-  }
+    this.storage.get('userCode').then((val) => {
+      if (val) {
+        this.thisUsersQuestions = this.questionService.getThisUsersQuestions(val);
+      }
+    });
 
+    this.questions = this.questionService.getQuestions();
+    this.allPosts = true;
+    this.usersPosts = false;
+  }
 
   ionViewWillEnter() {
     this.addView();
    }
 
-
-
-
   addView(){
-
   //this.analytic.sessionID = this.session.id;
   this.storage.get('userCode').then((val) =>{
     if (val) {
