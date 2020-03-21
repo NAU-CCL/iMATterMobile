@@ -153,10 +153,6 @@ analytic: Analytics =
     this.scrollToBottom();
   }
 
-  ionViewWillLeave() {
-    this.addChat('autoLeft');
-  }
-
   goToProfile(userID: string, cohort: string) {
     this.router.navigate(['/viewable-profile/', userID]);
     this.storage.set('currentCohort', cohort);
@@ -188,4 +184,10 @@ analytic: Analytics =
       }
     });
   }
+
+
+  ionViewWillLeave() {
+    this.addChat('autoLeft');
+  }
+
 }

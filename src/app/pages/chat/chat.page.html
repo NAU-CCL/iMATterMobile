@@ -70,7 +70,16 @@
 
 <ion-footer>
     <ion-item>
-      <ion-textarea [(ngModel)]="chat.message" placeholder="Enter message"></ion-textarea>
-      <ion-button class="ion-text-button" slot="end" fill="clear" (click)="addChat()"><ion-icon ios="ios-arrow-forward" md="md-arrow-forward"></ion-icon></ion-button>
+      <ion-textarea spellcheck="true" [(ngModel)]="chat.message" placeholder="Enter message"></ion-textarea>
+      <div *ngIf="chat.message == ''">
+        <ion-button disabled="true" class="ion-text-button" slot="end" fill="clear" (click)="addChat('user')">
+        <ion-icon ios="ios-arrow-forward" md="md-arrow-forward"></ion-icon>
+      </ion-button>
+      </div>
+      <div *ngIf="chat.message > ''">
+        <ion-button class="ion-text-button" slot="end" fill="clear" (click)="addChat('user')">
+          <ion-icon ios="ios-arrow-forward" md="md-arrow-forward"></ion-icon>
+        </ion-button>
+      </div>
     </ion-item>
 </ion-footer>
