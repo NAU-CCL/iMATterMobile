@@ -6,6 +6,7 @@ import { Storage} from '@ionic/storage';
 import * as firebase from 'firebase/app';
 import {AngularFirestore} from '@angular/fire/firestore';
 import { Router } from '@angular/router';
+import { single } from 'rxjs/operators';
 
 
 @Component({
@@ -23,8 +24,12 @@ export class LearningCenterPage implements OnInit {
     sessionID: ''
   }
 
-   //user's code
-   userCode;
+  //user's code
+  userCode;
+
+  //Arrays to keep track of which modules are new and which are taken
+  newModules = [];
+  takenModules = [];
 
   private learningModules: Observable<LearningModule[]>;
 
@@ -58,7 +63,41 @@ export class LearningCenterPage implements OnInit {
 
       });
 
-      this.addView();
+    this.addView();
+
+  }
+
+  ionViewWillEnter()
+  {
+    this.newModules = [];
+    this.takenModules = [];
+
+    this.learningModules.forEach(value => {
+      value.forEach(singleMod => {
+
+        //Filter down to only the modules that should be visible to this user
+        if (singleMod.userVisibility.includes(this.userCode) && singleMod.moduleActive)
+        {
+          //Get this LM's numberTimesQuizTaken from local storage
+          this.storage.get(singleMod.id + "numberTimesQuizTaken").then(value => {
+      
+            if (value != null) //they've taken quiz already
+            {
+              this.takenModules.push(singleMod.id);
+            }
+            else //quiz has not been taken
+            {
+              this.newModules.push(singleMod.id);
+            }
+  
+            }).catch(e => {
+            
+            console.log('error retrieving numberTimesQuizTaken: '+ e);
+            
+            });
+        }
+      });
+    });
   }
 
 

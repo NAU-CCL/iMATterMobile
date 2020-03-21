@@ -208,7 +208,7 @@ export class LearningModuleContentPage implements OnInit {
       
       }).catch(e => {
       
-      console.log('error retrieving numberTimesQuizTaken: '+ e);
+      console.log('error retrieving numberQuestionsCorrect: '+ e);
       
       });
 
