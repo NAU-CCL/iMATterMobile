@@ -8,7 +8,7 @@ import {AngularFirestore} from '@angular/fire/firestore';
 import * as firebase from 'firebase/app';
 import FieldValue = firebase.firestore.FieldValue;
 import { HttpClient } from '@angular/common/http';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 
 @Component({
@@ -124,7 +124,7 @@ export class ForumDeatailsPage implements OnInit {
     }).then(toast => toast.present());
   }
 
-  sendEmail(){
+  sendEmail() {
 	this.http.get('https://us-central1-techdemofirebase.cloudfunctions.net/sendEmailNotification').subscribe((response) => {
 		console.log(response);
 	});
