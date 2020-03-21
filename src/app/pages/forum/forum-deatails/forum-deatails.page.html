@@ -12,12 +12,12 @@
   <form [formGroup]="questionForm">
     <ion-item>
       <ion-label position="stacked">Enter Title:</ion-label>
-      <ion-textarea formControlName="title" placeholder="Short title for your question">
+      <ion-textarea autoGrow="true" spellcheck="true" autocapitalize="true" formControlName="title" placeholder="Short title for your question">
       </ion-textarea>
     </ion-item>
     <ion-item>
       <ion-label position="stacked">Enter Question:</ion-label>
-      <ion-textarea formControlName="description" placeholder="What is your question?">
+      <ion-textarea autoGrow="true" spellcheck="true" autocapitalize="true" formControlName="description" placeholder="What is your question?">
       </ion-textarea>
     </ion-item>
     <ion-item>

@@ -54,7 +54,7 @@
     <form [formGroup]="commentForm">
       <ion-item>
         <ion-label position="stacked">Enter comment:</ion-label>
-        <ion-textarea formControlName="comment" placeholder="What would you like to say?">
+        <ion-textarea autoGrow="true" spellcheck="true" autocapitalize="true" formControlName="comment" placeholder="What would you like to say?">
         </ion-textarea>
       </ion-item>
       <ion-item>

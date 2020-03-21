@@ -116,8 +116,8 @@
 
     <ion-item>
       <ion-label position="stacked">Short Bio (Optional)</ion-label>
-      <ion-input formControlName="bio" placeholder="Say Something About Yourself ">
-      </ion-input>
+      <ion-textarea autoGrow="true" spellcheck="true" autocapitalize="true" formControlName="bio" placeholder="Say Something About Yourself ">
+      </ion-textarea>
     </ion-item>
 
     <ion-button class= "fill-button" expand="block" (click)="signupUser(signupForm)">
