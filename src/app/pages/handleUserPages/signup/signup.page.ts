@@ -26,6 +26,7 @@ export class SignupPage implements OnInit {
   private showImages: boolean;
   private dueDate: string;
   private currentDate = new Date().toJSON().split('T')[0];
+  private maxYear = new Date().getFullYear() + 1;
   private securityQs: Array<string>;
   private autoProfilePic: any;
 

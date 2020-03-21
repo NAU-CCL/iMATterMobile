@@ -16,7 +16,6 @@ export class ChatInitPage {
       if (val) {
         this.router.navigate(['/tabs/chat/', val]);
         this.chatService.iterateChats(val);
-
       }
     });
   }
