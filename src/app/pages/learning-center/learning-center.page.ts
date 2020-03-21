@@ -27,9 +27,11 @@ export class LearningCenterPage implements OnInit {
   //user's code
   userCode;
 
-  //Arrays to keep track of which modules are new and which are taken
+  //Arrays to keep track of which modules have been viewed
   newModules = [];
-  takenModules = [];
+  viewedModules = [];
+
+  takenQuizModules = new Map();
 
   private learningModules: Observable<LearningModule[]>;
 
@@ -69,8 +71,10 @@ export class LearningCenterPage implements OnInit {
 
   ionViewWillEnter()
   {
+    //empty these every time so duplicates don't show up
     this.newModules = [];
-    this.takenModules = [];
+    this.viewedModules = [];
+    this.takenQuizModules.clear();
 
     this.learningModules.forEach(value => {
       value.forEach(singleMod => {
@@ -78,30 +82,49 @@ export class LearningCenterPage implements OnInit {
         //Filter down to only the modules that should be visible to this user
         if (singleMod.userVisibility.includes(this.userCode) && singleMod.moduleActive)
         {
-          //Get this LM's numberTimesQuizTaken from local storage
-          this.storage.get(singleMod.id + "numberTimesQuizTaken").then(value => {
-      
-            if (value != null) //they've taken quiz already
+          //see if this module has been viewed
+          this.storage.get(singleMod.id + "beenViewed").then(value => {
+            if (value == true) //have viewed this module
             {
-              this.takenModules.push(singleMod.id);
+              this.viewedModules.push(singleMod.id);
             }
-            else //quiz has not been taken
+            else if (value === null) //have not viewed
             {
               this.newModules.push(singleMod.id);
             }
-  
-            }).catch(e => {
+          }).catch(e => {
+              
+            console.log('error retrieving beenViewed: '+ e);
             
-            console.log('error retrieving numberTimesQuizTaken: '+ e);
-            
-            });
+          });
+
+          //If this module has quiz questions
+          if (singleMod.moduleQuiz.length > 0)
+          {
+            //Get this LM's numberTimesQuizTaken from local storage
+            this.storage.get(singleMod.id + "numberTimesQuizTaken").then(value => {
+        
+              if (value != null) //they've taken quiz already
+              {
+                this.takenQuizModules.set(singleMod.id, value);
+              }
+              else //they haven't taken quiz, value == null
+              {
+                //since value is null, need to set this one to 0
+                this.takenQuizModules.set(singleMod.id, 0);
+              }
+    
+              }).catch(e => {
+              
+              console.log('error retrieving numberTimesQuizTaken: '+ e);
+              
+              });
+          }
         }
       });
     });
   }
 
-
-  
   
   addView()
   {

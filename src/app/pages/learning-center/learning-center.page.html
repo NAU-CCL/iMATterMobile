@@ -40,13 +40,13 @@
 
   <ion-item-divider color="medium">
     <ion-label>
-      Taken Modules
+      Viewed Modules
     </ion-label>
   </ion-item-divider>
 
   <ion-list>
     <ng-container *ngFor="let learningMod of ( learningModules | async )">
-      <ion-card button [routerLink]="['/learning-module-content', learningMod.id]" *ngIf="takenModules.includes(learningMod.id)">
+      <ion-card button [routerLink]="['/learning-module-content', learningMod.id]" *ngIf="viewedModules.includes(learningMod.id)">
         
       <ion-card-header>
           <ion-card-title>
@@ -55,7 +55,11 @@
           <ion-card-subtitle>
             Description: {{ learningMod.moduleDescription }}
           </ion-card-subtitle>
-        </ion-card-header>
+      </ion-card-header>
+
+      <ion-card-content *ngIf="takenQuizModules.size > 0 && learningMod.moduleQuiz.length > 0">
+        {{takenQuizModules.get(learningMod.id)}} out of 3 Quiz Attempts Taken
+      </ion-card-content>
 
       </ion-card>
     </ng-container>

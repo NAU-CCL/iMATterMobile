@@ -102,12 +102,10 @@ export class LearningModuleContentPage implements OnInit {
     this.storage.get('userCode').then((val) => {
       if (val) {
         this.userProfileID = val;
-        console.log(this.userProfileID);
         const ref = this.afs.firestore.collection('users').where('code', '==', val);
         ref.get().then((result) => {
           result.forEach(doc => {
             this.totalUserPoints = doc.get('points');
-            console.log("TOTAL USER POINTS: " + this.totalUserPoints);
           });
         });
       }
@@ -149,6 +147,12 @@ export class LearningModuleContentPage implements OnInit {
       //IMPORTANT! initializes variables for learning module (retrieves from storage when applicable)
       this.initializeStorage();
     }
+  }
+
+  ionViewDidEnter()
+  {
+    //this module has been viewed
+    this.storage.set(this.learningModule.id + "beenViewed", true);
   }
 
   /**
@@ -483,6 +487,7 @@ export class LearningModuleContentPage implements OnInit {
     this.storage.remove(this.learningModule.id + "correctQuestions");
     this.storage.remove(this.learningModule.id + "previousQuizAttemptPoints");
     this.storage.remove(this.learningModule.id + "currentQuizPoints");
+    this.storage.remove(this.learningModule.id + "beenViewed");
   }
 
 }
