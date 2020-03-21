@@ -6,8 +6,6 @@ import { Storage} from '@ionic/storage';
 import * as firebase from 'firebase/app';
 import {AngularFirestore} from '@angular/fire/firestore';
 import { Router } from '@angular/router';
-import { single } from 'rxjs/operators';
-
 
 @Component({
   selector: 'app-learning-center',
@@ -125,7 +123,7 @@ export class LearningCenterPage implements OnInit {
     });
   }
 
-  
+
   addView()
   {
 
