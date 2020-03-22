@@ -7,7 +7,12 @@ const routes: Routes = [
   {
     path: '',
     component: AnswerPage
-  }
+  },
+  // {
+  //   path: 'show-message',
+  //   loadChildren: () => import('./show-message/show-message.module').then( m => m.ShowMessagePageModule)
+  // }
+
 ];
 
 @NgModule({
