@@ -14,7 +14,7 @@
     <!-- Automatic message -->
     <div *ngIf="chat.type == 'auto' || chat.type == 'emotion'; else elseBlock">
       <div align-self-center class="timestamp">
-        {{ chat.timestamp.seconds * 1000 | date:'MM-dd-yyyy h:mm a' }}
+        {{ chat.timestamp.toDate() | date:'MM-dd-yyyy h:mm a' }}
       </div>
 
       <div class="message">
@@ -37,7 +37,7 @@
     <!-- User message -->
     <ng-template #elseBlock>
     <div align-self-center class="timestamp">
-      {{ chat.timestamp.seconds * 1000 | date:'MM-dd-yyyy h:mm a' }}
+      {{ chat.timestamp.toDate() | date:'MM-dd-yyyy h:mm:ss.SS a' }}
     </div>
 
     <div class="message">

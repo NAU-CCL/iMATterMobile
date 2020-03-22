@@ -14,11 +14,8 @@ export interface Survey {
   daysInactive: number;
   emotionChosen: string;
   pointsWorth: number;
-}
-
-export interface User {
-  id?: string;
-  answered: [];
+  userVisibility: string[];
+  surveyDescription: string;
 }
 
 @Injectable({
@@ -29,7 +26,9 @@ export class FireService {
   private surveys: Observable<Survey[]>;
   private surveyCollection: AngularFirestoreCollection<Survey>;
   
-  constructor(private angularfs: AngularFirestore) {
+  constructor(private angularfs: AngularFirestore) {}
+
+   getSurveyCollection(){
     this.surveyCollection = this.angularfs.collection<Survey>('surveys');
     this.surveys = this.surveyCollection.snapshotChanges().pipe(
       map(actions => {
@@ -42,7 +41,8 @@ export class FireService {
     );
    }
 
-   getSurveys(){
+   getSurveys(): Observable<Survey[]>{
+     this.getSurveyCollection();
     return this.surveys;
   }
 

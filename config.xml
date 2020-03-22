@@ -123,4 +123,8 @@
     </plugin>
     <plugin name="cordova-plugin-ionic-keyboard" spec="^2.2.0" />
     <plugin name="cordova-plugin-local-notification" spec="^0.9.0-beta.2" />
+    <plugin name="cordova-plugin-geolocation" spec="^4.0.2" />
+    <plugin name="cordova-plugin-nativegeocoder" spec="^3.2.2">
+        <variable name="LOCATION_WHEN_IN_USE_DESCRIPTION" value="Use geocoder service" />
+    </plugin>
 </widget>

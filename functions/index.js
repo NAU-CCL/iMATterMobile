@@ -146,9 +146,6 @@ exports.updateDays=functions.https.onRequest((req, res)=>{
 					weeksPregnant: weeksPregnant
 				});
 
-
-				
-			  
 			});
 			//if the res.send is the same each time, for some reason it stops working? Added random number so its different each send.
 			  var number = Math.random();
@@ -385,9 +382,7 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 								recentNotifications = singleUser.get('recentNotifications');
 								recentNotifications.push(payload.body);
 								currentUser = singleUser.get('code');
-								currentUser.update({
-									recentNotifications: admin.firestore.FieldValue.arrayUnion(recentNotifications)
-                 				 });
+								currentUser.update({recentNotifications: admin.firestore.FieldValue.arrayUnion(recentNotifications)});
                 
 								admin.messaging().sendToDevice(userNotifToken, payload)
 									.then((response) => {
@@ -415,7 +410,12 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 							//If user is within the days this LM should be visible to them
 							if (userDaysPregnant >= daysStart && userDaysPregnant <= daysEnd)
 							{
-								lmUserVisibility.push(userCode);
+								//to cover the case where intervals of visibility possibly overlap
+								//prevent user code from being pushed more than once
+								if (!lmUserVisibility.includes(userCode))
+								{
+									lmUserVisibility.push(userCode);
+								}
 
 								//if user hasn't yet been notified and user's notifications are turned on, send push notif
 								if ((!storedLMUserVisibility.includes(userCode)) && singleUser.get("learningModNotif") == true)
@@ -423,10 +423,8 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 									recentNotifications = singleUser.get('recentNotifications');
 									recentNotifications.push(payload.body);
 									currentUser = singleUser.get('code');
-									currentUser.update({
-										recentNotifications: admin.firestore.FieldValue.arrayUnion(recentNotifications)
-									});
-										
+									currentUser.update({recentNotifications: admin.firestore.FieldValue.arrayUnion(recentNotifications)});
+
 									admin.messaging().sendToDevice(userNotifToken, payload)
 										.then((response) => {
 											console.log("New learning module notification sent successfully to " + singleUser.get("username"));
@@ -457,6 +455,7 @@ exports.emotionSurveyNotification = functions.firestore.document('users/{userID}
 	var surveyType;
 	var emotionType;
 	var userNotifToken;
+	var recentNotifications;
 
 	const payload = {
 		notification: {
@@ -479,6 +478,11 @@ exports.emotionSurveyNotification = functions.firestore.document('users/{userID}
 					//If this user's emotion matches survey's emotion type and their survey notifs are on
 					if (newValue.mood == emotionType && newValue.surveyNotif == true)
 					{
+						recentNotifications = singleUser.get('recentNotifications');
+						recentNotifications.push(payload.body);
+						currentUser = singleUser.get('code');
+						currentUser.update({recentNotifications: recentNotifications});
+
 						userNotifToken = newValue.token;
 						admin.messaging().sendToDevice(userNotifToken, payload)
 							.then((response) => {
@@ -512,6 +516,7 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 	var surveyType;
 	var userNotifToken;
 	var userCode;
+	var recentNotifications;
 
 	const payload = {
 		notification: {
@@ -550,7 +555,7 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 
 						afterJoiningDaysArray.forEach(dayValue => {
 							if(daysSinceJoined >= parseInt(dayValue) && 
-								daysSinceJoined < parseInt(dayValue) + expirationDays)
+								daysSinceJoined <= parseInt(dayValue) + expirationDays)
 							{
 								surveyVisibility.push(userCode);
 
@@ -558,6 +563,10 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 								//and their notifications are on, send them the notif
 								if ((!storedSurveyVisibility.includes(userCode)) && singleUser.get("surveyNotif") == true)
 								{
+									recentNotifications = singleUser.get('recentNotifications');
+									recentNotifications.push(payload.body);
+									currentUser = singleUser.get('code');
+									currentUser.update({recentNotifications: recentNotifications});
 									userNotifToken = singleUser.get("token");
 									admin.messaging().sendToDevice(userNotifToken, payload)
 										.then((response) => {
@@ -600,7 +609,7 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 						for(var index in dueDateDaysArray)
 						{
 							if(daysBeforeDue <= parseInt(dueDateDaysArray[index]) && 
-								daysBeforeDue > parseInt(dueDateDaysArray[index]) - expirationDays)
+								daysBeforeDue >= parseInt(dueDateDaysArray[index]) - expirationDays)
 							{
 								surveyVisibility.push(singleUser.get("code"));
 
@@ -611,7 +620,12 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 
 								if ((!storedSurveyVisibility.includes(userCode)) && singleUser.get("surveyNotif") == true)
 								{
+									
 									userNotifToken = singleUser.get("token");
+									recentNotifications = singleUser.get('recentNotifications');
+									recentNotifications.push(payload.body);
+									currentUser = singleUser.get('code');
+									currentUser.update({recentNotifications: recentNotifications});
 									admin.messaging().sendToDevice(userNotifToken, payload)
 										.then((response) => {
 											console.log("New survey notification for Due Date sent successfully to " + singleUser.get("username"));
@@ -650,6 +664,10 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 
 							if ((!storedSurveyVisibility.includes(userCode)) && singleUser.get("surveyNotif") == true)
 							{
+								recentNotifications = singleUser.get('recentNotifications');
+								recentNotifications.push(payload.body);
+								currentUser = singleUser.get('code');
+								currentUser.update({recentNotifications: recentNotifications});
 								userNotifToken = singleUser.get("token");
 								admin.messaging().sendToDevice(userNotifToken, payload)
 									.then((response) => {

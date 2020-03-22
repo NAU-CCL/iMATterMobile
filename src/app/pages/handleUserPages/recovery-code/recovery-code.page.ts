@@ -87,6 +87,10 @@ export class RecoveryCodePage implements OnInit {
                         this.theCode = doc.get('code');						
                         if ( this.theCode === this.recoveryCode) {
                             recoveryEmail = doc.get('email');
+							this.afs.firestore.collection('recovery_email').doc(doc.id).update({
+								code: "",
+								email: ""
+							});
 							console.log(recoveryEmail);
 							console.log("5");                                                    
                         } else {                            
@@ -118,27 +122,7 @@ export class RecoveryCodePage implements OnInit {
             }
         });
     }
-	async updatePassword(): Promise<void> {
-    const alert = await this.alertCtrl.create({
-      inputs: [
-        { name: 'newPassword', placeholder: 'New password', type: 'password' },
-        { name: 'oldPassword', placeholder: 'Old password', type: 'password' },
-      ],
-      buttons: [
-        { text: 'Cancel' },
-        {
-          text: 'Save',
-          handler: data => {
-            this.profileService.updatePassword(
-                data.newPassword,
-                data.oldPassword, this.userID
-            );
-          },
-        },
-      ],
-    });
-    await alert.present();
-  }
+	
 	
 
 }

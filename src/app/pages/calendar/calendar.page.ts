@@ -11,9 +11,13 @@ import {AngularFirestore} from '@angular/fire/firestore';
 import {Observable} from 'rxjs';
 import * as moment from 'moment';
 
+import { StorageService, Item } from '../../services/storage.service';
+
 /**
  * This code written with the help of this tutorial:
  * https://devdactic.com/ionic-4-calendar-app/
+ *and this stackoverflow:
+ *https://stackoverflow.com/questions/56214875/ionic-calendar-event-does-not-load-on-device
  * Used for the general build and functionality of the calendar
  */
 
@@ -35,9 +39,11 @@ export class CalendarPage implements OnInit {
   days: any[];
   chosenHours: number;
   chosenMinutes: number;
+  eventList: any[] = [];
 
   minDate = new Date().toISOString();
 
+  test = [];
   eventSource = [];
   viewTitle;
 
@@ -54,21 +60,30 @@ analytic: Analytics =
 }
 
 
+  length : number;
   private showAddEvent: boolean;
   private analyticss : string;
   private sessions : Observable<any>;
 
+  items: Item[] = [];
+  newItem: Item = <Item>{};
+  
+  deleteIndex : number;
+  notificationIndex : number;
+  deleteNotificationIndex : number;
+  
+  
   // @ts-ignore
   @ViewChild(CalendarComponent) myCal: CalendarComponent;
 
   constructor(private localNotifications: LocalNotifications, private alertCtrl: AlertController, @Inject(LOCALE_ID) private locale: string,
-              private storage: Storage, private router: Router, private afs: AngularFirestore,
+              private storage: Storage,  private storageService: StorageService, private router: Router, private afs: AngularFirestore,
      private analyticsService: AnalyticsService) {
+       
 		this.notifyTime = moment(new Date()).format();
 
 		this.chosenHours = new Date().getHours();
 		this.chosenMinutes = new Date().getMinutes();
-
 		this.days = [
             {title: 'Monday', dayCode: 1, checked: false},
             {title: 'Tuesday', dayCode: 2, checked: false},
@@ -80,6 +95,7 @@ analytic: Analytics =
         ];
 
 	}
+	
 
   ngOnInit() {
     this.storage.get('authenticated').then((val) => {
@@ -89,7 +105,8 @@ analytic: Analytics =
     });
     this.showAddEvent = false;
     this.resetEvent();
-    this.addView();
+	this.loadItems();
+      this.addView();
   }
 
   addView(){
@@ -116,8 +133,6 @@ analytic: Analytics =
     }
   });
 }
-
-
   resetEvent() {
     this.event = {
       title: '',
@@ -127,17 +142,21 @@ analytic: Analytics =
       allDay: false
     };
   }
+  deleteEvent(){
+	  //window.plugins.calendar.deleteEvent(newTitle,eventLocation,notes,startDate,endDate,success,error);
+  }
 
   // Create the right event format and reload source
   addEvent() {
-    const eventCopy = {
+    let eventCopy = {
       title: this.event.title,
       startTime:  new Date(this.event.startTime),
       endTime: new Date(this.event.endTime),
       allDay: this.event.allDay,
       desc: this.event.desc
+	  
     };
-
+	console.log(this.notificationIndex);
     if (eventCopy.allDay) {
       let start = eventCopy.startTime;
       let end = eventCopy.endTime;
@@ -147,7 +166,27 @@ analytic: Analytics =
     }
 
 	// add notification when creating event
-	this.localNotifications.schedule({
+	if(this.notificationIndex == null){
+		this.notificationIndex = 0;
+		
+	}
+	
+	this.eventList.push(eventCopy);
+	
+    this.eventSource.push(eventCopy);
+	this.test.push('1');
+
+	console.log(JSON.stringify(this.eventSource));
+    this.myCal.loadEvents();
+	console.log("notification index" +this.notificationIndex);
+	
+	this.storageService.addItem(eventCopy).then(item => {
+
+		console.log('?');
+      this.loadItems();
+	});
+	this.localNotifications.schedule({ 
+	   id: this.notificationIndex++,
 	   text: 'You have an event, check your calendar!',
 	   trigger: {at: new Date(this.event.startTime)},
 	   led: 'FF0000',
@@ -158,6 +197,34 @@ analytic: Analytics =
     this.myCal.loadEvents();
     this.resetEvent();
     this.showAddEvent = false;
+	
+  }
+  
+  loadItems() {
+    this.storageService.getItems().then(items => {
+      this.items = items;
+      if (items) {
+     this.eventSource = items;
+      }
+      else{
+        console.log('No events');
+      }
+    });
+  
+  }
+  
+  getStorage(){
+  this.storage.get('name').then((val) => {
+    return ['name'];
+  });
+  }
+  
+  
+
+  showEvent(){
+	  this.storage.get('event').then( (val) =>{
+		  console.log("value is " + val)
+	  })
   }
 
   next() {
@@ -190,14 +257,32 @@ analytic: Analytics =
     // Use Angular date pipe for conversion
     let start = formatDate(event.startTime, 'medium', this.locale);
     let end = formatDate(event.endTime, 'medium', this.locale);
+    
+	let eventCopy = {
+      title: event.title,
+      startTime:  event.startTime,
+      endTime: event.endTime,
+      allDay: event.allDay,
+      desc: event.desc
+	  
+    };
+	
+	this.length = this.eventSource.length;
+	for (let i = 0; i < this.length; i++) {
+		console.log("eventSource " + this.eventSource[i]);
+		console.log("eventCopy" + JSON.stringify(this.eventSource[i]));
+		if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
+			this.deleteIndex = i;
+		}
+	}
+	var temp = this.deleteIndex;
+	this.localNotifications.clear(temp++);
 
-    const alert = await this.alertCtrl.create({
-      header: event.title,
-      subHeader: event.desc,
-      message: 'From: ' + start + '<br><br>To: ' + end,
-      buttons: ['OK']
-    });
-    alert.present();
+	this.eventSource.splice(this.deleteIndex, 1);
+	console.log("notification index");
+	console.log("delete Index" + this.deleteIndex);
+	this.storage.set('my-items', this.eventSource);
+	this.loadItems();	
   }
 
 // Time slot was clicked

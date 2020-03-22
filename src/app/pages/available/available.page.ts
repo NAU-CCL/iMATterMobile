@@ -5,13 +5,8 @@ import { Storage} from '@ionic/storage';
 import { Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
 
-// Today's date as a javascript Date Object
+// // Today's date as a javascript Date Object
 const today = new Date();
-// Today's date in ISOString format
-const todaysDate = today.toISOString();
-
-// Temporary Inactive days variable
-var inactiveDays = 20;
 
 @Component({
   selector: 'app-available',
@@ -27,13 +22,18 @@ export class AvailablePage implements OnInit {
   // user's current emotion
   emotion;
   // user's joined date
-  joined;
+  daysAUser;
   // interval of survey for which user is currently in
   surveyInterval = [];
   // surveys answered by the user to check if the survey should be available
   answeredSurveys = [];
   // user code to make updates on
   userCode;
+  // array of of users that can see the survey
+  userVisibility = [];
+  // Temporary Inactive days variable
+  //inactiveDays = 20;
+
   constructor(private fs: FireService,
               private storage: Storage, 
               private router: Router, 
@@ -41,16 +41,20 @@ export class AvailablePage implements OnInit {
               ) { }
 
   ngOnInit() {
+    // survey object and its fields
     this.storage.get('authenticated').then((val) => {
       if (val === 'false') {
         this.router.navigate(['/login/']);
       }
-    });
+    });  
 
-    // get all existing surveys
+  }
+
+  ionViewDidEnter(){
+    // get all the surveys available
     this.surveys = this.fs.getSurveys();
-    
-    // obtain the user's emotion, duedate, joined date, answered surveys, and user code
+
+    // obtain the user's code, emotion, days being a user, due date, and answered surveys
     this.storage.get('userCode').then((val) => {
       if (val) {
         const ref = this.afs.firestore.collection('users').where('code', '==', val);
@@ -58,7 +62,7 @@ export class AvailablePage implements OnInit {
           result.forEach(doc => {
             this.userCode = val;
             this.emotion = doc.get('mood');
-            this.joined = doc.get('joined');
+            this.daysAUser = doc.get('daysAUser');
             this.dueDate = doc.get('dueDate').split('-');
             this.answeredSurveys = doc.get('answeredSurveys');
             console.log("TEST: ", this.answeredSurveys);
@@ -67,247 +71,156 @@ export class AvailablePage implements OnInit {
       }
     });
   }
-  
+
+
+
   // isDisplayed determines if the survey shows up for the user or not
   isDisplayed(survey: Survey){
-    // boolean to determine if the survey will be displayed
-    let isDisplayed = false;
-    let included = false;
-    // dateJoined of the user as a date object
-    let dateJoined = new Date( this.joined.toDate().getMonth()+1 + "/" + this.joined.toDate().getDate() + "/" + this.joined.toDate().getFullYear());
-    // dueDate of the user as a date object
-    let dateDue = new Date(this.dueDate[1] + "/" + this.dueDate[2] + "/" + this.dueDate[0]);
-    // todaysDate string split into an array
-    let currentTime = this.fs.getTime(todaysDate).split(" ");
-    // obtaining the current month/day/year from the currentTime array
-    let currentString = currentTime[1] + "/" + currentTime[2] + "/" + currentTime[0];
-    // passing the current month/day/year to a Date object
-    let now = new Date(currentString);
-    // taking the difference in time between today and the date joined
-    let timeSinceJoined = now.getTime() - dateJoined.getTime();
-    // taking the difference in time between the date due and today
-    let timeBeforeDue =  dateDue.getTime() - now.getTime();
-    // converting the difference from milliseconds to days
-    let daysSinceJoined = timeSinceJoined / (1000 * 3600 * 24);
-    // converting the difference from milliseconds to days
-    let daysBeforeDue = timeBeforeDue / (1000 * 3600 * 24);
-    // days after the survey is displayed before it expires
-    let expirationDays = survey.daysTillExpire;
-    // array of days that will determine when the survey is displayed
-    let daysArray;
+    // array which includes the userId of all of users who can take this survey
+    this.userVisibility = survey.userVisibility;
+    //array of days that will determine when the survey is displayed
+    var daysArray;
+    // number of days before the Survey expires
+    var expirationDays;
+    // boolean to determine if the survey can be displayed to the user
+    var canDisplay = false;
+    // boolean to determine if a certain item is included in the answeredSurveys array
+    var includes = false;
+    // date due of the current user
+    var dateDue = new Date(this.dueDate[1] + "/" + this.dueDate[2] + "/" + this.dueDate[0]);
+    // time in milliseconds before the user's due date
+    var timeBeforeDue =  dateDue.getTime() - today.getTime();
+    // time in days before the user's due date
+    var daysBeforeDue = Math.trunc( timeBeforeDue / (1000 * 3600 * 24) );
+    
+    // if the user is inside the survey's userVisibility array
+    //if(survey.userVisibility.includes(this.userCode)){
+      // if the survey type is after joining, show it to the user if their join date is between 
+      // a value of the daysArray and the expiration date, if the user's join date is not between
+      // those dates or if they have already taken the survey for this interval then don't show
 
-    // if the survey type is After joining check if the number of days since the users joined
-    // is within the range of days and expiration, if it is then check if the users already
-    // has taken the survey for that interval, if not then let them take it otherwise prevent them
-    if(survey.type == 'After Joining'){
-      daysArray = survey.daysTillRelease.split(/(?:,| )+/);
-
-      for(var index in daysArray){
-        if(daysSinceJoined >= parseInt(daysArray[index]) && daysSinceJoined < parseInt(daysArray[index]) + expirationDays){
-          this.answeredSurveys.forEach( val => {
-            if(val.split(":").includes(survey.id)){
-              if(val.split(":")[1] == daysArray[index]){
-                isDisplayed = false;
-                included = true;
-              }
-              else{
-                isDisplayed = true;
-                included = true;
-                this.surveyInterval.push(survey.id + ":" + daysArray[index]);
-              }
-            }
-          });
-          
-          if(!included){
-            isDisplayed = true;
-            this.surveyInterval.push(survey.id + ":" + daysArray[index]);
-          }
-        }
-      }
-    }
-
-    // if the survey type is Due Date check if the number of days before the user's due date
-    // is within the range of days and expiration, if it is then check if the users already
-    // has taken the survey for that interval, if not then let them take it otherwise prevent them
-    if(survey.type == 'Due Date'){
-      daysArray = survey.daysBeforeDueDate.split(/(?:,| )+/);
-
-      for(var index in daysArray){
-        if(daysBeforeDue <= parseInt(daysArray[index]) && daysBeforeDue > parseInt(daysArray[index]) - expirationDays){
-          this.answeredSurveys.forEach( val => {
-            if(val.split(":").includes(survey.id)){
-              if(val.split(":")[1] == daysArray[index]){
-                isDisplayed = false;
-                included = true;
-              }
-              else{
-                isDisplayed = true;
-                included = true;
-                this.surveyInterval.push(survey.id + ":" + daysArray[index]);
-              }
-            }
-          });
-
-          if(!included){
-            isDisplayed = true;
-            this.surveyInterval.push(survey.id + ":" + daysArray[index]);
-          }
-        }
-      }
-    }
-
-    // if the survey type is Inactive, check if the user has taken the survey otherwise,
-    // check if the number of days the user has been inactive match or exceed the days set
-    // for the survey to show up
-    if(survey.type == 'Inactive'){
-
-      if(inactiveDays >= survey.daysInactive){
-        this.surveyInterval.push(survey.id + ":" + "false");
-        isDisplayed = true;
+      if(survey.daysTillExpire == 0){
+        expirationDays = survey.daysTillExpire + 100000;
       }
 
-      this.answeredSurveys.forEach( val => {
-        if(val.split(":")[1] === "false" && val.split(":").includes(survey.id)){
-          isDisplayed = false;
-        }
-      })
-    }
-
-    // if the survey type is Emotion, check if the user has taken the survey otherwise,
-    // check if the user's emotion matches the emotion set for the survey
-    if(survey.type == 'Emotion'){
-
-      if(survey.emotionChosen == 'excited' && this.emotion == 'excited'){
-        this.surveyInterval.push(survey.id + ":" + "false");
-        isDisplayed = true;
-      }
-
-      if(survey.emotionChosen == 'happy' && this.emotion == 'happy'){
-        this.surveyInterval.push(survey.id + ":" + "false");
-        isDisplayed = true;
-      }
-
-      if(survey.emotionChosen == 'loved' && this.emotion == 'loved'){
-        this.surveyInterval.push(survey.id + ":" + "false");
-        isDisplayed = true;
-      }
-
-      if(survey.emotionChosen == 'indifferent' && this.emotion == 'indifferent'){
-        this.surveyInterval.push(survey.id + ":" + "false");
-        isDisplayed = true;
-      }
-
-      if(survey.emotionChosen == 'overwhelmed' && this.emotion == 'overwhelmed'){
-        this.surveyInterval.push(survey.id + ":" + "false");
-        isDisplayed = true;
-      }
-
-      if(survey.emotionChosen == 'sad' && this.emotion == 'sad'){
-        this.surveyInterval.push(survey.id + ":" + "false");
-        isDisplayed = true;
-      }
-
-      if(survey.emotionChosen == 'angry' && this.emotion == 'angry'){
-        this.surveyInterval.push(survey.id + ":" + "false");
-        isDisplayed = true;
+      if(survey.daysTillExpire != 0){
+        expirationDays = survey.daysTillExpire;
       }
       
-      this.answeredSurveys.forEach( val => {
-        if(val.split(":")[1] == "false" && val.split(":").includes(survey.id)){
-          isDisplayed = false;
-        }
-      })
-    }
+      if(survey.type == 'After Joining'){
+        daysArray = survey.daysTillRelease.split(/(?:,| )+/);
+        daysArray.forEach(day => {
+          if(this.daysAUser >= parseInt(day) && this.daysAUser <= parseInt(day) + expirationDays){
+            this.answeredSurveys.forEach( answered => {
+              if(answered.split(":")[0] == survey.id && answered.split(":")[1] == day){
+                canDisplay = false;
+                includes = true;
+              }
 
-    return isDisplayed;
+              if(answered.split(":")[0] == survey.id && answered.split(":")[1] != day){
+                canDisplay = true;
+                includes = true;
+                this.surveyInterval.push(survey.id + ":" + day);
+              }
+            })
+
+            if(!includes){
+              canDisplay = true;
+              this.surveyInterval.push(survey.id + ":" + day);
+            }
+          }
+        })
+      }
+
+      // if the survey type is Due Date, show it to the user if their duedate is between 
+      // a value of the daysArray and the expiration date, if the user's join date is not between
+      // those dates or if they have already taken the survey for this interval then don't show
+      if(survey.type == 'Due Date'){
+        daysArray = survey.daysBeforeDueDate.split(/(?:,| )+/);
+        daysArray.forEach(day => {
+          if(daysBeforeDue <= parseInt(day) && daysBeforeDue >= parseInt(day) - expirationDays){
+            this.answeredSurveys.forEach( answered => {
+              if(answered.split(":")[0] == survey.id && answered.split(":")[1] == day){
+                canDisplay = false;
+                includes = true;
+              }
+
+              if(answered.split(":")[0] == survey.id && answered.split(":")[1] != day){
+                canDisplay = true;
+                includes = true;
+                this.surveyInterval.push(survey.id + ":" + day);
+              }
+            })
+
+            if(!includes){
+              canDisplay = true;
+              this.surveyInterval.push(survey.id + ":" + day);
+            }
+          }
+        })
+      }
+
+      // if the survey type is inactive and the user's inactive days meets or exceeds the
+      // surveys inactive days field, then display to the user
+      if(survey.type == 'Inactive'){
+        /*
+        if(survey.daysInactive <= this.inactiveDays){
+          canDisplay = true;
+        }*/
+      }
+
+      // if the survey type is Emotion and the user's emotion matches the survey's
+      // emotion field, then display to the user
+      if(survey.type == 'Emotion'){
+        if(survey.emotionChosen == this.emotion){
+          canDisplay = true;
+          // this.answeredSurveys.forEach( answered => {
+          //   if(answered.split(":")[0] == survey.id && answered.split(":")[1] == ("" + today.getDate())){
+          //     canDisplay = false;
+          //     includes = true;
+          //   }
+          //   if(answered.split(":")[0] == survey.id && answered.split(":")[1] != ("" + today.getDate())){
+          //     canDisplay = true;
+          //     includes = true;
+          //     this.surveyInterval.push(survey.id + ":" + today.getDate());
+          //   }
+          // })
+
+          // if(!includes){
+          //   canDisplay = true;
+          //   this.surveyInterval.push(survey.id + ":" + today.getDate());
+          // }
+        }
+      }
+   // }
+
+   // return if the user can see the survey or not
+    return canDisplay;
   }
 
-  // updateAccess updates the interval for which the user has taken the survey
-  updateAccess(survey: Survey){
-    let includes = false;
+  // takes the survey selected by passing the id and survey current interval 
+  answerSurvey(survey: Survey){
+    // includes the survey id and current interval the user is taking it in
+    var submitData;
 
-    // If the survey type is After Joining store the survey id and the Interval to signify that is has been taken
-    if(survey.type == 'After Joining'){
-      for(var index in this.surveyInterval){
-        if(this.surveyInterval[index].split(":").includes(survey.id)){
-          
-          this.answeredSurveys.forEach( val =>{
-            if(val.split(":").includes(survey.id)){
-              includes = true;
-              this.answeredSurveys[this.answeredSurveys.indexOf(val)] = this.surveyInterval[index];
-              this.fs.updateAnsweredSurveys(this.userCode, this.answeredSurveys);
-            }
-          });
-          
-          if(!includes){
-            this.answeredSurveys.push(this.surveyInterval[index]);
-            this.fs.updateAnsweredSurveys(this.userCode, this.answeredSurveys);
-          }
+    // if the survey type is not inactive, take the survey interval for the current
+    // survey and assign it to submit data
+    if(survey.type != 'Inactive' && survey.type != 'Emotion'){
+      this.surveyInterval.forEach( surv => {
+        if(surv.split(":")[0] == survey.id){
+          submitData = surv;
         }
-      }
+      })      
+    }
+    
+    // since the inactive and emotion surveys are dealt with differently, 
+    // just add the survey id with a 0
+    if(survey.type == 'Inactive' || survey.type == 'Emotion'){
+      submitData = survey.id + ":" + "0";
     }
 
-    // If the survey type is Due Date store the survey id and the Interval to signify that is has been taken
-    if(survey.type == 'Due Date'){
-      for(var index in this.surveyInterval){
-        if(this.surveyInterval[index].split(":").includes(survey.id)){
-          
-          this.answeredSurveys.forEach( val =>{
-            if(val.split(":").includes(survey.id)){
-              includes = true;
-              this.answeredSurveys[this.answeredSurveys.indexOf(val)] = this.surveyInterval[index];
-              this.fs.updateAnsweredSurveys(this.userCode, this.answeredSurveys);
-            }
-          });
-          
-          if(!includes){
-            this.answeredSurveys.push(this.surveyInterval[index]);
-            this.fs.updateAnsweredSurveys(this.userCode, this.answeredSurveys);
-          }
-        }
-      }
-    }
-
-    // If the survey type is Inactive store the survey id and false to signify that is has been taken
-    if(survey.type == 'Inactive'){
-      for(var index in this.surveyInterval){
-        if(this.surveyInterval[index].split(":").includes(survey.id)){
-          
-          this.answeredSurveys.forEach( val =>{
-            if(val.split(":").includes(survey.id)){
-              includes = true;
-              this.answeredSurveys[this.answeredSurveys.indexOf(val)] = this.surveyInterval[index];
-              this.fs.updateAnsweredSurveys(this.userCode, this.answeredSurveys);
-            }
-          });
-          
-          if(!includes){
-            this.answeredSurveys.push(this.surveyInterval[index]);
-            this.fs.updateAnsweredSurveys(this.userCode, this.answeredSurveys);
-          }
-        }
-      }
-    }
-
-    // If the survey type is Emotion store the survey id and false to signify that is has been taken
-    if(survey.type == 'Emotion'){
-      for(var index in this.surveyInterval){
-        if(this.surveyInterval[index].split(":").includes(survey.id)){
-          
-          this.answeredSurveys.forEach( val =>{
-            if(val.split(":").includes(survey.id)){
-              includes = true;
-              this.answeredSurveys[this.answeredSurveys.indexOf(val)] = this.surveyInterval[index];
-              this.fs.updateAnsweredSurveys(this.userCode, this.answeredSurveys);
-            }
-          });
-          
-          if(!includes){
-            this.answeredSurveys.push(this.surveyInterval[index]);
-            this.fs.updateAnsweredSurveys(this.userCode, this.answeredSurveys);
-          }
-        }
-      }
-    }
+    // navigate to the answer page and pass the submitData
+    this.router.navigate(['/answer/' + submitData])
   }
-}
+
+ }

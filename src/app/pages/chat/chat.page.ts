@@ -78,13 +78,14 @@ analytic: Analytics =
         this.router.navigate(['/login/']);
       }
     });
-    this.chat.message = '';
-    this.scrollToBottom();
+
+
+    this.getCohort();
+
+
   }
 
   ionViewDidEnter() {
-    this.getCohort();
-
     this.chat.cohort = this.cohortChat;
     this.storage.get('userCode').then((val) => {
       if (val) {
@@ -100,25 +101,23 @@ analytic: Analytics =
             this.chat.type = 'auto';
             this.chat.visibility = true;
 
-            this.chatService.addChat(this.chat).then(() => {
-              this.chat.message = '';
-              // sendChatNotification();
-              this._zone.run(() => {
-                setTimeout(() => {
-                  this.content.scrollToBottom(300);
-                });
-              });
-            }, err => {
+            this.chatService.addChat(this.chat); //.then(() => {
 
-            });
+              this.chat.message = '';
+              this.scrollToBottom();
+            // }, err => {
+
+           // });
           });
         });
       }
+      //this.chat.message = '';
+      //this.scrollToBottom();
     });
-
-    this.chat.message = '';
+    //this.chat.message = '';
     this.scrollToBottom();
     this.addView();
+
   }
 
   addView(){
@@ -149,7 +148,7 @@ analytic: Analytics =
   scrollToBottom() {
     setTimeout(() => {
       if (this.content.scrollToBottom) {
-        this.content.scrollToBottom(400);
+        this.content.scrollToBottom(100);
       }
     }, 500);
   }

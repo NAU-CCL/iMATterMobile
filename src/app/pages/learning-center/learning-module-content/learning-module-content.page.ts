@@ -7,6 +7,7 @@ import { Storage } from '@ionic/storage';
 import { FormGroup, FormControl } from '@angular/forms';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { ProfileService } from '../../../services/user/profile.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-learning-module-content',
@@ -20,6 +21,8 @@ import { ProfileService } from '../../../services/user/profile.service';
  */
 
 export class LearningModuleContentPage implements OnInit {
+
+  public learningModules: Observable<LearningModule[]>;
 
   learningModule: LearningModule = 
   {
@@ -61,6 +64,7 @@ export class LearningModuleContentPage implements OnInit {
   quizForm; //used for quiz form in order to be able to clear selections
   quizSelections;
   correctQuestions; //list of questions user got correct
+  nextModuleTitle;
 
   //Point System (Rewards System) variables
   userProfileID;
@@ -89,7 +93,9 @@ export class LearningModuleContentPage implements OnInit {
     }
 
   ngOnInit() 
-  {  }
+  { 
+    this.learningModules = this.learningModuleService.getAllLearningModules();
+  }
   
   ionViewWillEnter()
   {
@@ -129,6 +135,12 @@ export class LearningModuleContentPage implements OnInit {
         
         //count number of questions in this module
         this.countQuestions();
+
+        //get moduleNext's title to display if there is a moduleNext 
+        if (this.learningModule.moduleNext !== '')
+        {
+          this.getNextModuleTitle();
+        }
 
       });
       //this line is important!! attaches the ID to the learning module so the content for that LM shows up
@@ -445,6 +457,22 @@ export class LearningModuleContentPage implements OnInit {
     toast.present();
   }
 
+  /**
+   * Get the title of the module stored in moduleNext
+   */
+  getNextModuleTitle()
+  {
+    this.learningModules.forEach(element => {
+      for (var index = 0; index < element.length; index++)
+      {
+        if (element[index].id == this.learningModule.moduleNext)
+        {
+          this.nextModuleTitle = element[index].moduleTitle;
+          return;
+        }
+      }
+    });
+  }
 
   clearStorage()
   {
