@@ -26,6 +26,7 @@ export class SignupPage implements OnInit {
   private showImages: boolean;
   private dueDate: string;
   private currentDate = new Date().toJSON().split('T')[0];
+  private maxYear = new Date().getFullYear() + 1;
   private securityQs: Array<string>;
   private autoProfilePic: any;
 
@@ -153,7 +154,7 @@ export class SignupPage implements OnInit {
       const userDueDate = new Date(this.user.dueDate);
       const dateDiff = Math.abs(currentDate.getTime() - userDueDate.getTime());
       const diffInDays = Math.ceil(dateDiff / (24 * 3600 * 1000));
-      const totalDays = 280 - diffInDays;
+      const totalDays = 279 - diffInDays;
       this.user.totalDaysPregnant = totalDays;
 
       const weeksPregnant = Math.floor(totalDays / 7);
