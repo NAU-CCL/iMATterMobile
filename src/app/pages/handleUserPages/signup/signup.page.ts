@@ -87,6 +87,8 @@ export class SignupPage implements OnInit {
   private maxYear = new Date().getFullYear() + 1;
   private securityQs: Array<string>;
   private autoProfilePic: any;
+  private emailUsed: boolean;
+  private usernameTaken: boolean;
 
   user: User = {
     code: '',
@@ -205,28 +207,49 @@ export class SignupPage implements OnInit {
       const tempCohort = this.user.dueDate.split('-');
       this.user.cohort = SignupPage.findCohort(tempCohort[1]);
 
-
-      this.authService.signupUser(this.user).then(
-          () => {
-            this.loading.dismiss().then(() => {
-              // this.ionicStorage.set('userCode', this.user.code);
-              this.showToast('You have created an account');
-              this.router.navigate(['/login' ]);
-            });
-          },
-          error => {
-            this.loading.dismiss().then(async () => {
-              const alert = await this.alertCtrl.create({
-                message: error.message,
-                buttons: [{ text: 'Ok', role: 'cancel' }],
-              });
-              await alert.present();
-            });
-            this.showToast('An error occurred while creating your account');
-          }
-      );
-      this.loading = await this.loadingCtrl.create();
-      await this.loading.present();
+      this.afs.firestore.collection('users').where('email', '==', this.user.email)
+          .get().then(snapshot => {
+        if (snapshot.docs.length > 0) {
+          console.log(('taken'));
+          this.emailUsed = true;
+          this.showToast('Email already in use!');
+        } else {
+          this.afs.firestore.collection('users').where('username', '==', this.user.username)
+              .get().then(snap => {
+            if (snap.docs.length > 0) {
+              console.log(('taken'));
+              this.usernameTaken = true;
+              this.showToast('Username taken!');
+            } else {
+              this.authService.signupUser(this.user).then(
+                  () => {
+                    /*
+                    this.loading.dismiss().then(() => {
+                      // this.ionicStorage.set('userCode', this.user.code);
+                      this.showToast('You have created an account');
+                 
+                     */
+                      this.router.navigate(['/login']);
+                   // });
+                  },
+                  error => {
+                    /*
+                    this.loading.dismiss().then(async () => {
+                      const alert = await this.alertCtrl.create({
+                        message: error.message,
+                        buttons: [{text: 'Ok', role: 'cancel'}],
+                      });
+                      await alert.present();
+                    });*/
+                    this.showToast('An error occurred while creating your account');
+                  }
+              );
+              // this.loading = await this.loadingCtrl.create();
+              // await this.loading.present();
+            }
+          });
+        }
+      });
     }
   }
 
@@ -245,6 +268,31 @@ export class SignupPage implements OnInit {
   changePic(url: string) {
     this.showImages = false;
     this.picURL = url;
+  }
+
+  checkEmail(email): any {
+
+    this.afs.firestore.collection('users').where('email', '==', email)
+        .get().then(snapshot => {
+          if (snapshot.docs.length > 0) {
+            console.log(('taken'));
+            this.emailUsed = true;
+          } else {
+            this.emailUsed = false;
+          }
+        });
+  }
+
+  checkUsername(username): any {
+    let taken = false;
+    this.afs.firestore.collection('users').where('username', '==', username)
+        .get().then(snapshot => {
+      if (snapshot.docs.length > 0) {
+        console.log(('taken'));
+        taken =  true;
+        return true;
+      }
+    });
   }
 
 

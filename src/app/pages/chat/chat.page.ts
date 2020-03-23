@@ -13,6 +13,7 @@ import {
   PushNotificationToken,
   PushNotificationActionPerformed } from '@capacitor/core';
 import {sendChatNotification} from "../../../../functions/src";
+import 'rxjs-compat/add/observable/timer';
 
 const { PushNotifications } = Plugins;
 
@@ -37,7 +38,8 @@ export class ChatPage implements OnInit {
   message: '',
   profilePic: '',
   type: '',
-  visibility: true
+  visibility: true,
+  count: 0
 };
 
 analytic: Analytics =
@@ -48,13 +50,14 @@ analytic: Analytics =
   sessionID: ''
 };
 
-
   private cohortChat: string;
   private chats: Observable<any>;
   private hasEntered: boolean;
 
   private analyticss: string;
   private sessions: Observable<any>;
+  private numberOfCurrentChats: number;
+  private numOfChats: number;
 
   constructor(public _zone: NgZone,
               private router: Router,
@@ -62,14 +65,15 @@ analytic: Analytics =
               private chatService: ChatService,
               private afs: AngularFirestore ,
               private analyticsService: AnalyticsService ) {
-
     this.storage.get('cohort').then((val) => {
       if (val) {
         this.cohortChat = val;
-        this.chats = this.chatService.getChats(this.cohortChat);
+        this.chats = this.chatService.getChats(val);
       }
+      // this.chats = this.chatService.getChats(this.cohortChat);
       this.scrollToBottom();
     });
+
   }
 
   ngOnInit() {
@@ -79,13 +83,36 @@ analytic: Analytics =
       }
     });
 
+    this.storage.get('cohort').then((val) => {
+      if (val) {
+        this.chats = this.chatService.getChats(val);
+      }
+    });
 
     this.getCohort();
 
+    /*
 
+    const timer = Observable.timer(1000);
+    timer.subscribe(tick => {
+      const ref = firebase.firestore().collection('chats').where('cohort', '==', this.cohort.name).orderBy('timestamp');
+      ref.get().then((res) => {
+        this.numOfChats = this.numberOfCurrentChats;
+        this.numberOfCurrentChats = 0;
+        res.forEach(doc => {
+          this.numberOfCurrentChats += 1;
+        });
+      });
+
+      if (this.numberOfCurrentChats > this.numOfChats) {
+        console.log('tick');
+        this.scrollToBottom();
+      }
+    });*/
   }
 
   ionViewDidEnter() {
+
     this.addChat('autoEnter');
     this.scrollToBottom();
     this.addView();
@@ -113,6 +140,10 @@ analytic: Analytics =
       }
     });
 
+  }
+
+  toDate(timestamp) {
+    return timestamp.toDate();
   }
 
   addChat(chatType) {
@@ -143,6 +174,8 @@ analytic: Analytics =
             } else {
               this.chat.type = 'user';
               this.chatService.addChat(this.chat);
+              // this could possibly slow down this function
+              // this.chatService.iterateChats(this.chat.cohort);
             }
 
             this.chat.message = '';
@@ -186,8 +219,19 @@ analytic: Analytics =
   }
 
 
+  checkForNewChat() {
+
+  }
+
   ionViewWillLeave() {
     this.addChat('autoLeft');
+    this.storage.get('cohort').then((val) => {
+      if (val) {
+        this.chatService.iterateChats(val).then(() => {
+            this.chats = this.chatService.getChats(val);
+        });
+      }
+    });
   }
 
 }
