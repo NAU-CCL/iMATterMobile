@@ -113,6 +113,7 @@ export class CalendarPage implements OnInit {
     this.showAddEvent = false;
     this.resetEvent();
 	this.loadItems();
+	this.addView();
   }
 
   
