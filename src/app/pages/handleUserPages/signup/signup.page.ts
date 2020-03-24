@@ -227,7 +227,7 @@ export class SignupPage implements OnInit {
                     this.loading.dismiss().then(() => {
                       // this.ionicStorage.set('userCode', this.user.code);
                       this.showToast('You have created an account');
-                 
+
                      */
                       this.router.navigate(['/login']);
                    // });
