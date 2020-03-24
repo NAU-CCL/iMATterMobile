@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyticsService.service';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { LoadingController, AlertController } from '@ionic/angular';
+import {LoadingController, AlertController, Platform} from '@ionic/angular';
 import { AuthServiceProvider, User} from '../../../services/user/auth.service';
 import { FcmService } from '../../../services/pushNotifications/fcm.service';
 import { Router } from '@angular/router';
@@ -67,7 +67,8 @@ export class LoginPage implements OnInit {
         private toastCtrl: ToastController,
         private storage: Storage,
         private fcm: FcmService,
-        private analyticsService: AnalyticsService
+        private analyticsService: AnalyticsService,
+        private platform: Platform
     ) {
         this.loginForm = this.formBuilder.group({
             email: ['',
@@ -127,6 +128,13 @@ console.log('successful session creation');
                         this.userPassword = doc.get('password');
 
                         if ( this.userPassword === this.password) {
+
+                            if (this.platform.is('android')) {
+                                this.storage.set('platform', 'android');
+                            } else if (this.platform.is('ios')) {
+                                this.storage.set('platform', 'ios');
+                            }
+
                             this.storage.set('userCode', this.userID);
                             this.storage.set('authenticated', 'true');
                             this.storage.set('username', doc.get('username'));

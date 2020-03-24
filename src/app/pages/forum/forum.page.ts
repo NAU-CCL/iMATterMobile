@@ -36,6 +36,8 @@ export class ForumPage implements OnInit {
   public thisUserQuestionList: any[];
   public thisUserLoadedQuestionList: any[];
 
+  private iosPlatform: boolean;
+
   constructor(private questionService: QuestionService,
               private storage: Storage,
               private router: Router,
@@ -49,6 +51,15 @@ export class ForumPage implements OnInit {
         this.router.navigate(['/login/']);
       }
     });
+
+    this.storage.get('platform').then((val) => {
+      if (val === 'ios') {
+        this.iosPlatform = true;
+      } else {
+        this.iosPlatform = false;
+      }
+    });
+
     this.storage.get('userCode').then((val) => {
       if (val) {
         this.afs.collection('questions', ref => ref.where('userID', '==', val).orderBy('timestamp'))

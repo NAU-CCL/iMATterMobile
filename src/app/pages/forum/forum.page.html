@@ -20,8 +20,19 @@
   </ion-row>
 </ion-header>
 
-<ion-searchbar *ngIf="allPosts == true" (ionInput)="filterQuestions($event)"></ion-searchbar>
-<ion-searchbar *ngIf="usersPosts == true" (ionInput)="filterUserQuestions($event)"></ion-searchbar>
+<ion-header *ngIf="!iosPlatform">
+  <!-- Searchbar for all posts -->
+  <ion-searchbar *ngIf="allPosts == true" (ionInput)="filterQuestions($event)"></ion-searchbar>
+  <!-- Searchbar for just this user's posts -->
+  <ion-searchbar *ngIf="usersPosts == true" (ionInput)="filterUserQuestions($event)"></ion-searchbar>
+</ion-header>
+
+<ion-header *ngIf="iosPlatform">
+  <!-- Searchbar for all posts -->
+  <ion-searchbar *ngIf="allPosts == true" mode="ios" (ionInput)="filterQuestions($event)"></ion-searchbar>
+  <!-- Searchbar for just this user's posts -->
+  <ion-searchbar *ngIf="usersPosts == true" mode="ios" (ionInput)="filterUserQuestions($event)"></ion-searchbar>
+</ion-header>
 
 <ion-content>
   <ion-list *ngIf="allPosts == true">
