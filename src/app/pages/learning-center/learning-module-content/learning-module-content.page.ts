@@ -37,7 +37,8 @@ export class LearningModuleContentPage implements OnInit {
     moduleQuiz: [],
     modulePointsWorth: 0,
     moduleNext: '',
-    userVisibility: ['']
+    userVisibility: [''],
+    previousUserVisibility: ['']
   }
 
   quizQuestions: Question =
@@ -488,6 +489,9 @@ export class LearningModuleContentPage implements OnInit {
     this.storage.remove(this.learningModule.id + "previousQuizAttemptPoints");
     this.storage.remove(this.learningModule.id + "currentQuizPoints");
     this.storage.remove(this.learningModule.id + "beenViewed");
+    this.storage.remove(this.learningModule.id + "storedPrevUV");
+    this.storage.remove(this.learningModule.id + "storedCurrentUV");
+    this.storage.remove(this.learningModule.id + "localUVStoreDate");
   }
 
 }

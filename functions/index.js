@@ -338,14 +338,14 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 
 	learningModules.get().then((value) => {
 		value.forEach(learningModule => {
-			
+
 			var moduleActive = learningModule.get("moduleActive");
 			//Skip over this module if it's not active
 			if (moduleActive == false)
 			{
 				return; //return acts as "continue" in forEach loop
 			}
-
+			
 			var lmUserVisibility = []; //reset this for each learningModule
 			var storedLMUserVisibility = learningModule.get("userVisibility");
 			//overdoing the splitting but does the job
@@ -442,7 +442,8 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 						}
 					});
 				});
-				//IMPORTANT: update the userVisibility array
+				//IMPORTANT: update the previousUserVisibility and userVisibility array
+				learningModules.doc(learningModule.id).update({previousUserVisibility: storedLMUserVisibility});
 				learningModules.doc(learningModule.id).update({userVisibility: lmUserVisibility});
 			});
 		});
