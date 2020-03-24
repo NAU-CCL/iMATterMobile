@@ -141,6 +141,7 @@ console.log('successful session creation');
                             this.storage.set('totalDaysPregnant', doc.get('totalDays'));
                             this.storage.set('weeksPregnant', doc.get('weeksPregnant'));
                             this.storage.set('daysPregnant', doc.get('daysPregnant'));
+                            this.storage.set('daysSinceLogin', doc.get('daysSinceLogin'));
 
                             this.addSession();
 
