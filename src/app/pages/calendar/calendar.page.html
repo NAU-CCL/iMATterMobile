@@ -85,7 +85,6 @@
           startingDayWeek="1">
   </calendar>
 
-<ion-button class="text-press" (click)="showEditEvent = true">Add Event</ion-button>
 
 <!-- Card for adding a new event -->
   <ion-item *ngIf="showEditEvent">
@@ -112,8 +111,8 @@
           <ion-label>All Day?</ion-label>
           <ion-checkbox [(ngModel)]="event.allDay"></ion-checkbox>
         </ion-item>
-        <ion-button fill="outline" color="important" class=event-button (click)="showAddEvent = false" > Cancel </ion-button>
-        <ion-button fill="outline" class=event-button (click)="addEvent()" [disabled]="event.title == ''">Add Edits</ion-button>
+        <ion-button fill="outline" color="important" class=event-button (click)="showEditEvent = false" > Cancel </ion-button>
+        <ion-button fill="outline" class=event-button (click)="addEvent()" (click)="showEditEvent = false" [disabled]="event.title == ''">Add Edits</ion-button>
       </ion-card-content>
     </ion-card>
   </ion-item>

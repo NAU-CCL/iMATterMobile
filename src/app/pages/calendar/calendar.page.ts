@@ -52,6 +52,7 @@ export class CalendarPage implements OnInit {
   length : number;
   private showAddEvent: boolean;
   
+  
 
   items: Item[] = [];
   newItem: Item = <Item>{};
@@ -59,6 +60,7 @@ export class CalendarPage implements OnInit {
   deleteIndex : number;
   notificationIndex : number;
   deleteNotificationIndex : number;
+  showEditEvent : boolean;
   
   
   // @ts-ignore
@@ -233,6 +235,12 @@ export class CalendarPage implements OnInit {
       desc: event.desc,
 	  id: event.id
     };
+	if(this.showEditEvent === true){
+		this.showEditEvent = false;
+	}
+	else{
+		this.showEditEvent = true;
+	}
 	
 	this.length = this.eventSource.length;
 	for (let i = 0; i < this.length; i++) {
