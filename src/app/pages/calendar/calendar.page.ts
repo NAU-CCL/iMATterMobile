@@ -5,10 +5,6 @@ import { formatDate } from '@angular/common';
 import { Storage } from '@ionic/storage';
 import { Router } from '@angular/router';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
-import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyticsService.service';
-import * as firebase from 'firebase/app';
-import {AngularFirestore} from '@angular/fire/firestore';
-import {Observable} from 'rxjs';
 import * as moment from 'moment';
 
 import { StorageService, Item } from '../../services/storage.service';
@@ -32,7 +28,8 @@ export class CalendarPage implements OnInit {
     desc: '',
     startTime: '',
     endTime: '',
-    allDay: false
+    allDay: false,
+	id: ''
   };
   notifyTime:any;
   notifications: any[] = [];
@@ -51,19 +48,10 @@ export class CalendarPage implements OnInit {
     mode: 'month',
     currentDate: new Date(),
   };
-analytic: Analytics =
-{
-  page: '',
-  userID: '',
-  timestamp: '',
-  sessionID: ''
-}
-
 
   length : number;
   private showAddEvent: boolean;
-  private analyticss : string;
-  private sessions : Observable<any>;
+  
 
   items: Item[] = [];
   newItem: Item = <Item>{};
@@ -77,13 +65,14 @@ analytic: Analytics =
   @ViewChild(CalendarComponent) myCal: CalendarComponent;
 
   constructor(private localNotifications: LocalNotifications, private alertCtrl: AlertController, @Inject(LOCALE_ID) private locale: string,
-              private storage: Storage,  private storageService: StorageService, private router: Router, private afs: AngularFirestore,
-     private analyticsService: AnalyticsService) {
-       
+              private storage: Storage, private storageService: StorageService, private router: Router) {
 		this.notifyTime = moment(new Date()).format();
-
+		
 		this.chosenHours = new Date().getHours();
 		this.chosenMinutes = new Date().getMinutes();
+		
+		
+		
 		this.days = [
             {title: 'Monday', dayCode: 1, checked: false},
             {title: 'Tuesday', dayCode: 2, checked: false},
@@ -93,7 +82,7 @@ analytic: Analytics =
             {title: 'Saturday', dayCode: 6, checked: false},
             {title: 'Sunday', dayCode: 0, checked: false}
         ];
-
+	
 	}
 	
 
@@ -106,40 +95,17 @@ analytic: Analytics =
     this.showAddEvent = false;
     this.resetEvent();
 	this.loadItems();
-      this.addView();
   }
 
-  addView(){
-
-  //this.analytic.sessionID = this.session.id;
-  this.storage.get('userCode').then((val) =>{
-    if (val) {
-      const ref = this.afs.firestore.collection('users').where('code', '==', val);
-      ref.get().then((result) =>{
-        result.forEach(doc =>{
-          this.analytic.page = 'calendar';
-          this.analytic.userID = val;
-          this.analytic.timestamp = firebase.firestore.FieldValue.serverTimestamp();
-          //this.analytic.sessionID = this.idReference;
-          this.analyticsService.addView(this.analytic).then (() =>{
-            console.log('successful added view: Calendar');
-
-          }, err =>{
-            console.log('unsucessful added view: calendar');
-
-          });
-        });
-      });
-    }
-  });
-}
+  
   resetEvent() {
     this.event = {
       title: '',
       desc: '',
       startTime: new Date().toISOString(),
       endTime: new Date().toISOString(),
-      allDay: false
+      allDay: false,
+	  id: ''
     };
   }
   deleteEvent(){
@@ -148,13 +114,14 @@ analytic: Analytics =
 
   // Create the right event format and reload source
   addEvent() {
+	  this.notificationIndex = Math.floor(Math.random() * 100000000000);
     let eventCopy = {
       title: this.event.title,
       startTime:  new Date(this.event.startTime),
       endTime: new Date(this.event.endTime),
       allDay: this.event.allDay,
-      desc: this.event.desc
-	  
+      desc: this.event.desc,
+	  id: this.notificationIndex
     };
 	console.log(this.notificationIndex);
     if (eventCopy.allDay) {
@@ -166,10 +133,13 @@ analytic: Analytics =
     }
 
 	// add notification when creating event
-	if(this.notificationIndex == null){
-		this.notificationIndex = 0;
+	//if(this.notificationIndex == null){
+	//	this.notificationIndex = 0;
 		
-	}
+	//}
+
+	
+	var currentID = this.notificationIndex;
 	
 	this.eventList.push(eventCopy);
 	
@@ -186,15 +156,12 @@ analytic: Analytics =
       this.loadItems();
 	});
 	this.localNotifications.schedule({ 
-	   id: this.notificationIndex++,
+	   id: this.notificationIndex,
 	   text: 'You have an event, check your calendar!',
 	   trigger: {at: new Date(this.event.startTime)},
 	   led: 'FF0000',
 	   sound: null
 	});
-
-    this.eventSource.push(eventCopy);
-    this.myCal.loadEvents();
     this.resetEvent();
     this.showAddEvent = false;
 	
@@ -263,24 +230,30 @@ analytic: Analytics =
       startTime:  event.startTime,
       endTime: event.endTime,
       allDay: event.allDay,
-      desc: event.desc
-	  
+      desc: event.desc,
+	  id: event.id
     };
 	
 	this.length = this.eventSource.length;
 	for (let i = 0; i < this.length; i++) {
-		console.log("eventSource " + this.eventSource[i]);
+		console.log("eventSource " + this.eventSource[i].id);
 		console.log("eventCopy" + JSON.stringify(this.eventSource[i]));
-		if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
+		console.log("event.id: " + event.id);
+		//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
+		//	this.deleteIndex = i;
+		//}
+		if(this.eventSource[i].id === event.id){
+			console.log("ONE");
 			this.deleteIndex = i;
 		}
 	}
 	var temp = this.deleteIndex;
-	this.localNotifications.clear(temp++);
+	this.localNotifications.clear(this.eventSource[this.deleteIndex].id);
+	console.log("eventsource id to delete: " + this.eventSource[this.deleteIndex].id);
 
 	this.eventSource.splice(this.deleteIndex, 1);
 	console.log("notification index");
-	console.log("delete Index" + this.deleteIndex);
+	console.log("delete Index: " + this.deleteIndex);
 	this.storage.set('my-items', this.eventSource);
 	this.loadItems();	
   }
