@@ -37,7 +37,8 @@ export class HomePage implements OnInit {
     message: '',
     profilePic: '',
     type: '',
-    visibility: true
+    visibility: true,
+    count: 0
   };
 
   user: User = {
