@@ -159,4 +159,12 @@ export class AnswerPage implements OnInit {
     this.profile.editRewardPoints(newPointValue, this.userCode);
     this.router.navigateByUrl('/home');
   }
+
+  isComplete(){
+    if(this.surveyData.split(":")[1] == "completed"){
+      return true;
+    }
+
+    return false;
+  }
 }

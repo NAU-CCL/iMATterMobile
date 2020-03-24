@@ -26,6 +26,10 @@
 
           <ion-card-subtitle>
             Points: {{ survey.pointsWorth }}
+
+            <div *ngIf="isComplete(survey)">
+              <strong>Completed</strong>
+            </div>
           </ion-card-subtitle>
           
       </ion-card-header>

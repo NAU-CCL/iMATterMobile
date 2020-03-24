@@ -34,6 +34,8 @@ export class AvailablePage implements OnInit {
   // number of Inactive days
   inactiveDays;
 
+  completed = [];
+
   constructor(private fs: FireService,
               private storage: Storage, 
               private router: Router, 
@@ -117,7 +119,8 @@ export class AvailablePage implements OnInit {
           if(this.daysAUser >= parseInt(day) && this.daysAUser <= parseInt(day) + expirationDays){
             this.answeredSurveys.forEach( answered => {
               if(answered.split(":")[0] == survey.id && answered.split(":")[1] == day){
-                canDisplay = false;
+                canDisplay = true;
+                this.completed.push(survey.id);
                 includes = true;
               }
 
@@ -145,7 +148,8 @@ export class AvailablePage implements OnInit {
           if(daysBeforeDue <= parseInt(day) && daysBeforeDue >= parseInt(day) - expirationDays){
             this.answeredSurveys.forEach( answered => {
               if(answered.split(":")[0] == survey.id && answered.split(":")[1] == day){
-                canDisplay = false;
+                canDisplay = true;
+                this.completed.push(survey.id);
                 includes = true;
               }
 
@@ -201,6 +205,14 @@ export class AvailablePage implements OnInit {
     return canDisplay;
   }
 
+  isComplete(survey: Survey){
+    if(this.completed.includes(survey.id)){
+      return true;
+    }
+
+    return false;
+  }
+
   // takes the survey selected by passing the id and survey current interval 
   answerSurvey(survey: Survey){
     // includes the survey id and current interval the user is taking it in
@@ -215,7 +227,11 @@ export class AvailablePage implements OnInit {
         }
       })      
     }
-    
+
+    if(this.isComplete(survey)){
+      submitData = survey.id + ":" + "completed";
+    }
+  
     // since the inactive and emotion surveys are dealt with differently, 
     // just add the survey id with a 0
     if(survey.type == 'Inactive' || survey.type == 'Emotion'){
