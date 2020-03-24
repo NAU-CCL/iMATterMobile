@@ -21,7 +21,6 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { NativeGeocoder, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
 import { ShowMessagePageModule } from './pages/answer/show-message/show-message.module';
 
-
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],

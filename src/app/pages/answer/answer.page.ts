@@ -7,6 +7,7 @@ import { Storage} from '@ionic/storage';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { ModalController } from '@ionic/angular';
 import { ShowMessagePage } from './show-message/show-message.page';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-answer',
@@ -50,6 +51,7 @@ export class AnswerPage implements OnInit {
               private storage: Storage,
               private afs: AngularFirestore,
               private modalController: ModalController,
+              public alertController: AlertController,
               ) { }
 
   ngOnInit() {
@@ -100,7 +102,8 @@ export class AnswerPage implements OnInit {
     
     // When the user exits the survey page show them a message
     page.on('exit').subscribe(event => {
-      this.showMessage()
+      //this.showMessage()
+      this.presentAlert();
     })
   }
 
@@ -166,5 +169,20 @@ export class AnswerPage implements OnInit {
     }
 
     return false;
+  }
+
+  async presentAlert(){
+    const alert = await this.alertController.create({
+    header: 'Alert',
+    subHeader: 'Thank You',
+    message: 'Thanks for taking the Survey, your input is really appreciated.',
+    buttons: [ {text: 'OK',
+    handler: () => {
+      this.submit();
+      }}
+    ]
+  });
+
+    await alert.present();
   }
 }
