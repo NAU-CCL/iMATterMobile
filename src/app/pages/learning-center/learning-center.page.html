@@ -9,10 +9,21 @@
 
 <ion-content>
 
+  <ion-item-divider color="medium">
+    <ion-label>
+      New Modules
+    </ion-label>
+  </ion-item-divider>
+
   <ion-list>
+    <ion-item *ngIf="newModules.length === 0 ">
+      <ion-label>
+        Currently No New Modules
+      </ion-label>
+    </ion-item>
+
     <ng-container *ngFor="let learningMod of ( learningModules | async )">
-      <ion-card button [routerLink]="['/learning-module-content', learningMod.id]" 
-      *ngIf="learningMod.userVisibility.includes(userCode) && learningMod.moduleActive">
+      <ion-card button [routerLink]="['/learning-module-content', learningMod.id]" *ngIf="newModules.includes(learningMod.id)">
         
       <ion-card-header>
           <ion-card-title>
@@ -22,6 +33,33 @@
             Description: {{ learningMod.moduleDescription }}
           </ion-card-subtitle>
         </ion-card-header>
+
+      </ion-card>
+    </ng-container>
+  </ion-list>
+
+  <ion-item-divider color="medium">
+    <ion-label>
+      Viewed Modules
+    </ion-label>
+  </ion-item-divider>
+
+  <ion-list>
+    <ng-container *ngFor="let learningMod of ( learningModules | async )">
+      <ion-card button [routerLink]="['/learning-module-content', learningMod.id]" *ngIf="viewedModules.includes(learningMod.id)">
+        
+      <ion-card-header>
+          <ion-card-title>
+            {{ learningMod.moduleTitle }}
+          </ion-card-title>
+          <ion-card-subtitle>
+            Description: {{ learningMod.moduleDescription }}
+          </ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content *ngIf="takenQuizModules.size > 0 && learningMod.moduleQuiz.length > 0">
+        {{takenQuizModules.get(learningMod.id)}} out of 3 Quiz Attempts Taken
+      </ion-card-content>
 
       </ion-card>
     </ng-container>
