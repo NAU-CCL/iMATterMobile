@@ -334,7 +334,9 @@ export class CalendarPage implements OnInit {
 		role: 'Delete',
 		cssClass: 'secondary',
 		handler: (blah) => {
-        if(this.showEditEvent === true){
+        
+		this.confirmDelete();
+		
 		this.length = this.eventSource.length;
 		for (let i = 0; i < this.length; i++) {
 			console.log("eventSource " + this.eventSource[i].id);
@@ -357,8 +359,8 @@ export class CalendarPage implements OnInit {
 		console.log("delete Index: " + this.deleteIndex);
 		this.storage.set('my-items', this.eventSource);
 		this.loadItems();	
-      }
-    }
+      
+		}
 	},
 	{
       text: 'Okay',
@@ -409,6 +411,15 @@ export class CalendarPage implements OnInit {
 	console.log("delete Index: " + this.deleteIndex);
 	this.storage.set('my-items', this.eventSource);
 	this.loadItems();*/	
+  }
+  
+  async confirmDelete(){
+	const alert = await this.alertCtrl.create({
+      header: 'are you sure?',
+      subHeader: 'are you sure?',
+      buttons: ['OK']
+    });
+    alert.present();  
   }
 
 // Time slot was clicked
