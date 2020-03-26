@@ -31,6 +31,7 @@ export class LearningCenterPage implements OnInit {
   viewedModules = [];
   takenQuizModules = new Map();
 
+  //used for keeping track of recurring modules
   lmRecurrenceMap = new Map();
 
   private learningModules: Observable<LearningModule[]>;
@@ -71,8 +72,7 @@ export class LearningCenterPage implements OnInit {
 
   ionViewWillEnter()
   {
- 
-    //this.initializeStorageforLM();
+    this.initializeStorageforLM();
 
     //reset these every time so duplicates don't show up
     this.newModules = [];
@@ -86,12 +86,13 @@ export class LearningCenterPage implements OnInit {
         if (singleMod.userVisibility.includes(this.userCode) && singleMod.moduleActive)
         {
 
-          //var storedPrevUV = this.lmRecurrenceMap.get(singleMod.id + "storedPrevUV");
-          //var storedCurrentUV = this.lmRecurrenceMap.get(singleMod.id + "storedCurrentUV");
-          //var storedDate = this.lmRecurrenceMap.get(singleMod.id + "storedDate");
-          //this.checkNewRecurring(singleMod, storedPrevUV, storedCurrentUV, storedDate);
+          //get the local storage data that was stored into lmRecurrenceMap for this module
+          var storedPrevUV = this.lmRecurrenceMap.get(singleMod.id + "storedPrevUV");
+          var storedCurrentUV = this.lmRecurrenceMap.get(singleMod.id + "storedCurrentUV");
+          var storedDate = this.lmRecurrenceMap.get(singleMod.id + "storedDate");
+          this.checkNewRecurring(singleMod, storedPrevUV, storedCurrentUV, storedDate);
 
-          //see if this module has been viewed
+          //check if this module has been viewed
           this.storage.get(singleMod.id + "beenViewed").then(value => {
             if (value === true) //have viewed this module
             {
@@ -135,29 +136,29 @@ export class LearningCenterPage implements OnInit {
     });
   }
 
+  /**
+   * initializes storage used for checking learning module recurrence
+   * stores the local storage info into lmRecurrenceMap to be accessed later
+   */
   initializeStorageforLM()
   {
-    console.log("in here");
-
     this.learningModules.forEach(value => {
       value.forEach(singleMod => {
 
-        console.log("entered here");
+        //only check modules that are currently visible to user
         if (singleMod.userVisibility.includes(this.userCode) && singleMod.moduleActive)
         {
-          console.log("entered entered");
+          //storedPrevUV = previous user visibility array for this module
           this.storage.get(singleMod.id + "storedPrevUV").then(value => {
 
             if (value != null)
             {
               this.lmRecurrenceMap.set(singleMod.id + "storedPrevUV", value);
             }
-            else
+            else //module has not ever appeared for this user
             {
               this.lmRecurrenceMap.set(singleMod.id + "storedPrevUV", null);
             }
-  
-            console.log("storedPrevUV: " + this.lmRecurrenceMap.get(singleMod.id + "storedPrevUV"));
             
           }).catch(e => {
             
@@ -165,6 +166,7 @@ export class LearningCenterPage implements OnInit {
             
             });
   
+          //storedCurrentUV = current user visibility array for this module
           this.storage.get(singleMod.id + "storedCurrentUV").then(value => {
   
             if (value != null)
@@ -175,8 +177,6 @@ export class LearningCenterPage implements OnInit {
             {
               this.lmRecurrenceMap.set(singleMod.id + "storedCurrentUV", null);
             }
-  
-            console.log("storedCurrentUV: " + this.lmRecurrenceMap.get(singleMod.id + "storedCurrentUV"));
             
           }).catch(e => {
             
@@ -184,6 +184,7 @@ export class LearningCenterPage implements OnInit {
             
             });
   
+          //localUVStoreDate = the date that recurrence was last updated
           this.storage.get(singleMod.id + "localUVStoreDate").then(value => {
   
             if (value != null)
@@ -192,10 +193,8 @@ export class LearningCenterPage implements OnInit {
             }
             else
             {
-              this.lmRecurrenceMap.set(singleMod.id + "storedPrevUV", null);
+              this.lmRecurrenceMap.set(singleMod.id + "storedDate", null);
             }
-  
-            console.log("localUVStoreDate: " + this.lmRecurrenceMap.get(singleMod.id + "storedDate"));
             
           }).catch(e => {
             
@@ -235,57 +234,57 @@ export class LearningCenterPage implements OnInit {
   }
 
 
+  /**
+   * Checks to see if a given learning module is showing up as a new recurrence
+   * Example: moduleA showed up in week 34 for 5 days and it's now week 38 and it's showing up again
+   * If so, then clear the local storage for that learning module so it appears as a new module
+   * @param currentMod the module we're checking
+   * @param previousUserVisibility storedPrevUV from local storage for a given module
+   * @param currentUserVisibility storedCurrentUV from local storage for a given module
+   * @param storedDate localUVStoreDate from local storage for a given module
+   */
   checkNewRecurring(currentMod:LearningModule, previousUserVisibility:Array<string>, currentUserVisibility:Array<string>, storedDate: string)
   {
-    console.log("NOW CHECKING: " + currentMod.moduleTitle);
-    console.log("CURRENT UV: " + currentMod.userVisibility);
-    console.log("PREV UV: " + currentMod.previousUserVisibility);
+    //Get the current date and put it in MM/DD/YYYY format
+    var getDate = new Date();
+    var currentDate = getDate.getMonth() + "/" + getDate.getDate() + "/"+ getDate.getFullYear();
 
-    console.log("STORED CURRENT: " + currentUserVisibility);
-    console.log("STORED PRE: " + previousUserVisibility);
-    console.log("STORED DATE: " + storedDate);
     //This module has never appeared before for this user, don't need to check for recurrence
     if (previousUserVisibility === null && currentUserVisibility === null && storedDate === null)
     {
+      //set these values to what they currently are in the database and move on
+      this.storage.set(currentMod.id + "storedPrevUV", currentMod.previousUserVisibility);
+      this.storage.set(currentMod.id + "storedCurrentUV", currentMod.userVisibility);
+      this.storage.set(currentMod.id + "localUVStoreDate", currentDate);
+
       return;
     }
     else
     {
-      var getDate = new Date();
-      var currentDate = getDate.getMonth() + "/" + getDate.getDate() + "/"+ getDate.getFullYear();
-      console.log("DATE: " + currentDate);
-
-      console.log("PREVS EQUAL: " + this.arraysEqual(currentMod.previousUserVisibility, previousUserVisibility));
-      console.log("CURRENTS EQUAL: " + this.arraysEqual(currentMod.userVisibility, currentUserVisibility));
-      console.log("DATES EQUAL: " + (storedDate === currentDate));
-
-      //we're rechecking something that's already been checked
+      //if this module's recurrence has already been checked and local storage was cleared for it
       if (this.arraysEqual(currentMod.previousUserVisibility, previousUserVisibility) 
         && this.arraysEqual(currentMod.userVisibility, currentUserVisibility)
         && (storedDate === currentDate))
       {
-        console.log("entering here");
         return;
       }
-      else
+      else //we're checking it for the first time for this recurrence
       {
+        //get a list of users who weren't in the previousUserVisibility array but are in userVisibility
         var newlyVisible = currentMod.userVisibility.filter(item => currentMod.previousUserVisibility.indexOf(item) < 0);
-        console.log("NEWLY VISIBLE: ");
-        console.log(newlyVisible);
   
-        //if this module is 
+        //if this module is a newly appearing module for a user, clear the local storage
         if (newlyVisible.includes(this.userCode))
         {
           this.clearLMStorage(currentMod.id);
         }
 
+        //update these values 
         this.storage.set(currentMod.id + "storedPrevUV", currentMod.previousUserVisibility);
         this.storage.set(currentMod.id + "storedCurrentUV", currentMod.userVisibility);
         this.storage.set(currentMod.id + "localUVStoreDate", currentDate);
       }
     }
-
-
   }
 
   /**
@@ -326,7 +325,6 @@ export class LearningCenterPage implements OnInit {
   //used to clear a given LM's local storage
   clearLMStorage(learningModID:string)
   {
-    console.log("CLEARING STORAGE!!");
     this.storage.remove(learningModID + "videoHasEnded");
     this.storage.remove(learningModID + "numberTimesQuizTaken");
     this.storage.remove(learningModID + "numberQuestionsCorrect");
@@ -339,5 +337,4 @@ export class LearningCenterPage implements OnInit {
     this.storage.remove(learningModID + "storedCurrentUV");
     this.storage.remove(learningModID + "localUVStoreDate");
   }
-
 }
