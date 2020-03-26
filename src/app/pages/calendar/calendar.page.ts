@@ -305,8 +305,62 @@ export class CalendarPage implements OnInit {
 		else{
 			this.showEditEvent = true;
 		}
+		this.length = this.eventSource.length;
+		for (let i = 0; i < this.length; i++) {
+			console.log("eventSource " + this.eventSource[i].id);
+			console.log("eventCopy" + JSON.stringify(this.eventSource[i]));
+			console.log("event.id: " + event.id);
+			//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
+			//	this.deleteIndex = i;
+			//}
+			if(this.eventSource[i].id === event.id){
+				console.log("ONE");
+				this.deleteIndex = i;
+			}
+		}
+		var temp = this.deleteIndex;
+		this.localNotifications.clear(this.eventSource[this.deleteIndex].id);
+		console.log("eventsource id to delete: " + this.eventSource[this.deleteIndex].id);
+
+		this.eventSource.splice(this.deleteIndex, 1);
+		console.log("notification index");
+		console.log("delete Index: " + this.deleteIndex);
+		this.storage.set('my-items', this.eventSource);
+		this.loadItems();	
       }
-    }, {
+    }, 
+	{
+		text: 'Delete',
+		role: 'Delete',
+		cssClass: 'secondary',
+		handler: (blah) => {
+        if(this.showEditEvent === true){
+		this.length = this.eventSource.length;
+		for (let i = 0; i < this.length; i++) {
+			console.log("eventSource " + this.eventSource[i].id);
+			console.log("eventCopy" + JSON.stringify(this.eventSource[i]));
+			console.log("event.id: " + event.id);
+			//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
+			//	this.deleteIndex = i;
+			//}
+			if(this.eventSource[i].id === event.id){
+				console.log("ONE");
+				this.deleteIndex = i;
+			}
+		}
+		var temp = this.deleteIndex;
+		this.localNotifications.clear(this.eventSource[this.deleteIndex].id);
+		console.log("eventsource id to delete: " + this.eventSource[this.deleteIndex].id);
+
+		this.eventSource.splice(this.deleteIndex, 1);
+		console.log("notification index");
+		console.log("delete Index: " + this.deleteIndex);
+		this.storage.set('my-items', this.eventSource);
+		this.loadItems();	
+      }
+    }
+	},
+	{
       text: 'Okay',
       handler: () => {
         console.log('Confirm Okay')
