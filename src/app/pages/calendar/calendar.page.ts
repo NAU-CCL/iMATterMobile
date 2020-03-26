@@ -335,7 +335,7 @@ export class CalendarPage implements OnInit {
 		cssClass: 'secondary',
 		handler: (blah) => {
         
-		this.confirmDelete();
+		this.confirmDelete(event);
 		
 		this.length = this.eventSource.length;
 		for (let i = 0; i < this.length; i++) {
@@ -413,11 +413,45 @@ export class CalendarPage implements OnInit {
 	this.loadItems();*/	
   }
   
-  async confirmDelete(){
+  async confirmDelete(event){
 	const alert = await this.alertCtrl.create({
       header: 'are you sure?',
       subHeader: 'are you sure?',
-      buttons: ['OK']
+      buttons: [{
+		text: 'Edit',
+		role: 'edit',
+		cssClass: 'secondary',
+		handler: (blah) => {
+        if(this.showEditEvent === true){
+		this.showEditEvent = false;
+		}
+		else{
+			this.showEditEvent = true;
+		}
+		this.length = this.eventSource.length;
+		for (let i = 0; i < this.length; i++) {
+			console.log("eventSource " + this.eventSource[i].id);
+			console.log("eventCopy" + JSON.stringify(this.eventSource[i]));
+			console.log("event.id: " + event.id);
+			//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
+			//	this.deleteIndex = i;
+			//}
+			if(this.eventSource[i].id === event.id){
+				console.log("ONE");
+				this.deleteIndex = i;
+			}
+		}
+		var temp = this.deleteIndex;
+		this.localNotifications.clear(this.eventSource[this.deleteIndex].id);
+		console.log("eventsource id to delete: " + this.eventSource[this.deleteIndex].id);
+
+		this.eventSource.splice(this.deleteIndex, 1);
+		console.log("notification index");
+		console.log("delete Index: " + this.deleteIndex);
+		this.storage.set('my-items', this.eventSource);
+		this.loadItems();	
+      },
+	  }]
     });
     alert.present();  
   }
