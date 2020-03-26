@@ -271,6 +271,53 @@ export class CalendarPage implements OnInit {
     let start = formatDate(event.startTime, 'medium', this.locale);
     let end = formatDate(event.endTime, 'medium', this.locale);
     
+	
+	/*const alert = document.createElement('ion-alert');
+	alert.header = 'Confirm!';
+	alert.message = 'Message <strong>text</strong>!!!';
+	alert.buttons = [{
+		text: 'Cancel',
+		role: 'cancel',
+		cssClass: 'secondary',
+		handler: (blah) => {
+        console.log('Confirm Cancel: blah');
+      }
+    }, {
+      text: 'Okay',
+      handler: () => {
+        console.log('Confirm Okay')
+      }
+    }
+  ];*/
+	
+	const alert = await this.alertCtrl.create({
+      header: event.title,
+      subHeader: event.desc,
+      message: 'From: ' + start + '<br><br>To: ' + end,
+      buttons: [{
+		text: 'Edit',
+		role: 'edit',
+		cssClass: 'secondary',
+		handler: (blah) => {
+        if(this.showEditEvent === true){
+		this.showEditEvent = false;
+		}
+		else{
+			this.showEditEvent = true;
+		}
+      }
+    }, {
+      text: 'Okay',
+      handler: () => {
+        console.log('Confirm Okay')
+      }
+    }
+  ]
+    });
+    alert.present();
+	
+	
+	/*
 	let eventCopy = {
       title: event.title,
       startTime:  event.startTime,
@@ -307,7 +354,7 @@ export class CalendarPage implements OnInit {
 	console.log("notification index");
 	console.log("delete Index: " + this.deleteIndex);
 	this.storage.set('my-items', this.eventSource);
-	this.loadItems();	
+	this.loadItems();*/	
   }
 
 // Time slot was clicked
