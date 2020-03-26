@@ -77,6 +77,7 @@ export class CalendarPage implements OnInit {
   deleteNotificationIndex : number;
   showEditEvent : boolean;
   
+  confirmDeleteEvent: boolean;
   
   // @ts-ignore
   @ViewChild(CalendarComponent) myCal: CalendarComponent;
@@ -336,7 +337,7 @@ export class CalendarPage implements OnInit {
 		handler: (blah) => {
         
 		this.confirmDelete(event);
-		
+		if(this.confirmDeleteEvent === true){
 		this.length = this.eventSource.length;
 		for (let i = 0; i < this.length; i++) {
 			console.log("eventSource " + this.eventSource[i].id);
@@ -359,7 +360,7 @@ export class CalendarPage implements OnInit {
 		console.log("delete Index: " + this.deleteIndex);
 		this.storage.set('my-items', this.eventSource);
 		this.loadItems();	
-      
+		}
 		}
 	},
 	{
@@ -418,16 +419,10 @@ export class CalendarPage implements OnInit {
       header: 'are you sure?',
       subHeader: 'are you sure?',
       buttons: [{
-		text: 'Edit',
-		role: 'edit',
+		text: 'Yes',
+		role: 'confirm',
 		cssClass: 'secondary',
 		handler: (blah) => {
-        if(this.showEditEvent === true){
-		this.showEditEvent = false;
-		}
-		else{
-			this.showEditEvent = true;
-		}
 		this.length = this.eventSource.length;
 		for (let i = 0; i < this.length; i++) {
 			console.log("eventSource " + this.eventSource[i].id);
@@ -450,9 +445,18 @@ export class CalendarPage implements OnInit {
 		console.log("delete Index: " + this.deleteIndex);
 		this.storage.set('my-items', this.eventSource);
 		this.loadItems();	
-      },
-	  }]
-    });
+		this.confirmDeleteEvent = true;
+	  }
+	  },
+	  {
+		text: 'cancel',
+		role: 'cancel',
+		cssClass: 'secondary',
+		handler: (blah) => {
+		this.confirmDeleteEvent = false;
+      }
+	  
+    }]});
     alert.present();  
   }
 
