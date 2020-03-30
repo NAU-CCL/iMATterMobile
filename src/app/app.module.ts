@@ -19,7 +19,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { NativeGeocoder, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
-
+import { ShowMessagePageModule } from './pages/answer/show-message/show-message.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -41,6 +41,7 @@ import { NativeGeocoder, NativeGeocoderOptions } from '@ionic-native/native-geoc
     FirebaseX,
     Geolocation,
     NativeGeocoder,
+    ShowMessagePageModule,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: FirestoreSettingsToken, useValue: {} },
     InAppBrowser

@@ -7,6 +7,7 @@ import {Observable} from 'rxjs';
 import {AngularFirestore} from '@angular/fire/firestore';
 import * as firebase from 'firebase/app';
 import FieldValue = firebase.firestore.FieldValue;
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-forum-thread',
@@ -42,9 +43,20 @@ export class ForumThreadPage implements OnInit {
   private anon: boolean;
   private currentAnon: boolean;
   private comments: Observable<any>;
+  private commentForm: FormGroup;
 
-  constructor(private afs: AngularFirestore, private activatedRoute: ActivatedRoute, private questionService: QuestionService,
-              private toastCtrl: ToastController, private router: Router, private storage: Storage) {
+  constructor(private afs: AngularFirestore,
+              private activatedRoute: ActivatedRoute,
+              private questionService: QuestionService,
+              private toastCtrl: ToastController,
+              private router: Router,
+              private storage: Storage,
+              private formBuilder: FormBuilder) {
+
+      this.commentForm = this.formBuilder.group({
+          comment: ['',
+              Validators.compose([Validators.required, Validators.minLength(1)])],
+      });
   }
 
   ngOnInit() {
@@ -65,44 +77,48 @@ export class ForumThreadPage implements OnInit {
       }
   }
 
-  addComment() {
-      this.comment.type = 'user';
-      if (this.anon) {
-          this.comment.anon = this.anon;
-      }
-      this.comment.postID = this.question.id;
-      this.storage.get('userCode').then((val) => {
-          if (val) {
-              const ref = this.afs.firestore.collection('users').where('code', '==', val);
-              ref.get().then((result) => {
-                  result.forEach(doc => {
-
-                      this.comment.userID = val;
-
-                      if (!this.comment.anon) {
-                          this.currentAnon = false;
-                          this.comment.username = doc.get('username');
-                          this.comment.profilePic = doc.get('profilePic');
-                      } else {
-                          this.currentAnon = true;
-                          this.comment.username = 'Anonymous';
-                          this.comment.profilePic = 'https://firebasestorage.googleapis.com/v0/b/techdemofirebase.appspot.com/o/ProfileImages%2Fauto.png?alt=media&token=e5601f32-30f8-4b38-9a2c-ff2d7e6ad59a';
-                      }
-                      this.comment.timestamp = firebase.firestore.FieldValue.serverTimestamp();
-
-                      this.questionService.addComment(this.comment).then(() => {
-                          this.showToast('Comment added');
-                          this.comment.input = '';
-                          this.showCommentBox = false;
-                      }, err => {
-                          this.showToast('There was a problem adding your comment');
-                      });
-
-                  });
-              });
+  addComment(commentForm: FormGroup) {
+      if (!commentForm.valid) {
+          this.showToast('Please enter a comment');
+      } else {
+          this.comment.type = 'user';
+          if (this.anon) {
+              this.comment.anon = this.anon;
           }
-      });
+          this.comment.postID = this.question.id;
+          this.comment.input = commentForm.value.comment;
+          this.storage.get('userCode').then((val) => {
+              if (val) {
+                  const ref = this.afs.firestore.collection('users').where('code', '==', val);
+                  ref.get().then((result) => {
+                      result.forEach(doc => {
 
+                          this.comment.userID = val;
+
+                          if (!this.comment.anon) {
+                              this.currentAnon = false;
+                              this.comment.username = doc.get('username');
+                              this.comment.profilePic = doc.get('profilePic');
+                          } else {
+                              this.currentAnon = true;
+                              this.comment.username = 'Anonymous';
+                              this.comment.profilePic = 'https://firebasestorage.googleapis.com/v0/b/techdemofirebase.appspot.com/o/ProfileImages%2Fauto.png?alt=media&token=e5601f32-30f8-4b38-9a2c-ff2d7e6ad59a';
+                          }
+                          this.comment.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+
+                          this.questionService.addComment(this.comment).then(() => {
+                              this.showToast('Comment added');
+                              this.commentForm.reset();
+                              this.showCommentBox = false;
+                          }, err => {
+                              this.showToast('There was a problem adding your comment');
+                          });
+
+                      });
+                  });
+              }
+          });
+      }
   }
 
   showToast(msg) {

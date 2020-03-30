@@ -20,11 +20,23 @@ export class ForumPage implements OnInit {
   userID: '',
   timestamp: '',
   sessionID: ''
-}
+};
 
   private questions: Observable<Question[]>;
-  private analyticss : string;
-  private sessions : Observable<any>;
+  private analyticss: string;
+  private sessions: Observable<any>;
+  private thisUsersQuestions: Observable<Question[]>;
+
+  private allPosts: boolean;
+  private usersPosts: boolean;
+
+  public questionList: any[];
+  public loadedQuestionList: any[];
+
+  public thisUserQuestionList: any[];
+  public thisUserLoadedQuestionList: any[];
+
+  private iosPlatform: boolean;
 
   constructor(private questionService: QuestionService,
               private storage: Storage,
@@ -39,19 +51,78 @@ export class ForumPage implements OnInit {
         this.router.navigate(['/login/']);
       }
     });
-    this.questions = this.questionService.getQuestions();
-  }
 
+    this.storage.get('platform').then((val) => {
+      if (val === 'ios') {
+        this.iosPlatform = true;
+      } else {
+        this.iosPlatform = false;
+      }
+    });
+
+    this.storage.get('userCode').then((val) => {
+      if (val) {
+        this.afs.collection('questions', ref => ref.where('userID', '==', val).orderBy('timestamp'))
+            .valueChanges({ idField: 'id' }).subscribe(questionList => {
+          this.thisUserQuestionList = questionList;
+          console.log(this.questionList);
+          this.thisUserLoadedQuestionList = questionList;
+        });
+      }
+    });
+
+    this.afs.collection('questions', ref => ref.orderBy('timestamp', 'desc'))
+        .valueChanges({ idField: 'id' }).subscribe(questionList => {
+      this.questionList = questionList;
+      console.log(this.questionList);
+      this.loadedQuestionList = questionList;
+    });
+
+
+    this.questions = this.questionService.getQuestions();
+    this.allPosts = true;
+    this.usersPosts = false;
+  }
 
   ionViewWillEnter() {
     this.addView();
    }
 
+  initializeQuestions(): void {
+    this.questionList = this.loadedQuestionList;
+  }
 
+  initializeUserQuestions(): void {
+    this.thisUserQuestionList = this.thisUserLoadedQuestionList;
+  }
 
+  filterUserQuestions(event) {
+    console.log('called');
+    this.initializeUserQuestions();
+
+    const searchInput = event.target.value;
+
+    if (searchInput) {
+      this.thisUserQuestionList = this.thisUserQuestionList.filter(currentQuestion => {
+        return(currentQuestion.title.toLowerCase().indexOf(searchInput.toLowerCase()) > -1);
+      });
+    }
+  }
+
+  filterQuestions(event) {
+    console.log('called');
+    this.initializeQuestions();
+
+    const searchInput = event.target.value;
+
+    if (searchInput) {
+      this.questionList = this.questionList.filter(currentQuestion => {
+        return(currentQuestion.title.toLowerCase().indexOf(searchInput.toLowerCase()) > -1);
+      });
+    }
+  }
 
   addView(){
-
   //this.analytic.sessionID = this.session.id;
   this.storage.get('userCode').then((val) =>{
     if (val) {
