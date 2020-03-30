@@ -279,40 +279,56 @@ exports.sendProviderRecoveryEmail=functions.firestore.document('provider_recover
 
         });*/
 
-
-	/*
+/* OLD
 exports.deleteOldChatMessages=functions.https.onRequest((req, res)=> {
-	const now = new Date();
-	console.log('now', now);
+const now = new Date();
+console.log('now', now);
 
-	admin.firestore().collection('mobileSettings').doc('chatHours').get().then(function(doc) {
-		let setHours = Number(doc.get('hours'));
-		console.log('setHours', setHours);
-		setHours = setHours * 60 * 60 * 1000;
-		console.log('setHours', setHours);
+admin.firestore().collection('mobileSettings').doc('chatHours').get().then(function(doc) {
+let setHours = Number(doc.get('hours'));
+console.log('setHours', setHours);
+setHours = setHours * 60 * 60 * 1000;
+console.log('setHours', setHours);
 
-		const ref = admin.firestore().collection('chats');
-		ref.get().then((result) => {
-			let batch = admin.firestore().batch();
-			result.forEach(doc => {
-				const timestamp = new Date(doc.get('timestamp').toDate());
-				console.log('timestamp', timestamp);
-				const difference = now.getTime() - timestamp.getTime();
-				console.log('difference', difference);
-				console.log('setHours', setHours);
+const ref = admin.firestore().collection('chats');
+ref.get().then((result) => {
+    let batch = admin.firestore().batch();
+    result.forEach(doc => {
+        const timestamp = new Date(doc.get('timestamp').toDate());
+        console.log('timestamp', timestamp);
+        const difference = now.getTime() - timestamp.getTime();
+        console.log('difference', difference);
+        console.log('setHours', setHours);
 
-				if(difference >= setHours) {
-					batch.delete(doc.ref);
-				}
+        if(difference >= setHours) {
+            batch.delete(doc.ref);
+        }
 
-			});
-			batch.commit();
-			return setHours;
-		}).catch(error => {console.log('did not check', error)});
-		return setHours;
-	}).catch(error => {console.log('failed', error)});
+    });
+    batch.commit();
+    return setHours;
+}).catch(error => {console.log('did not check', error)});
+return setHours;
+}).catch(error => {console.log('failed', error)});
 });*/
-		
+
+exports.deleteOldChatMessages = functions.https.onRequest((req, res)=> {
+	const ref = admin.firestore().collection('chats');
+	ref.get().then((result) => {
+		let batch = admin.firestore().batch();
+		result.forEach(doc => {
+			if(doc.get('visibility') === 'false') {
+				batch.delete(doc.ref);
+			}
+
+		});
+		batch.commit();
+		return batch;
+	}).catch(error => {console.log('did not check', error)});
+	return 'worked';
+});
+
+
 //https://firebase.google.com/docs/functions/http-events
 /**
  * Iterate through learning modules and get the times of visibility for active LMs
