@@ -133,6 +133,7 @@ export class ChatService {
             if (difference >= setHours) {
               this.updateChatVisibility(doc.id, false);
             } else {
+              // can be used to set chats back to true for testing purposes
               // this.updateChatVisibility(doc.id, true);
             }
           });
@@ -143,32 +144,48 @@ export class ChatService {
         const numChatsVis = result.get('numberOfChats');
 
         let chatsObservable = this.getChats(cohortID).subscribe(resul => {
-          console.log(resul.length);
+          // console.log(resul.length);
         });
 
-        /*
+
         let numberOfCurrentChats = 0;
         let numberOfCurrentAutoChats = 0;
         // time order is oldest to newest
-        const ref = firebase.firestore().collection('chats').where('cohort', '==', cohortID).orderBy('timestamp');
+        const ref = firebase.firestore().collection('chats').where('cohort', '==', cohortID).orderBy('timestamp', 'desc');
         ref.get().then((res) => {
           res.forEach(doc => {
             // for each doc in the cohort chat room, if it is a user sent, iterate
-            if (doc.get('type') === 'user') {
+            if (doc.get('type') === 'user' && doc.get('visibility') === true) {
               // count the number of non-auto chats
               numberOfCurrentChats += 1;
               // assign a new number to each chat
               this.updateChatNumberCounter(doc.id, numberOfCurrentChats);
+
+              if (doc.get('count') > numChatsVis) {
+                this.updateChatVisibility(doc.id, false);
+              } else {
+                // this.updateChatVisibility(doc.id, false);
+              }
+
             } else if (doc.get('type') === 'emotion' || doc.get('type') === 'auto') {
-              // count the number of auto chats
-              numberOfCurrentAutoChats += 1;
-              // assign a new number to each chat
-              this.updateChatNumberCounter(doc.id, numberOfCurrentAutoChats);
+              if (doc.get('visibility') === true) {
+                // count the number of auto chats
+                numberOfCurrentAutoChats += 1;
+                // assign a new number to each chat
+                this.updateChatNumberCounter(doc.id, numberOfCurrentAutoChats);
+
+                if (doc.get('count') > numChatsVis) {
+                  this.updateChatVisibility(doc.id, false);
+                } else {
+                 // this.updateChatVisibility(doc.id, false);
+                }
+              }
             }
           });
+          /*
           // iterate chats again - after setting count
           res.forEach(doc => {
-            if (doc.get('type') === 'user') {
+            if (doc.get('type') === 'user' && doc.get('visibility') === true) {
               // since the chats are grabbed oldest to newest - we want all chats that are greater than the difference
               // of current chats - the number of chats allowed
               if (doc.get('count') > (numberOfCurrentChats - numChatsVis)) {
@@ -177,14 +194,16 @@ export class ChatService {
                 this.updateChatVisibility(doc.id, false);
               }
             } else if (doc.get('type') === 'emotion' || doc.get('type') === 'auto') {
-              if (doc.get('count') > (numberOfCurrentAutoChats - 10)) {
-                this.updateChatVisibility(doc.id, true);
-              } else {
-                this.updateChatVisibility(doc.id, false);
+              if ( doc.get('visibility') === true) {
+                if (doc.get('count') > (numberOfCurrentAutoChats - 10)) {
+                  this.updateChatVisibility(doc.id, true);
+                } else {
+                  this.updateChatVisibility(doc.id, false);
+                }
               }
             }
-          });
-        });*/
+          });*/
+        });
 
       }
     });

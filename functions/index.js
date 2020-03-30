@@ -317,7 +317,7 @@ exports.deleteOldChatMessages = functions.https.onRequest((req, res)=> {
 	ref.get().then((result) => {
 		let batch = admin.firestore().batch();
 		result.forEach(doc => {
-			if(doc.get('visibility') === 'false') {
+			if(doc.get('visibility') === false) {
 				batch.delete(doc.ref);
 			}
 
