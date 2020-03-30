@@ -104,7 +104,9 @@ export class AuthServiceProvider {
       infoDeskNotif: user.infoDeskNotif,
       token: user.token,
       points: user.points,
-      answeredSurveys: user.answeredSurveys});
+      answeredSurveys: user.answeredSurveys,
+      recentNotifications: user.recentNotifications,
+    });
   }
 
 

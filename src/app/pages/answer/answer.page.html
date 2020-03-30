@@ -11,7 +11,6 @@
 
   <div *ngIf="!isComplete()">
     <ion-button expand="block" class="fill-button" (click)="openPage(survey.surveyLink)">Take Survey</ion-button>
-    <ion-button expand="block" class="fill-button" (click)="presentAlert()">Show Message</ion-button>
   </div>
   
   <div *ngIf="isComplete()">

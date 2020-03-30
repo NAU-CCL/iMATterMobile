@@ -183,7 +183,8 @@ export class AvailablePage implements OnInit {
           canDisplay = true;
           // this.answeredSurveys.forEach( answered => {
           //   if(answered.split(":")[0] == survey.id && answered.split(":")[1] == ("" + today.getDate())){
-          //     canDisplay = false;
+          //     canDisplay = true;
+          //     this.completed.push(survey.id);
           //     includes = true;
           //   }
           //   if(answered.split(":")[0] == survey.id && answered.split(":")[1] != ("" + today.getDate())){
