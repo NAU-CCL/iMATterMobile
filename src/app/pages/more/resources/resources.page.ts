@@ -66,12 +66,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                   });
                 });
               }
-
-
-
             });
-
-
 
     }
 
@@ -86,20 +81,13 @@ export class ResourcesPage implements OnInit, AfterViewInit {
 
     ngAfterViewInit(): void {
 
-
      }
 
      ionViewDidEnter()
      {
        this.geoMaps(this.userLocation);
        this.getLocations();
-
      }
-
-
-
-
-
 
      getLocations ()
      {
@@ -158,13 +146,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
      geoMaps(userLocation)
      {
 
-console.log("here we are in the geomaps" + this.userLocation);
-
-
-
-
-
-
+      console.log("here we are in the geomaps" + this.userLocation);
 
        if(this.userLocation !== '')
        {
