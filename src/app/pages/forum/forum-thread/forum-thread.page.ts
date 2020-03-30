@@ -25,8 +25,8 @@ export class ForumThreadPage implements OnInit {
     profilePic: '',
     anon: false,
     type: '',
-    numOfComments: 0
-
+    numOfComments: 0,
+    commenters: []
   };
 
   comment: Comment = {

@@ -16,6 +16,7 @@ export interface Question {
   anon: boolean;
   type: any;
   numOfComments: number;
+  commenters: any;
 }
 
 export interface Comment {
