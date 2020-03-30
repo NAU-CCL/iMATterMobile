@@ -71,22 +71,9 @@
       </ion-button>
     </ion-col>
   </ion-row>
-<p>Tap Once to Edit. Tap twice to delete event</p>
-  <calendar
-          [eventSource]="eventSource"
-          [calendarMode]="calendar.mode"
-          [currentDate]="calendar.currentDate"
-          (onEventSelected)="onEventSelected($event)"
-          (onTitleChanged)="onViewTitleChanged($event)"
-          (onTimeSelected)="onTimeSelected($event)"
-          startHour="6"
-          endHour="20"
-          step="30"
-          startingDayWeek="1">
-  </calendar>
-
-
-<!-- Card for adding a new event -->
+  
+  
+  <!-- Card for editing event -->
   <ion-item *ngIf="showEditEvent">
     <ion-card>
       <ion-card-header>
@@ -116,6 +103,29 @@
       </ion-card-content>
     </ion-card>
   </ion-item>
+  
+  
+  
+  
+
+  <calendar
+          [eventSource]="eventSource"
+          [calendarMode]="calendar.mode"
+          [currentDate]="calendar.currentDate"
+          (onEventSelected)="onEventSelected($event)"
+          (onTitleChanged)="onViewTitleChanged($event)"
+          (onTimeSelected)="onTimeSelected($event)"
+          startHour="6"
+          endHour="20"
+          step="30"
+          startingDayWeek="1">
+		  
+		  
+		  
+  </calendar>
+<p>test</p>
+
+
 
 </ion-content>
 

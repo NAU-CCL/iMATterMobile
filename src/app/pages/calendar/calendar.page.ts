@@ -15,7 +15,7 @@ import { StorageService, Item } from '../../services/storage.service';
 
 /**
  * This code written with the help of this tutorial:
- * https://devdactic.com/ionic-4-calendar-app/
+ * https://devdactic.com/ionic-4-calendar-app/, https://ionicframework.com/docs/api/alert
  *and this stackoverflow:
  *https://stackoverflow.com/questions/56214875/ionic-calendar-event-does-not-load-on-device
  * Used for the general build and functionality of the calendar
