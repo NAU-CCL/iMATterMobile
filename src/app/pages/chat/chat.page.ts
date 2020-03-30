@@ -174,12 +174,11 @@ analytic: Analytics =
 
             } else {
               this.chat.type = 'user';
-              this.chatService.addChat(this.chat).then(()=> {
+              this.chatService.addChat(this.chat).then(() => {
                 this.chatService.iterateChats(this.chat.cohort);
               });
               // this could possibly slow down this function
             }
-
             this.chat.message = '';
           });
         });
