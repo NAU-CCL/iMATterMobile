@@ -34,6 +34,7 @@ export interface User {
   token: any;
   recentNotifications: any[];
   answeredSurveys: any[];
+  codeEntered: boolean;
 }
 
 export interface Provider {

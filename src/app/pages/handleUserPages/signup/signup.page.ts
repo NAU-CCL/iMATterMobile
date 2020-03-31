@@ -116,6 +116,7 @@ export class SignupPage implements OnInit {
     token: '',
     recentNotifications: [],
     answeredSurveys: [],
+    codeEntered: true
   };
 
   static findCohort(month: string) {
