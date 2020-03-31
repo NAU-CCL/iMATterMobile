@@ -52,7 +52,7 @@ export class CalendarPage implements OnInit {
     mode: 'month',
     currentDate: new Date(),
   };
-  
+
   analytic: Analytics =
 {
   page: '',
@@ -66,19 +66,19 @@ export class CalendarPage implements OnInit {
 
   length : number;
   private showAddEvent: boolean;
-  
-  
+
+
 
   items: Item[] = [];
   newItem: Item = <Item>{};
-  
+
   deleteIndex : number;
   notificationIndex : number;
   deleteNotificationIndex : number;
   showEditEvent : boolean;
   
   confirmDeleteEvent: boolean;
-  
+ 
   // @ts-ignore
   @ViewChild(CalendarComponent) myCal: CalendarComponent;
 
@@ -86,12 +86,12 @@ export class CalendarPage implements OnInit {
               private storage: Storage, private storageService: StorageService,  private afs: AngularFirestore,
      private analyticsService: AnalyticsService, private router: Router) {
 		this.notifyTime = moment(new Date()).format();
-		
+
 		this.chosenHours = new Date().getHours();
 		this.chosenMinutes = new Date().getMinutes();
-		
-		
-		
+
+
+
 		this.days = [
             {title: 'Monday', dayCode: 1, checked: false},
             {title: 'Tuesday', dayCode: 2, checked: false},
@@ -101,9 +101,9 @@ export class CalendarPage implements OnInit {
             {title: 'Saturday', dayCode: 6, checked: false},
             {title: 'Sunday', dayCode: 0, checked: false}
         ];
-	
+
 	}
-	
+
 
   ngOnInit() {
     this.storage.get('authenticated').then((val) => {
@@ -117,7 +117,7 @@ export class CalendarPage implements OnInit {
 	this.addView();
   }
 
-  
+
   resetEvent() {
     this.event = {
       title: '',
@@ -128,7 +128,7 @@ export class CalendarPage implements OnInit {
 	  id: ''
     };
   }
-  
+
   addView(){
 
   //this.analytic.sessionID = this.session.id;
@@ -153,8 +153,8 @@ export class CalendarPage implements OnInit {
     }
   });
 }
-  
-  
+
+
   deleteEvent(){
 	  //window.plugins.calendar.deleteEvent(newTitle,eventLocation,notes,startDate,endDate,success,error);
   }
@@ -178,31 +178,31 @@ export class CalendarPage implements OnInit {
       eventCopy.startTime = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate()));
       eventCopy.endTime = new Date(Date.UTC(end.getUTCFullYear(), end.getUTCMonth(), end.getUTCDate() + 1));
     }
-	
+
 	// add notification when creating event
 	//if(this.notificationIndex == null){
 	//	this.notificationIndex = 0;
-		
+
 	//}
 
-	
+
 	var currentID = this.notificationIndex;
-	
+
 	this.eventList.push(eventCopy);
-	
+
     this.eventSource.push(eventCopy);
 	this.test.push('1');
 
 	console.log(JSON.stringify(this.eventSource));
     this.myCal.loadEvents();
 	console.log("notification index" +this.notificationIndex);
-	
+
 	this.storageService.addItem(eventCopy).then(item => {
 
 		console.log('?');
       this.loadItems();
 	});
-	this.localNotifications.schedule({ 
+	this.localNotifications.schedule({
 	   id: this.notificationIndex,
 	   text: 'You have an event, check your calendar!',
 	   trigger: {at: new Date(this.event.startTime)},
@@ -211,9 +211,9 @@ export class CalendarPage implements OnInit {
 	});
     this.resetEvent();
     this.showAddEvent = false;
-	
+
   }
-  
+
   loadItems() {
     this.storageService.getItems().then(items => {
       this.items = items;
@@ -224,16 +224,16 @@ export class CalendarPage implements OnInit {
         console.log('No events');
       }
     });
-  
+
   }
-  
+
   getStorage(){
   this.storage.get('name').then((val) => {
     return ['name'];
   });
   }
-  
-  
+
+
 
   showEvent(){
 	  this.storage.get('event').then( (val) =>{
@@ -271,7 +271,6 @@ export class CalendarPage implements OnInit {
     // Use Angular date pipe for conversion
     let start = formatDate(event.startTime, 'medium', this.locale);
     let end = formatDate(event.endTime, 'medium', this.locale);
-    
 	
 	/*const alert = document.createElement('ion-alert');
 	alert.header = 'Confirm!';
@@ -389,7 +388,7 @@ export class CalendarPage implements OnInit {
 	else{
 		this.showEditEvent = true;
 	}
-	
+
 	this.length = this.eventSource.length;
 	for (let i = 0; i < this.length; i++) {
 		console.log("eventSource " + this.eventSource[i].id);
@@ -411,6 +410,7 @@ export class CalendarPage implements OnInit {
 	console.log("notification index");
 	console.log("delete Index: " + this.deleteIndex);
 	this.storage.set('my-items', this.eventSource);
+
 	this.loadItems();*/	
   }
   
