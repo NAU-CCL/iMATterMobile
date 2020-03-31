@@ -48,7 +48,7 @@ export class RecoveryCodePage implements OnInit {
       ],
 	  recoveryPassword: [
         '',
-        Validators.compose([Validators.required]),
+        Validators.compose([Validators.required, Validators.minLength(8)])
       ],
     });
   }
