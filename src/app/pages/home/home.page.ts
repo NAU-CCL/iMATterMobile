@@ -103,6 +103,7 @@ export class HomePage implements OnInit {
       }
       
   public dropDown: any = [];
+  public expandSize;
   private userProfileID: any;
   private id: any;
   private weeksPregnant: any;
@@ -153,6 +154,8 @@ export class HomePage implements OnInit {
             this.user.currentEmotion = doc.get('mood');
             this.user.code = doc.get('code');
             this.user.recentNotifications = doc.get('recentNotifications');
+            this.expandSize = (150 + 50 * this.user.recentNotifications.length) + "px"
+            console.log("Expand Size: ", this.expandSize);
 
             const pregUpdateRef = this.afs.firestore.collection('pregnancyUpdates')
                 .where('day', '==', this.user.totalDaysPregnant);
@@ -311,5 +314,14 @@ export class HomePage implements OnInit {
   clearArray(){
     this.user.recentNotifications = [];
     this.fs.updateRecentNot(this.user.code, this.user.recentNotifications);
+  }
+
+  goToPage(notif){
+    if(notif == "There is a new survey available"){
+      this.router.navigate(['/available'])
+    }
+    else{
+      this.router.navigate(['/learning-center'])
+    }
   }
 }

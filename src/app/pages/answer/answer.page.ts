@@ -67,7 +67,7 @@ export class AnswerPage implements OnInit {
    
     // survey id is taken
     let id = this.surveyData.split(":")[0];
-   
+
     // if the id exists, assign the survey object to the survey for which the id belongs to
     if(id){
       this.fs.getSurvey(id).subscribe(survey => {
