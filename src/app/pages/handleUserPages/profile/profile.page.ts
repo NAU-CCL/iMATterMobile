@@ -42,6 +42,7 @@ export class ProfilePage implements OnInit {
       token: '',
       recentNotifications: [],
       answeredSurveys: [],
+
   };
 
   analytic: Analytics =

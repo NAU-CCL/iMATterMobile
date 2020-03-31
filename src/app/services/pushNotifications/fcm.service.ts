@@ -17,8 +17,9 @@ export class FcmService {
     if (this.platform.is('android')) {
       console.log('android in got token');
       token = await this.firebase.getToken();
-    } else {
+    } else if (this.platform.is('ios')) {
       token = await this.firebase.getToken();
+      this.firebase.grantPermission();
     }
 
     this.saveToken(token, userID);

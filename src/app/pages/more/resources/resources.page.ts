@@ -1,8 +1,8 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild , NgZone } from '@angular/core';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Storage } from '@ionic/storage';
-import { NativeGeocoder, NativeGeocoderOptions, NativeGeocoderResult } from '@ionic-native/native-geocoder/ngx';
+import { NativeGeocoder, NativeGeocoderOptions, NativeGeocoderResult} from '@ionic-native/native-geocoder/ngx';
 import * as firebase from 'firebase/app';
 
 
@@ -22,11 +22,12 @@ export class ResourcesPage implements OnInit, AfterViewInit {
     dlatitude: string;
     dcontent: string;
     dphone: string;
+    dstreet: string;
     doperationSunday: string;
     doperationWeekday: string;
     doperationSaturday: string;
-    userLocation: any;
-    userLocationHolder: number;
+    userLocation: string;
+    userLocationHolder: string;
     userProfileID: any;
     specialNote: any;
 
@@ -34,36 +35,38 @@ export class ResourcesPage implements OnInit, AfterViewInit {
     icon: any;
     pos: any;
     position: any;
+    bar:string;
+    foo:string;
 
     dicon: any;
 
     @ViewChild('mapElement', {static: false}) mapNativeElement;
-    constructor(private geolocation: Geolocation,
+    constructor(public zone: NgZone,
+                private geolocation: Geolocation,
                 private nativeGeocoder: NativeGeocoder,
                 public afs: AngularFirestore,
                 private storage: Storage,) { }
 
     ngOnInit() {
 
+              this.storage.get('userCode').then((val) => {
+              if (val) {
+                this.userProfileID = val;
+                const ref = this.afs.firestore.collection('users').where('code', '==', val);
+                ref.get().then((result) => {
+                  result.forEach(doc => {
+                    this.userLocationHolder = doc.get('location');
 
-        this.storage.get('userCode').then((val) => {
-        if (val) {
-          this.userProfileID = val;
-          const ref = this.afs.firestore.collection('users').where('code', '==', val);
-          ref.get().then((result) => {
-            result.forEach(doc => {
-              this.userLocationHolder = doc.get('location');
+
+                    console.log(this.userLocationHolder);
+                    this.saveUserLocation(this.userLocationHolder);
+                    console.log("hheeeeeeeeeeeeeeee");
 
 
-              console.log(this.userLocationHolder);
-
+                  });
+                });
+              }
             });
-          });
-        }
-
-        this.saveUserLocation(this.userLocationHolder);
-
-      });
 
     }
 
@@ -71,19 +74,20 @@ export class ResourcesPage implements OnInit, AfterViewInit {
     saveUserLocation(userLocationHolder)
     {
       this.userLocation = this.userLocationHolder;
+      console.log("inside saveUserLocation" + this.userLocation);
+
+
     }
 
     ngAfterViewInit(): void {
-      this.geoMaps(this.userLocation);
-      this.getLocations();
-
 
      }
 
-
-
-
-
+     ionViewDidEnter()
+     {
+       this.geoMaps(this.userLocation);
+       this.getLocations();
+     }
 
      getLocations ()
      {
@@ -97,6 +101,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
         this.dlatitude = doc.get("latitude");
         this.dcontent = doc.get("content");
         this.dicon = doc.get("type");
+        this.dstreet = doc.get("street");
         this.doperationSunday = doc.get("operationSunday");
         this.doperationSaturday = doc.get("operationSaturday");
         this.dphone = doc.get("phone");
@@ -141,12 +146,29 @@ export class ResourcesPage implements OnInit, AfterViewInit {
      geoMaps(userLocation)
      {
 
-       /*
+      console.log("here we are in the geomaps" + this.userLocation);
 
        if(this.userLocation !== '')
        {
+         console.log("enteredt user location thingy ");
 
+         this.nativeGeocoder.forwardGeocode(this.userLocation)
+         .then((result: NativeGeocoderResult[]) => {
+           console.log('The coordinates are latitude=' + result[0].latitude + ' and longitude=' + result[0].longitude);
+           this.latitude = parseFloat(result[0].latitude);
+            console.log('The coordinates are latitude=' + this.latitude);
 
+           this.longitude = parseFloat( result[0].longitude);
+
+           console.log('The coordinates are latitude=' + this.longitude);
+           this.map = new google.maps.Map(this.mapNativeElement.nativeElement, {
+             center: {lat: this.latitude, lng: this.longitude},
+             zoom: 16
+           });
+       })
+         .catch((error: any) => console.log(error));
+
+/*
 
           let options: NativeGeocoderOptions = {
               useLocale: true,
@@ -161,29 +183,26 @@ export class ResourcesPage implements OnInit, AfterViewInit {
             .then((result: NativeGeocoderResult[]) => console.log('The coordinates are latitude=' + result[0].latitude + ' and longitude=' + result[0].longitude))
             .catch((error: any) => console.log(error));
 
-
+         this.userLocationHolder = Number(this.userLocationHolder);
 **/
-
-
-/*       this.userLocationHolder = Number(this.userLocationHolder);
-
-         this.geoCoder.geocode({ 'address': this.userLocation }, (results, status) => {
-           if (status === 'OK') {
-             this.position = {
-               "lat": results[0].geometry.location.lat(),
-               "lng": results[0].geometry.location.lng()
-             }
-        //     this.userLat = this.position[0];
-          //   this.userLng = this.position[1];
-           } else {
-             console.log('Geocode was not successful for the following reason: ' + status);
-           }
-         });
+/*
+             this.nativeGeocoder.geocode({ 'address': this.userLocation }, (results, status) => {
+               if (status === 'OK') {
+                 this.position = {
+                   "lat": results[0].geometry.location.lat(),
+                   "lng": results[0].geometry.location.lng()
+                 }
+            //     this.userLat = this.position[0];
+              //   this.userLng = this.position[1];
+               } else {
+                 console.log('Geocode was not successful for the following reason: ' + status);
+               }
+             });
 **/
-    //   }
+      }
 
-  //     else
-  //     {
+     else
+     {
          this.geolocation.getCurrentPosition().then((resp) => {
             this.latitude = resp.coords.latitude;
             this.longitude = resp.coords.longitude;
@@ -197,9 +216,9 @@ export class ResourcesPage implements OnInit, AfterViewInit {
           }).catch((error) => {
             console.log('Error getting location', error);
           });
-    //   }
-
      }
+
+  }
 
 
 
@@ -252,6 +271,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
          '<div id="bodyContent">' +
          '<p>' + this.dcontent + '</p>' +
          '</div>'+
+         '<div id= "street">'+ 'Street Address: ' + this.dstreet + '</div>' +
 
          '<div id = "operation">'+ 'Hours of Operation' + '</div>' +
          '<div id = "weekday">'+ 'Monday - Friday: '+ this.doperationWeekday + '</div>'+

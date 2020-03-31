@@ -1,5 +1,21 @@
-
+.noHighlight {
+  --background: var(--secondary-color);
+}
 
 .create-post-button {
   color: var(--main-color);
+}
+
+.timestamp {
+  color: #383a3e;
+  font-size: 10px;
+}
+
+.numOfComments {
+  color: #383a3e;
+  font-size: 15px;
+}
+
+.padding-top {
+  padding-top: 10px;
 }
