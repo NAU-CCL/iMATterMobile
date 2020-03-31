@@ -104,7 +104,7 @@
         </div>
         <div *ngFor="let notif of user.recentNotifications">
           <ion-card id="rec-notif-card" (click)="goToPage(notif)">
-            {{notif.message}}
+            {{notif}}
           </ion-card>
         </div>
       </app-expandable>

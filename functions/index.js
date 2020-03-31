@@ -380,7 +380,7 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 							if ((!storedLMUserVisibility.includes(userCode)) && singleUser.get("learningModNotif") == true)
 							{
 								currentUser = admin.firestore().collection('users').doc(userCode);
-								recent.set("message", "There is a new survey available");
+								recent.set("message", "There is a new learning module available!");
 								recent.set("type", "learning module");
 								currentUser.update({recentNotifications: admin.firestore.FieldValue.arrayUnion(recent)});
                 
@@ -421,7 +421,7 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 								if ((!storedLMUserVisibility.includes(userCode)) && singleUser.get("learningModNotif") == true)
 								{
 									currentUser = admin.firestore().collection('users').doc(userCode);
-									recent.set("message", "There is a new survey available");
+									recent.set("message", "There is a new learning module available!");
 									recent.set("type", "learning module");
 									currentUser.update({recentNotifications: admin.firestore.FieldValue.arrayUnion(recent)});
 

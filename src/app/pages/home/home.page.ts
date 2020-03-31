@@ -316,7 +316,7 @@ export class HomePage implements OnInit {
   }
 
   goToPage(notif){
-    if(notif.type == "survey"){
+    if(notif == "There is a new survey available"){
       this.router.navigate(['/available'])
     }
     else{
