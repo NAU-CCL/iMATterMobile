@@ -44,6 +44,9 @@ export class LearningCenterPage implements OnInit {
 
   ngOnInit() 
   {
+    //this.storage.clear();
+    //this.initializeStorageforLM();
+
     this.storage.get('authenticated').then((val) => {
       if (val === 'false') {
         this.router.navigate(['/login/']);
@@ -66,6 +69,25 @@ export class LearningCenterPage implements OnInit {
 
       });
 
+
+    /*this.learningModules.forEach(value => {
+      value.forEach(singleMod => {
+
+        //Filter down to only the modules that should be visible to this user
+        if (singleMod.userVisibility.includes(this.userCode) && singleMod.moduleActive)
+        {
+          console.log("MODULE: " + singleMod.moduleTitle);
+          
+          //get the local storage data that was stored into lmRecurrenceMap for this module
+          var storedPrevUV = this.lmRecurrenceMap.get(singleMod.id + "storedPrevUV");
+          var storedCurrentUV = this.lmRecurrenceMap.get(singleMod.id + "storedCurrentUV");
+          var storedDate = this.lmRecurrenceMap.get(singleMod.id + "storedDate");
+          this.checkNewRecurring(singleMod, storedPrevUV, storedCurrentUV, storedDate); //PUT IN ON INIT?????
+        }
+
+      });
+    });*/
+
     this.addView();
 
   }
@@ -86,11 +108,9 @@ export class LearningCenterPage implements OnInit {
         if (singleMod.userVisibility.includes(this.userCode) && singleMod.moduleActive)
         {
 
-          //get the local storage data that was stored into lmRecurrenceMap for this module
-          var storedPrevUV = this.lmRecurrenceMap.get(singleMod.id + "storedPrevUV");
-          var storedCurrentUV = this.lmRecurrenceMap.get(singleMod.id + "storedCurrentUV");
-          var storedDate = this.lmRecurrenceMap.get(singleMod.id + "storedDate");
-          this.checkNewRecurring(singleMod, storedPrevUV, storedCurrentUV, storedDate);
+          console.log("MODULE: " + singleMod.moduleTitle);
+          
+          this.checkNewRecurring(singleMod);
 
           //check if this module has been viewed
           this.storage.get(singleMod.id + "beenViewed").then(value => {
@@ -239,15 +259,26 @@ export class LearningCenterPage implements OnInit {
    * Example: moduleA showed up in week 34 for 5 days and it's now week 38 and it's showing up again
    * If so, then clear the local storage for that learning module so it appears as a new module
    * @param currentMod the module we're checking
-   * @param previousUserVisibility storedPrevUV from local storage for a given module
-   * @param currentUserVisibility storedCurrentUV from local storage for a given module
-   * @param storedDate localUVStoreDate from local storage for a given module
    */
-  checkNewRecurring(currentMod:LearningModule, previousUserVisibility:Array<string>, currentUserVisibility:Array<string>, storedDate: string)
+  checkNewRecurring(currentMod:LearningModule)
   {
+    var previousUserVisibility = this.lmRecurrenceMap.get(currentMod.id + "storedPrevUV");
+    var currentUserVisibility = this.lmRecurrenceMap.get(currentMod.id + "storedCurrentUV");
+    var storedDate = this.lmRecurrenceMap.get(currentMod.id + "storedDate");
+
     //Get the current date and put it in MM/DD/YYYY format
     var getDate = new Date();
     var currentDate = getDate.getMonth() + "/" + getDate.getDate() + "/"+ getDate.getFullYear();
+
+    console.log("CURRENT MOD UV:");
+    console.log(currentMod.userVisibility);
+    console.log("CURRENT MOD PREV UV:");
+    console.log(currentMod.previousUserVisibility);
+
+    console.log("PREVIOUS USER VISIBILITY: ");
+    console.log(previousUserVisibility);
+    console.log("CURRENT USER VISIBILITY:");
+    console.log(currentUserVisibility);
 
     //This module has never appeared before for this user, don't need to check for recurrence
     if (previousUserVisibility === null && currentUserVisibility === null && storedDate === null)
@@ -262,16 +293,18 @@ export class LearningCenterPage implements OnInit {
     else
     {
       //if this module's recurrence has already been checked and local storage was cleared for it
-      if (this.arraysEqual(currentMod.previousUserVisibility, previousUserVisibility) 
-        && this.arraysEqual(currentMod.userVisibility, currentUserVisibility)
+      if ((JSON.stringify(currentMod.previousUserVisibility) === JSON.stringify(previousUserVisibility)) 
+        && (JSON.stringify(currentMod.userVisibility) === JSON.stringify(currentUserVisibility))
         && (storedDate === currentDate))
       {
         return;
       }
       else //we're checking it for the first time for this recurrence
       {
+        var newlyVisible;
+
         //get a list of users who weren't in the previousUserVisibility array but are in userVisibility
-        var newlyVisible = currentMod.userVisibility.filter(item => currentMod.previousUserVisibility.indexOf(item) < 0);
+        newlyVisible = currentMod.userVisibility.filter(item => currentMod.previousUserVisibility.indexOf(item) < 0);
   
         //if this module is a newly appearing module for a user, clear the local storage
         if (newlyVisible.includes(this.userCode))

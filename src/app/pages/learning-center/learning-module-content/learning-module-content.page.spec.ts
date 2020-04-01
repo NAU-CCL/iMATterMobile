@@ -21,4 +21,8 @@ describe('LearningModuleContentPage', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  /*it('should do something', () => {
+    expect(component.learningModule).toContain('moduleTitle');
+  });*/
 });
