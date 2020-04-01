@@ -115,6 +115,7 @@ analytic: Analytics =
 
     this.addChat('autoEnter');
     this.scrollToBottom();
+
     this.addView();
 
   }
@@ -173,11 +174,11 @@ analytic: Analytics =
 
             } else {
               this.chat.type = 'user';
-              this.chatService.addChat(this.chat);
+              this.chatService.addChat(this.chat).then(() => {
+                this.chatService.iterateChats(this.chat.cohort);
+              });
               // this could possibly slow down this function
-              // this.chatService.iterateChats(this.chat.cohort);
             }
-
             this.chat.message = '';
           });
         });

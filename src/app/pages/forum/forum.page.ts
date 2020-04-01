@@ -19,7 +19,7 @@ export class ForumPage implements OnInit {
   page: '',
   userID: '',
   timestamp: '',
-  sessionID: ''
+  sessionID: '',
 };
 
   private questions: Observable<Question[]>;
@@ -53,32 +53,13 @@ export class ForumPage implements OnInit {
     });
 
     this.storage.get('platform').then((val) => {
-      if (val === 'ios') {
-        this.iosPlatform = true;
-      } else {
-        this.iosPlatform = false;
-      }
+      this.iosPlatform = val === 'ios';
     });
 
-    this.storage.get('userCode').then((val) => {
-      if (val) {
-        this.afs.collection('questions', ref => ref.where('userID', '==', val).orderBy('timestamp'))
-            .valueChanges({ idField: 'id' }).subscribe(questionList => {
-          this.thisUserQuestionList = questionList;
-          console.log(this.questionList);
-          this.thisUserLoadedQuestionList = questionList;
-        });
-      }
-    });
+    this.getUserQuestions();
+    this.getAllQuestions();
 
-    this.afs.collection('questions', ref => ref.orderBy('timestamp', 'desc'))
-        .valueChanges({ idField: 'id' }).subscribe(questionList => {
-      this.questionList = questionList;
-      console.log(this.questionList);
-      this.loadedQuestionList = questionList;
-    });
-
-
+    // need to keep this
     this.questions = this.questionService.getQuestions();
     this.allPosts = true;
     this.usersPosts = false;
@@ -87,6 +68,29 @@ export class ForumPage implements OnInit {
   ionViewWillEnter() {
     this.addView();
    }
+
+   getUserQuestions() {
+     this.storage.get('userCode').then((val) => {
+       if (val) {
+         this.afs.collection('questions', ref => ref.where('userID', '==', val).orderBy('timestamp', 'desc'))
+             .valueChanges({ idField: 'id' }).subscribe(questionList => {
+           this.thisUserQuestionList = questionList;
+
+           this.thisUserLoadedQuestionList = questionList;
+         });
+       }
+     });
+   }
+
+   getAllQuestions() {
+     this.afs.collection('questions', ref => ref.orderBy('timestamp', 'desc'))
+         .valueChanges({ idField: 'id' }).subscribe(questionList => {
+       this.questionList = questionList;
+
+       this.loadedQuestionList = questionList;
+     });
+   }
+
 
   initializeQuestions(): void {
     this.questionList = this.loadedQuestionList;

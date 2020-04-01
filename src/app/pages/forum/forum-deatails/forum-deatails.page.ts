@@ -26,7 +26,9 @@ export class ForumDeatailsPage implements OnInit {
     timestamp: FieldValue,
     profilePic: '',
     anon: false,
-    type: ''
+    type: '',
+    numOfComments: 0,
+    commenters: []
   };
 
   private anon: boolean;

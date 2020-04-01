@@ -98,12 +98,14 @@
     </ion-card-header>
 
     <ion-card-content>
-      <app-expandable expandHeight="150px" [expanded]="drop.expanded">
+      <app-expandable expandHeight="expandSize" [expanded]="drop.expanded">
         <div>
           <ion-button fill="clear"(click)="clearArray()" >clear</ion-button>
         </div>
         <div *ngFor="let notif of user.recentNotifications">
-          {{notif}}
+          <ion-card id="rec-notif-card" (click)="goToPage(notif)">
+            {{notif}}
+          </ion-card>
         </div>
       </app-expandable>
     </ion-card-content>

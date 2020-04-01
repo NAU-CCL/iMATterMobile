@@ -15,6 +15,8 @@ export interface Question {
   profilePic: any;
   anon: boolean;
   type: any;
+  numOfComments: number;
+  commenters: any;
 }
 
 export interface Comment {
@@ -72,7 +74,7 @@ export class QuestionService {
 
   getThisUsersQuestionCollection(userID) {
     this.thisUsersQsCollection = this.afs.collection<Question>('questions',
-        reference => reference.where('userID', '==', userID).orderBy('timestamp'));
+        reference => reference.where('userID', '==', userID).orderBy('timestamp', 'desc'));
 
     // this.commentCollection = this.afs.collection<Comment>('comments');
 
@@ -137,6 +139,10 @@ export class QuestionService {
   }
 
   async addComment(comment: Comment) {
+
+    this.afs.firestore.collection('questions')
+        .doc(comment.postID).update({numOfComments: firebase.firestore.FieldValue.increment(1)});
+
     this.afs.collection('comments').add({
       username: comment.username,
       input: comment.input,
@@ -147,6 +153,5 @@ export class QuestionService {
       anon: comment.anon
     });
   }
-
 
 }
