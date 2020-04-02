@@ -61,6 +61,8 @@ export class CalendarPage implements OnInit {
   sessionID: ''
 }
 
+
+
   private analyticss : string;
   private sessions : Observable<any>;
 
@@ -78,6 +80,9 @@ export class CalendarPage implements OnInit {
   showEditEvent : boolean;
   
   confirmDeleteEvent: boolean;
+  subtractTime: number;
+  notificationTime: any;
+  
  
   // @ts-ignore
   @ViewChild(CalendarComponent) myCal: CalendarComponent;
@@ -186,6 +191,26 @@ export class CalendarPage implements OnInit {
 	//}
 
 
+
+	
+	this.storage.get('userCode').then((val) => {
+		  if (val) {
+			this.afs.firestore.collection('users').where('code', '==', val)
+				.get().then(snapshot => {
+			  snapshot.forEach(doc => {
+				  this.subtractTime = doc.get('notificationTime');
+				
+				
+			  });
+			});
+		  }
+		});
+
+	console
+    
+	this.notificationTime.setMinutes( this.notificationTime.getMinutes() - this.subtractTime );
+
+
 	var currentID = this.notificationIndex;
 
 	this.eventList.push(eventCopy);
@@ -289,6 +314,8 @@ export class CalendarPage implements OnInit {
       }
     }
   ];*/
+  
+  
 	
 	const alert = await this.alertCtrl.create({
       header: event.title,
