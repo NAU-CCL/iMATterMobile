@@ -28,7 +28,7 @@
     </ion-item>
 	<ion-item>
 		<ion-label>How long before an event would you like a notification to appear</ion-label>
-			<ion-select id="eventTime" value="0" ok-text="Okay" cancel-text="Dismiss">
+			<ion-select [(ngModel)]="eventNotificationTime" (ionChange)= setCalendarEventNotificationTime(eventNotificationTime) id="eventTime" value="0" ok-text="Okay" cancel-text="Dismiss">
 			  <ion-select-option value="0">0 minutes</ion-select-option>
 			  <ion-select-option value="15">15 minutes</ion-select-option>
 			  <ion-select-option value="30">30 minutes</ion-select-option>
