@@ -89,6 +89,11 @@ export class LearningCenterPage implements OnInit {
         //Filter down to only the modules that should be visible to this user
         if (singleMod.userVisibility.includes(this.userCode) && singleMod.moduleActive)
         {
+          //var storedPrevUV = this.lmRecurrenceMap.get(singleMod.id + "storedPrevUV");
+          //var storedCurrentUV = this.lmRecurrenceMap.get(singleMod.id + "storedCurrentUV");
+          //var storedDate = this.lmRecurrenceMap.get(singleMod.id + "storedDate");
+          //this.checkNewRecurring(singleMod, storedPrevUV, storedCurrentUV, storedDate);
+
           //see if this module has been viewed
           this.storage.get(singleMod.id + "beenViewed").then(value => {
             if (value === true) //have viewed this module
