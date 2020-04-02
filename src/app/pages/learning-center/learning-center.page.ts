@@ -105,8 +105,6 @@ export class LearningCenterPage implements OnInit {
               this.newModules.push(singleMod.id);
             }
 
-            console.log(singleMod.moduleTitle + "beenViewed: " + value);
-
           }).catch(e => {
               
             console.log('error retrieving beenViewed: '+ e);
