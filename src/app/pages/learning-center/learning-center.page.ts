@@ -51,13 +51,17 @@ export class LearningCenterPage implements OnInit {
 
     this.learningModules = this.learningModService.getAllLearningModules();
 
-    //WeeksPregnant
+    //UserCode
     this.storage.get("userCode").then(value => {
       if (value != null)
       {
         this.userCode = value;
         console.log('userCode: '+ this.userCode);
       }
+
+      //IMPORTANT: this line is an error fix for modules not showing up
+      //Need to wait for userCode to be initialized before ionViewWillEnter is executed
+      this.ionViewWillEnter();
 
       }).catch(e => {
 
@@ -85,12 +89,6 @@ export class LearningCenterPage implements OnInit {
         //Filter down to only the modules that should be visible to this user
         if (singleMod.userVisibility.includes(this.userCode) && singleMod.moduleActive)
         {
-
-          //var storedPrevUV = this.lmRecurrenceMap.get(singleMod.id + "storedPrevUV");
-          //var storedCurrentUV = this.lmRecurrenceMap.get(singleMod.id + "storedCurrentUV");
-          //var storedDate = this.lmRecurrenceMap.get(singleMod.id + "storedDate");
-          //this.checkNewRecurring(singleMod, storedPrevUV, storedCurrentUV, storedDate);
-
           //see if this module has been viewed
           this.storage.get(singleMod.id + "beenViewed").then(value => {
             if (value === true) //have viewed this module
@@ -101,6 +99,8 @@ export class LearningCenterPage implements OnInit {
             {
               this.newModules.push(singleMod.id);
             }
+
+            console.log(singleMod.moduleTitle + "beenViewed: " + value);
 
           }).catch(e => {
               
