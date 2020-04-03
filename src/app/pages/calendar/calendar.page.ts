@@ -82,7 +82,7 @@ export class CalendarPage implements OnInit {
   confirmDeleteEvent: boolean;
   subtractTime: number;
   notificationTime: any;
-  
+  testers: number;
  
   // @ts-ignore
   @ViewChild(CalendarComponent) myCal: CalendarComponent;
@@ -199,17 +199,32 @@ export class CalendarPage implements OnInit {
 				.get().then(snapshot => {
 			  snapshot.forEach(doc => {
 				  this.subtractTime = doc.get('notificationTime');
-				
-				
+				  console.log("INIT");
+				  console.log("MOOD" + doc.get('notificationTime'));
+				  console.log("subTIME init" + this.subtractTime);
+				  this.testers = this.eventCopy.startTime.getMinutes() - this.subtractTime;
+				  console.log("TESTERS: " + this.testers);
+				  this.notificationTime.setMinutes( this.eventCopy.startTime.getMinutes() - this.subtractTime );
+				  console.log(this.notificationTime);
+				  
+				  this.localNotifications.schedule({
+					   id: this.notificationIndex,
+					   text: 'You have an event, check your calendar!',
+					   trigger: {at: new Date(this.notificationTime)},
+					   led: 'FF0000',
+					   sound: null
+				    });
+					
+					
 			  });
 			});
 		  }
 		});
 
-	console
+	
     
-	this.notificationTime.setMinutes( this.notificationTime.getMinutes() - this.subtractTime );
-
+	
+	
 
 	var currentID = this.notificationIndex;
 
