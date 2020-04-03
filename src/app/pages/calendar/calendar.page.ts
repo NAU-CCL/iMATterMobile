@@ -202,15 +202,15 @@ export class CalendarPage implements OnInit {
 				  console.log("INIT");
 				  console.log("MOOD" + doc.get('notificationTime'));
 				  console.log("subTIME init" + this.subtractTime);
-				  this.testers = this.eventCopy.startTime.getMinutes() - this.subtractTime;
+				  this.testers = eventCopy.startTime.getMinutes() - this.subtractTime;
 				  console.log("TESTERS: " + this.testers);
-				  this.notificationTime.setMinutes( this.eventCopy.startTime.getMinutes() - this.subtractTime );
-				  console.log(this.notificationTime);
+				  eventCopy.startTime.setMinutes( eventCopy.startTime.getMinutes() - this.subtractTime );
+				  console.log(eventCopy.startTime);
 				  
 				  this.localNotifications.schedule({
 					   id: this.notificationIndex,
 					   text: 'You have an event, check your calendar!',
-					   trigger: {at: new Date(this.notificationTime)},
+					   trigger: {at: new Date(eventCopy.startTime)},
 					   led: 'FF0000',
 					   sound: null
 				    });

@@ -159,5 +159,20 @@ export class SettingsPage implements OnInit {
       }
     });
 }
+setClockType(clock){
+	  this.storage.get('userCode').then((val) => {
+      if (val) {
+        this.afs.firestore.collection('users').where('code', '==', val)
+            .get().then(snapshot => {
+          snapshot.forEach(doc => {
+              this.afs.firestore.collection('users')
+                  .doc(val).update({clockType: clock});
+            
+            
+          });
+        });
+      }
+    });
+}
 
 }
