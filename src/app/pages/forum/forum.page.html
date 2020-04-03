@@ -42,18 +42,13 @@
           Posted: {{ question.timestamp.seconds * 1000 | date:'MM-dd-yyyy h:mm:ss a' }}
         </ion-row>
         <ion-row>
-          <div *ngIf="iosPlatform">
-          <ion-chip mode="ios">
-          {{ question.numOfComments }}
-          </ion-chip>
-          </div>
-          <div *ngIf="!iosPlatform">
-            <ion-chip>
-              {{ question.numOfComments }}
-            </ion-chip>
-          </div>
           <div class="padding-top">
+            <ion-label class="dots">
             {{ question.title }}
+            </ion-label>
+            <ion-label class="numOfComments">
+             Replies: {{question.numOfComments}}
+            </ion-label>
           </div>
         <ion-icon md="md-arrow-forward" slot="end"></ion-icon>
         </ion-row>
