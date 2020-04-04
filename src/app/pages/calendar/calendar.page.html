@@ -4,7 +4,7 @@
       {{ viewTitle }}
     </ion-title>
     <ion-buttons slot="start">
-      <ion-button class="text-press" (click)="showAddEvent = true">Add Event</ion-button>
+      <ion-button class="text-press" (click)="showAddEvent = true" (click)="getAMPM = getAMPM()">Add Event</ion-button>
     </ion-buttons>
     <ion-buttons slot="end">
       <ion-button class="text-press"  (click)="today()">Today</ion-button>
@@ -15,6 +15,7 @@
 <ion-content>
 
   <!-- Card for adding a new event -->
+  <ion-item *ngIf="!getAMPM">
   <ion-item *ngIf="showAddEvent">
     <ion-card>
       <ion-card-header>
@@ -44,8 +45,9 @@
       </ion-card-content>
     </ion-card>
   </ion-item>
+  </ion-item>
   
-  
+  <ion-item *ngIf="getAMPM">
   <ion-item *ngIf="showAddEvent">
     <ion-card>
       <ion-card-header>
@@ -77,6 +79,7 @@
         <ion-button fill="outline" class=event-button (click)="addEvent()" [disabled]="event.title == ''">Add Event</ion-button>
       </ion-card-content>
     </ion-card>
+  </ion-item>
   </ion-item>
   
 

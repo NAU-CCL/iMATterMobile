@@ -33,7 +33,8 @@ export class CalendarPage implements OnInit {
     startTime: '',
     endTime: '',
     allDay: false,
-	id: ''
+	id: '',
+	AMPM: ''
   };
   notifyTime:any;
   notifications: any[] = [];
@@ -83,7 +84,9 @@ export class CalendarPage implements OnInit {
   subtractTime: number;
   notificationTime: any;
   testers: number;
- isTwelveHour: boolean;
+ isTwelveHour: number;
+ clockType: number;
+ 
  
   // @ts-ignore
   @ViewChild(CalendarComponent) myCal: CalendarComponent;
@@ -131,7 +134,8 @@ export class CalendarPage implements OnInit {
       startTime: new Date().toISOString(),
       endTime: new Date().toISOString(),
       allDay: false,
-	  id: ''
+	  id: '',
+	  AMPM: ''
     };
   }
 
@@ -168,6 +172,7 @@ export class CalendarPage implements OnInit {
   // Create the right event format and reload source
   addEvent() {
 	  this.notificationIndex = Math.floor(Math.random() * 100000000000);
+	  if(this.isTwelveHour === 12){
     let eventCopy = {
       title: this.event.title,
       startTime:  new Date(this.event.startTime),
@@ -175,8 +180,22 @@ export class CalendarPage implements OnInit {
       allDay: this.event.allDay,
       desc: this.event.desc,
 	  id: this.notificationIndex,
-	  //AMPM: this.event.AMPM
+	  AMPM: this.event.AMPM
     };
+	  }
+	  else{
+		  let eventCopy = {
+      title: this.event.title,
+      startTime:  new Date(this.event.startTime),
+      endTime: new Date(this.event.endTime),
+      allDay: this.event.allDay,
+      desc: this.event.desc,
+	  id: this.notificationIndex,
+	  AMPM: null
+    };
+	  }
+	
+	console.log("IS TWELVEHOUR: " + this.isTwelveHour);
 	console.log(this.notificationIndex);
     if (eventCopy.allDay) {
       let start = eventCopy.startTime;
@@ -269,8 +288,31 @@ export class CalendarPage implements OnInit {
 
   }
 
-	getAMPM(){
-		
+	getAMPM() {
+		this.storage.get('userCode').then((val) => {
+		  if (val) {
+			this.afs.firestore.collection('users').where('code', '==', val)
+				.get().then(snapshot => {
+			  snapshot.forEach(doc => {
+				  this.clockType = doc.get('clockType');
+				  console.log("this.clockType");
+				  if(this.clockType == 12){
+					  console.log("TRUE");
+					  return true;
+					  
+				  }
+				  else{
+					  console.log("FALSE");
+					  return false;
+				  }
+				   
+					
+					
+			  });
+			});
+		  
+		}
+	});
 	}
 
   getStorage(){
