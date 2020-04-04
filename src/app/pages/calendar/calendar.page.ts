@@ -84,8 +84,9 @@ export class CalendarPage implements OnInit {
   subtractTime: number;
   notificationTime: any;
   testers: number;
- isTwelveHour: number;
+ isTwelveHour: boolean;
  clockType: number;
+ 
  
  
   // @ts-ignore
@@ -172,28 +173,28 @@ export class CalendarPage implements OnInit {
   // Create the right event format and reload source
   addEvent() {
 	  this.notificationIndex = Math.floor(Math.random() * 100000000000);
-	  if(this.isTwelveHour === 12){
-    let eventCopy = {
-      title: this.event.title,
-      startTime:  new Date(this.event.startTime),
-      endTime: new Date(this.event.endTime),
-      allDay: this.event.allDay,
-      desc: this.event.desc,
-	  id: this.notificationIndex,
-	  AMPM: this.event.AMPM
-    };
+	  let eventCopy = {
+		  title: this.event.title,
+		  startTime:  new Date(this.event.startTime),
+		  endTime: new Date(this.event.endTime),
+		  allDay: this.event.allDay,
+		  desc: this.event.desc,
+		  id: this.notificationIndex,
+		  AMPM: null
 	  }
-	  else{
+	  if(this.clockType === 12){
 		  let eventCopy = {
-      title: this.event.title,
-      startTime:  new Date(this.event.startTime),
-      endTime: new Date(this.event.endTime),
-      allDay: this.event.allDay,
-      desc: this.event.desc,
-	  id: this.notificationIndex,
-	  AMPM: null
+		  title: this.event.title,
+		  startTime:  new Date(this.event.startTime),
+		  endTime: new Date(this.event.endTime),
+		  allDay: this.event.allDay,
+		  desc: this.event.desc,
+		  id: this.notificationIndex,
+		  AMPM: this.event.AMPM
     };
 	  }
+	  
+	  
 	
 	console.log("IS TWELVEHOUR: " + this.isTwelveHour);
 	console.log(this.notificationIndex);
@@ -288,7 +289,7 @@ export class CalendarPage implements OnInit {
 
   }
 
-	getAMPM() {
+	getAmpm() {
 		this.storage.get('userCode').then((val) => {
 		  if (val) {
 			this.afs.firestore.collection('users').where('code', '==', val)
@@ -297,11 +298,13 @@ export class CalendarPage implements OnInit {
 				  this.clockType = doc.get('clockType');
 				  console.log("this.clockType");
 				  if(this.clockType == 12){
+					  this.isTwelveHour = true;
 					  console.log("TRUE");
 					  return true;
 					  
 				  }
 				  else{
+					  this.isTwelveHour = false;
 					  console.log("FALSE");
 					  return false;
 				  }
