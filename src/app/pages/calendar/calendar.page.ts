@@ -83,6 +83,7 @@ export class CalendarPage implements OnInit {
   subtractTime: number;
   notificationTime: any;
   testers: number;
+ isTwelveHour: boolean;
  
   // @ts-ignore
   @ViewChild(CalendarComponent) myCal: CalendarComponent;
@@ -173,7 +174,8 @@ export class CalendarPage implements OnInit {
       endTime: new Date(this.event.endTime),
       allDay: this.event.allDay,
       desc: this.event.desc,
-	  id: this.notificationIndex
+	  id: this.notificationIndex,
+	  //AMPM: this.event.AMPM
     };
 	console.log(this.notificationIndex);
     if (eventCopy.allDay) {
@@ -267,6 +269,10 @@ export class CalendarPage implements OnInit {
 
   }
 
+	getAMPM(){
+		
+	}
+
   getStorage(){
   this.storage.get('name').then((val) => {
     return ['name'];
@@ -312,23 +318,7 @@ export class CalendarPage implements OnInit {
     let start = formatDate(event.startTime, 'medium', this.locale);
     let end = formatDate(event.endTime, 'medium', this.locale);
 	
-	/*const alert = document.createElement('ion-alert');
-	alert.header = 'Confirm!';
-	alert.message = 'Message <strong>text</strong>!!!';
-	alert.buttons = [{
-		text: 'Cancel',
-		role: 'cancel',
-		cssClass: 'secondary',
-		handler: (blah) => {
-        console.log('Confirm Cancel: blah');
-      }
-    }, {
-      text: 'Okay',
-      handler: () => {
-        console.log('Confirm Okay')
-      }
-    }
-  ];*/
+	
   
   
 	

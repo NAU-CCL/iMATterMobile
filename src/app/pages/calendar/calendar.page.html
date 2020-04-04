@@ -44,6 +44,41 @@
       </ion-card-content>
     </ion-card>
   </ion-item>
+  
+  
+  <ion-item *ngIf="showAddEvent">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Add New Event</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-input type="text" placeholder="Title" [(ngModel)]="event.title"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input type="text" placeholder="Description" [(ngModel)]="event.desc"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Start</ion-label>
+          <ion-datetime displayFormat="MM/DD/YYYY hh:mm" pickerFormat="MMM D:hh:mm" [(ngModel)]="event.startTime" ></ion-datetime>
+        </ion-item>
+        <ion-item>
+          <ion-label>End</ion-label>
+          <ion-datetime displayFormat="MM/DD/YYYY hh:mm" pickerFormat="MMM D:hh:mm" [(ngModel)]="event.endTime" ></ion-datetime>
+        </ion-item>
+        <ion-item>
+          <ion-label>All Day?</ion-label>
+          <ion-checkbox [(ngModel)]="event.allDay"></ion-checkbox>
+        </ion-item>
+		<ion-item>
+          <ion-input type="text" placeholder="am or pm" [(ngModel)]="event.AMPM"></ion-input>
+        </ion-item>
+        <ion-button fill="outline" color="important" class=event-button (click)="showAddEvent = false" > Cancel </ion-button>
+        <ion-button fill="outline" class=event-button (click)="addEvent()" [disabled]="event.title == ''">Add Event</ion-button>
+      </ion-card-content>
+    </ion-card>
+  </ion-item>
+  
 
   <ion-row>
     <!-- Change the displayed calendar mode -->
