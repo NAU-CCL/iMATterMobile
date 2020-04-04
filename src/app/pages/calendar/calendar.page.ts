@@ -182,7 +182,7 @@ export class CalendarPage implements OnInit {
 		  id: this.notificationIndex,
 		  AMPM: null
 	  }
-	  if(this.clockType === 12){
+	  if(this.clockType == 12){
 		  let eventCopy = {
 		  title: this.event.title,
 		  startTime:  new Date(this.event.startTime),
@@ -191,10 +191,85 @@ export class CalendarPage implements OnInit {
 		  desc: this.event.desc,
 		  id: this.notificationIndex,
 		  AMPM: this.event.AMPM
-    };
+		};
+		console.log("12 HOUR INIT");
+		console.log("EVEN>AMPM" + eventCopy.AMPM);
+		if (eventCopy.allDay) {
+		  let start = eventCopy.startTime;
+		  let end = eventCopy.endTime;
+
+		  eventCopy.startTime = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate()));
+		  eventCopy.endTime = new Date(Date.UTC(end.getUTCFullYear(), end.getUTCMonth(), end.getUTCDate() + 1));
+		}
+	
+		if(eventCopy.AMPM === 'pm'){
+			console.log('eventCopy.AMPM: ' + eventCopy.AMPM);
+			eventCopy.startTime.setMinutes(eventCopy.startTime.getMinutes() + 720);
+		}
+		console.log("PM STARTTIME: " + eventCopy.startTime);
+		this.storage.get('userCode').then((val) => {
+			  if (val) {
+				this.afs.firestore.collection('users').where('code', '==', val)
+					.get().then(snapshot => {
+				  snapshot.forEach(doc => {
+					  this.subtractTime = doc.get('notificationTime');
+					  console.log("INIT");
+					  console.log("MOOD" + doc.get('notificationTime'));
+					  console.log("subTIME init" + this.subtractTime);
+					  this.testers = eventCopy.startTime.getMinutes() - this.subtractTime;
+					  console.log("TESTERS: " + this.testers);
+					  eventCopy.startTime.setMinutes( eventCopy.startTime.getMinutes() - this.subtractTime );
+					  console.log(eventCopy.startTime);
+					  
+					  this.localNotifications.schedule({
+						   id: this.notificationIndex,
+						   text: 'You have an event, check your calendar!',
+						   trigger: {at: new Date(eventCopy.startTime)},
+						   led: 'FF0000',
+						   sound: null
+						});
+						
+						
+				  });
+				});
+			  }
+			});
+
+		
+		
+		
+		
+
+		var currentID = this.notificationIndex;
+
+		this.eventList.push(eventCopy);
+
+		this.eventSource.push(eventCopy);
+		this.test.push('1');
+
+		console.log(JSON.stringify(this.eventSource));
+		this.myCal.loadEvents();
+		console.log("notification index" +this.notificationIndex);
+
+		this.storageService.addItem(eventCopy).then(item => {
+
+			console.log('?');
+		  this.loadItems();
+		});
+		this.localNotifications.schedule({
+		   id: this.notificationIndex,
+		   text: 'You have an event, check your calendar!',
+		   trigger: {at: new Date(this.event.startTime)},
+		   led: 'FF0000',
+		   sound: null
+		});
+		this.resetEvent();
+		this.showAddEvent = false;
+		
+	
 	  }
-	  
-	  
+	  else{
+	 
 	
 	console.log("IS TWELVEHOUR: " + this.isTwelveHour);
 	console.log(this.notificationIndex);
@@ -273,7 +348,7 @@ export class CalendarPage implements OnInit {
 	});
     this.resetEvent();
     this.showAddEvent = false;
-
+	  }
   }
 
   loadItems() {
@@ -296,7 +371,7 @@ export class CalendarPage implements OnInit {
 				.get().then(snapshot => {
 			  snapshot.forEach(doc => {
 				  this.clockType = doc.get('clockType');
-				  console.log("this.clockType");
+				  console.log("this.clockType " + this.clockType);
 				  if(this.clockType == 12){
 					  this.isTwelveHour = true;
 					  console.log("TRUE");
