@@ -204,7 +204,10 @@ export class CalendarPage implements OnInit {
 	
 		if(eventCopy.AMPM === 'pm'){
 			console.log('eventCopy.AMPM: ' + eventCopy.AMPM);
+			console.log('eventCopy.startTime.getMinutes: ' + eventCopy.startTime.getMinutes())
+			//if(eventCopy.StartTime)
 			eventCopy.startTime.setMinutes(eventCopy.startTime.getMinutes() + 720);
+			
 		}
 		console.log("PM STARTTIME: " + eventCopy.startTime);
 		this.storage.get('userCode').then((val) => {
@@ -459,9 +462,7 @@ export class CalendarPage implements OnInit {
 		}
 		this.length = this.eventSource.length;
 		for (let i = 0; i < this.length; i++) {
-			console.log("eventSource " + this.eventSource[i].id);
-			console.log("eventCopy" + JSON.stringify(this.eventSource[i]));
-			console.log("event.id: " + event.id);
+			
 			//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
 			//	this.deleteIndex = i;
 			//}
@@ -577,9 +578,6 @@ export class CalendarPage implements OnInit {
 		handler: (blah) => {
 		this.length = this.eventSource.length;
 		for (let i = 0; i < this.length; i++) {
-			console.log("eventSource " + this.eventSource[i].id);
-			console.log("eventCopy" + JSON.stringify(this.eventSource[i]));
-			console.log("event.id: " + event.id);
 			//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
 			//	this.deleteIndex = i;
 			//}
