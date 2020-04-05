@@ -201,11 +201,16 @@ export class CalendarPage implements OnInit {
 		  eventCopy.startTime = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate()));
 		  eventCopy.endTime = new Date(Date.UTC(end.getUTCFullYear(), end.getUTCMonth(), end.getUTCDate() + 1));
 		}
-	
+		
+		if(eventCopy.startTime.getHours() === 12){
+			console.log("equals 12");
+			eventCopy.startTime.setMinutes(eventCopy.startTime.getMinutes() - 720);
+			
+		}
+		
 		if(eventCopy.AMPM === 'pm'){
 			console.log('eventCopy.AMPM: ' + eventCopy.AMPM);
 			console.log('eventCopy.startTime.getMinutes: ' + eventCopy.startTime.getMinutes())
-			//if(eventCopy.StartTime)
 			eventCopy.startTime.setMinutes(eventCopy.startTime.getMinutes() + 720);
 			
 		}
