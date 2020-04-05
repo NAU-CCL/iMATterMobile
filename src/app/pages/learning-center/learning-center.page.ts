@@ -75,6 +75,11 @@ export class LearningCenterPage implements OnInit {
 
   ionViewWillEnter()
   {
+    //don't continue until userCode has been initialized
+    if (this.userCode === undefined)
+    {
+      return;
+    }
  
     //this.initializeStorageforLM();
 
