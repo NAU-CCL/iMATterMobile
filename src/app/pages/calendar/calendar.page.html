@@ -13,7 +13,7 @@
 </ion-header>
 
 <ion-content>
-
+	<div class = "addEvent">
   <!-- Card for adding a new event -->
   <ion-item *ngIf="!isTwelveHour">
   <ion-item *ngIf="showAddEvent">
@@ -84,7 +84,7 @@
     </ion-card>
   </ion-item>
   </ion-item>
-  
+  </div>
 
   <ion-row>
     <!-- Change the displayed calendar mode -->
@@ -146,14 +146,19 @@
     </ion-card>
   </ion-item>
   
+	
+  
   </div>
   
-  
+   <ng-template #template let-showEventDetail="showEventDetail" let-selectedDate="selectedDate" let-noEventsLabel="noEventsLabel">
+    
+    </ng-template>
 
   <calendar
           [eventSource]="eventSource"
           [calendarMode]="calendar.mode"
-          [currentDate]="calendar.currentDate"		  
+          [currentDate]="calendar.currentDate"
+		  [monthviewInactiveDisplayEventTemplate]="template"		  
           (onEventSelected)="onEventSelected($event)"
           (onTitleChanged)="onViewTitleChanged($event)"
           (onTimeSelected)="onTimeSelected($event)"
@@ -166,6 +171,11 @@
 		  
 		  
   </calendar>
+  <div class = "button">
+	<ion-button (click)="showAddEvent = true">
+        Add Event
+    </ion-button>
+  </div>
 <div class = "a">
 	
 </div>
