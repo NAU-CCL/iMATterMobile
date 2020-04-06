@@ -5,6 +5,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {ToastController} from '@ionic/angular';
 import {Storage} from '@ionic/storage';
 import * as firebase from 'firebase/app';
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-report',
@@ -22,12 +23,22 @@ export class ReportPage implements OnInit {
     type: '',
   };
 
+  private reportForm: FormGroup;
+
   constructor(private afs: AngularFirestore,
               private activatedRoute: ActivatedRoute,
               private userSubmissionService: UserSubmissionsService,
               private toastCtrl: ToastController,
               private router: Router,
-              private storage: Storage) {
+              private storage: Storage,
+              private formBuilder: FormBuilder) {
+
+    this.reportForm = this.formBuilder.group({
+      subject: ['',
+        Validators.compose([Validators.required, Validators.minLength(1)])],
+      description: ['',
+        Validators.compose([Validators.required, Validators.minLength(1)])],
+    });
   }
 
   ngOnInit() {
@@ -38,12 +49,14 @@ export class ReportPage implements OnInit {
     });
   }
 
-  submitSubmission() {
+  submitSubmission(submissionForm: FormGroup) {
     this.storage.get('userCode').then((val) => {
       if (val) {
         const ref = this.afs.firestore.collection('users').where('code', '==', val);
         ref.get().then((result) => {
           result.forEach(doc => {
+            this.submission.title = submissionForm.value.subject;
+            this.submission.description = submissionForm.value.description;
             this.submission.userID = val;
             this.submission.timestamp = firebase.firestore.FieldValue.serverTimestamp();
             this.submission.username = doc.get('username');
@@ -55,10 +68,8 @@ export class ReportPage implements OnInit {
               this.submission.title = '';
               this.submission.description = '';
             }, err => {
-              this.showToast('There was a problem adding your post');
+              this.showToast('There was a problem sending your problem report');
             });
-
-
           });
         });
       }
