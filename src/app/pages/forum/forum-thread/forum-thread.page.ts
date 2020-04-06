@@ -57,7 +57,9 @@ export class ForumThreadPage implements OnInit {
       this.commentForm = this.formBuilder.group({
           comment: ['',
               Validators.compose([Validators.required, Validators.minLength(1)])],
+          anon: [],
       });
+
   }
 
   ngOnInit() {
@@ -79,13 +81,12 @@ export class ForumThreadPage implements OnInit {
   }
 
   addComment(commentForm: FormGroup) {
+      console.log(commentForm.value.anon);
       if (!commentForm.valid) {
           this.showToast('Please enter a comment');
       } else {
           this.comment.type = 'user';
-          if (this.anon) {
-              this.comment.anon = this.anon;
-          }
+          this.comment.anon = commentForm.value.anon;
           this.comment.postID = this.question.id;
           this.comment.input = commentForm.value.comment;
           this.storage.get('userCode').then((val) => {
