@@ -222,7 +222,11 @@ export class CalendarPage implements OnInit {
 				  snapshot.forEach(doc => {
 					  this.subtractTime = doc.get('notificationTime');
 					  console.log("INIT");
-					  console.log("MOOD" + doc.get('notificationTime'));
+					  console.log(this.subtractTime);
+					  if(this.subtractTime == null){
+						  this.subtractTime = 0;
+					  }
+					  console.log("M" + doc.get('notificationTime'));
 					  console.log("subTIME init" + this.subtractTime);
 					  this.testers = eventCopy.startTime.getMinutes() - this.subtractTime;
 					  console.log("TESTERS: " + this.testers);
@@ -305,7 +309,10 @@ export class CalendarPage implements OnInit {
 			  snapshot.forEach(doc => {
 				  this.subtractTime = doc.get('notificationTime');
 				  console.log("INIT");
-				  console.log("MOOD" + doc.get('notificationTime'));
+				  if(this.subtractTime == null){
+						this.subtractTime = 0;
+					}
+				  console.log("M" + doc.get('notificationTime'));
 				  console.log("subTIME init" + this.subtractTime);
 				  this.testers = eventCopy.startTime.getMinutes() - this.subtractTime;
 				  console.log("TESTERS: " + this.testers);
@@ -438,6 +445,7 @@ export class CalendarPage implements OnInit {
 // Selected date reange and hence title changed
   onViewTitleChanged(title) {
     this.viewTitle = title;
+	console.log("vew change test");
   }
 
 // Calendar event was clicked
@@ -485,6 +493,9 @@ export class CalendarPage implements OnInit {
 		console.log("delete Index: " + this.deleteIndex);
 		this.storage.set('my-items', this.eventSource);
 		this.loadItems();	
+		this.loadItems();
+		this.loadItems();
+		this.loadItems();
       }
     }, 
 	{
@@ -494,31 +505,17 @@ export class CalendarPage implements OnInit {
 		handler: (blah) => {
         
 		this.confirmDelete(event);
-		if(this.confirmDeleteEvent === true){
-		this.length = this.eventSource.length;
-		for (let i = 0; i < this.length; i++) {
-			console.log("eventSource " + this.eventSource[i].id);
-			console.log("eventCopy" + JSON.stringify(this.eventSource[i]));
-			console.log("event.id: " + event.id);
-			//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
-			//	this.deleteIndex = i;
-			//}
-			if(this.eventSource[i].id === event.id){
-				console.log("ONE");
-				this.deleteIndex = i;
-			}
+		
+		this.reloadItems(event);
+		
+		this.loadItems();
+		this.loadItems();
+		this.loadItems();
+		this.loadItems();
+		this.loadItems();
+		this.deleteFinished(event);
 		}
-		var temp = this.deleteIndex;
-		this.localNotifications.clear(this.eventSource[this.deleteIndex].id);
-		console.log("eventsource id to delete: " + this.eventSource[this.deleteIndex].id);
-
-		this.eventSource.splice(this.deleteIndex, 1);
-		console.log("notification index");
-		console.log("delete Index: " + this.deleteIndex);
-		this.storage.set('my-items', this.eventSource);
-		this.loadItems();	
-		}
-		}
+		
 	},
 	{
       text: 'Okay',
@@ -571,6 +568,12 @@ export class CalendarPage implements OnInit {
 
 	this.loadItems();*/	
   }
+  async reloadItems(event){
+	  this.storage.set('my-items', this.eventSource);
+		this.loadItems();
+  }
+  
+  
   
   async confirmDelete(event){
 	const alert = await this.alertCtrl.create({
@@ -599,7 +602,12 @@ export class CalendarPage implements OnInit {
 		console.log("notification index");
 		console.log("delete Index: " + this.deleteIndex);
 		this.storage.set('my-items', this.eventSource);
-		this.loadItems();	
+		this.loadItems();
+		this.loadItems();
+		this.loadItems();
+		this.loadItems();
+		this.loadItems();
+		this.loadItems();
 		this.confirmDeleteEvent = true;
 	  }
 	  },
@@ -613,6 +621,32 @@ export class CalendarPage implements OnInit {
 	  
     }]});
     alert.present();  
+  }
+  async deleteFinished(event){
+	  this.length = this.eventSource.length;
+		for (let i = 0; i < this.length; i++) {
+			//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
+			//	this.deleteIndex = i;
+			//}
+			if(this.eventSource[i].id === event.id){
+				this.deleteIndex = i;
+			}
+		}
+		var temp = this.deleteIndex;
+		this.localNotifications.clear(this.eventSource[this.deleteIndex].id);
+		console.log("eventsource id to delete: " + this.eventSource[this.deleteIndex].id);
+
+		this.eventSource.splice(this.deleteIndex, 1);
+		console.log("notification index");
+		console.log("delete Index: " + this.deleteIndex);
+		this.storage.set('my-items', this.eventSource);
+		this.loadItems();
+		this.loadItems();
+		this.loadItems();
+		this.loadItems();
+		this.loadItems();
+		this.loadItems();
+		this.confirmDeleteEvent = true;
   }
 
 // Time slot was clicked
