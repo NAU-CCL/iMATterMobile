@@ -151,7 +151,7 @@
   </div>
   
   <ng-template #monthviewDefaultEventDetailTemplate let-showEventDetail="showEventDetail" let-selectedDate="selectedDate" let-noEventsLabel="noEventsLabel">
-            <ion-list class="event-detail-container" has-bouncing="false" *ngIf="showEventDetail" overflow-scroll="false">
+            <ion-list class="event-detail-container" has-bouncing="false" *ngIf="showEventDetail" overflow-scroll="false" (click)="addEventDay(selectedDate)" >
                 <ion-item *ngFor="let event of selectedDate?.events" (click)="onEventSelected(event)">
                         
                     <span *ngIf="event.allDay" class="monthview-eventdetail-timecolumn">All day</span>
@@ -172,6 +172,7 @@
           (onEventSelected)="onEventSelected($event)"
           (onTitleChanged)="onViewTitleChanged($event)"
           (onTimeSelected)="onTimeSelected($event)"
+		  (click)="clickedCalendar()"
           startHour="6"
           endHour="20"
           step="30"

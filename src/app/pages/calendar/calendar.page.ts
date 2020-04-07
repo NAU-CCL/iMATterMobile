@@ -87,6 +87,7 @@ export class CalendarPage implements OnInit {
  isTwelveHour: boolean;
  clockType: number;
  
+ clicked: boolean;
  
  
   // @ts-ignore
@@ -168,6 +169,10 @@ export class CalendarPage implements OnInit {
 
   deleteEvent(){
 	  //window.plugins.calendar.deleteEvent(newTitle,eventLocation,notes,startDate,endDate,success,error);
+  }
+  
+  addEventDay(){
+	  console.log("CHANGE");
   }
 
   // Create the right event format and reload source
@@ -447,6 +452,7 @@ export class CalendarPage implements OnInit {
 // Selected date reange and hence title changed
   onViewTitleChanged(title) {
     this.viewTitle = title;
+	
 	console.log("vew change test");
   }
 
@@ -653,9 +659,41 @@ export class CalendarPage implements OnInit {
 
 // Time slot was clicked
   onTimeSelected(ev) {
+	  console.log("DAY");
     const selected = new Date(ev.selectedTime);
     this.event.startTime = selected.toISOString();
     selected.setHours(selected.getHours() + 1);
     this.event.endTime = (selected.toISOString());
+	this.addToThisDay();
+	
+	
+  }
+  async addToThisDay(){
+	  if(this.clicked === true){
+	  const alert = await this.alertCtrl.create({
+      header: 'Would you like to add an event to this day?',
+      buttons: [{
+		text: 'Yes',
+		role: 'confirm',
+		cssClass: 'secondary',
+		handler: (blah) => {
+		this.showAddEvent = true;
+	  }
+	  },
+	  {
+		text: 'cancel',
+		role: 'cancel',
+		cssClass: 'secondary',
+		handler: (blah) => {
+		this.confirmDeleteEvent = false;
+      }
+	  
+    }]});
+    alert.present(); 
+	  }
+	  this.clicked = false;
+  }
+  clickedCalendar(){
+	  this.clicked = true;
   }
 }
