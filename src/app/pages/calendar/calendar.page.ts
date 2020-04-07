@@ -371,6 +371,7 @@ export class CalendarPage implements OnInit {
     this.resetEvent();
     this.showAddEvent = false;
 	  }
+
   }
 
   loadItems() {
@@ -500,10 +501,9 @@ export class CalendarPage implements OnInit {
 		console.log("notification index");
 		console.log("delete Index: " + this.deleteIndex);
 		this.storage.set('my-items', this.eventSource);
-		this.loadItems();	
 		this.loadItems();
-		this.loadItems();
-		this.loadItems();
+		this.alertOpen = false;
+		
       }
     }, 
 	{
@@ -517,11 +517,8 @@ export class CalendarPage implements OnInit {
 		this.reloadItems(event);
 		
 		this.loadItems();
-		this.loadItems();
-		this.loadItems();
-		this.loadItems();
-		this.loadItems();
 		this.deleteFinished(event);
+		this.alertOpen = false;
 		}
 		
 	},
@@ -529,12 +526,13 @@ export class CalendarPage implements OnInit {
       text: 'Okay',
       handler: () => {
         console.log('Confirm Okay')
+		
       }
     }
   ]
     });
     alert.present();
-	this.alertOpen = false;
+	//this.alertOpen = false;
 	
 	/*
 	let eventCopy = {
@@ -612,13 +610,8 @@ export class CalendarPage implements OnInit {
 		console.log("delete Index: " + this.deleteIndex);
 		this.storage.set('my-items', this.eventSource);
 		this.loadItems();
-		this.loadItems();
-		this.loadItems();
-		this.loadItems();
-		this.loadItems();
-		this.loadItems();
 		this.confirmDeleteEvent = true;
-		this.alertOpen = false;
+		
 	  }
 	  },
 	  {
@@ -628,11 +621,12 @@ export class CalendarPage implements OnInit {
 		handler: (blah) => {
 		this.confirmDeleteEvent = false;
 		this.alertOpen = false;
+		
       }
 	  
     }]});
     alert.present();  
-	
+
   }
   async deleteFinished(event){
 	  this.length = this.eventSource.length;
@@ -653,12 +647,8 @@ export class CalendarPage implements OnInit {
 		console.log("delete Index: " + this.deleteIndex);
 		this.storage.set('my-items', this.eventSource);
 		this.loadItems();
-		this.loadItems();
-		this.loadItems();
-		this.loadItems();
-		this.loadItems();
-		this.loadItems();
 		this.confirmDeleteEvent = true;
+		
   }
 
 // Time slot was clicked
@@ -683,6 +673,7 @@ export class CalendarPage implements OnInit {
 		cssClass: 'secondary',
 		handler: (blah) => {
 		this.showAddEvent = true;
+
 	  }
 	  },
 	  {
@@ -691,14 +682,22 @@ export class CalendarPage implements OnInit {
 		cssClass: 'secondary',
 		handler: (blah) => {
 		this.confirmDeleteEvent = false;
+
       }
 	  
     }]});
     alert.present(); 
 	  }
-	  this.clicked = false;
+	  
   }
   clickedCalendar(){
+	  if(this.alertOpen === true){
+		  this.clicked = false;
+	  }
+	  else{
+		  
 	  this.clicked = true;
+	  }
   }
+  
 }
