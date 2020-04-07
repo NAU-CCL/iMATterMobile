@@ -88,7 +88,7 @@ export class CalendarPage implements OnInit {
  clockType: number;
  
  clicked: boolean;
- 
+ alertOpen: boolean;
  
   // @ts-ignore
   @ViewChild(CalendarComponent) myCal: CalendarComponent;
@@ -462,7 +462,7 @@ export class CalendarPage implements OnInit {
     let start = formatDate(event.startTime, 'medium', this.locale);
     let end = formatDate(event.endTime, 'medium', this.locale);
 	
-	
+	this.alertOpen = true;
   
   
 	
@@ -534,7 +534,7 @@ export class CalendarPage implements OnInit {
   ]
     });
     alert.present();
-	
+	this.alertOpen = false;
 	
 	/*
 	let eventCopy = {
@@ -584,6 +584,7 @@ export class CalendarPage implements OnInit {
   
   
   async confirmDelete(event){
+	  this.alertOpen = true;
 	const alert = await this.alertCtrl.create({
       header: 'are you sure?',
       subHeader: 'are you sure?',
@@ -617,6 +618,7 @@ export class CalendarPage implements OnInit {
 		this.loadItems();
 		this.loadItems();
 		this.confirmDeleteEvent = true;
+		this.alertOpen = false;
 	  }
 	  },
 	  {
@@ -625,10 +627,12 @@ export class CalendarPage implements OnInit {
 		cssClass: 'secondary',
 		handler: (blah) => {
 		this.confirmDeleteEvent = false;
+		this.alertOpen = false;
       }
 	  
     }]});
     alert.present();  
+	
   }
   async deleteFinished(event){
 	  this.length = this.eventSource.length;
@@ -669,7 +673,8 @@ export class CalendarPage implements OnInit {
 	
   }
   async addToThisDay(){
-	  if(this.clicked === true){
+	  if(this.clicked === true && this.alertOpen != true){
+		  console.log(this.alertOpen);
 	  const alert = await this.alertCtrl.create({
       header: 'Would you like to add an event to this day?',
       buttons: [{
