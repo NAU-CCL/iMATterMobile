@@ -25,63 +25,65 @@
 
 </ion-card>
  
-<ion-card *ngIf="videoHasEnded == true || sanitizedPPTurl">
-  <ion-card-header color="medium">Questions</ion-card-header>  
-  <form [formGroup]="quizForm">
-    <ion-list>
-      <ion-radio-group (ionChange)="quizRadioChange(quizQuestion.questionText, $event)" 
-      *ngFor="let quizQuestion of ( learningModule.moduleQuiz )"
-      formControlName="quizSelections">
-        <ion-list-header>
-          <ion-label class="ion-text-wrap">{{quizQuestion.questionText}} - {{quizQuestion.pointsWorth}} point(s)</ion-label>
-        </ion-list-header>
+<ng-container *ngIf="learningModule.moduleQuiz.length > 0">
+  <ion-card *ngIf="videoHasEnded == true || sanitizedPPTurl">
+    <ion-card-header color="medium">Questions</ion-card-header>  
+    <form [formGroup]="quizForm">
+      <ion-list>
+        <ion-radio-group (ionChange)="quizRadioChange(quizQuestion.questionText, $event)" 
+        *ngFor="let quizQuestion of ( learningModule.moduleQuiz )"
+        formControlName="quizSelections">
+          <ion-list-header>
+            <ion-label class="ion-text-wrap">{{quizQuestion.questionText}} - {{quizQuestion.pointsWorth}} point(s)</ion-label>
+          </ion-list-header>
 
-        <ion-item>
-          <ion-label class="ion-text-wrap">{{quizQuestion.choice1}}</ion-label>
-          <ion-radio slot="start" value="{{quizQuestion.choice1}}" [disabled]="didSubmit"></ion-radio>
-        </ion-item>
+          <ion-item *ngIf="quizQuestion.choice1">
+            <ion-label class="ion-text-wrap">A. {{quizQuestion.choice1}}</ion-label>
+            <ion-radio slot="start" value="choice1" [disabled]="didSubmit"></ion-radio>
+          </ion-item>
 
-        <ion-item *ngIf="quizQuestion.choice2">
-          <ion-label class="ion-text-wrap">{{quizQuestion.choice2}}</ion-label>
-          <ion-radio slot="start" value="{{quizQuestion.choice2}}" [disabled]="didSubmit"></ion-radio>
-        </ion-item>
+          <ion-item *ngIf="quizQuestion.choice2">
+            <ion-label class="ion-text-wrap">B. {{quizQuestion.choice2}}</ion-label>
+            <ion-radio slot="start" value="choice2" [disabled]="didSubmit"></ion-radio>
+          </ion-item>
 
-        <ion-item *ngIf="quizQuestion.choice3">
-          <ion-label class="ion-text-wrap">{{quizQuestion.choice3}}</ion-label>
-          <ion-radio slot="start" value="{{quizQuestion.choice3}}" [disabled]="didSubmit"></ion-radio>
-        </ion-item>
+          <ion-item *ngIf="quizQuestion.choice3">
+            <ion-label class="ion-text-wrap">C. {{quizQuestion.choice3}}</ion-label>
+            <ion-radio slot="start" value="choice3" [disabled]="didSubmit"></ion-radio>
+          </ion-item>
 
-        <ion-item *ngIf="quizQuestion.choice4">
-          <ion-label class="ion-text-wrap">{{quizQuestion.choice4}}</ion-label>
-          <ion-radio slot="start" value="{{quizQuestion.choice4}}" [disabled]="didSubmit"></ion-radio>
-        </ion-item>
-      </ion-radio-group>
-    </ion-list>
-  </form>
+          <ion-item *ngIf="quizQuestion.choice4">
+            <ion-label class="ion-text-wrap">D. {{quizQuestion.choice4}}</ion-label>
+            <ion-radio slot="start" value="choice4" [disabled]="didSubmit"></ion-radio>
+          </ion-item>
+        </ion-radio-group>
+      </ion-list>
+    </form>
 
-  <ion-button class="submit-button fill-button" [disabled]="didSubmit" (click)="quizSubmit()">Submit</ion-button>
-  <ion-button class="fill-button" *ngIf="didSubmit === true && numberTimesQuizTaken < quizSubmissionLimit" (click)="retakeQuiz()">Retake Quiz</ion-button>
+    <ion-button class="submit-button fill-button" [disabled]="didSubmit" (click)="quizSubmit()">Submit</ion-button>
+    <ion-button class="fill-button" *ngIf="didSubmit === true && numberTimesQuizTaken < quizSubmissionLimit" (click)="retakeQuiz()">Retake Quiz</ion-button>
 
-  <ion-card *ngIf="numberTimesQuizTaken > 0">
+    <ion-card *ngIf="numberTimesQuizTaken > 0">
 
-    <ion-card-title>
-      Quiz Results: {{numberQuestionsCorrect}} out of {{totalNumberQuizQuestions}} question(s) correct
-    </ion-card-title>
-    <ion-card-subtitle>
-      Number of Attempts: {{numberTimesQuizTaken}} out of {{quizSubmissionLimit}}
-    </ion-card-subtitle>
+      <ion-card-title>
+        Quiz Results: {{numberQuestionsCorrect}} out of {{totalNumberQuizQuestions}} question(s) correct
+      </ion-card-title>
+      <ion-card-subtitle>
+        Number of Attempts: {{numberTimesQuizTaken}} out of {{quizSubmissionLimit}}
+      </ion-card-subtitle>
 
-    <ion-card-content *ngIf="numberQuestionsCorrect > 0"> Questions Correct:
-      <ng-container *ngFor="let question of correctQuestions">{{question}}<br></ng-container>
-    </ion-card-content>
+      <ion-card-content *ngIf="numberQuestionsCorrect > 0"> Questions Correct:
+        <ng-container *ngFor="let question of correctQuestions">{{question}}<br></ng-container>
+      </ion-card-content>
 
-    <ion-card-content>
-      You've earned {{currentQuizPoints}} points for this module
-    </ion-card-content>
+      <ion-card-content>
+        You've earned {{currentQuizPoints}} points for this module
+      </ion-card-content>
+
+    </ion-card>
 
   </ion-card>
-
-</ion-card>
+</ng-container>
 
 <ion-button class="fill-button ion-text-wrap" [routerLink]="['/learning-module-content', learningModule.moduleNext]" 
   *ngIf="numberTimesQuizTaken > 0 && learningModule.moduleNext" 

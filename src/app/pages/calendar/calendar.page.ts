@@ -15,7 +15,7 @@ import { StorageService, Item } from '../../services/storage.service';
 
 /**
  * This code written with the help of this tutorial:
- * https://devdactic.com/ionic-4-calendar-app/
+ * https://devdactic.com/ionic-4-calendar-app/, https://ionicframework.com/docs/api/alert
  *and this stackoverflow:
  *https://stackoverflow.com/questions/56214875/ionic-calendar-event-does-not-load-on-device
  * Used for the general build and functionality of the calendar
@@ -32,7 +32,8 @@ export class CalendarPage implements OnInit {
     desc: '',
     startTime: '',
     endTime: '',
-    allDay: false
+    allDay: false,
+	id: ''
   };
   notifyTime:any;
   notifications: any[] = [];
@@ -51,7 +52,8 @@ export class CalendarPage implements OnInit {
     mode: 'month',
     currentDate: new Date(),
   };
-analytic: Analytics =
+
+  analytic: Analytics =
 {
   page: '',
   userID: '',
@@ -59,31 +61,37 @@ analytic: Analytics =
   sessionID: ''
 }
 
-
-  length : number;
-  private showAddEvent: boolean;
   private analyticss : string;
   private sessions : Observable<any>;
 
+  length : number;
+  private showAddEvent: boolean;
+
+
+
   items: Item[] = [];
   newItem: Item = <Item>{};
-  
+
   deleteIndex : number;
   notificationIndex : number;
   deleteNotificationIndex : number;
+  showEditEvent : boolean;
   
-  
+  confirmDeleteEvent: boolean;
+ 
   // @ts-ignore
   @ViewChild(CalendarComponent) myCal: CalendarComponent;
 
   constructor(private localNotifications: LocalNotifications, private alertCtrl: AlertController, @Inject(LOCALE_ID) private locale: string,
-              private storage: Storage,  private storageService: StorageService, private router: Router, private afs: AngularFirestore,
-     private analyticsService: AnalyticsService) {
-       
+              private storage: Storage, private storageService: StorageService,  private afs: AngularFirestore,
+     private analyticsService: AnalyticsService, private router: Router) {
 		this.notifyTime = moment(new Date()).format();
 
 		this.chosenHours = new Date().getHours();
 		this.chosenMinutes = new Date().getMinutes();
+
+
+
 		this.days = [
             {title: 'Monday', dayCode: 1, checked: false},
             {title: 'Tuesday', dayCode: 2, checked: false},
@@ -95,7 +103,7 @@ analytic: Analytics =
         ];
 
 	}
-	
+
 
   ngOnInit() {
     this.storage.get('authenticated').then((val) => {
@@ -106,7 +114,19 @@ analytic: Analytics =
     this.showAddEvent = false;
     this.resetEvent();
 	this.loadItems();
-      this.addView();
+	this.addView();
+  }
+
+
+  resetEvent() {
+    this.event = {
+      title: '',
+      desc: '',
+      startTime: new Date().toISOString(),
+      endTime: new Date().toISOString(),
+      allDay: false,
+	  id: ''
+    };
   }
 
   addView(){
@@ -133,28 +153,22 @@ analytic: Analytics =
     }
   });
 }
-  resetEvent() {
-    this.event = {
-      title: '',
-      desc: '',
-      startTime: new Date().toISOString(),
-      endTime: new Date().toISOString(),
-      allDay: false
-    };
-  }
+
+
   deleteEvent(){
 	  //window.plugins.calendar.deleteEvent(newTitle,eventLocation,notes,startDate,endDate,success,error);
   }
 
   // Create the right event format and reload source
   addEvent() {
+	  this.notificationIndex = Math.floor(Math.random() * 100000000000);
     let eventCopy = {
       title: this.event.title,
       startTime:  new Date(this.event.startTime),
       endTime: new Date(this.event.endTime),
       allDay: this.event.allDay,
-      desc: this.event.desc
-	  
+      desc: this.event.desc,
+	  id: this.notificationIndex
     };
 	console.log(this.notificationIndex);
     if (eventCopy.allDay) {
@@ -166,40 +180,40 @@ analytic: Analytics =
     }
 
 	// add notification when creating event
-	if(this.notificationIndex == null){
-		this.notificationIndex = 0;
-		
-	}
-	
+	//if(this.notificationIndex == null){
+	//	this.notificationIndex = 0;
+
+	//}
+
+
+	var currentID = this.notificationIndex;
+
 	this.eventList.push(eventCopy);
-	
+
     this.eventSource.push(eventCopy);
 	this.test.push('1');
 
 	console.log(JSON.stringify(this.eventSource));
     this.myCal.loadEvents();
 	console.log("notification index" +this.notificationIndex);
-	
+
 	this.storageService.addItem(eventCopy).then(item => {
 
 		console.log('?');
       this.loadItems();
 	});
-	this.localNotifications.schedule({ 
-	   id: this.notificationIndex++,
+	this.localNotifications.schedule({
+	   id: this.notificationIndex,
 	   text: 'You have an event, check your calendar!',
 	   trigger: {at: new Date(this.event.startTime)},
 	   led: 'FF0000',
 	   sound: null
 	});
-
-    this.eventSource.push(eventCopy);
-    this.myCal.loadEvents();
     this.resetEvent();
     this.showAddEvent = false;
-	
+
   }
-  
+
   loadItems() {
     this.storageService.getItems().then(items => {
       this.items = items;
@@ -210,16 +224,16 @@ analytic: Analytics =
         console.log('No events');
       }
     });
-  
+
   }
-  
+
   getStorage(){
   this.storage.get('name').then((val) => {
     return ['name'];
   });
   }
-  
-  
+
+
 
   showEvent(){
 	  this.storage.get('event').then( (val) =>{
@@ -257,32 +271,193 @@ analytic: Analytics =
     // Use Angular date pipe for conversion
     let start = formatDate(event.startTime, 'medium', this.locale);
     let end = formatDate(event.endTime, 'medium', this.locale);
-    
+	
+	/*const alert = document.createElement('ion-alert');
+	alert.header = 'Confirm!';
+	alert.message = 'Message <strong>text</strong>!!!';
+	alert.buttons = [{
+		text: 'Cancel',
+		role: 'cancel',
+		cssClass: 'secondary',
+		handler: (blah) => {
+        console.log('Confirm Cancel: blah');
+      }
+    }, {
+      text: 'Okay',
+      handler: () => {
+        console.log('Confirm Okay')
+      }
+    }
+  ];*/
+	
+	const alert = await this.alertCtrl.create({
+      header: event.title,
+      subHeader: event.desc,
+      message: 'From: ' + start + '<br><br>To: ' + end,
+      buttons: [{
+		text: 'Edit',
+		role: 'edit',
+		cssClass: 'secondary',
+		handler: (blah) => {
+        if(this.showEditEvent === true){
+		this.showEditEvent = false;
+		}
+		else{
+			this.showEditEvent = true;
+		}
+		this.length = this.eventSource.length;
+		for (let i = 0; i < this.length; i++) {
+			console.log("eventSource " + this.eventSource[i].id);
+			console.log("eventCopy" + JSON.stringify(this.eventSource[i]));
+			console.log("event.id: " + event.id);
+			//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
+			//	this.deleteIndex = i;
+			//}
+			if(this.eventSource[i].id === event.id){
+				console.log("ONE");
+				this.deleteIndex = i;
+			}
+		}
+		var temp = this.deleteIndex;
+		this.localNotifications.clear(this.eventSource[this.deleteIndex].id);
+		console.log("eventsource id to delete: " + this.eventSource[this.deleteIndex].id);
+
+		this.eventSource.splice(this.deleteIndex, 1);
+		console.log("notification index");
+		console.log("delete Index: " + this.deleteIndex);
+		this.storage.set('my-items', this.eventSource);
+		this.loadItems();	
+      }
+    }, 
+	{
+		text: 'Delete',
+		role: 'Delete',
+		cssClass: 'secondary',
+		handler: (blah) => {
+        
+		this.confirmDelete(event);
+		if(this.confirmDeleteEvent === true){
+		this.length = this.eventSource.length;
+		for (let i = 0; i < this.length; i++) {
+			console.log("eventSource " + this.eventSource[i].id);
+			console.log("eventCopy" + JSON.stringify(this.eventSource[i]));
+			console.log("event.id: " + event.id);
+			//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
+			//	this.deleteIndex = i;
+			//}
+			if(this.eventSource[i].id === event.id){
+				console.log("ONE");
+				this.deleteIndex = i;
+			}
+		}
+		var temp = this.deleteIndex;
+		this.localNotifications.clear(this.eventSource[this.deleteIndex].id);
+		console.log("eventsource id to delete: " + this.eventSource[this.deleteIndex].id);
+
+		this.eventSource.splice(this.deleteIndex, 1);
+		console.log("notification index");
+		console.log("delete Index: " + this.deleteIndex);
+		this.storage.set('my-items', this.eventSource);
+		this.loadItems();	
+		}
+		}
+	},
+	{
+      text: 'Okay',
+      handler: () => {
+        console.log('Confirm Okay')
+      }
+    }
+  ]
+    });
+    alert.present();
+	
+	
+	/*
 	let eventCopy = {
       title: event.title,
       startTime:  event.startTime,
       endTime: event.endTime,
       allDay: event.allDay,
-      desc: event.desc
-	  
+      desc: event.desc,
+	  id: event.id
     };
-	
+	if(this.showEditEvent === true){
+		this.showEditEvent = false;
+	}
+	else{
+		this.showEditEvent = true;
+	}
+
 	this.length = this.eventSource.length;
 	for (let i = 0; i < this.length; i++) {
-		console.log("eventSource " + this.eventSource[i]);
+		console.log("eventSource " + this.eventSource[i].id);
 		console.log("eventCopy" + JSON.stringify(this.eventSource[i]));
-		if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
+		console.log("event.id: " + event.id);
+		//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
+		//	this.deleteIndex = i;
+		//}
+		if(this.eventSource[i].id === event.id){
+			console.log("ONE");
 			this.deleteIndex = i;
 		}
 	}
 	var temp = this.deleteIndex;
-	this.localNotifications.clear(temp++);
+	this.localNotifications.clear(this.eventSource[this.deleteIndex].id);
+	console.log("eventsource id to delete: " + this.eventSource[this.deleteIndex].id);
 
 	this.eventSource.splice(this.deleteIndex, 1);
 	console.log("notification index");
-	console.log("delete Index" + this.deleteIndex);
+	console.log("delete Index: " + this.deleteIndex);
 	this.storage.set('my-items', this.eventSource);
-	this.loadItems();	
+
+	this.loadItems();*/	
+  }
+  
+  async confirmDelete(event){
+	const alert = await this.alertCtrl.create({
+      header: 'are you sure?',
+      subHeader: 'are you sure?',
+      buttons: [{
+		text: 'Yes',
+		role: 'confirm',
+		cssClass: 'secondary',
+		handler: (blah) => {
+		this.length = this.eventSource.length;
+		for (let i = 0; i < this.length; i++) {
+			console.log("eventSource " + this.eventSource[i].id);
+			console.log("eventCopy" + JSON.stringify(this.eventSource[i]));
+			console.log("event.id: " + event.id);
+			//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
+			//	this.deleteIndex = i;
+			//}
+			if(this.eventSource[i].id === event.id){
+				console.log("ONE");
+				this.deleteIndex = i;
+			}
+		}
+		var temp = this.deleteIndex;
+		this.localNotifications.clear(this.eventSource[this.deleteIndex].id);
+		console.log("eventsource id to delete: " + this.eventSource[this.deleteIndex].id);
+
+		this.eventSource.splice(this.deleteIndex, 1);
+		console.log("notification index");
+		console.log("delete Index: " + this.deleteIndex);
+		this.storage.set('my-items', this.eventSource);
+		this.loadItems();	
+		this.confirmDeleteEvent = true;
+	  }
+	  },
+	  {
+		text: 'cancel',
+		role: 'cancel',
+		cssClass: 'secondary',
+		handler: (blah) => {
+		this.confirmDeleteEvent = false;
+      }
+	  
+    }]});
+    alert.present();  
   }
 
 // Time slot was clicked

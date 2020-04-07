@@ -10,13 +10,80 @@
       <ion-button class="create-post-button"  routerLink="/forum/forum-deatails">Create Post</ion-button>
     </ion-buttons>
   </ion-toolbar>
+  <ion-row>
+    <ion-col>
+      <ion-button class="fill-button" [class.noHighlight]="allPosts != true" expand="block"  (click)="allPosts = true; usersPosts = false"> All Questions</ion-button>
+    </ion-col>
+    <ion-col>
+      <ion-button class="fill-button" [class.noHighlight]="usersPosts != true" expand="block"  (click)="usersPosts = true; allPosts = false"> Your Questions </ion-button>
+    </ion-col>
+  </ion-row>
+</ion-header>
+
+<ion-header *ngIf="!iosPlatform">
+  <!-- Searchbar for all posts -->
+  <ion-searchbar *ngIf="allPosts == true" (ionInput)="filterQuestions($event)"></ion-searchbar>
+  <!-- Searchbar for just this user's posts -->
+  <ion-searchbar *ngIf="usersPosts == true" (ionInput)="filterUserQuestions($event)"></ion-searchbar>
+</ion-header>
+
+<ion-header *ngIf="iosPlatform">
+  <!-- Searchbar for all posts -->
+  <ion-searchbar *ngIf="allPosts == true" mode="ios" (ionInput)="filterQuestions($event)"></ion-searchbar>
+  <!-- Searchbar for just this user's posts -->
+  <ion-searchbar *ngIf="usersPosts == true" mode="ios" (ionInput)="filterUserQuestions($event)"></ion-searchbar>
 </ion-header>
 
 <ion-content>
-  <ion-list>
-    <ion-item  button [routerLink]="['/forum/forum-thread', question.id]" *ngFor="let question of (questions | async)">
-      {{ question.title }}
-      <ion-icon md="md-arrow-forward" slot="end"></ion-icon>
+  <ion-list *ngIf="allPosts == true">
+    <ion-item  button [routerLink]="['/forum/forum-thread', question.id]" *ngFor="let question of questionList">
+      <ion-col>
+        <ion-row class="timestamp">
+          Posted: {{ question.timestamp.seconds * 1000 | date:'MM-dd-yyyy h:mm:ss a' }}
+        </ion-row>
+        <ion-row>
+          <div *ngIf="iosPlatform">
+          <ion-chip mode="ios">
+          {{ question.numOfComments }}
+          </ion-chip>
+          </div>
+          <div *ngIf="!iosPlatform">
+            <ion-chip>
+              {{ question.numOfComments }}
+            </ion-chip>
+          </div>
+          <div class="padding-top">
+            {{ question.title }}
+          </div>
+        <ion-icon md="md-arrow-forward" slot="end"></ion-icon>
+        </ion-row>
+      </ion-col>
+    </ion-item>
+  </ion-list>
+
+  <ion-list *ngIf="usersPosts == true">
+    <ion-item  button [routerLink]="['/forum/forum-thread', question.id]" *ngFor="let question of thisUserQuestionList">
+      <ion-col>
+        <ion-row class="timestamp">
+          Posted: {{ question.timestamp.seconds * 1000 | date:'MM-dd-yyyy h:mm:ss a' }}
+        </ion-row>
+        <ion-row>
+          <div *ngIf="iosPlatform">
+            <ion-chip mode="ios">
+              {{ question.numOfComments }}
+            </ion-chip>
+          </div>
+          <div *ngIf="!iosPlatform">
+            <ion-chip>
+              {{ question.numOfComments }}
+            </ion-chip>
+          </div>
+          <div class="padding-top">
+            {{ question.title }}
+          </div>
+          <ion-icon md="md-arrow-forward" slot="end"></ion-icon>
+        </ion-row>
+      </ion-col>
     </ion-item>
   </ion-list>
 </ion-content>

@@ -13,10 +13,9 @@
       </ion-input>
 	  <ion-input
 			  formControlName="recoveryPassword"
-              type="recoveryPassword"
-              type="text"
+              type="password"
               placeholder="Enter the new password"
-              
+              [class.invalid]="!enterCodeForm.controls['recoveryPassword'].valid && enterCodeForm.controls['recoveryPassword'].touched"
       >
       </ion-input>
     </ion-item>
@@ -25,7 +24,7 @@
     <ion-button class="fill-button"
             expand="block"
 			(click)="validateUser(enterCodeForm)"
-			
+			[disabled]="!enterCodeForm.valid"
     >
       Enter
     </ion-button>

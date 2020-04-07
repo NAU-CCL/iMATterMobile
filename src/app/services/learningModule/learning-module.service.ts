@@ -22,7 +22,8 @@ export interface LearningModule
   moduleQuiz: Question[],
   modulePointsWorth: number,
   moduleNext?: string, //ID of next learning module to go to, optional
-  userVisibility: string[]
+  userVisibility: string[],
+  previousUserVisibility: string[];
 }
 
 export interface Question

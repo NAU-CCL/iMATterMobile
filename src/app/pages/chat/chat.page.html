@@ -6,18 +6,20 @@
   </ion-toolbar>
 </ion-header>
 
-
 <ion-content #content>
 
   <div *ngFor="let chat of (chats | async)" class="message-wrap">
     <div *ngIf="chat.visibility == true">
     <!-- Automatic message -->
-    <div *ngIf="chat.type == 'auto' || chat.type == 'emotion'; else elseBlock">
+    <div *ngIf="chat.type == 'auto' || chat.type == 'emotion'">
+      <!--
       <div align-self-center class="timestamp">
         {{ chat.timestamp.toDate() | date:'MM-dd-yyyy h:mm a' }}
-      </div>
+      </div> -->
 
+      <!--
       <div class="message">
+
         <ion-button class="user-img" fill="clear"  (click)="goToProfile(chat.userID, chat.cohort)">
         <img class="user-img" src="{{ chat.profilePic }}" alt="" >
         </ion-button>
@@ -26,43 +28,54 @@
             <p>
               {{ chat.username }}&nbsp;&nbsp;&nbsp;</p>
           </div>
-          <div class="msg-content">
-            <span class="triangle"></span>
-            <p class="line-breaker ">{{chat.message}}</p>
+          -->
+      <div *ngIf="chat.type == 'auto'" class="msg-content">
+        <p class="auto">{{chat.message}}</p>
+      </div>
+      <div *ngIf="chat.type == 'emotion'" class="msg-content">
+        <p class="emotion">{{chat.message}}</p>
+      </div>
+    </div>
+
+    <!--</div>-->
+
+    <!-- User message -->
+      <div *ngIf="chat.type == 'user'">
+        <div align-self-center class="timestamp">
+          {{ toDate(chat.timestamp) | date:'MM-dd-yyyy h:mm a' }}
+        </div>
+        <div class="message">
+          <ion-button class="user-img" fill="clear"  (click)="goToProfile(chat.userID, chat.cohort)">
+            <img class="user-img" src="{{ chat.profilePic }}" alt="" >
+          </ion-button>
+          <div class="msg-detail">
+            <div class="username">
+              <p> {{ chat.username }}&nbsp;&nbsp;&nbsp;</p>
+            </div>
+            <div class="msg-content">
+              <span class="triangle"></span>
+              <p class="line-breaker ">{{chat.message}}</p>
+            </div>
           </div>
         </div>
       </div>
+    <!--</div>-->
     </div>
-
-    <!-- User message -->
-    <ng-template #elseBlock>
-    <div align-self-center class="timestamp">
-      {{ chat.timestamp.toDate() | date:'MM-dd-yyyy h:mm:ss.SS a' }}
-    </div>
-
-    <div class="message">
-      <ion-button class="user-img" fill="clear"  (click)="goToProfile(chat.userID, chat.cohort)">
-      <img class="user-img" src="{{ chat.profilePic }}" alt="" >
-      </ion-button>
-      <div class="msg-detail">
-        <div class="msg-info">
-          <p>
-            {{ chat.username }}&nbsp;&nbsp;&nbsp;</p>
-        </div>
-        <div class="msg-content">
-          <span class="triangle"></span>
-          <p class="line-breaker ">{{chat.message}}</p>
-        </div>
-      </div>
-     </div>
-    </ng-template>
-    </div>
-    </div>
+  </div>
 </ion-content>
 
 <ion-footer>
     <ion-item>
-      <ion-textarea [(ngModel)]="chat.message" placeholder="Enter message"></ion-textarea>
-      <ion-button class="ion-text-button" slot="end" fill="clear" (click)="addChat()"><ion-icon ios="ios-arrow-forward" md="md-arrow-forward"></ion-icon></ion-button>
+      <ion-textarea spellcheck="true" autocapitalize="true" [(ngModel)]="chat.message" placeholder="Enter message"></ion-textarea>
+      <div *ngIf="chat.message == ''">
+        <ion-button disabled="true" class="ion-text-button" slot="end" fill="clear" (click)="addChat('user')">
+        <ion-icon ios="ios-arrow-forward" md="md-arrow-forward"></ion-icon>
+      </ion-button>
+      </div>
+      <div *ngIf="chat.message > ''">
+        <ion-button class="ion-text-button" slot="end" fill="clear" (click)="addChat('user')">
+          <ion-icon ios="ios-arrow-forward" md="md-arrow-forward"></ion-icon>
+        </ion-button>
+      </div>
     </ion-item>
 </ion-footer>

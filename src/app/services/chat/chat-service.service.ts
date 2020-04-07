@@ -20,6 +20,7 @@ export interface Chat {
   profilePic: any;
   type: any;
   visibility: boolean;
+  count: number;
 }
 
 @Injectable({
@@ -49,8 +50,9 @@ export class ChatService {
     );
   }
 
-  getChats(cohortID) {
+  getChats(cohortID): Observable<Chat[]> {
     this.getChatCollection(cohortID);
+    // this.iterateChats(cohortID);
     return this.chats;
   }
 
@@ -80,7 +82,8 @@ export class ChatService {
       timestamp: chat.timestamp,
       profilePic: chat.profilePic,
       type: chat.type,
-      visibility: chat.visibility
+      visibility: chat.visibility,
+      count: chat.count
     });
   }
 
@@ -95,37 +98,114 @@ export class ChatService {
     }
   }
 
-  iterateChats(cohortID) {
-    firebase.firestore().collection('mobileSettings').doc('chatHours').get().then((result) => {
-      // get admin set time for chats to last
-      let setHours = Number(result.get('hours'));
-      console.log('setHours', setHours);
-      // convert to ms
-      setHours = setHours * 60 * 60 * 1000;
-      console.log('setHours', setHours);
-      // get todays date
-      const now = new Date();
-      console.log('now', now);
 
-      // go into all chats
-      const ref = firebase.firestore().collection('chats').where('cohort', '==', cohortID);
-      ref.get().then((res) => {
-        res.forEach(doc => {
-          const timestamp = new Date(doc.get('timestamp').toDate());
-          console.log('timestamp', timestamp);
-          const difference = now.getTime() - timestamp.getTime();
-          console.log('difference', difference);
-          console.log('setHours', setHours);
-
-          if (difference >= setHours) {
-            this.updateChatVisibility(doc.id, false);
-          } else {
-            this.updateChatVisibility(doc.id, true);
-          }
-        });
-      });
-
-    });
+  updateChatNumberCounter(docID, num) {
+    return this.afs.firestore.collection('chats')
+          .doc(docID).update({count: num});
   }
 
+  /* This function iterates through all chats in a cohort to decide if they are visible to the user or not */
+  async iterateChats(cohortID) {
+    console.log('iterateChats called');
+    // get what the admin has set to determine user visibility of chats
+    firebase.firestore().collection('mobileSettings').doc('chatroomSettings').get().then((result) => {
+      const lifeType = result.get('lifeType');
+
+      // if chat visibility is based on number of hours the chat has existed
+      if (lifeType === 'hours' ) {
+        // get admin set time for chats to last
+        let setHours = result.get('hours');
+        // convert to ms
+        setHours = setHours * 60 * 60 * 1000;
+        // get todays date
+        const now = new Date();
+        console.log('now', now);
+
+        // go into all chats
+        const ref = firebase.firestore().collection('chats').where('cohort', '==', cohortID);
+        ref.get().then((res) => {
+          res.forEach(doc => {
+            const timestamp = new Date(doc.get('timestamp').toDate());
+            // check difference between the time the chat was sent and now
+            const difference = now.getTime() - timestamp.getTime();
+
+            // if this difference is greater than set hours, set visibility to false. Otherwise, true
+            if (difference >= setHours) {
+              this.updateChatVisibility(doc.id, false);
+            } else {
+              // can be used to set chats back to true for testing purposes
+              // this.updateChatVisibility(doc.id, true);
+            }
+          });
+        });
+        // check if the type is based on number of chats in the room
+      } else if (lifeType === 'number') {
+        // get the number admin has set
+        const numChatsVis = result.get('numberOfChats');
+
+        let chatsObservable = this.getChats(cohortID).subscribe(resul => {
+          // console.log(resul.length);
+        });
+
+
+        let numberOfCurrentChats = 0;
+        let numberOfCurrentAutoChats = 0;
+        // time order is oldest to newest
+        const ref = firebase.firestore().collection('chats').where('cohort', '==', cohortID).orderBy('timestamp', 'desc');
+        ref.get().then((res) => {
+          res.forEach(doc => {
+            // for each doc in the cohort chat room, if it is a user sent, iterate
+            if (doc.get('type') === 'user' && doc.get('visibility') === true) {
+              // count the number of non-auto chats
+              numberOfCurrentChats += 1;
+              // assign a new number to each chat
+              this.updateChatNumberCounter(doc.id, numberOfCurrentChats);
+
+              if (doc.get('count') > numChatsVis) {
+                this.updateChatVisibility(doc.id, false);
+              } else {
+                // this.updateChatVisibility(doc.id, false);
+              }
+
+            } else if (doc.get('type') === 'emotion' || doc.get('type') === 'auto') {
+              if (doc.get('visibility') === true) {
+                // count the number of auto chats
+                numberOfCurrentAutoChats += 1;
+                // assign a new number to each chat
+                this.updateChatNumberCounter(doc.id, numberOfCurrentAutoChats);
+
+                if (doc.get('count') > numChatsVis) {
+                  this.updateChatVisibility(doc.id, false);
+                } else {
+                 // this.updateChatVisibility(doc.id, false);
+                }
+              }
+            }
+          });
+          /*
+          // iterate chats again - after setting count
+          res.forEach(doc => {
+            if (doc.get('type') === 'user' && doc.get('visibility') === true) {
+              // since the chats are grabbed oldest to newest - we want all chats that are greater than the difference
+              // of current chats - the number of chats allowed
+              if (doc.get('count') > (numberOfCurrentChats - numChatsVis)) {
+                this.updateChatVisibility(doc.id, true);
+              } else {
+                this.updateChatVisibility(doc.id, false);
+              }
+            } else if (doc.get('type') === 'emotion' || doc.get('type') === 'auto') {
+              if ( doc.get('visibility') === true) {
+                if (doc.get('count') > (numberOfCurrentAutoChats - 10)) {
+                  this.updateChatVisibility(doc.id, true);
+                } else {
+                  this.updateChatVisibility(doc.id, false);
+                }
+              }
+            }
+          });*/
+        });
+
+      }
+    });
+  }
 }
