@@ -36,7 +36,7 @@ export class AvailablePage implements OnInit {
 
   completed = [];
 
-  highlightID = "GqNgLFGnZc77qG5zSAui";
+  highlightID;
 
   constructor(private fs: FireService,
               private storage: Storage, 
@@ -220,7 +220,10 @@ export class AvailablePage implements OnInit {
   }
 
   isHighlight(survey: Survey){
-    return this.highlightID == survey.id;
+    if(this.highlightID){
+      return this.highlightID == survey.id;
+    }
+    return false;
   }
 
   // takes the survey selected by passing the id and survey current interval 
