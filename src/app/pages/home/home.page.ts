@@ -67,6 +67,7 @@ export class HomePage implements OnInit {
     token: '',
     recentNotifications: [],
     answeredSurveys: [],
+    codeEntered: true
   };
 
   emotionNotif: EmotionNotif = {

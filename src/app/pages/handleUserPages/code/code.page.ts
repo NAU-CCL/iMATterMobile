@@ -38,10 +38,15 @@ export class CodePage implements OnInit {
   validateCode(code: string) {
     const docRef = this.afs.firestore.collection('users').doc(code);
     docRef.get().then((docData) => {
-      if (docData.exists) {
+      if (docData.exists && docData.get('codeEntered') === false) {
         console.log('Exists');
         this.codeValidated = true;
+        this.afs.firestore.collection('users')
+            .doc(code).update({codeEntered: true});
         this.router.navigate(['/signup/', code ]);
+      } else if (docData.get('codeEntered') === true) {
+        this.showToast('Code already used');
+        this.codeValidated = false;
       } else {
         console.log('No such document!');
         this.showToast('Code does not exist');

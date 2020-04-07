@@ -38,6 +38,7 @@ export class ViewableProfilePage implements OnInit {
     token: '',
     recentNotifications: [],
     answeredSurveys: [],
+    codeEntered: true
   };
 
   provider: Provider = {

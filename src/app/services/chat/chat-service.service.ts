@@ -87,8 +87,7 @@ export class ChatService {
     });
   }
 
-
-  updateChatVisibility(docID, bool) {
+  async updateChatVisibility(docID, bool) {
     if (bool === false) {
       return this.afs.firestore.collection('chats')
           .doc(docID).update({visibility: false});
@@ -98,14 +97,13 @@ export class ChatService {
     }
   }
 
-
   updateChatNumberCounter(docID, num) {
     return this.afs.firestore.collection('chats')
           .doc(docID).update({count: num});
   }
 
   /* This function iterates through all chats in a cohort to decide if they are visible to the user or not */
-  async iterateChats(cohortID) {
+  async iterateChats(cohortID, timeCalled) {
     console.log('iterateChats called');
     // get what the admin has set to determine user visibility of chats
     firebase.firestore().collection('mobileSettings').doc('chatroomSettings').get().then((result) => {
@@ -143,11 +141,6 @@ export class ChatService {
         // get the number admin has set
         const numChatsVis = result.get('numberOfChats');
 
-        let chatsObservable = this.getChats(cohortID).subscribe(resul => {
-          // console.log(resul.length);
-        });
-
-
         let numberOfCurrentChats = 0;
         let numberOfCurrentAutoChats = 0;
         // time order is oldest to newest
@@ -161,10 +154,14 @@ export class ChatService {
               // assign a new number to each chat
               this.updateChatNumberCounter(doc.id, numberOfCurrentChats);
 
-              if (doc.get('count') > numChatsVis) {
-                this.updateChatVisibility(doc.id, false);
-              } else {
-                // this.updateChatVisibility(doc.id, false);
+              if (timeCalled === 'ngOnInit'  || timeCalled === 'ionViewWillLeave') {
+                if (doc.get('count') > numChatsVis) {
+                  this.updateChatVisibility(doc.id, false);
+                }
+              } else if (timeCalled === 'addChat') {
+                if (doc.get('count') > numChatsVis - 1) {
+                  this.updateChatVisibility(doc.id, false);
+                }
               }
 
             } else if (doc.get('type') === 'emotion' || doc.get('type') === 'auto') {
@@ -174,37 +171,20 @@ export class ChatService {
                 // assign a new number to each chat
                 this.updateChatNumberCounter(doc.id, numberOfCurrentAutoChats);
 
-                if (doc.get('count') > numChatsVis) {
-                  this.updateChatVisibility(doc.id, false);
-                } else {
-                 // this.updateChatVisibility(doc.id, false);
+                if (timeCalled === 'ngOnInit'  || timeCalled === 'ionViewWillLeave') {
+                  if (doc.get('count') > numChatsVis) {
+                    this.updateChatVisibility(doc.id, false);
+                  }
+                } else if (timeCalled === 'addChat') {
+                  if (doc.get('count') > numChatsVis - 1) {
+                    this.updateChatVisibility(doc.id, false);
+                  }
                 }
+
               }
             }
           });
-          /*
-          // iterate chats again - after setting count
-          res.forEach(doc => {
-            if (doc.get('type') === 'user' && doc.get('visibility') === true) {
-              // since the chats are grabbed oldest to newest - we want all chats that are greater than the difference
-              // of current chats - the number of chats allowed
-              if (doc.get('count') > (numberOfCurrentChats - numChatsVis)) {
-                this.updateChatVisibility(doc.id, true);
-              } else {
-                this.updateChatVisibility(doc.id, false);
-              }
-            } else if (doc.get('type') === 'emotion' || doc.get('type') === 'auto') {
-              if ( doc.get('visibility') === true) {
-                if (doc.get('count') > (numberOfCurrentAutoChats - 10)) {
-                  this.updateChatVisibility(doc.id, true);
-                } else {
-                  this.updateChatVisibility(doc.id, false);
-                }
-              }
-            }
-          });*/
         });
-
       }
     });
   }
