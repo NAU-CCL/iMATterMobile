@@ -19,7 +19,9 @@
       >
       </ion-input>
     </ion-item>
-   
+   <ion-item class="error-message" *ngIf="!enterCodeForm.controls['recoveryPassword'].valid && enterCodeForm.controls['recoveryPassword'].touched">
+      <ion-label>Please enter an 8 character password</ion-label>
+    </ion-item>
 
     <ion-button class="fill-button"
             expand="block"

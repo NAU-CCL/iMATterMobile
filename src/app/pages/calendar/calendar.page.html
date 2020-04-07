@@ -4,7 +4,7 @@
       {{ viewTitle }}
     </ion-title>
     <ion-buttons slot="start">
-      <ion-button class="text-press" (click)="showAddEvent = true">Add Event</ion-button>
+      <ion-button class="text-press" (click)="getAmpm()" (click)="showAddEvent = true" (click)="isTwelveHour">Add Event</ion-button>
     </ion-buttons>
     <ion-buttons slot="end">
       <ion-button class="text-press"  (click)="today()">Today</ion-button>
@@ -13,8 +13,9 @@
 </ion-header>
 
 <ion-content>
-
+	<div class = "addEvent">
   <!-- Card for adding a new event -->
+  <ion-item *ngIf="!isTwelveHour">
   <ion-item *ngIf="showAddEvent">
     <ion-card>
       <ion-card-header>
@@ -44,6 +45,47 @@
       </ion-card-content>
     </ion-card>
   </ion-item>
+  </ion-item>
+  
+  <ion-item *ngIf="isTwelveHour">
+  <ion-item *ngIf="showAddEvent">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Add New Event</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-input type="text" placeholder="Title" [(ngModel)]="event.title"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input type="text" placeholder="Description" [(ngModel)]="event.desc"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Start</ion-label>
+          <ion-datetime displayFormat="MM/DD/YYYY hh:mm" pickerFormat="MMM D:hh:mm" [(ngModel)]="event.startTime" ></ion-datetime>
+        </ion-item>
+		<ion-item>
+		 <ion-label>AM or PM?</ion-label>
+		<ion-select [(ngModel)]="event.AMPM" ok-text="Okay" cancel-text="cancel">
+			  <ion-select-option value="am">am</ion-select-option>
+			  <ion-select-option value="pm">pm</ion-select-option>
+		  </ion-select>
+		  </ion-item>
+        <ion-item>
+          <ion-label>End</ion-label>
+          <ion-datetime displayFormat="MM/DD/YYYY hh:mm" pickerFormat="MMM D:hh:mm" [(ngModel)]="event.endTime" ></ion-datetime>
+        </ion-item>
+        <ion-item>
+          <ion-label>All Day?</ion-label>
+          <ion-checkbox [(ngModel)]="event.allDay"></ion-checkbox>
+        </ion-item>
+        <ion-button fill="outline" color="important" class=event-button (click)="showAddEvent = false" > Cancel </ion-button>
+        <ion-button fill="outline" class=event-button (click)="addEvent()" [disabled]="event.title == ''">Add Event</ion-button>
+      </ion-card-content>
+    </ion-card>
+  </ion-item>
+  </ion-item>
+  </div>
 
   <ion-row>
     <!-- Change the displayed calendar mode -->
@@ -105,17 +147,33 @@
     </ion-card>
   </ion-item>
   
+	
+  
   </div>
   
-  
+  <ng-template #monthviewDefaultEventDetailTemplate let-showEventDetail="showEventDetail" let-selectedDate="selectedDate" let-noEventsLabel="noEventsLabel">
+            <ion-list class="event-detail-container" has-bouncing="false" *ngIf="showEventDetail" overflow-scroll="false" (click)="addEventDay(selectedDate)" >
+                <ion-item *ngFor="let event of selectedDate?.events" (click)="onEventSelected(event)">
+                        
+                    <span *ngIf="event.allDay" class="monthview-eventdetail-timecolumn">All day</span>
+                    <span class="event-detail">  {{event.title}}   |   click for details</span>
+                </ion-item>
+                <ion-item *ngIf="selectedDate?.events.length==0">
+                    <div class="no-events-label">{{noEventsLabel}}</div>
+                </ion-item>
+            </ion-list>
+        </ng-template>
+    
 
   <calendar
           [eventSource]="eventSource"
           [calendarMode]="calendar.mode"
           [currentDate]="calendar.currentDate"
+		  [monthviewEventDetailTemplate]="monthviewDefaultEventDetailTemplate"	  
           (onEventSelected)="onEventSelected($event)"
           (onTitleChanged)="onViewTitleChanged($event)"
           (onTimeSelected)="onTimeSelected($event)"
+		  (click)="clickedCalendar()"
           startHour="6"
           endHour="20"
           step="30"
@@ -123,10 +181,11 @@
 		  
 		  
 		  
+		  
   </calendar>
-<div class = "a">
+  
 	
-</div>
+
 
 </ion-content>
 

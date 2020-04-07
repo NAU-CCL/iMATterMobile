@@ -33,7 +33,8 @@ export class CalendarPage implements OnInit {
     startTime: '',
     endTime: '',
     allDay: false,
-	id: ''
+	id: '',
+	AMPM: ''
   };
   notifyTime:any;
   notifications: any[] = [];
@@ -61,6 +62,8 @@ export class CalendarPage implements OnInit {
   sessionID: ''
 }
 
+
+
   private analyticss : string;
   private sessions : Observable<any>;
 
@@ -78,6 +81,14 @@ export class CalendarPage implements OnInit {
   showEditEvent : boolean;
   
   confirmDeleteEvent: boolean;
+  subtractTime: number;
+  notificationTime: any;
+  testers: number;
+ isTwelveHour: boolean;
+ clockType: number;
+ 
+ clicked: boolean;
+ alertOpen: boolean;
  
   // @ts-ignore
   @ViewChild(CalendarComponent) myCal: CalendarComponent;
@@ -125,7 +136,8 @@ export class CalendarPage implements OnInit {
       startTime: new Date().toISOString(),
       endTime: new Date().toISOString(),
       allDay: false,
-	  id: ''
+	  id: '',
+	  AMPM: ''
     };
   }
 
@@ -158,18 +170,125 @@ export class CalendarPage implements OnInit {
   deleteEvent(){
 	  //window.plugins.calendar.deleteEvent(newTitle,eventLocation,notes,startDate,endDate,success,error);
   }
+  
+  addEventDay(){
+	  console.log("CHANGE");
+  }
 
   // Create the right event format and reload source
   addEvent() {
 	  this.notificationIndex = Math.floor(Math.random() * 100000000000);
-    let eventCopy = {
-      title: this.event.title,
-      startTime:  new Date(this.event.startTime),
-      endTime: new Date(this.event.endTime),
-      allDay: this.event.allDay,
-      desc: this.event.desc,
-	  id: this.notificationIndex
-    };
+	  let eventCopy = {
+		  title: this.event.title,
+		  startTime:  new Date(this.event.startTime),
+		  endTime: new Date(this.event.endTime),
+		  allDay: this.event.allDay,
+		  desc: this.event.desc,
+		  id: this.notificationIndex,
+		  AMPM: null
+	  }
+	  if(this.clockType == 12){
+		  let eventCopy = {
+		  title: this.event.title,
+		  startTime:  new Date(this.event.startTime),
+		  endTime: new Date(this.event.endTime),
+		  allDay: this.event.allDay,
+		  desc: this.event.desc,
+		  id: this.notificationIndex,
+		  AMPM: this.event.AMPM
+		};
+		console.log("12 HOUR INIT");
+		console.log("EVEN>AMPM" + eventCopy.AMPM);
+		if (eventCopy.allDay) {
+		  let start = eventCopy.startTime;
+		  let end = eventCopy.endTime;
+
+		  //eventCopy.startTime = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate()));
+		  //eventCopy.endTime = new Date(Date.UTC(end.getUTCFullYear(), end.getUTCMonth(), end.getUTCDate() + 1));
+		}
+		
+		if(eventCopy.startTime.getHours() === 12){
+			console.log("equals 12");
+			eventCopy.startTime.setMinutes(eventCopy.startTime.getMinutes() - 720);
+			
+		}
+		
+		if(eventCopy.AMPM === 'pm'){
+			console.log('eventCopy.AMPM: ' + eventCopy.AMPM);
+			console.log('eventCopy.startTime.getMinutes: ' + eventCopy.startTime.getMinutes())
+			eventCopy.startTime.setMinutes(eventCopy.startTime.getMinutes() + 720);
+			
+		}
+		console.log("PM STARTTIME: " + eventCopy.startTime);
+		this.storage.get('userCode').then((val) => {
+			  if (val) {
+				this.afs.firestore.collection('users').where('code', '==', val)
+					.get().then(snapshot => {
+				  snapshot.forEach(doc => {
+					  this.subtractTime = doc.get('notificationTime');
+					  console.log("INIT");
+					  console.log(this.subtractTime);
+					  if(this.subtractTime == null){
+						  this.subtractTime = 0;
+					  }
+					  console.log("M" + doc.get('notificationTime'));
+					  console.log("subTIME init" + this.subtractTime);
+					  this.testers = eventCopy.startTime.getMinutes() - this.subtractTime;
+					  console.log("TESTERS: " + this.testers);
+					  eventCopy.startTime.setMinutes( eventCopy.startTime.getMinutes() - this.subtractTime );
+					  console.log(eventCopy.startTime);
+					  
+					  this.localNotifications.schedule({
+						   id: this.notificationIndex,
+						   text: 'You have an event, check your calendar!',
+						   trigger: {at: new Date(eventCopy.startTime)},
+						   led: 'FF0000',
+						   sound: null
+						});
+						
+						
+				  });
+				});
+			  }
+			});
+
+		
+		
+		
+		
+
+		var currentID = this.notificationIndex;
+
+		this.eventList.push(eventCopy);
+
+		this.eventSource.push(eventCopy);
+		this.test.push('1');
+
+		console.log(JSON.stringify(this.eventSource));
+		this.myCal.loadEvents();
+		console.log("notification index" +this.notificationIndex);
+
+		this.storageService.addItem(eventCopy).then(item => {
+
+			console.log('?');
+		  this.loadItems();
+		});
+		this.localNotifications.schedule({
+		   id: this.notificationIndex,
+		   text: 'You have an event, check your calendar!',
+		   trigger: {at: new Date(this.event.startTime)},
+		   led: 'FF0000',
+		   sound: null
+		});
+		this.resetEvent();
+		this.showAddEvent = false;
+		
+	
+	  }
+	  else{
+	 
+	
+	console.log("IS TWELVEHOUR: " + this.isTwelveHour);
 	console.log(this.notificationIndex);
     if (eventCopy.allDay) {
       let start = eventCopy.startTime;
@@ -178,6 +297,8 @@ export class CalendarPage implements OnInit {
       eventCopy.startTime = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate()));
       eventCopy.endTime = new Date(Date.UTC(end.getUTCFullYear(), end.getUTCMonth(), end.getUTCDate() + 1));
     }
+	
+	
 
 	// add notification when creating event
 	//if(this.notificationIndex == null){
@@ -185,6 +306,44 @@ export class CalendarPage implements OnInit {
 
 	//}
 
+
+
+	
+	this.storage.get('userCode').then((val) => {
+		  if (val) {
+			this.afs.firestore.collection('users').where('code', '==', val)
+				.get().then(snapshot => {
+			  snapshot.forEach(doc => {
+				  this.subtractTime = doc.get('notificationTime');
+				  console.log("INIT");
+				  if(this.subtractTime == null){
+						this.subtractTime = 0;
+					}
+				  console.log("M" + doc.get('notificationTime'));
+				  console.log("subTIME init" + this.subtractTime);
+				  this.testers = eventCopy.startTime.getMinutes() - this.subtractTime;
+				  console.log("TESTERS: " + this.testers);
+				  eventCopy.startTime.setMinutes( eventCopy.startTime.getMinutes() - this.subtractTime );
+				  console.log(eventCopy.startTime);
+				  
+				  this.localNotifications.schedule({
+					   id: this.notificationIndex,
+					   text: 'You have an event, check your calendar!',
+					   trigger: {at: new Date(eventCopy.startTime)},
+					   led: 'FF0000',
+					   sound: null
+				    });
+					
+					
+			  });
+			});
+		  }
+		});
+
+	
+    
+	
+	
 
 	var currentID = this.notificationIndex;
 
@@ -211,6 +370,7 @@ export class CalendarPage implements OnInit {
 	});
     this.resetEvent();
     this.showAddEvent = false;
+	  }
 
   }
 
@@ -226,6 +386,35 @@ export class CalendarPage implements OnInit {
     });
 
   }
+
+	getAmpm() {
+		this.storage.get('userCode').then((val) => {
+		  if (val) {
+			this.afs.firestore.collection('users').where('code', '==', val)
+				.get().then(snapshot => {
+			  snapshot.forEach(doc => {
+				  this.clockType = doc.get('clockType');
+				  console.log("this.clockType " + this.clockType);
+				  if(this.clockType == 12){
+					  this.isTwelveHour = true;
+					  console.log("TRUE");
+					  return true;
+					  
+				  }
+				  else{
+					  this.isTwelveHour = false;
+					  console.log("FALSE");
+					  return false;
+				  }
+				   
+					
+					
+			  });
+			});
+		  
+		}
+	});
+	}
 
   getStorage(){
   this.storage.get('name').then((val) => {
@@ -264,6 +453,8 @@ export class CalendarPage implements OnInit {
 // Selected date reange and hence title changed
   onViewTitleChanged(title) {
     this.viewTitle = title;
+	
+	console.log("vew change test");
   }
 
 // Calendar event was clicked
@@ -272,23 +463,9 @@ export class CalendarPage implements OnInit {
     let start = formatDate(event.startTime, 'medium', this.locale);
     let end = formatDate(event.endTime, 'medium', this.locale);
 	
-	/*const alert = document.createElement('ion-alert');
-	alert.header = 'Confirm!';
-	alert.message = 'Message <strong>text</strong>!!!';
-	alert.buttons = [{
-		text: 'Cancel',
-		role: 'cancel',
-		cssClass: 'secondary',
-		handler: (blah) => {
-        console.log('Confirm Cancel: blah');
-      }
-    }, {
-      text: 'Okay',
-      handler: () => {
-        console.log('Confirm Okay')
-      }
-    }
-  ];*/
+	this.alertOpen = true;
+  
+  
 	
 	const alert = await this.alertCtrl.create({
       header: event.title,
@@ -307,9 +484,7 @@ export class CalendarPage implements OnInit {
 		}
 		this.length = this.eventSource.length;
 		for (let i = 0; i < this.length; i++) {
-			console.log("eventSource " + this.eventSource[i].id);
-			console.log("eventCopy" + JSON.stringify(this.eventSource[i]));
-			console.log("event.id: " + event.id);
+			
 			//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
 			//	this.deleteIndex = i;
 			//}
@@ -326,7 +501,9 @@ export class CalendarPage implements OnInit {
 		console.log("notification index");
 		console.log("delete Index: " + this.deleteIndex);
 		this.storage.set('my-items', this.eventSource);
-		this.loadItems();	
+		this.loadItems();
+		this.alertOpen = false;
+		
       }
     }, 
 	{
@@ -336,42 +513,26 @@ export class CalendarPage implements OnInit {
 		handler: (blah) => {
         
 		this.confirmDelete(event);
-		if(this.confirmDeleteEvent === true){
-		this.length = this.eventSource.length;
-		for (let i = 0; i < this.length; i++) {
-			console.log("eventSource " + this.eventSource[i].id);
-			console.log("eventCopy" + JSON.stringify(this.eventSource[i]));
-			console.log("event.id: " + event.id);
-			//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
-			//	this.deleteIndex = i;
-			//}
-			if(this.eventSource[i].id === event.id){
-				console.log("ONE");
-				this.deleteIndex = i;
-			}
+		
+		this.reloadItems(event);
+		
+		this.loadItems();
+		this.deleteFinished(event);
+		this.alertOpen = false;
 		}
-		var temp = this.deleteIndex;
-		this.localNotifications.clear(this.eventSource[this.deleteIndex].id);
-		console.log("eventsource id to delete: " + this.eventSource[this.deleteIndex].id);
-
-		this.eventSource.splice(this.deleteIndex, 1);
-		console.log("notification index");
-		console.log("delete Index: " + this.deleteIndex);
-		this.storage.set('my-items', this.eventSource);
-		this.loadItems();	
-		}
-		}
+		
 	},
 	{
       text: 'Okay',
       handler: () => {
         console.log('Confirm Okay')
+		
       }
     }
   ]
     });
     alert.present();
-	
+	//this.alertOpen = false;
 	
 	/*
 	let eventCopy = {
@@ -413,8 +574,15 @@ export class CalendarPage implements OnInit {
 
 	this.loadItems();*/	
   }
+  async reloadItems(event){
+	  this.storage.set('my-items', this.eventSource);
+		this.loadItems();
+  }
+  
+  
   
   async confirmDelete(event){
+	  this.alertOpen = true;
 	const alert = await this.alertCtrl.create({
       header: 'are you sure?',
       subHeader: 'are you sure?',
@@ -425,9 +593,6 @@ export class CalendarPage implements OnInit {
 		handler: (blah) => {
 		this.length = this.eventSource.length;
 		for (let i = 0; i < this.length; i++) {
-			console.log("eventSource " + this.eventSource[i].id);
-			console.log("eventCopy" + JSON.stringify(this.eventSource[i]));
-			console.log("event.id: " + event.id);
 			//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
 			//	this.deleteIndex = i;
 			//}
@@ -444,8 +609,9 @@ export class CalendarPage implements OnInit {
 		console.log("notification index");
 		console.log("delete Index: " + this.deleteIndex);
 		this.storage.set('my-items', this.eventSource);
-		this.loadItems();	
+		this.loadItems();
 		this.confirmDeleteEvent = true;
+		
 	  }
 	  },
 	  {
@@ -454,17 +620,84 @@ export class CalendarPage implements OnInit {
 		cssClass: 'secondary',
 		handler: (blah) => {
 		this.confirmDeleteEvent = false;
+		this.alertOpen = false;
+		
       }
 	  
     }]});
     alert.present();  
+
+  }
+  async deleteFinished(event){
+	  this.length = this.eventSource.length;
+		for (let i = 0; i < this.length; i++) {
+			//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
+			//	this.deleteIndex = i;
+			//}
+			if(this.eventSource[i].id === event.id){
+				this.deleteIndex = i;
+			}
+		}
+		var temp = this.deleteIndex;
+		this.localNotifications.clear(this.eventSource[this.deleteIndex].id);
+		console.log("eventsource id to delete: " + this.eventSource[this.deleteIndex].id);
+
+		this.eventSource.splice(this.deleteIndex, 1);
+		console.log("notification index");
+		console.log("delete Index: " + this.deleteIndex);
+		this.storage.set('my-items', this.eventSource);
+		this.loadItems();
+		this.confirmDeleteEvent = true;
+		
   }
 
 // Time slot was clicked
   onTimeSelected(ev) {
+	  console.log("DAY");
     const selected = new Date(ev.selectedTime);
     this.event.startTime = selected.toISOString();
     selected.setHours(selected.getHours() + 1);
     this.event.endTime = (selected.toISOString());
+	this.addToThisDay();
+	
+	
   }
+  async addToThisDay(){
+	  if(this.clicked === true && this.alertOpen != true){
+		  console.log(this.alertOpen);
+	  const alert = await this.alertCtrl.create({
+      header: 'Would you like to add an event to this day?',
+      buttons: [{
+		text: 'Yes',
+		role: 'confirm',
+		cssClass: 'secondary',
+		handler: (blah) => {
+		this.showAddEvent = true;
+
+	  }
+	  },
+	  {
+		text: 'cancel',
+		role: 'cancel',
+		cssClass: 'secondary',
+		handler: (blah) => {
+		this.confirmDeleteEvent = false;
+
+      }
+	  
+    }]});
+    alert.present(); 
+	  }
+	  
+  }
+  clickedCalendar(){
+	  if(this.alertOpen === true){
+		  this.clicked = false;
+	  }
+	  else{
+		  
+	  this.clicked = true;
+	  }
+  }
+  
 }
