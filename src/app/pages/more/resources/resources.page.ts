@@ -18,8 +18,8 @@ export class ResourcesPage implements OnInit, AfterViewInit {
     latitude: any;
     longitude: any;
     dtitle: string;
-    dlongitude: string;
-    dlatitude: string;
+    dlongitude: number;
+    dlatitude: number;
     dcontent: string;
     dphone: string;
     dstreet: string;
@@ -97,8 +97,8 @@ export class ResourcesPage implements OnInit, AfterViewInit {
 
         querySnapshot.docs.forEach(doc => {
         this.dtitle = doc.get("title");
-        this.dlongitude = doc.get("longitude");
-        this.dlatitude = doc.get("latitude");
+        this.dlongitude = Number (doc.get("longitude"));
+        this.dlatitude = Number( doc.get("latitude"));
         this.dcontent = doc.get("content");
         this.dicon = doc.get("type");
         this.dstreet = doc.get("street");
