@@ -10,32 +10,72 @@
 <ion-content>
 
   <ion-list>
+    <ion-item-divider color="medium">
+      <ion-label>
+        Available Surveys
+      </ion-label>
+    </ion-item-divider>
+    
     <ng-container *ngFor="let survey of (surveys | async)">
+      
+      <ion-card button class="cardDefault" [class.cardHighlighted]="isHighlight(survey)"
+      *ngIf="isDisplayed(survey) == true" (click)="answerSurvey(survey)">
+        <div *ngIf="!isComplete(survey)">
+          <ion-card-header>
+  
+            <ion-card-title>
+              {{ survey.title }}
+            </ion-card-title>
+  
+            <ion-card-content>
+              {{ survey.surveyDescription }}
+            </ion-card-content>
+  
+            <ion-card-subtitle>
+              Points: {{ survey.pointsWorth }}
+  
+              <div *ngIf="isComplete(survey)">
+                <strong>Completed</strong>
+              </div>
+            </ion-card-subtitle>
+            
+        </ion-card-header>
+        </div>
+      
+      </ion-card>
+    </ng-container>
 
+    <ion-item-divider color="medium">
+      <ion-label>
+        Completed Surveys
+      </ion-label>
+    </ion-item-divider>
+
+    <ng-container *ngFor="let survey of (surveys | async)">
       <ion-card button *ngIf="isDisplayed(survey) == true" (click)="answerSurvey(survey)">
         
-      <ion-card-header>
-
-          <ion-card-title>
-            {{ survey.title }}
-          </ion-card-title>
-
-          <ion-card-content>
-            {{ survey.surveyDescription }}
-          </ion-card-content>
-
-          <ion-card-subtitle>
-            Points: {{ survey.pointsWorth }}
-
-            <div *ngIf="isComplete(survey)">
-              <strong>Completed</strong>
-            </div>
-          </ion-card-subtitle>
-          
-      </ion-card-header>
-
-      </ion-card>
-
+        <div *ngIf="isComplete(survey)">
+          <ion-card-header>
+  
+            <ion-card-title>
+              {{ survey.title }}
+            </ion-card-title>
+  
+            <ion-card-content>
+              {{ survey.surveyDescription }}
+            </ion-card-content>
+  
+            <ion-card-subtitle>
+              Points: {{ survey.pointsWorth }}
+  
+              <div>
+                <strong>Completed</strong>
+              </div>
+            </ion-card-subtitle>
+          </ion-card-header>
+        </div>
+  
+        </ion-card>
     </ng-container>
 
   </ion-list>

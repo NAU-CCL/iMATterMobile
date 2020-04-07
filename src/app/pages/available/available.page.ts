@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { FireService, Survey } from 'src/app/services/survey/fire.service';
 import { Storage} from '@ionic/storage';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
 
 // // Today's date as a javascript Date Object
@@ -36,10 +36,13 @@ export class AvailablePage implements OnInit {
 
   completed = [];
 
+  highlightID;
+
   constructor(private fs: FireService,
               private storage: Storage, 
               private router: Router, 
-              public afs: AngularFirestore
+              public afs: AngularFirestore,
+              private activatedRoute: ActivatedRoute, 
               ) { }
 
   ngOnInit() {
@@ -49,6 +52,8 @@ export class AvailablePage implements OnInit {
         this.router.navigate(['/login/']);
       }
     });  
+
+    //this.highlightID = this.activatedRoute.snapshot.paramMap.get('id');
 
   }
 
@@ -214,6 +219,13 @@ export class AvailablePage implements OnInit {
     return false;
   }
 
+  isHighlight(survey: Survey){
+    if(this.highlightID){
+      return this.highlightID == survey.id;
+    }
+    return false;
+  }
+
   // takes the survey selected by passing the id and survey current interval 
   answerSurvey(survey: Survey){
     // includes the survey id and current interval the user is taking it in
@@ -242,5 +254,7 @@ export class AvailablePage implements OnInit {
     // navigate to the answer page and pass the submitData
     this.router.navigate(['/answer/' + submitData])
   }
+
+
 
  }

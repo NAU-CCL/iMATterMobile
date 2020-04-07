@@ -63,6 +63,10 @@ const routes: Routes = [
     loadChildren: () => import('./pages/available/available.module').then( m => m.AvailablePageModule)
   },
   {
+    path: 'available/:id',
+    loadChildren: () => import('./pages/available/available.module').then( m => m.AvailablePageModule)
+  },
+  {
     path: 'answer/:id',
     loadChildren: () => import('./pages/answer/answer.module').then( m => m.AnswerPageModule)
   },

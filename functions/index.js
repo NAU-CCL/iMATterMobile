@@ -342,8 +342,7 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 	const users = admin.firestore().collection('users');
 	var userNotifToken;
 	var userCode;
-	var recent = new Map();
- 
+
 	const payload = {
 		notification: {
 			title: 'iMATter Learning Module',
@@ -401,9 +400,7 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 							if ((!storedLMUserVisibility.includes(userCode)) && singleUser.get("learningModNotif") == true)
 							{
 								currentUser = admin.firestore().collection('users').doc(userCode);
-								recent.set("message", "There is a new learning module available!");
-								recent.set("type", "learning module");
-								currentUser.update({recentNotifications: admin.firestore.FieldValue.arrayUnion(recent)});
+								currentUser.update({recentNotifications: admin.firestore.FieldValue.arrayUnion("There is a new learning module available!")});
                 
 								admin.messaging().sendToDevice(userNotifToken, payload)
 									.then((response) => {
@@ -442,9 +439,7 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 								if ((!storedLMUserVisibility.includes(userCode)) && singleUser.get("learningModNotif") == true)
 								{
 									currentUser = admin.firestore().collection('users').doc(userCode);
-									recent.set("message", "There is a new learning module available!");
-									recent.set("type", "learning module");
-									currentUser.update({recentNotifications: admin.firestore.FieldValue.arrayUnion(recent)});
+									currentUser.update({recentNotifications: admin.firestore.FieldValue.arrayUnion("There is a new learning module available!")});
 
 									admin.messaging().sendToDevice(userNotifToken, payload)
 										.then((response) => {
@@ -478,7 +473,8 @@ exports.emotionSurveyNotification = functions.firestore.document('users/{userID}
 	var emotionType;
 	var userNotifToken;
 	var userCode;
-	//var recent = new Map();
+	var notifMessage;
+	var recent = [];
 
 	const payload = {
 		notification: {
@@ -503,8 +499,18 @@ exports.emotionSurveyNotification = functions.firestore.document('users/{userID}
 					{
 						userCode = newValue.code;
 						currentUser = admin.firestore().collection('users').doc(userCode);
-						//recent.set("message", "There is a new survey available");
-						//recent.set("type", "survey");
+						// currentUser.get().then((result) => {
+						// 	result.forEach(doc => {
+						// 		recent = doc.get('recentNotifications');
+						// 	});
+						// });
+
+						// notifMessage = {
+						// 	id: singleSurvey.get("id"),
+						// 	message: "There is a new survey available",
+						// 	type: "survey"
+						//   };
+						// recent.push(Object.assign({}, notifMessage));
 						currentUser.update({recentNotifications: admin.firestore.FieldValue.arrayUnion("There is a new survey available")});
 
 						userNotifToken = newValue.token;
@@ -539,7 +545,6 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 	const users = admin.firestore().collection('users');
 	var surveyType;
 	var userNotifToken;
-	var recent = new Map();
 	var userCode;
 
 	const payload = {
@@ -588,10 +593,7 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 								if ((!storedSurveyVisibility.includes(userCode)) && singleUser.get("surveyNotif") == true)
 								{
 									currentUser = admin.firestore().collection('users').doc(userCode);
-									recent.set("message", "There is a new survey available");
-									recent.set("type", "survey");
-									currentUser.update({recentNotifications: admin.firestore.FieldValue.arrayUnion(recent)});
-									
+								    currentUser.update({recentNotifications: admin.firestore.FieldValue.arrayUnion("There is a new survey available")});
 									userNotifToken = singleUser.get("token");
 
 									if (userNotifToken == '')
@@ -650,14 +652,8 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 									userNotifToken = singleUser.get("token");
                   
 									currentUser = admin.firestore().collection('users').doc(userCode);
-									recent.set("message", "There is a new survey available");
-									recent.set("type", "survey");
-									currentUser.update({recentNotifications: admin.firestore.FieldValue.arrayUnion(recent)});
+									currentUser.update({recentNotifications: admin.firestore.FieldValue.arrayUnion("There is a new survey available")});
 
-									if (userNotifToken == '')
-									{
-										return;
-									}
 									admin.messaging().sendToDevice(userNotifToken, payload)
 										.then((response) => {
 											console.log("New survey notification for Due Date sent successfully to " + singleUser.get("username"));
@@ -697,16 +693,13 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 							if ((!storedSurveyVisibility.includes(userCode)) && singleUser.get("surveyNotif") == true)
 							{
 								currentUser = admin.firestore().collection('users').doc(userCode);
-								recent.set("message", "There is a new survey available");
-								recent.set("type", "survey");
-								currentUser.update({recentNotifications: admin.firestore.FieldValue.arrayUnion(recent)});
+								currentUser.update({recentNotifications: admin.firestore.FieldValue.arrayUnion("There is a new survey available")});
 
 								userNotifToken = singleUser.get("token");
 								if (userNotifToken == '')
 								{
 									return;
 								}
-
 								admin.messaging().sendToDevice(userNotifToken, payload)
 									.then((response) => {
 										console.log("New survey notification for Inactivity sent successfully to " + singleUser.get("username"));
