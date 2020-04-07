@@ -147,7 +147,7 @@ analytic: Analytics =
     return timestamp.toDate();
   }
 
-  addChat(chatType) {
+  async addChat(chatType) {
     this.chat.cohort = this.cohortChat;
     this.storage.get('userCode').then((val) => {
       if (val) {
@@ -175,7 +175,7 @@ analytic: Analytics =
             } else {
               this.chat.type = 'user';
               this.chatService.addChat(this.chat).then(() => {
-                this.chatService.iterateChats(this.chat.cohort);
+                this.chatService.iterateChats(this.chat.cohort, 'addChat');
               });
               // this could possibly slow down this function
             }
@@ -228,7 +228,7 @@ analytic: Analytics =
     this.addChat('autoLeft');
     this.storage.get('cohort').then((val) => {
       if (val) {
-        this.chatService.iterateChats(val).then(() => {
+        this.chatService.iterateChats(val, 'ionViewWillLeave').then(() => {
             this.chats = this.chatService.getChats(val);
         });
       }

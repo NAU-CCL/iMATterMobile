@@ -75,7 +75,7 @@ export class LoginPage implements OnInit {
                 Validators.compose([Validators.required, Validators.email])],
             password: [
                 '',
-                Validators.compose([Validators.required, Validators.minLength(8)]),
+                Validators.compose([Validators.required]),
             ],
         });
     }

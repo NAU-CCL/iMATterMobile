@@ -15,7 +15,7 @@ export class ChatInitPage {
     this.storage.get('cohort').then((val) => {
       if (val) {
         this.router.navigate(['/tabs/chat/', val]);
-        this.chatService.iterateChats(val);
+        this.chatService.iterateChats(val, 'ngOnInit');
       }
     });
   }
