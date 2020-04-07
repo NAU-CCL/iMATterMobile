@@ -10,11 +10,17 @@
 <ion-content>
 
   <div *ngIf="!isComplete()">
-    <ion-button expand="block" class="fill-button" (click)="openPage(survey.surveyLink)">Take Survey</ion-button>
+    
+    <ion-button expand="block" class="fill-button" (click)="openPage(survey.surveyLink)">
+      Take Survey
+    </ion-button>
+
   </div>
   
   <div *ngIf="isComplete()">
+
     <h1>You have already taken this survey</h1>
+    
   </div>
 
 
