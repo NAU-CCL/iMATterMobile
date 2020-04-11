@@ -177,7 +177,7 @@ export class CalendarPage implements OnInit {
 
   // Create the right event format and reload source
   addEvent() {
-	  this.alertOpen = true;
+
 	  this.notificationIndex = Math.floor(Math.random() * 100000000000);
 	  let eventCopy = {
 		  title: this.event.title,
@@ -461,6 +461,7 @@ export class CalendarPage implements OnInit {
 // Calendar event was clicked
   async onEventSelected(event) {
     // Use Angular date pipe for conversion
+	console.log("CLICK " + this.clicked);
     let start = formatDate(event.startTime, 'medium', this.locale);
     let end = formatDate(event.endTime, 'medium', this.locale);
 	
@@ -659,7 +660,7 @@ export class CalendarPage implements OnInit {
     this.event.startTime = selected.toISOString();
     selected.setHours(selected.getHours() + 1);
     this.event.endTime = (selected.toISOString());
-	this.addToThisDay();
+
 	
 	
   }
@@ -674,6 +675,7 @@ export class CalendarPage implements OnInit {
 		role: 'confirm',
 		cssClass: 'secondary',
 		handler: (blah) => {
+		this.getAmpm();
 		this.showAddEvent = true;
 
 	  }
@@ -695,11 +697,14 @@ export class CalendarPage implements OnInit {
   }
   clickedCalendar(){
 	  if(this.alertOpen === true){
+		  
 		  this.clicked = false;
+		  
 	  }
 	  else{
 		  
 	  this.clicked = true;
+	  this.addToThisDay();
 	  }
   }
   
