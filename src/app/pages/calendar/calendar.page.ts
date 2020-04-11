@@ -177,6 +177,7 @@ export class CalendarPage implements OnInit {
 
   // Create the right event format and reload source
   addEvent() {
+	  this.alertOpen = true;
 	  this.notificationIndex = Math.floor(Math.random() * 100000000000);
 	  let eventCopy = {
 		  title: this.event.title,
@@ -371,7 +372,7 @@ export class CalendarPage implements OnInit {
     this.resetEvent();
     this.showAddEvent = false;
 	  }
-
+	
   }
 
   loadItems() {
@@ -663,8 +664,9 @@ export class CalendarPage implements OnInit {
 	
   }
   async addToThisDay(){
-	  if(this.clicked === true && this.alertOpen != true){
+	  if(this.clicked === true && this.alertOpen !== true){
 		  console.log(this.alertOpen);
+		  console.log("CLICKED" + this.clicked);
 	  const alert = await this.alertCtrl.create({
       header: 'Would you like to add an event to this day?',
       buttons: [{
@@ -688,6 +690,7 @@ export class CalendarPage implements OnInit {
     }]});
     alert.present(); 
 	  }
+	  this.alertOpen = false;
 	  
   }
   clickedCalendar(){
