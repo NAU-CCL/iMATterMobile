@@ -13,6 +13,7 @@ import {
   PushNotificationToken,
   PushNotificationActionPerformed } from '@capacitor/core';
 import {sendChatNotification} from "../../../../functions/src";
+import 'rxjs-compat/add/observable/timer';
 
 const { PushNotifications } = Plugins;
 
@@ -37,7 +38,8 @@ export class ChatPage implements OnInit {
   message: '',
   profilePic: '',
   type: '',
-  visibility: true
+  visibility: true,
+  count: 0
 };
 
 analytic: Analytics =
@@ -48,13 +50,14 @@ analytic: Analytics =
   sessionID: ''
 };
 
-
   private cohortChat: string;
   private chats: Observable<any>;
   private hasEntered: boolean;
 
   private analyticss: string;
   private sessions: Observable<any>;
+  private numberOfCurrentChats: number;
+  private numOfChats: number;
 
   constructor(public _zone: NgZone,
               private router: Router,
@@ -62,14 +65,15 @@ analytic: Analytics =
               private chatService: ChatService,
               private afs: AngularFirestore ,
               private analyticsService: AnalyticsService ) {
-
     this.storage.get('cohort').then((val) => {
       if (val) {
         this.cohortChat = val;
-        this.chats = this.chatService.getChats(this.cohortChat);
+        this.chats = this.chatService.getChats(val);
       }
+      // this.chats = this.chatService.getChats(this.cohortChat);
       this.scrollToBottom();
     });
+
   }
 
   ngOnInit() {
@@ -79,71 +83,42 @@ analytic: Analytics =
       }
     });
 
+    this.storage.get('cohort').then((val) => {
+      if (val) {
+        this.chats = this.chatService.getChats(val);
+      }
+    });
 
     this.getCohort();
 
+    /*
 
+    const timer = Observable.timer(1000);
+    timer.subscribe(tick => {
+      const ref = firebase.firestore().collection('chats').where('cohort', '==', this.cohort.name).orderBy('timestamp');
+      ref.get().then((res) => {
+        this.numOfChats = this.numberOfCurrentChats;
+        this.numberOfCurrentChats = 0;
+        res.forEach(doc => {
+          this.numberOfCurrentChats += 1;
+        });
+      });
+
+      if (this.numberOfCurrentChats > this.numOfChats) {
+        console.log('tick');
+        this.scrollToBottom();
+      }
+    });*/
   }
 
   ionViewDidEnter() {
-    this.chat.cohort = this.cohortChat;
-    this.storage.get('userCode').then((val) => {
-      if (val) {
-        const ref = this.afs.firestore.collection('users').where('code', '==', val);
-        ref.get().then((result) => {
-          result.forEach(doc => {
 
-            this.chat.userID = val;
-            this.chat.username = doc.get('username');
-            this.chat.profilePic = doc.get('profilePic');
-            this.chat.timestamp = firebase.firestore.FieldValue.serverTimestamp();
-            this.chat.message = this.chat.username + ' has entered the chat';
-            this.chat.type = 'auto';
-            this.chat.visibility = true;
-
-            this.chatService.addChat(this.chat); //.then(() => {
-
-              this.chat.message = '';
-              this.scrollToBottom();
-            // }, err => {
-
-           // });
-          });
-        });
-      }
-      //this.chat.message = '';
-      //this.scrollToBottom();
-    });
-    //this.chat.message = '';
+    this.addChat('autoEnter');
     this.scrollToBottom();
+
     this.addView();
 
   }
-
-  addView(){
-
-  // this.analytic.sessionID = this.session.id;
-  this.storage.get('userCode').then((val) => {
-    if (val) {
-      const ref = this.afs.firestore.collection('users').where('code', '==', val);
-      ref.get().then((result) => {
-        result.forEach(doc => {
-          this.analytic.page = 'chat';
-          this.analytic.userID = val;
-          this.analytic.timestamp = firebase.firestore.FieldValue.serverTimestamp();
-          // this.analytic.sessionID = this.idReference;
-          this.analyticsService.addView(this.analytic).then (() =>{
-            console.log('successful added view: chat');
-
-          }, err =>{
-            console.log('unsucessful added view: chat');
-
-          });
-        });
-      });
-    }
-  });
-}
 
   scrollToBottom() {
     setTimeout(() => {
@@ -168,7 +143,11 @@ analytic: Analytics =
 
   }
 
-  addChat() {
+  toDate(timestamp) {
+    return timestamp.toDate();
+  }
+
+  async addChat(chatType) {
     this.chat.cohort = this.cohortChat;
     this.storage.get('userCode').then((val) => {
       if (val) {
@@ -180,19 +159,27 @@ analytic: Analytics =
             this.chat.username = doc.get('username');
             this.chat.profilePic = doc.get('profilePic');
             this.chat.timestamp = firebase.firestore.FieldValue.serverTimestamp();
-            this.chat.type = 'user';
             this.chat.visibility = true;
 
-            this.chatService.addChat(this.chat).then(() => {
-              this.chat.message = '';
-              this._zone.run(() => {
-                setTimeout(() => {
-                  this.content.scrollToBottom(300);
-                });
-              });
-            }, err => {
+            if (chatType === 'autoEnter') {
 
-            });
+              this.chat.message = this.chat.username + ' has entered the chat';
+              this.chat.type = 'auto';
+              this.chatService.addChat(this.chat);
+
+            } else if (chatType === 'autoLeft') {
+              this.chat.message = this.chat.username + ' has left the chat';
+              this.chat.type = 'auto';
+              this.chatService.addChat(this.chat);
+
+            } else {
+              this.chat.type = 'user';
+              this.chatService.addChat(this.chat).then(() => {
+                this.chatService.iterateChats(this.chat.cohort, 'addChat');
+              });
+              // this could possibly slow down this function
+            }
+            this.chat.message = '';
           });
         });
       }
@@ -200,30 +187,30 @@ analytic: Analytics =
     this.scrollToBottom();
   }
 
-  ionViewWillLeave() {
-    this.chat.cohort = this.cohortChat;
+  goToProfile(userID: string, cohort: string) {
+    this.router.navigate(['/viewable-profile/', userID]);
+    this.storage.set('currentCohort', cohort);
+    this.storage.set('currentLoc', '/chat/');
+  }
+
+
+  addView() {
+
+    // this.analytic.sessionID = this.session.id;
     this.storage.get('userCode').then((val) => {
       if (val) {
         const ref = this.afs.firestore.collection('users').where('code', '==', val);
         ref.get().then((result) => {
           result.forEach(doc => {
+            this.analytic.page = 'chat';
+            this.analytic.userID = val;
+            this.analytic.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+            // this.analytic.sessionID = this.idReference;
+            this.analyticsService.addView(this.analytic).then (() =>{
+              console.log('successful added view: chat');
 
-            this.chat.userID = val;
-            this.chat.username = doc.get('username');
-            this.chat.profilePic = doc.get('profilePic');
-            this.chat.timestamp = firebase.firestore.FieldValue.serverTimestamp();
-            this.chat.message = this.chat.username + ' has left the chat';
-            this.chat.type = 'auto';
-            this.chat.visibility = true;
-
-            this.chatService.addChat(this.chat).then(() => {
-              this.chat.message = '';
-              this._zone.run(() => {
-                setTimeout(() => {
-                  this.content.scrollToBottom(300);
-                });
-              });
             }, err => {
+              console.log('unsucessful added view: chat');
 
             });
           });
@@ -232,9 +219,20 @@ analytic: Analytics =
     });
   }
 
-  goToProfile(userID: string, cohort: string) {
-    this.router.navigate(['/viewable-profile/', userID]);
-    this.storage.set('currentCohort', cohort);
-    this.storage.set('currentLoc', '/chat/');
+
+  checkForNewChat() {
+
   }
+
+  ionViewWillLeave() {
+    this.addChat('autoLeft');
+    this.storage.get('cohort').then((val) => {
+      if (val) {
+        this.chatService.iterateChats(val, 'ionViewWillLeave').then(() => {
+            this.chats = this.chatService.getChats(val);
+        });
+      }
+    });
+  }
+
 }

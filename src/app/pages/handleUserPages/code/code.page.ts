@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {AlertController, LoadingController} from '@ionic/angular';
-import {AuthServiceProvider} from '../../../services/user/auth.service';
-import {Router} from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AlertController, LoadingController, ToastController } from '@ionic/angular';
+import { AuthServiceProvider } from '../../../services/user/auth.service';
+import { Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
 
 
@@ -18,12 +18,13 @@ export class CodePage implements OnInit {
   public codeValidated: boolean;
 
   constructor(
-      public loadingCtrl: LoadingController,
-      public alertCtrl: AlertController,
+      private loadingCtrl: LoadingController,
+      private alertCtrl: AlertController,
       private authService: AuthServiceProvider,
       private router: Router,
       private formBuilder: FormBuilder,
-      public afs: AngularFirestore
+      private afs: AngularFirestore,
+      private toastCtrl: ToastController,
   ) {
     this.codeForm = this.formBuilder.group({
       code: ['',
@@ -34,20 +35,32 @@ export class CodePage implements OnInit {
   ngOnInit() {
   }
 
-
   validateCode(code: string) {
     const docRef = this.afs.firestore.collection('users').doc(code);
     docRef.get().then((docData) => {
-      if (docData.exists) {
+      if (docData.exists && docData.get('codeEntered') === false) {
         console.log('Exists');
         this.codeValidated = true;
+        this.afs.firestore.collection('users')
+            .doc(code).update({codeEntered: true});
         this.router.navigate(['/signup/', code ]);
+      } else if (docData.get('codeEntered') === true) {
+        this.showToast('Code already used');
+        this.codeValidated = false;
       } else {
         console.log('No such document!');
+        this.showToast('Code does not exist');
         this.codeValidated = false;
       }
     }).catch((err) => {
       console.log('Error getting document', err);
     });
+  }
+
+  showToast(msg) {
+    this.toastCtrl.create({
+      message: msg,
+      duration: 2000
+    }).then(toast => toast.present());
   }
 }

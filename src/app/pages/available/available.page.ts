@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { FireService, Survey } from 'src/app/services/survey/fire.service';
 import { Storage} from '@ionic/storage';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
 
 // // Today's date as a javascript Date Object
@@ -31,13 +31,18 @@ export class AvailablePage implements OnInit {
   userCode;
   // array of of users that can see the survey
   userVisibility = [];
-  // Temporary Inactive days variable
-  //inactiveDays = 20;
+  // number of Inactive days
+  inactiveDays;
+
+  completed = [];
+
+  highlightID;
 
   constructor(private fs: FireService,
               private storage: Storage, 
               private router: Router, 
-              public afs: AngularFirestore
+              public afs: AngularFirestore,
+              private activatedRoute: ActivatedRoute, 
               ) { }
 
   ngOnInit() {
@@ -47,6 +52,8 @@ export class AvailablePage implements OnInit {
         this.router.navigate(['/login/']);
       }
     });  
+
+    //this.highlightID = this.activatedRoute.snapshot.paramMap.get('id');
 
   }
 
@@ -70,6 +77,10 @@ export class AvailablePage implements OnInit {
         });
       }
     });
+
+    this.storage.get('daysSinceLogin').then((val) => {
+      this.inactiveDays = val;
+    })
   }
 
 
@@ -113,7 +124,8 @@ export class AvailablePage implements OnInit {
           if(this.daysAUser >= parseInt(day) && this.daysAUser <= parseInt(day) + expirationDays){
             this.answeredSurveys.forEach( answered => {
               if(answered.split(":")[0] == survey.id && answered.split(":")[1] == day){
-                canDisplay = false;
+                canDisplay = true;
+                this.completed.push(survey.id);
                 includes = true;
               }
 
@@ -141,7 +153,8 @@ export class AvailablePage implements OnInit {
           if(daysBeforeDue <= parseInt(day) && daysBeforeDue >= parseInt(day) - expirationDays){
             this.answeredSurveys.forEach( answered => {
               if(answered.split(":")[0] == survey.id && answered.split(":")[1] == day){
-                canDisplay = false;
+                canDisplay = true;
+                this.completed.push(survey.id);
                 includes = true;
               }
 
@@ -163,10 +176,9 @@ export class AvailablePage implements OnInit {
       // if the survey type is inactive and the user's inactive days meets or exceeds the
       // surveys inactive days field, then display to the user
       if(survey.type == 'Inactive'){
-        /*
         if(survey.daysInactive <= this.inactiveDays){
           canDisplay = true;
-        }*/
+        }
       }
 
       // if the survey type is Emotion and the user's emotion matches the survey's
@@ -176,7 +188,8 @@ export class AvailablePage implements OnInit {
           canDisplay = true;
           // this.answeredSurveys.forEach( answered => {
           //   if(answered.split(":")[0] == survey.id && answered.split(":")[1] == ("" + today.getDate())){
-          //     canDisplay = false;
+          //     canDisplay = true;
+          //     this.completed.push(survey.id);
           //     includes = true;
           //   }
           //   if(answered.split(":")[0] == survey.id && answered.split(":")[1] != ("" + today.getDate())){
@@ -198,6 +211,21 @@ export class AvailablePage implements OnInit {
     return canDisplay;
   }
 
+  isComplete(survey: Survey){
+    if(this.completed.includes(survey.id)){
+      return true;
+    }
+
+    return false;
+  }
+
+  isHighlight(survey: Survey){
+    if(this.highlightID){
+      return this.highlightID == survey.id;
+    }
+    return false;
+  }
+
   // takes the survey selected by passing the id and survey current interval 
   answerSurvey(survey: Survey){
     // includes the survey id and current interval the user is taking it in
@@ -212,7 +240,11 @@ export class AvailablePage implements OnInit {
         }
       })      
     }
-    
+
+    if(this.isComplete(survey)){
+      submitData = survey.id + ":" + "completed";
+    }
+  
     // since the inactive and emotion surveys are dealt with differently, 
     // just add the survey id with a 0
     if(survey.type == 'Inactive' || survey.type == 'Emotion'){
@@ -222,5 +254,7 @@ export class AvailablePage implements OnInit {
     // navigate to the answer page and pass the submitData
     this.router.navigate(['/answer/' + submitData])
   }
+
+
 
  }

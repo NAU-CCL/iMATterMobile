@@ -279,40 +279,56 @@ exports.sendProviderRecoveryEmail=functions.firestore.document('provider_recover
 
         });*/
 
-
-	/*
+/* OLD
 exports.deleteOldChatMessages=functions.https.onRequest((req, res)=> {
-	const now = new Date();
-	console.log('now', now);
+const now = new Date();
+console.log('now', now);
 
-	admin.firestore().collection('mobileSettings').doc('chatHours').get().then(function(doc) {
-		let setHours = Number(doc.get('hours'));
-		console.log('setHours', setHours);
-		setHours = setHours * 60 * 60 * 1000;
-		console.log('setHours', setHours);
+admin.firestore().collection('mobileSettings').doc('chatHours').get().then(function(doc) {
+let setHours = Number(doc.get('hours'));
+console.log('setHours', setHours);
+setHours = setHours * 60 * 60 * 1000;
+console.log('setHours', setHours);
 
-		const ref = admin.firestore().collection('chats');
-		ref.get().then((result) => {
-			let batch = admin.firestore().batch();
-			result.forEach(doc => {
-				const timestamp = new Date(doc.get('timestamp').toDate());
-				console.log('timestamp', timestamp);
-				const difference = now.getTime() - timestamp.getTime();
-				console.log('difference', difference);
-				console.log('setHours', setHours);
+const ref = admin.firestore().collection('chats');
+ref.get().then((result) => {
+    let batch = admin.firestore().batch();
+    result.forEach(doc => {
+        const timestamp = new Date(doc.get('timestamp').toDate());
+        console.log('timestamp', timestamp);
+        const difference = now.getTime() - timestamp.getTime();
+        console.log('difference', difference);
+        console.log('setHours', setHours);
 
-				if(difference >= setHours) {
-					batch.delete(doc.ref);
-				}
+        if(difference >= setHours) {
+            batch.delete(doc.ref);
+        }
 
-			});
-			batch.commit();
-			return setHours;
-		}).catch(error => {console.log('did not check', error)});
-		return setHours;
-	}).catch(error => {console.log('failed', error)});
+    });
+    batch.commit();
+    return setHours;
+}).catch(error => {console.log('did not check', error)});
+return setHours;
+}).catch(error => {console.log('failed', error)});
 });*/
-		
+
+exports.deleteOldChatMessages = functions.https.onRequest((req, res)=> {
+	const ref = admin.firestore().collection('chats');
+	ref.get().then((result) => {
+		let batch = admin.firestore().batch();
+		result.forEach(doc => {
+			if(doc.get('visibility') === false) {
+				batch.delete(doc.ref);
+			}
+
+		});
+		batch.commit();
+		return batch;
+	}).catch(error => {console.log('did not check', error)});
+	return 'worked';
+});
+
+
 //https://firebase.google.com/docs/functions/http-events
 /**
  * Iterate through learning modules and get the times of visibility for active LMs
@@ -326,8 +342,7 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 	const users = admin.firestore().collection('users');
 	var userNotifToken;
 	var userCode;
-	var recentNotifications = [];
- 
+
 	const payload = {
 		notification: {
 			title: 'iMATter Learning Module',
@@ -338,14 +353,14 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 
 	learningModules.get().then((value) => {
 		value.forEach(learningModule => {
-			
+
 			var moduleActive = learningModule.get("moduleActive");
 			//Skip over this module if it's not active
 			if (moduleActive == false)
 			{
 				return; //return acts as "continue" in forEach loop
 			}
-
+			
 			var lmUserVisibility = []; //reset this for each learningModule
 			var storedLMUserVisibility = learningModule.get("userVisibility");
 			//overdoing the splitting but does the job
@@ -367,6 +382,11 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 					userCode = singleUser.get("code");
 					userNotifToken = singleUser.get("token");
 
+					if (userNotifToken == '')
+					{
+						return;
+					}
+
 					//for each week in the module visibility list
 					moduleVisibility.forEach(week => {
 
@@ -379,10 +399,8 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 							//Covers case where new module is added
 							if ((!storedLMUserVisibility.includes(userCode)) && singleUser.get("learningModNotif") == true)
 							{
-								recentNotifications = singleUser.get('recentNotifications');
-								recentNotifications.push(payload.body);
-								currentUser = singleUser.get('code');
-								currentUser.update({recentNotifications: admin.firestore.FieldValue.arrayUnion(recentNotifications)});
+								currentUser = admin.firestore().collection('users').doc(userCode);
+								currentUser.update({recentNotifications: admin.firestore.FieldValue.arrayUnion("There is a new learning module available!")});
                 
 								admin.messaging().sendToDevice(userNotifToken, payload)
 									.then((response) => {
@@ -420,10 +438,8 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 								//if user hasn't yet been notified and user's notifications are turned on, send push notif
 								if ((!storedLMUserVisibility.includes(userCode)) && singleUser.get("learningModNotif") == true)
 								{
-									recentNotifications = singleUser.get('recentNotifications');
-									recentNotifications.push(payload.body);
-									currentUser = singleUser.get('code');
-									currentUser.update({recentNotifications: admin.firestore.FieldValue.arrayUnion(recentNotifications)});
+									currentUser = admin.firestore().collection('users').doc(userCode);
+									currentUser.update({recentNotifications: admin.firestore.FieldValue.arrayUnion("There is a new learning module available!")});
 
 									admin.messaging().sendToDevice(userNotifToken, payload)
 										.then((response) => {
@@ -437,7 +453,8 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 						}
 					});
 				});
-				//IMPORTANT: update the userVisibility array
+				//IMPORTANT: update the previousUserVisibility and userVisibility array
+				learningModules.doc(learningModule.id).update({previousUserVisibility: storedLMUserVisibility});
 				learningModules.doc(learningModule.id).update({userVisibility: lmUserVisibility});
 			});
 		});
@@ -455,7 +472,9 @@ exports.emotionSurveyNotification = functions.firestore.document('users/{userID}
 	var surveyType;
 	var emotionType;
 	var userNotifToken;
-	var recentNotifications;
+	var userCode;
+	var notifMessage;
+	var recent = [];
 
 	const payload = {
 		notification: {
@@ -478,10 +497,21 @@ exports.emotionSurveyNotification = functions.firestore.document('users/{userID}
 					//If this user's emotion matches survey's emotion type and their survey notifs are on
 					if (newValue.mood == emotionType && newValue.surveyNotif == true)
 					{
-						recentNotifications = singleUser.get('recentNotifications');
-						recentNotifications.push(payload.body);
-						currentUser = singleUser.get('code');
-						currentUser.update({recentNotifications: recentNotifications});
+						userCode = newValue.code;
+						currentUser = admin.firestore().collection('users').doc(userCode);
+						// currentUser.get().then((result) => {
+						// 	result.forEach(doc => {
+						// 		recent = doc.get('recentNotifications');
+						// 	});
+						// });
+
+						// notifMessage = {
+						// 	id: singleSurvey.get("id"),
+						// 	message: "There is a new survey available",
+						// 	type: "survey"
+						//   };
+						// recent.push(Object.assign({}, notifMessage));
+						currentUser.update({recentNotifications: admin.firestore.FieldValue.arrayUnion("There is a new survey available")});
 
 						userNotifToken = newValue.token;
 						admin.messaging().sendToDevice(userNotifToken, payload)
@@ -516,7 +546,6 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 	var surveyType;
 	var userNotifToken;
 	var userCode;
-	var recentNotifications;
 
 	const payload = {
 		notification: {
@@ -563,11 +592,15 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 								//and their notifications are on, send them the notif
 								if ((!storedSurveyVisibility.includes(userCode)) && singleUser.get("surveyNotif") == true)
 								{
-									recentNotifications = singleUser.get('recentNotifications');
-									recentNotifications.push(payload.body);
-									currentUser = singleUser.get('code');
-									currentUser.update({recentNotifications: recentNotifications});
+									currentUser = admin.firestore().collection('users').doc(userCode);
+								    currentUser.update({recentNotifications: admin.firestore.FieldValue.arrayUnion("There is a new survey available")});
 									userNotifToken = singleUser.get("token");
+
+									if (userNotifToken == '')
+									{
+										return;
+									}
+
 									admin.messaging().sendToDevice(userNotifToken, payload)
 										.then((response) => {
 											console.log("New survey notification for After Joining sent successfully to " + singleUser.get("username"));
@@ -613,19 +646,14 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 							{
 								surveyVisibility.push(singleUser.get("code"));
 
-								console.log("STORED SURVEY FOR DUE DATE");
-								console.log(storedSurveyVisibility);
-								console.log("USER " + singleUser.get("userCode") + " " + singleUser.get("username"));
-								console.log((!storedSurveyVisibility.includes(userCode)));
-
 								if ((!storedSurveyVisibility.includes(userCode)) && singleUser.get("surveyNotif") == true)
 								{
 									
 									userNotifToken = singleUser.get("token");
-									recentNotifications = singleUser.get('recentNotifications');
-									recentNotifications.push(payload.body);
-									currentUser = singleUser.get('code');
-									currentUser.update({recentNotifications: recentNotifications});
+                  
+									currentUser = admin.firestore().collection('users').doc(userCode);
+									currentUser.update({recentNotifications: admin.firestore.FieldValue.arrayUnion("There is a new survey available")});
+
 									admin.messaging().sendToDevice(userNotifToken, payload)
 										.then((response) => {
 											console.log("New survey notification for Due Date sent successfully to " + singleUser.get("username"));
@@ -664,11 +692,14 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 
 							if ((!storedSurveyVisibility.includes(userCode)) && singleUser.get("surveyNotif") == true)
 							{
-								recentNotifications = singleUser.get('recentNotifications');
-								recentNotifications.push(payload.body);
-								currentUser = singleUser.get('code');
-								currentUser.update({recentNotifications: recentNotifications});
+								currentUser = admin.firestore().collection('users').doc(userCode);
+								currentUser.update({recentNotifications: admin.firestore.FieldValue.arrayUnion("There is a new survey available")});
+
 								userNotifToken = singleUser.get("token");
+								if (userNotifToken == '')
+								{
+									return;
+								}
 								admin.messaging().sendToDevice(userNotifToken, payload)
 									.then((response) => {
 										console.log("New survey notification for Inactivity sent successfully to " + singleUser.get("username"));

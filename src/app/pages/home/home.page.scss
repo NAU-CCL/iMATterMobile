@@ -13,9 +13,8 @@ ion-title {
   overflow: hidden;
 }
 
-.noHighlight {
-  opacity: 40%;
-  visibility: visible;
+.highlight {
+  background-color: var(--secondary-color);
 }
 
 .emotion-toolbar {
@@ -29,5 +28,11 @@ ion-title {
 
 ion-icon {
   color: var(--main-color);
+}
+
+#rec-notif-card{
+  width: 75%;
+  height: 40px;
+  font-size: 20px;
 }
 

@@ -7,27 +7,36 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content>
+<form [formGroup]="reportForm">
   <ion-item>
-    <ion-label position="stacked">Title</ion-label>
-    <ion-input [(ngModel)]="submission.title"></ion-input>
+    <ion-label position="stacked">Subject:</ion-label>
+    <ion-textarea autoGrow="true" spellcheck="true" autocapitalize="true" formControlName="subject" placeholder="Subject"
+                  [class.invalid]="!reportForm.controls['subject'].valid && reportForm.controls['subject'].touched"></ion-textarea>
+  </ion-item>
+  <ion-item class="error-message" *ngIf="!reportForm.controls['subject'].valid && reportForm.controls['subject'].touched">
+    <ion-label>Please enter subject.</ion-label>
   </ion-item>
 
   <ion-item>
-    <ion-label position="stacked">What is the problem?</ion-label>
-    <ion-textarea [(ngModel)]="submission.description" rows="8"></ion-textarea>
+    <ion-label position="stacked">What is the problem?:</ion-label>
+    <ion-textarea autoGrow="true" spellcheck="true" autocapitalize="true" formControlName="description" placeholder="What is your question?"
+                  [class.invalid]="!reportForm.controls['description'].valid && reportForm.controls['description'].touched"></ion-textarea>
+  </ion-item>
+  <ion-item class="error-message" *ngIf="!reportForm.controls['description'].valid && reportForm.controls['description'].touched">
+    <ion-label>Please enter the problem you are experiencing.</ion-label>
   </ion-item>
 
+  <ion-footer >
+    <ion-toolbar>
+      <ion-button *ngIf="!reportForm.valid" class="fill-button" disabled="true" expand="full">
+        Submit
+      </ion-button>
+      <ion-button *ngIf="reportForm.valid" class="fill-button" expand="full" (click)="submitSubmission(reportForm)">
+        Submit
+      </ion-button>
+    </ion-toolbar>
+  </ion-footer>
+</form>
 </ion-content>
-
-<ion-footer >
-  <ion-toolbar>
-    <ion-button *ngIf="submission.title == '' || submission.description == ''" class="fill-button" disabled="true" expand="full" (click)="submitSubmission()">
-      Submit
-    </ion-button>
-    <ion-button *ngIf="submission.title != '' && submission.description != ''" class="fill-button" expand="full" (click)="submitSubmission()">
-      Submit
-    </ion-button>
-  </ion-toolbar>
-</ion-footer>
 

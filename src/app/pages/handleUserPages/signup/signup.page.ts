@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthServiceProvider, User } from '../../../services/user/auth.service';
 import { FcmService } from '../../../services/pushNotifications/fcm.service';
-import { LoadingController, AlertController } from '@ionic/angular';
+import {LoadingController, AlertController, ToastController} from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
@@ -16,19 +16,12 @@ import {AngularFirestore} from '@angular/fire/firestore';
   templateUrl: './signup.page.html',
   styleUrls: ['./signup.page.scss'],
 })
+
+
+
+
+
 export class SignupPage implements OnInit {
-  public signupForm: FormGroup;
-  public loading: any;
-  private id: any;
-  private readMore: boolean;
-  private allPicURLs: any;
-  private picURL: any;
-  private showImages: boolean;
-  private dueDate: string;
-  private currentDate = new Date().toJSON().split('T')[0];
-  private maxYear = new Date().getFullYear() + 1;
-  private securityQs: Array<string>;
-  private autoProfilePic: any;
 
   constructor(
       private authService: AuthServiceProvider,
@@ -39,7 +32,8 @@ export class SignupPage implements OnInit {
       private router: Router,
       private ionicStorage: Storage,
       private fcm: FcmService,
-      public afs: AngularFirestore
+      public afs: AngularFirestore,
+      private toastCtrl: ToastController,
   ) {
 
     this.getSecurityQs();
@@ -81,6 +75,20 @@ export class SignupPage implements OnInit {
       ],
     });
   }
+  public signupForm: FormGroup;
+  public loading: any;
+  private id: any;
+  private readMore: boolean;
+  private allPicURLs: any;
+  private picURL: any;
+  private showImages: boolean;
+  private dueDate: string;
+  private currentDate = new Date().toJSON().split('T')[0];
+  private maxYear = new Date().getFullYear() + 1;
+  private securityQs: Array<string>;
+  private autoProfilePic: any;
+  private emailUsed: boolean;
+  private usernameTaken: boolean;
 
   user: User = {
     code: '',
@@ -108,106 +116,10 @@ export class SignupPage implements OnInit {
     token: '',
     recentNotifications: [],
     answeredSurveys: [],
+    codeEntered: true
   };
 
-  ngOnInit() {}
-
-  ionViewWillEnter() {
-    this.id = this.activatedRoute.snapshot.paramMap.get('id');
-  }
-
-  async signupUser(signupForm: FormGroup): Promise<void> {
-    if (!signupForm.valid) {
-      console.log(
-          'Need to complete the form, current value: ', signupForm.value
-      );
-    } else {
-      const email: string = signupForm.value.email;
-      const password: string = signupForm.value.password;
-      const username: string = signupForm.value.username;
-      const dateDue: string = signupForm.value.dateDue;
-      const securityQ: string = signupForm.value.securityQ;
-      const securityA: string = signupForm.value.securityA;
-      const location: number = signupForm.value.location;
-      const bio: string = signupForm.value.bio;
-
-
-
-      this.user.code = this.id;
-      this.user.username = username;
-      this.user.email =  email;
-      this.user.password = password;
-      this.user.dueDate = dateDue.split('T')[0];
-      this.user.location = location;
-      this.user.bio = bio;
-      this.user.profilePic = this.picURL;
-      this.user.securityQ = securityQ;
-      this.user.securityA = securityA;
-      this.user.joined = firebase.firestore.FieldValue.serverTimestamp();
-      this.user.daysAUser = 0;
-      this.user.chatNotif = true;
-      this.user.points = 0;
-
-      // find user current pregnancy status
-      const currentDateString = new Date().toJSON().split('T')[0];
-      const currentDate = new Date(currentDateString);
-      const userDueDate = new Date(this.user.dueDate);
-      const dateDiff = Math.abs(currentDate.getTime() - userDueDate.getTime());
-      const diffInDays = Math.ceil(dateDiff / (24 * 3600 * 1000));
-      const totalDays = 279 - diffInDays;
-      this.user.totalDaysPregnant = totalDays;
-
-      const weeksPregnant = Math.floor(totalDays / 7);
-      this.user.weeksPregnant = weeksPregnant;
-      const daysPregnant = totalDays % 7;
-      this.user.daysPregnant = daysPregnant;
-      
-
-      // find user cohort
-      const tempCohort = this.user.dueDate.split('-');
-      console.log(tempCohort);
-      this.user.cohort = this.findCohort(tempCohort[1]);
-
-      this.authService.signupUser(this.user).then(
-          () => {
-            this.loading.dismiss().then(() => {
-              // this.ionicStorage.set('userCode', this.user.code);
-              this.router.navigate(['/login' ]);
-            });
-          },
-          error => {
-            this.loading.dismiss().then(async () => {
-              const alert = await this.alertCtrl.create({
-                message: error.message,
-                buttons: [{ text: 'Ok', role: 'cancel' }],
-              });
-              await alert.present();
-            });
-          }
-      );
-      this.loading = await this.loadingCtrl.create();
-      await this.loading.present();
-    }
-  }
-
-  showMore() {
-    this.readMore = true;
-  }
-
-  showLess() {
-    this.readMore = false;
-  }
-
-  showPics() {
-    this.showImages = true;
-  }
-
-  changePic(url: string) {
-    this.showImages = false;
-    this.picURL = url;
-  }
-
-  findCohort(month: string) {
+  static findCohort(month: string) {
     let cohort = '';
 
     if (month === '01') {
@@ -239,6 +151,153 @@ export class SignupPage implements OnInit {
     return cohort;
   }
 
+  static findDaysPregnant(totalDays) {
+    return totalDays % 7;
+  }
+
+  static findWeeksPregnant(totalDays) {
+    return Math.floor(totalDays / 7);
+  }
+
+  static findTotalDaysPregnant(userDue) {
+    const currentDateString = new Date().toJSON().split('T')[0];
+    const currentDate = new Date(currentDateString);
+    const userDueDate = new Date(userDue);
+    const dateDiff = Math.abs(currentDate.getTime() - userDueDate.getTime());
+    const diffInDays = Math.ceil(dateDiff / (24 * 3600 * 1000));
+    const totalDays = 280 - diffInDays;
+
+    return totalDays;
+  }
+
+  ngOnInit() {}
+
+  ionViewWillEnter() {
+    this.id = this.activatedRoute.snapshot.paramMap.get('id');
+  }
+
+  async signupUser(signupForm: FormGroup): Promise<void> {
+    if (!signupForm.valid) {
+      console.log(
+          'Need to complete the form, current value: ', signupForm.value
+      );
+
+      this.showToast('Please enter: ' +  signupForm.value.toString());
+    } else {
+
+      this.user.code = this.id;
+      this.user.username = signupForm.value.username;
+      this.user.email =  signupForm.value.email;
+      this.user.password = signupForm.value.password;
+      this.user.dueDate = signupForm.value.dateDue.split('T')[0];
+      this.user.location = signupForm.value.location;
+      this.user.bio = signupForm.value.bio;
+      this.user.profilePic = this.picURL;
+      this.user.securityQ = signupForm.value.securityQ;
+      this.user.securityA = signupForm.value.securityA;
+      this.user.joined = firebase.firestore.FieldValue.serverTimestamp();
+
+
+      // find user current pregnancy status
+      this.user.totalDaysPregnant = SignupPage.findTotalDaysPregnant(this.user.dueDate);
+      this.user.weeksPregnant = SignupPage.findWeeksPregnant(this.user.totalDaysPregnant);
+      this.user.daysPregnant = SignupPage.findDaysPregnant(this.user.totalDaysPregnant);
+
+      // find user cohort
+        // get user due month
+      const tempCohort = this.user.dueDate.split('-');
+      this.user.cohort = SignupPage.findCohort(tempCohort[1]);
+
+      this.afs.firestore.collection('users').where('email', '==', this.user.email)
+          .get().then(snapshot => {
+        if (snapshot.docs.length > 0) {
+          console.log(('taken'));
+          this.emailUsed = true;
+          this.showToast('Email already in use!');
+        } else {
+          this.afs.firestore.collection('users').where('username', '==', this.user.username)
+              .get().then(snap => {
+            if (snap.docs.length > 0) {
+              console.log(('taken'));
+              this.usernameTaken = true;
+              this.showToast('Username taken!');
+            } else {
+              this.authService.signupUser(this.user).then(
+                  () => {
+                    /*
+                    this.loading.dismiss().then(() => {
+                      // this.ionicStorage.set('userCode', this.user.code);
+                      this.showToast('You have created an account');
+
+                     */
+                      this.router.navigate(['/login']);
+                   // });
+                  },
+                  error => {
+                    /*
+                    this.loading.dismiss().then(async () => {
+                      const alert = await this.alertCtrl.create({
+                        message: error.message,
+                        buttons: [{text: 'Ok', role: 'cancel'}],
+                      });
+                      await alert.present();
+                    });*/
+                    this.showToast('An error occurred while creating your account');
+                  }
+              );
+              // this.loading = await this.loadingCtrl.create();
+              // await this.loading.present();
+            }
+          });
+        }
+      });
+    }
+  }
+
+  showMore() {
+    this.readMore = true;
+  }
+
+  showLess() {
+    this.readMore = false;
+  }
+
+  showPics() {
+    this.showImages = true;
+  }
+
+  changePic(url: string) {
+    this.showImages = false;
+    this.picURL = url;
+  }
+
+  checkEmail(email): any {
+
+    this.afs.firestore.collection('users').where('email', '==', email)
+        .get().then(snapshot => {
+          if (snapshot.docs.length > 0) {
+            console.log(('taken'));
+            this.emailUsed = true;
+          } else {
+            this.emailUsed = false;
+          }
+        });
+  }
+
+  checkUsername(username): any {
+    let taken = false;
+    this.afs.firestore.collection('users').where('username', '==', username)
+        .get().then(snapshot => {
+      if (snapshot.docs.length > 0) {
+        console.log(('taken'));
+        taken =  true;
+        return true;
+      }
+    });
+  }
+
+
+
   getSecurityQs() {
     firebase.firestore().collection('mobileSettings').doc('userSignUpSettings').get().then((result) => {
       this.securityQs = result.get('securityQs');
@@ -255,6 +314,13 @@ export class SignupPage implements OnInit {
     firebase.firestore().collection('mobileSettings').doc('userSignUpSettings').get().then((result) => {
       this.allPicURLs = result.get('profilePictures');
     });
+  }
+
+  showToast(msg) {
+    this.toastCtrl.create({
+      message: msg,
+      duration: 2000
+    }).then(toast => toast.present());
   }
 
 }

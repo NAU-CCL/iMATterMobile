@@ -20,7 +20,7 @@
       </ion-input>
     </ion-item>
     <ion-item class="error-message" *ngIf="!loginForm.controls['email'].valid &&loginForm.controls['email'].touched">
-      <ion-label>Please enter a valid email address.</ion-label>
+      <ion-label>Please enter your email address.</ion-label>
     </ion-item>
 
     <ion-item>
@@ -30,7 +30,7 @@
       </ion-input>
     </ion-item>
     <ion-item class="error-message" *ngIf="!loginForm.controls['password'].valid && loginForm.controls['password'].touched">
-      <ion-label></ion-label>
+      <ion-label>Please enter your password.</ion-label>
     </ion-item>
 
     <ion-button class="fill-button" (click)="validateUser(loginForm)" expand="block" [disabled]="!loginForm.valid">
@@ -44,7 +44,7 @@
     New to iMATter? Create a new account
   </ion-button>
 
-  <ion-button class="text-button" expand="block" fill="clear" routerLink="/reset-password">
+  <ion-button padding-vertical class="text-button" expand="block" fill="clear" routerLink="/reset-password">
     Forgot password
   </ion-button>
 </ion-content>

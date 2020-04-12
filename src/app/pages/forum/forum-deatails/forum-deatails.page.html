@@ -9,27 +9,40 @@
 
 <ion-content padding>
 
-  <ion-item>
-    <ion-label position="stacked">Title</ion-label>
-    <ion-input [(ngModel)]="question.title"></ion-input>
-  </ion-item>
+  <form [formGroup]="questionForm">
+    <ion-item>
+      <ion-label position="stacked">Enter Title:</ion-label>
+      <ion-textarea autoGrow="true" spellcheck="true" autocapitalize="true" formControlName="title" placeholder="Short title for your question"
+        [class.invalid]="!questionForm.controls['title'].valid && questionForm.controls['title'].touched"></ion-textarea>
+    </ion-item>
+    <ion-item class="error-message" *ngIf="!questionForm.controls['title'].valid && questionForm.controls['title'].touched">
+      <ion-label>Please enter a title.</ion-label>
+    </ion-item>
 
-  <ion-item>
-    <ion-label position="stacked">Description</ion-label>
-    <ion-textarea [(ngModel)]="question.description" rows="8"></ion-textarea>
-  </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Enter Question:</ion-label>
+      <ion-textarea autoGrow="true" spellcheck="true" autocapitalize="true" formControlName="description" placeholder="What is your question?"
+                    [class.invalid]="!questionForm.controls['description'].valid && questionForm.controls['description'].touched"></ion-textarea>
+    </ion-item>
+    <ion-item class="error-message" *ngIf="!questionForm.controls['description'].valid && questionForm.controls['description'].touched">
+      <ion-label>Please enter a question.</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label> Ask Anonymously? </ion-label>
+      <ion-toggle color="dark" formControlName="anon"></ion-toggle>
+    </ion-item>
+    <ion-footer *ngIf="!question.id">
+      <ion-toolbar>
+        <ion-button *ngIf="questionForm.valid" expand="full" class="fill-button" (click)="addQuestion(questionForm)" (click)="sendEmail(questionForm)">
+          Post
+        </ion-button>
+        <ion-button *ngIf="!questionForm.valid" disabled="true" expand="full" class="fill-button" (click)="addQuestion(questionForm)" (click)="sendEmail(questionForm)">
+          Post
+        </ion-button>
+      </ion-toolbar>
+    </ion-footer>
 
-  <ion-item>
-    <ion-label> Ask Anonymously? </ion-label>
-    <ion-toggle color="dark" [(ngModel)]="anon"></ion-toggle>
-  </ion-item>
+  </form>
 
 </ion-content>
 
-<ion-footer *ngIf="!question.id">
-  <ion-toolbar>
-    <ion-button expand="full" class="fill-button" (click)="addQuestion()" (click)="sendEmail()">
-      Post
-    </ion-button>
-  </ion-toolbar>
-</ion-footer>
