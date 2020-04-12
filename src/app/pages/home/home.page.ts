@@ -102,7 +102,7 @@ export class HomePage implements OnInit {
           numOfClickMore: 0,
           numOfClickHome: 0
       }
-      
+
   public dropDown: any = [];
   public expandSize;
   private userProfileID: any;
@@ -226,6 +226,15 @@ export class HomePage implements OnInit {
   {
     this.analyticsService.updateLModuleClicks(this.session);
     console.log("added learning module click");
+
+  }
+
+
+
+  updateSurveryClicks()
+  {
+    this.analyticsService.updateSurveryClicks(this.session);
+    console.log("added survery click");
 
   }
 
