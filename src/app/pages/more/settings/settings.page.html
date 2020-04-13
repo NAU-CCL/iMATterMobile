@@ -26,17 +26,18 @@
       <ion-label> Information Desk Notifications </ion-label>
       <ion-toggle [(ngModel)]="infoDeskNotif" color="dark" (ionChange)= setInfoDeskNotification(infoDeskNotif) ></ion-toggle>
     </ion-item>
+      <ion-list-header> Calendar Settings </ion-list-header>
 	<ion-item>
-		<ion-label>How long before an event would you like a notification to appear</ion-label>
+		<ion-label>Notifications Should Send: </ion-label>
 			<ion-select [(ngModel)]="eventNotificationTime" (ionChange)= setCalendarEventNotificationTime(eventNotificationTime) id="eventTime" value="0" ok-text="Okay" cancel-text="Dismiss">
-			  <ion-select-option value="0">0 minutes</ion-select-option>
-			  <ion-select-option value="15">15 minutes</ion-select-option>
-			  <ion-select-option value="30">30 minutes</ion-select-option>
-			  <ion-select-option value="60">One hour</ion-select-option>
+			  <ion-select-option value="0">0 minutes before</ion-select-option>
+			  <ion-select-option value="15">15 minutes before</ion-select-option>
+			  <ion-select-option value="30">30 minutes before</ion-select-option>
+			  <ion-select-option value="60">One hour before</ion-select-option>
 			</ion-select>
   </ion-item>
   <ion-item>
-		<ion-label>12 hour clock or 24 hour clock</ion-label>
+		<ion-label>Clock Hour Type</ion-label>
 			<ion-select [(ngModel)]="clock" (ionChange)= setClockType(clock) id="eventTime" value="0" ok-text="Okay" cancel-text="Dismiss">
 			  <ion-select-option value="12">12 hour clock</ion-select-option>
 			  <ion-select-option value="24">24 hour clock</ion-select-option>

@@ -198,6 +198,7 @@ export class ProfilePage implements OnInit {
       ],
     });
     await alert.present();
+    this.refreshPage();
   }
 
   async updatePassword(): Promise<void> {
@@ -221,6 +222,7 @@ export class ProfilePage implements OnInit {
       ],
     });
     await alert.present();
+    this.refreshPage();
   }
 
     async updateLocation(): Promise<void> {
@@ -242,6 +244,7 @@ export class ProfilePage implements OnInit {
             ],
         });
         await alert.present();
+        this.refreshPage();
     }
 
     async updateBio(): Promise<void> {
@@ -263,6 +266,7 @@ export class ProfilePage implements OnInit {
             ],
         });
         await alert.present();
+        this.refreshPage();
     }
 
   refreshPage() {

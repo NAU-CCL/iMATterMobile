@@ -21,7 +21,7 @@
 
 <div *ngIf="readMore">
   <p class="content">
-    <b>Username:</b> To keep this application anonymous, we ask you to create a username. This is
+    <b>Secret identity:</b> To keep this application anonymous, we ask you to create a secret identity. This is
     what will be shown to other users.
   </p>
 
@@ -31,8 +31,10 @@
     to you about your pregnancy, we require you enter your full due date.
   </p>
   <p class="content">
-    <b>Location:</b> If you would like for us to provide resources to you based on your location, please enter
-    your zip code. Otherwise, you may leave this blank.
+    <b>Location:</b> We provide you a map of resources near you. If you would like, you
+    can allow iMATter access to your exact location when accessing the map.
+    If you feel more comfortable with a zip code, please enter your zip code.
+    Otherwise, you may leave this blank.
   </p>
   <p class="content">
     <b>Bio:</b> You will have a profile that is viewable by other users. If you would like to say something about
@@ -83,8 +85,13 @@
 
     <ion-item>
       <ion-label position="stacked">Secret Identity</ion-label>
-      <ion-input formControlName="username" placeholder="Secret Identity">
+      <ion-input formControlName="username" placeholder="Secret Identity"
+                 [class.invalid]="!signupForm.controls['username'].valid && signupForm.controls['username'].touched">
       </ion-input>
+    </ion-item>
+    <ion-item class="error-message"
+              *ngIf="!signupForm.controls['username'].valid  && signupForm.controls['username'].touched">
+      <ion-label>Please enter a secret identity.</ion-label>
     </ion-item>
 
     <ion-item>
@@ -120,7 +127,10 @@
       </ion-textarea>
     </ion-item>
 
-    <ion-button class= "fill-button" expand="block" (click)="signupUser(signupForm)">
+    <ion-button *ngIf="signupForm.valid" class= "fill-button" expand="block" (click)="signupUser(signupForm)">
+      Create Account
+    </ion-button>
+    <ion-button *ngIf="!signupForm.valid" disabled="true" class= "fill-button" expand="block" (click)="signupUser(signupForm)">
       Create Account
     </ion-button>
   </form>

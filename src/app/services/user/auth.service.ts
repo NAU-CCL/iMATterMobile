@@ -82,7 +82,7 @@ export class AuthServiceProvider {
 
   // tslint:disable-next-line:max-line-length
   signupUser(user: User): Promise<any> {
-    return this.userCollection.doc(user.code).set({user});
+    return this.userCollection.doc(user.code).set(user);
   }
 
 
