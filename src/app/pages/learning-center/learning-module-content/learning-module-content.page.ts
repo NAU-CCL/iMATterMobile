@@ -8,6 +8,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { ProfileService } from '../../../services/user/profile.service';
 import { Observable } from 'rxjs';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-learning-module-content',
@@ -86,7 +87,8 @@ export class LearningModuleContentPage implements OnInit {
     public toastController: ToastController,
     private storage: Storage,
     public afs: AngularFirestore,
-    public profileService: ProfileService) 
+    public profileService: ProfileService,
+    public alertController: AlertController) 
     { 
       //Used for resetting the quiz selections when the user wants to retake a quiz
       this.quizForm = new FormGroup({
@@ -311,6 +313,10 @@ export class LearningModuleContentPage implements OnInit {
     window['onYouTubeIframeAPIReady'] = () => this.startVideo();
   }
 
+  /**
+   * playerVars descriptions can be found here:
+   * https://developers.google.com/youtube/player_parameters
+   */
   startVideo()
   {
     this.player = new window['YT'].Player('player'+ this.learningModule.id, //IMPORTANT: give every player a unique id 
@@ -318,7 +324,7 @@ export class LearningModuleContentPage implements OnInit {
       videoId: this.learningModule.moduleVideoID,
       playerVars: 
       {
-        controls: 1, //allow user control of video
+        controls: 0, //shows user controls for video
         fs: 1, //fullscreen allowed
         playsinline: 1,
         modestbranding: 1,
@@ -329,14 +335,8 @@ export class LearningModuleContentPage implements OnInit {
       events:
       {
         'onStateChange': this.onPlayerStateChange.bind(this),
-        'onReady': this.onPlayerReady.bind(this),
       }
     });
-  }
-
-  onPlayerReady(event)
-  {
-    event.target.playVideo();
   }
 
   onPlayerStateChange(event)
@@ -477,6 +477,23 @@ export class LearningModuleContentPage implements OnInit {
         }
       }
     });
+  }
+
+  async presentAlert(header: string, message: string) {
+    const alert = await this.alertController.create({
+          header,
+          message,
+          buttons: ['OK']
+      });
+
+    await alert.present();
+  }
+
+  displayVideoPlayerInfo()
+  {
+    this.presentAlert('About Video Player',
+    '<b>Full Screen:</b> ' +
+      'Double tap video to go full screen. Double tap again to exit full screen.<br><br>');
   }
 
   clearStorage()

@@ -9,12 +9,17 @@
 
 <ion-content>
 
-  <ion-button (click)="clearStorage()" color="danger">CLEAR STORAGE</ion-button>
+  <!--<ion-button (click)="clearStorage()" color="danger">CLEAR STORAGE</ion-button>-->
   
   <ion-card>
 
     <ion-card-header color="medium">{{learningModule.moduleContent}}</ion-card-header>
 
+    <ion-button *ngIf="learningModule.moduleVideoID" fill="clear" (click)="displayVideoPlayerInfo()">
+      <ion-icon name="help-circle-outline"></ion-icon>
+       About Video Player
+    </ion-button>
+    
     <ion-item>
       <div id="player{{learningModule.id}}"></div>
     </ion-item>
@@ -56,6 +61,8 @@
             <ion-label class="ion-text-wrap">D. {{quizQuestion.choice4}}</ion-label>
             <ion-radio slot="start" value="choice4" [disabled]="didSubmit"></ion-radio>
           </ion-item>
+
+          <br>
         </ion-radio-group>
       </ion-list>
     </form>
