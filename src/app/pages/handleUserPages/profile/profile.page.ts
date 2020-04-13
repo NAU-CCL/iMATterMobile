@@ -160,7 +160,7 @@ export class ProfilePage implements OnInit {
           this.analyticsService.addView(this.analytic).then (() =>{
             console.log('successful added view: profile');
 
-          }, err =>{
+          }, err => {
             console.log('unsucessful added view: profile');
 
           });
@@ -228,7 +228,7 @@ export class ProfilePage implements OnInit {
     async updateLocation(): Promise<void> {
         const alert = await this.alertCtrl.create({
             inputs: [
-                { type: 'text', name: 'newLocation', placeholder: 'Your new location' },
+                { type: 'text', name: 'newLocation', placeholder: 'Your new location (leave empty is you want to remove your zip code)' },
             ],
             buttons: [
                 { text: 'Cancel' },
