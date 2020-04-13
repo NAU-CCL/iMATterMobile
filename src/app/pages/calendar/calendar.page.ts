@@ -89,6 +89,10 @@ export class CalendarPage implements OnInit {
  
  clicked: boolean;
  alertOpen: boolean;
+ isNotMonthView: boolean;
+ deleteEditedEvent: boolean;
+ 
+ editedEvent: any;
  
   // @ts-ignore
   @ViewChild(CalendarComponent) myCal: CalendarComponent;
@@ -444,6 +448,13 @@ export class CalendarPage implements OnInit {
 // Change between month/week/day
   changeMode(mode) {
     this.calendar.mode = mode;
+	console.log(this.calendar.mode);
+	if(mode === 'day' || mode === 'week'){
+		this.isNotMonthView = true;
+	}
+	else{
+		this.isNotMonthView = false;
+	}
   }
 
 // Focus today
@@ -457,6 +468,26 @@ export class CalendarPage implements OnInit {
 	
 	console.log("vew change test");
   }
+
+	storeEditedEvent(ev){
+		  this.editedEvent = ev;
+	  }
+	  
+	   deleteOrCancelEvent(bool){
+		   if(bool === true){
+			   console.log("init");
+			   console.log("editedEvent" + JSON.stringify(this.editedEvent));
+			   this.confirmDelete(this.editedEvent);
+		
+				this.reloadItems(this.editedEvent);
+				
+				this.loadItems();
+			   //this.deleteFinished(this.editedEvent);
+		   }
+		   else{
+			   return;
+		   }
+	   }
 
 // Calendar event was clicked
   async onEventSelected(event) {
@@ -479,12 +510,14 @@ export class CalendarPage implements OnInit {
 		role: 'edit',
 		cssClass: 'secondary',
 		handler: (blah) => {
+			
         if(this.showEditEvent === true){
 		this.showEditEvent = false;
 		}
 		else{
 			this.showEditEvent = true;
 		}
+		/*
 		this.length = this.eventSource.length;
 		for (let i = 0; i < this.length; i++) {
 			
@@ -504,7 +537,15 @@ export class CalendarPage implements OnInit {
 		console.log("notification index");
 		console.log("delete Index: " + this.deleteIndex);
 		this.storage.set('my-items', this.eventSource);
-		this.loadItems();
+		this.loadItems();*/
+		this.storeEditedEvent(event);
+		//this.deleteOrCancelEvent(true);
+		//this.confirmDelete(event);
+		
+				//this.reloadItems(event);
+				
+				//this.loadItems();
+			   //this.deleteFinished(this.editedEvent);
 		this.alertOpen = false;
 		
       }
@@ -520,7 +561,8 @@ export class CalendarPage implements OnInit {
 		this.reloadItems(event);
 		
 		this.loadItems();
-		this.deleteFinished(event);
+		
+		
 		this.alertOpen = false;
 		}
 		
@@ -614,7 +656,13 @@ export class CalendarPage implements OnInit {
 		this.storage.set('my-items', this.eventSource);
 		this.loadItems();
 		this.confirmDeleteEvent = true;
-		
+				console.log("this.conirmDeleteEvent " + this.confirmDeleteEvent);
+				if(this.confirmDeleteEvent === true){
+			console.log("true");
+				this.deleteFinished(event);
+				
+		}
+
 	  }
 	  },
 	  {
@@ -666,7 +714,7 @@ export class CalendarPage implements OnInit {
 	
   }
   async addToThisDay(){
-	  if(this.clicked === true && this.alertOpen !== true){
+	  if(this.clicked === true && this.alertOpen !== true && this.isNotMonthView !== true){
 		  console.log(this.alertOpen);
 		  console.log("CLICKED" + this.clicked);
 	  const alert = await this.alertCtrl.create({
@@ -678,7 +726,7 @@ export class CalendarPage implements OnInit {
 		handler: (blah) => {
 		this.getAmpm();
 		this.showAddEvent = true;
-
+		
 	  }
 	  },
 	  {
