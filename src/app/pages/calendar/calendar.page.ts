@@ -177,6 +177,7 @@ export class CalendarPage implements OnInit {
 
   // Create the right event format and reload source
   addEvent() {
+
 	  this.notificationIndex = Math.floor(Math.random() * 100000000000);
 	  let eventCopy = {
 		  title: this.event.title,
@@ -371,7 +372,7 @@ export class CalendarPage implements OnInit {
     this.resetEvent();
     this.showAddEvent = false;
 	  }
-
+	
   }
 
   loadItems() {
@@ -460,6 +461,8 @@ export class CalendarPage implements OnInit {
 // Calendar event was clicked
   async onEventSelected(event) {
     // Use Angular date pipe for conversion
+	this.getAmpm();
+	console.log("CLICK " + this.clicked);
     let start = formatDate(event.startTime, 'medium', this.locale);
     let end = formatDate(event.endTime, 'medium', this.locale);
 	
@@ -658,13 +661,14 @@ export class CalendarPage implements OnInit {
     this.event.startTime = selected.toISOString();
     selected.setHours(selected.getHours() + 1);
     this.event.endTime = (selected.toISOString());
-	this.addToThisDay();
+
 	
 	
   }
   async addToThisDay(){
-	  if(this.clicked === true && this.alertOpen != true){
+	  if(this.clicked === true && this.alertOpen !== true){
 		  console.log(this.alertOpen);
+		  console.log("CLICKED" + this.clicked);
 	  const alert = await this.alertCtrl.create({
       header: 'Would you like to add an event to this day?',
       buttons: [{
@@ -672,6 +676,7 @@ export class CalendarPage implements OnInit {
 		role: 'confirm',
 		cssClass: 'secondary',
 		handler: (blah) => {
+		this.getAmpm();
 		this.showAddEvent = true;
 
 	  }
@@ -688,15 +693,19 @@ export class CalendarPage implements OnInit {
     }]});
     alert.present(); 
 	  }
+	  this.alertOpen = false;
 	  
   }
   clickedCalendar(){
 	  if(this.alertOpen === true){
+		  
 		  this.clicked = false;
+		  
 	  }
 	  else{
 		  
 	  this.clicked = true;
+	  this.addToThisDay();
 	  }
   }
   
