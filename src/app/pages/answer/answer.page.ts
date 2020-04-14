@@ -173,7 +173,7 @@ export class AnswerPage implements OnInit {
 
   async presentAlert(){
     const alert = await this.alertController.create({
-    header: 'Alert',
+    header: 'You Completed The Survey',
     subHeader: 'Thank You',
     message: 'Thanks for taking the Survey, your input is really appreciated.',
     buttons: [ {text: 'OK',
