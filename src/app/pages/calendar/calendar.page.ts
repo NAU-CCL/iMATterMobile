@@ -89,6 +89,10 @@ export class CalendarPage implements OnInit {
  
  clicked: boolean;
  alertOpen: boolean;
+ isNotMonthView: boolean;
+ deleteEditedEvent: boolean;
+ 
+ editedEvent: any;
  
   // @ts-ignore
   @ViewChild(CalendarComponent) myCal: CalendarComponent;
@@ -395,7 +399,7 @@ export class CalendarPage implements OnInit {
 				.get().then(snapshot => {
 			  snapshot.forEach(doc => {
 				  this.clockType = doc.get('clockType');
-				  console.log("this.clockType " + this.clockType);
+				  //console.log("this.clockType " + this.clockType);
 				  if(this.clockType == 12){
 					  this.isTwelveHour = true;
 					  console.log("TRUE");
@@ -444,6 +448,13 @@ export class CalendarPage implements OnInit {
 // Change between month/week/day
   changeMode(mode) {
     this.calendar.mode = mode;
+	console.log(this.calendar.mode);
+	if(mode === 'day' || mode === 'week'){
+		this.isNotMonthView = true;
+	}
+	else{
+		this.isNotMonthView = false;
+	}
   }
 
 // Focus today
@@ -457,6 +468,60 @@ export class CalendarPage implements OnInit {
 	
 	console.log("vew change test");
   }
+
+	storeEditedEvent(ev){
+		  this.editedEvent = ev;
+	  }
+	  
+	deleteOrCancelEvent(){
+		   //let event = this.editedEvent;
+			//this.deleteFinished(event);
+			//this.deleteFinished(event);
+			console.log("ONE");
+			
+			//this.deleteFinished(event);
+			console.log("NEW");
+			this.length = this.eventSource.length;
+			for (let i = 0; i < this.length; i++) {
+				//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
+				//	this.deleteIndex = i;
+				//}
+				if(this.eventSource[i].id === this.editedEvent.id){
+					console.log("ONE");
+					this.deleteIndex = i;
+				}
+			}
+			var temp = this.deleteIndex;
+			this.localNotifications.clear(this.eventSource[this.deleteIndex].id);
+			console.log("eventsource id to delete: " + this.eventSource[this.deleteIndex].id);
+
+			this.eventSource.splice(this.deleteIndex, 1);
+			console.log("notification index");
+			console.log("delete Index: " + this.deleteIndex);
+			this.storage.set('my-items', this.eventSource);
+			this.loadItems();
+			this.confirmDeleteEvent = true;
+			this.editFinished();
+			//this.myCal.loadEvents();
+					console.log("this.conirmDeleteEvent " + this.confirmDeleteEvent);
+				//this.deleteFinished(event);	*/
+			   
+			   /*if(bool === true){
+				   console.log("init");
+				   console.log("editedEvent" + JSON.stringify(this.editedEvent));
+				   this.confirmDelete(this.editedEvent);
+			
+					this.reloadItems(this.editedEvent);
+					
+					this.loadItems();
+				   //this.deleteFinished(this.editedEvent);
+			   }
+			   else{
+				   return;
+			   }
+			   */
+
+	   }
 
 // Calendar event was clicked
   async onEventSelected(event) {
@@ -479,12 +544,14 @@ export class CalendarPage implements OnInit {
 		role: 'edit',
 		cssClass: 'secondary',
 		handler: (blah) => {
+			
         if(this.showEditEvent === true){
 		this.showEditEvent = false;
 		}
 		else{
 			this.showEditEvent = true;
 		}
+		/*
 		this.length = this.eventSource.length;
 		for (let i = 0; i < this.length; i++) {
 			
@@ -492,7 +559,7 @@ export class CalendarPage implements OnInit {
 			//	this.deleteIndex = i;
 			//}
 			if(this.eventSource[i].id === event.id){
-				console.log("ONE");
+				
 				this.deleteIndex = i;
 			}
 		}
@@ -504,7 +571,15 @@ export class CalendarPage implements OnInit {
 		console.log("notification index");
 		console.log("delete Index: " + this.deleteIndex);
 		this.storage.set('my-items', this.eventSource);
-		this.loadItems();
+		this.loadItems();*/
+		this.storeEditedEvent(event);
+		//this.deleteOrCancelEvent(true);
+		//this.confirmDelete(event);
+		
+				//this.reloadItems(event);
+				
+				//this.loadItems();
+			   //this.deleteFinished(this.editedEvent);
 		this.alertOpen = false;
 		
       }
@@ -516,12 +591,20 @@ export class CalendarPage implements OnInit {
 		handler: (blah) => {
         
 		this.confirmDelete(event);
-		
+		//this.deleteFinished(event);
 		this.reloadItems(event);
-		
+		this.reloadItems(event);
+		/*
 		this.loadItems();
-		this.deleteFinished(event);
+		this.myCal.loadEvents();
+		//this.deleteFinished(event);
+		this.resetEvent();
+		this.loadItems();
+		this.addView();
+		this.storage.set('my-items', this.eventSource);
+		this.loadItems();
 		this.alertOpen = false;
+		this.ngOnInit();*/
 		}
 		
 	},
@@ -594,6 +677,148 @@ export class CalendarPage implements OnInit {
 		role: 'confirm',
 		cssClass: 'secondary',
 		handler: (blah) => {
+			//this.deleteFinished(event);
+			//this.deleteFinished(event);
+		
+			
+			//this.deleteFinished(event);
+		this.length = this.eventSource.length;
+		for (let i = 0; i < this.length; i++) {
+			//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
+			//	this.deleteIndex = i;
+			//}
+			if(this.eventSource[i].id === event.id){
+				
+				this.deleteIndex = i;
+			}
+		}
+		var temp = this.deleteIndex;
+		this.localNotifications.clear(this.eventSource[this.deleteIndex].id);
+		console.log("eventsource id to delete: " + this.eventSource[this.deleteIndex].id);
+
+		this.eventSource.splice(this.deleteIndex, 1);
+		console.log("notification index");
+		console.log("delete Index: " + this.deleteIndex);
+		this.storage.set('my-items', this.eventSource);
+		this.loadItems();
+		this.confirmDeleteEvent = true;
+		this.deleteFinished(event);
+		//this.myCal.loadEvents();
+				console.log("this.conirmDeleteEvent " + this.confirmDeleteEvent);
+			//this.deleteFinished(event);	*/
+
+	  }
+	  },
+	  {
+		text: 'cancel',
+		role: 'cancel',
+		cssClass: 'secondary',
+		handler: (blah) => {
+		this.confirmDeleteEvent = false;
+		this.alertOpen = false;
+		
+      }
+	  
+    }]});
+    alert.present();  
+
+  }
+  
+  async editFinished(){
+
+	  const alert = await this.alertCtrl.create({
+      header: 'Event has been edited',
+      subHeader: '',
+      buttons: [{
+		text: 'Ok',
+		role: 'confirm',
+		cssClass: 'secondary',
+		handler: (blah) => {
+			//let event = this.editedEvent;
+			//this.deleteFinished(event);
+			//this.deleteFinished(event);
+			console.log("ONE");
+			
+			//this.deleteFinished(event);
+		this.length = this.eventSource.length;
+		for (let i = 0; i < this.length; i++) {
+			//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
+			//	this.deleteIndex = i;
+			//}
+			if(this.eventSource[i].id === this.editedEvent.id){
+				console.log("ONE");
+				this.deleteIndex = i;
+			}
+		}
+		var temp = this.deleteIndex;
+		this.localNotifications.clear(this.eventSource[this.deleteIndex].id);
+		console.log("eventsource id to delete: " + this.eventSource[this.deleteIndex].id);
+
+		this.eventSource.splice(this.deleteIndex, 1);
+		console.log("notification index");
+		console.log("delete Index: " + this.deleteIndex);
+		this.storage.set('my-items', this.eventSource);
+		this.loadItems();
+		this.confirmDeleteEvent = true;
+		//this.myCal.loadEvents();
+				console.log("this.conirmDeleteEvent " + this.confirmDeleteEvent);
+			//this.deleteFinished(event);	*/
+
+	  //this.completeEditFinished();
+	  }
+	  
+	  
+	  
+    }]});
+    alert.present(); 
+  }
+  
+  /*
+  completeEditFinished(){
+	  console.log("ONE");
+			
+			//this.deleteFinished(event);
+		this.length = this.eventSource.length;
+		for (let i = 0; i < this.length; i++) {
+			//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
+			//	this.deleteIndex = i;
+			//}
+			if(this.eventSource[i].id === this.editedEvent.id){
+				console.log("ONE");
+				this.deleteIndex = i;
+			}
+		}
+		var temp = this.deleteIndex;
+		this.localNotifications.clear(this.eventSource[this.deleteIndex].id);
+		console.log("eventsource id to delete: " + this.eventSource[this.deleteIndex].id);
+
+		this.eventSource.splice(this.deleteIndex, 1);
+		console.log("notification index");
+		console.log("delete Index: " + this.deleteIndex);
+		this.storage.set('my-items', this.eventSource);
+		this.loadItems();
+		this.confirmDeleteEvent = true;
+		//this.myCal.loadEvents();
+				console.log("this.conirmDeleteEvent " + this.confirmDeleteEvent);
+			//this.deleteFinished(event);	
+
+	  }*/
+  
+  
+  async deleteFinished(event){
+	  const alert = await this.alertCtrl.create({
+      header: 'Event has been deleted',
+      subHeader: '',
+      buttons: [{
+		text: 'Ok',
+		role: 'confirm',
+		cssClass: 'secondary',
+		handler: (blah) => {
+			//this.deleteFinished(event);
+			//this.deleteFinished(event);
+			console.log("ONE");
+			
+			//this.deleteFinished(event);
 		this.length = this.eventSource.length;
 		for (let i = 0; i < this.length; i++) {
 			//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
@@ -614,24 +839,21 @@ export class CalendarPage implements OnInit {
 		this.storage.set('my-items', this.eventSource);
 		this.loadItems();
 		this.confirmDeleteEvent = true;
-		
+		//this.myCal.loadEvents();
+				console.log("this.conirmDeleteEvent " + this.confirmDeleteEvent);
+			//this.deleteFinished(event);	*/
+
 	  }
-	  },
-	  {
-		text: 'cancel',
-		role: 'cancel',
-		cssClass: 'secondary',
-		handler: (blah) => {
-		this.confirmDeleteEvent = false;
-		this.alertOpen = false;
-		
-      }
+	  
+	  
 	  
     }]});
     alert.present();  
-
-  }
-  async deleteFinished(event){
+	  /*
+	  console.log("THREE");
+	  console.log("deleteFInished " + this.confirmDeleteEvent);
+	  //if(this.confirmDeleteEvent === true){
+		  
 	  this.length = this.eventSource.length;
 		for (let i = 0; i < this.length; i++) {
 			//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
@@ -651,6 +873,7 @@ export class CalendarPage implements OnInit {
 		this.storage.set('my-items', this.eventSource);
 		this.loadItems();
 		this.confirmDeleteEvent = true;
+	  //}*/
 		
   }
 
@@ -666,7 +889,7 @@ export class CalendarPage implements OnInit {
 	
   }
   async addToThisDay(){
-	  if(this.clicked === true && this.alertOpen !== true){
+	  if(this.clicked === true && this.alertOpen !== true && this.isNotMonthView !== true){
 		  console.log(this.alertOpen);
 		  console.log("CLICKED" + this.clicked);
 	  const alert = await this.alertCtrl.create({
@@ -678,7 +901,7 @@ export class CalendarPage implements OnInit {
 		handler: (blah) => {
 		this.getAmpm();
 		this.showAddEvent = true;
-
+		
 	  }
 	  },
 	  {
