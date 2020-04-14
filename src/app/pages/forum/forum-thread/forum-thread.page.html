@@ -10,7 +10,6 @@
   </ion-toolbar>
 </ion-header>
 
-
 <ion-content>
     <ion-card>
       <ion-row>
@@ -87,7 +86,7 @@
   </ion-list>
 
   <ion-button *ngIf="!showCommentBox" padding-horizontal expand="full" class="fill-button" (click)="displayCommentBox();">
-    Comment
+    Reply
   </ion-button>
   <div *ngIf="showCommentBox">
     <form [formGroup]="commentForm">
@@ -114,7 +113,4 @@
       </ion-row>
     </form>
   </div>
-
 </ion-content>
-
-
