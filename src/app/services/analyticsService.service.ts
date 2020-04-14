@@ -226,7 +226,7 @@ export class AnalyticsService {
     this.sessionCollection.doc(this.idReference).update({numOfClickHome:  firebase.firestore.FieldValue.increment(1)});
   }
 
-  updateSurveryClicks (session: Sessions){
+  updateSurveyClicks (session: Sessions){
     this.sessionCollection.doc(this.idReference).update({numOfClickSurvey:  firebase.firestore.FieldValue.increment(1)});
   }
 

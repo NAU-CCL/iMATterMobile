@@ -231,9 +231,9 @@ export class HomePage implements OnInit {
 
 
 
-  updateSurveryClicks()
+  updateSurveyClicks()
   {
-    this.analyticsService.updateSurveryClicks(this.session);
+    this.analyticsService.updateSurveyClicks(this.session);
     console.log("added survery click");
 
   }
