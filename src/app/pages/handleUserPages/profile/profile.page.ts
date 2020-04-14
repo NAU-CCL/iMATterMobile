@@ -222,7 +222,7 @@ export class ProfilePage implements OnInit {
   }
 
   validateLocation(zip) {
-    if (/d{5}$/.test(zip)) {
+    if (/^[0-9]{5}(?:-[0-9]{4})?$/.test(zip) || zip === '') {
         return true;
     } else {
         return false;
@@ -232,12 +232,13 @@ export class ProfilePage implements OnInit {
   async updateLocation(): Promise<void> {
     const alert = await this.alertCtrl.create({
         inputs: [
-            { type: 'text', name: 'newLocation', placeholder: 'Your new zip code (leave empty is you want to remove your zip code)' },
+            { type: 'text', name: 'newLocation', placeholder: 'Leave empty to remove'},
         ],
         buttons: [
             { text: 'Cancel' },
             { text: 'Save',
               handler: data => {
+
                 if (this.validateLocation(data.newLocation)) {
                 this.profileService.updateLocation(data.newLocation, this.userProfileID)
                     .then(() => {
@@ -247,7 +248,7 @@ export class ProfilePage implements OnInit {
                         err => {this.showToast('There was a problem updating your location');
                         });
                 } else {
-                    alert.message = 'Invalid Location';
+                    alert.message = 'Invalid Zip Code';
                     return false;
                 }
                 },
