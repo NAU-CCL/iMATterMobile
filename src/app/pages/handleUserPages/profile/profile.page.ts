@@ -151,6 +151,14 @@ export class ProfilePage implements OnInit {
     this.router.navigateByUrl('login');
   }
 
+    validateEmail(email) {
+        if ( /(.+)@(.+){2,}\.(.+){2,}/.test(email)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
   // allows user to update email if the put in their current password
   async updateEmail(): Promise<void> {
     const alert = await this.alertCtrl.create({
@@ -163,13 +171,19 @@ export class ProfilePage implements OnInit {
         {
           text: 'Save',
           handler: data => {
-            this.profileService.updateEmail(data.newEmail, data.password, this.userProfileID)
-                .then(() => {
-                    this.showToast('Your email has been updated!');
-                    this.refreshPage();
-                    },
-                        err => {this.showToast('There was a problem updating your email');
-                });
+            if (this.validateEmail(data.newEmail)) {
+                this.profileService.updateEmail(data.newEmail, data.password, this.userProfileID)
+                    .then(() => {
+                            this.showToast('Your email has been updated!');
+                            this.refreshPage();
+                        },
+                        err => {
+                            this.showToast('There was a problem updating your email');
+                        });
+            } else {
+                    alert.message = 'Invalid Email';
+                    return false;
+                }
             },
         },
       ],
@@ -187,13 +201,19 @@ export class ProfilePage implements OnInit {
         { text: 'Cancel' },
         { text: 'Save',
           handler: data => {
-            this.profileService.updatePassword(data.newPassword, data.oldPassword, this.userProfileID)
-                .then(() => {
-                    this.showToast('Your password has been updated!');
-                    this.refreshPage();
-                    },
-                    err => {this.showToast('There was a problem updating your password');
-                    });
+            if (data.newPassword.length >= 8) {
+              this.profileService.updatePassword(data.newPassword, data.oldPassword, this.userProfileID)
+                  .then(() => {
+                          this.showToast('Your password has been updated!');
+                          this.refreshPage();
+                      },
+                      err => {
+                          this.showToast('There was a problem updating your password');
+                      });
+          } else {
+                  alert.message = 'Password must be 8 characters or longer';
+                  return false;
+              }
           },
         },
       ],
@@ -201,15 +221,24 @@ export class ProfilePage implements OnInit {
     await alert.present();
   }
 
+  validateLocation(zip) {
+    if (/d{5}$/.test(zip)) {
+        return true;
+    } else {
+        return false;
+    }
+  }
+
   async updateLocation(): Promise<void> {
     const alert = await this.alertCtrl.create({
         inputs: [
-            { type: 'text', name: 'newLocation', placeholder: 'Your new location (leave empty is you want to remove your zip code)' },
+            { type: 'text', name: 'newLocation', placeholder: 'Your new zip code (leave empty is you want to remove your zip code)' },
         ],
         buttons: [
             { text: 'Cancel' },
             { text: 'Save',
               handler: data => {
+                if (this.validateLocation(data.newLocation)) {
                 this.profileService.updateLocation(data.newLocation, this.userProfileID)
                     .then(() => {
                         this.showToast('Your location has been updated!');
@@ -217,6 +246,10 @@ export class ProfilePage implements OnInit {
                         },
                         err => {this.showToast('There was a problem updating your location');
                         });
+                } else {
+                    alert.message = 'Invalid Location';
+                    return false;
+                }
                 },
             },
         ],
@@ -236,7 +269,7 @@ export class ProfilePage implements OnInit {
                  this.profileService.updateBio(data.newBio, this.userProfileID)
                      .then(() => {
                          this.showToast('Your bio has been updated!');
-                         this.refreshPage();},
+                         this.refreshPage(); },
                      err => {this.showToast('There was a problem updating your bio');
                      });
                  },
