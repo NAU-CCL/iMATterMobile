@@ -53,7 +53,7 @@ export class AvailablePage implements OnInit {
       }
     });  
 
-    //this.highlightID = this.activatedRoute.snapshot.paramMap.get('id');
+    this.highlightID = this.activatedRoute.snapshot.paramMap.get('id');
 
   }
 
@@ -223,6 +223,7 @@ export class AvailablePage implements OnInit {
     if(this.highlightID){
       return this.highlightID == survey.id;
     }
+
     return false;
   }
 

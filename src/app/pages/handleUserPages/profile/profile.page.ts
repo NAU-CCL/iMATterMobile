@@ -106,47 +106,18 @@ export class ProfilePage implements OnInit {
       this.displayRedeemOptions = false;
   }
 
+  // get user info
   ionViewWillEnter() {
-      this.storage.get('userCode').then((val) => {
-          if (val) {
-              this.userProfileID = val;
-              const ref = this.afs.firestore.collection('users').where('code', '==', val);
-              ref.get().then((result) => {
-                  result.forEach(doc => {
-                      this.user.username = doc.get('username');
-                      this.user.email = doc.get('email');
-                      this.user.password = doc.get('password');
-                      this.user.bio = doc.get('bio');
-                      this.user.location = doc.get('location');
-                      this.user.cohort = doc.get('cohort');
-                      this.user.currentEmotion = doc.get('mood');
-                      this.user.profilePic = doc.get('profilePic');
-                      this.user.points = doc.get('points');
-
-                      const pointRef = firebase.firestore().collection('mobileSettings').doc('giftCardSettings').get();
-                      pointRef.then((res) => {
-                          this.pointsForRedemption =  res.get('points');
-                          this.gcTypes = res.get('types');
-                          this.canRedeemPoints = ProfilePage.checkUserPoints(this.user.points, this.pointsForRedemption);
-                      });
-
-                  });
-              });
-          }
-      });
-
-      this.addView();
+    this.addView();
+    this.refreshPage();
   }
 
   updateLogOut() {
    this.analyticsService.updateLogOut(this.session);
    console.log('added LogOutTime');
-
   }
 
-
   addView() {
-
   //this.analytic.sessionID = this.session.id;
   this.storage.get('userCode').then((val) =>{
     if (val) {
@@ -170,6 +141,7 @@ export class ProfilePage implements OnInit {
   });
 }
 
+  // log user out, sets authentication to false and removes some unnecessary storage
   logOut(): void {
     this.storage.set('authenticated', 'false');
     this.storage.remove('userCode');
@@ -179,6 +151,15 @@ export class ProfilePage implements OnInit {
     this.router.navigateByUrl('login');
   }
 
+    validateEmail(email) {
+        if ( /(.+)@(.+){2,}\.(.+){2,}/.test(email)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+  // allows user to update email if the put in their current password
   async updateEmail(): Promise<void> {
     const alert = await this.alertCtrl.create({
       inputs: [
@@ -190,15 +171,24 @@ export class ProfilePage implements OnInit {
         {
           text: 'Save',
           handler: data => {
-            this.profileService
-                .updateEmail(data.newEmail, data.password, this.userProfileID);
-            this.refreshPage();
-          },
+            if (this.validateEmail(data.newEmail)) {
+                this.profileService.updateEmail(data.newEmail, data.password, this.userProfileID)
+                    .then(() => {
+                            this.showToast('Your email has been updated!');
+                            this.refreshPage();
+                        },
+                        err => {
+                            this.showToast('There was a problem updating your email');
+                        });
+            } else {
+                    alert.message = 'Invalid Email';
+                    return false;
+                }
+            },
         },
       ],
     });
     await alert.present();
-    this.refreshPage();
   }
 
   async updatePassword(): Promise<void> {
@@ -209,66 +199,91 @@ export class ProfilePage implements OnInit {
       ],
       buttons: [
         { text: 'Cancel' },
-        {
-          text: 'Save',
+        { text: 'Save',
           handler: data => {
-            this.profileService.updatePassword(
-                data.newPassword,
-                data.oldPassword, this.userProfileID
-            );
-            this.refreshPage();
+            if (data.newPassword.length >= 8) {
+              this.profileService.updatePassword(data.newPassword, data.oldPassword, this.userProfileID)
+                  .then(() => {
+                          this.showToast('Your password has been updated!');
+                          this.refreshPage();
+                      },
+                      err => {
+                          this.showToast('There was a problem updating your password');
+                      });
+          } else {
+                  alert.message = 'Password must be 8 characters or longer';
+                  return false;
+              }
           },
         },
       ],
     });
     await alert.present();
-    this.refreshPage();
   }
 
-    async updateLocation(): Promise<void> {
-        const alert = await this.alertCtrl.create({
-            inputs: [
-                { type: 'text', name: 'newLocation', placeholder: 'Your new location (leave empty is you want to remove your zip code)' },
-            ],
-            buttons: [
-                { text: 'Cancel' },
-                {
-                    text: 'Save',
-                    handler: data => {
-                        this.profileService.updateLocation(
-                            data.newLocation, this.userProfileID
-                        );
+  validateLocation(zip) {
+    if (/^[0-9]{5}(?:-[0-9]{4})?$/.test(zip) || zip === '') {
+        return true;
+    } else {
+        return false;
+    }
+  }
+
+  async updateLocation(): Promise<void> {
+    const alert = await this.alertCtrl.create({
+        inputs: [
+            { type: 'text', name: 'newLocation', placeholder: 'Leave empty to remove'},
+        ],
+        buttons: [
+            { text: 'Cancel' },
+            { text: 'Save',
+              handler: data => {
+
+                if (this.validateLocation(data.newLocation)) {
+                this.profileService.updateLocation(data.newLocation, this.userProfileID)
+                    .then(() => {
+                        this.showToast('Your location has been updated!');
                         this.refreshPage();
-                    },
+                        },
+                        err => {this.showToast('There was a problem updating your location');
+                        });
+                } else {
+                    alert.message = 'Invalid Zip Code';
+                    return false;
+                }
                 },
-            ],
-        });
-        await alert.present();
-        this.refreshPage();
+            },
+        ],
+    });
+    await alert.present();
     }
 
-    async updateBio(): Promise<void> {
-        const alert = await this.alertCtrl.create({
-            inputs: [
-                { type: 'text', name: 'newBio', placeholder: 'Your new bio' },
-            ],
-            buttons: [
-                { text: 'Cancel' },
-                {
-                    text: 'Save',
-                    handler: data => {
-                        this.profileService.updateBio(
-                            data.newBio, this.userProfileID
-                        );
-                        this.refreshPage();
-                    },
-                },
-            ],
-        });
-        await alert.present();
-        this.refreshPage();
+  async updateBio(): Promise<void> {
+     const alert = await this.alertCtrl.create({
+         inputs: [
+             { type: 'text', name: 'newBio', placeholder: 'Your new bio' },
+         ],
+         buttons: [
+             { text: 'Cancel' },
+             {text: 'Save',
+                 handler: data => {
+                 this.profileService.updateBio(data.newBio, this.userProfileID)
+                     .then(() => {
+                         this.showToast('Your bio has been updated!');
+                         this.refreshPage(); },
+                     err => {this.showToast('There was a problem updating your bio');
+                     });
+                 },
+             },
+         ],
+     });
+     await alert.present();
     }
 
+  /**
+   * Grabs the user's necessary info for the profile
+   * Can be called to refresh the data on the page
+   */
   refreshPage() {
       this.storage.get('userCode').then((val) => {
           if (val) {
@@ -276,10 +291,14 @@ export class ProfilePage implements OnInit {
               const ref = this.afs.firestore.collection('users').where('code', '==', val);
               ref.get().then((result) => {
                   result.forEach(doc => {
+                      this.user.username = doc.get('username');
                       this.user.email = doc.get('email');
                       this.user.password = doc.get('password');
                       this.user.bio = doc.get('bio');
                       this.user.location = doc.get('location');
+                      this.user.cohort = doc.get('cohort');
+                      this.user.currentEmotion = doc.get('mood');
+                      this.user.profilePic = doc.get('profilePic');
                       this.user.points = doc.get('points');
 
                       const pointRef = firebase.firestore().collection('mobileSettings').doc('giftCardSettings').get();
@@ -294,6 +313,7 @@ export class ProfilePage implements OnInit {
       });
   }
 
+  // gets admin set point amount and uses that to
   displayPointInfo() {
       const pointRef = firebase.firestore().collection('mobileSettings').doc('giftCardSettings').get();
       pointRef.then((res) => {
@@ -304,34 +324,31 @@ export class ProfilePage implements OnInit {
       });
   }
 
-  async presentAlert(header: string, message: string) {
-      const alert = await this.alertController.create({
-            header,
-            message,
-            buttons: ['OK']
-        });
-
-      await alert.present();
-    }
-
+    // this function deducts the admin set point amount from the user
+    // and sends an email to the admin set email
     redeemGiftCard(currentPoints, pointsUsed, gcType, email, username) {
 
         this.profileService.updatePoints(currentPoints, pointsUsed, this.userProfileID);
         this.displayRedeemOptions = false;
 
-        // this.sendEmailToAdmin();
         this.refreshPage();
 
         // send an email
         firebase.firestore().collection('mobileSettings').doc('giftCardSettings').get().then((result) => {
             const adminEmail = result.get('email');
-            console.log(adminEmail);
-
             this.profileService.addToRedeemTable(adminEmail, email, username, gcType);
         });
-
         this.showToast('An email was sent for your gift card request!');
+    }
 
+    // present a basic alert -- used for displaying gc info
+    async presentAlert(header: string, message: string) {
+        const alert = await this.alertController.create({
+            header,
+            message,
+            buttons: ['OK']
+        });
+        await alert.present();
     }
 
     showToast(msg) {
@@ -341,14 +358,6 @@ export class ProfilePage implements OnInit {
         }).then(toast => toast.present());
     }
 
-/*
-    sendEmailToAdmin(userEmail, gcType) {
-        const data = {'userEmail': userEmail, 'gcType': gcType}
-
-        this.http.get('https://us-central1-techdemofirebase.cloudfunctions.net/sendEmailNotification').subscribe((response) => {
-            console.log(response);
-        });
-    }*/
 }
 
 

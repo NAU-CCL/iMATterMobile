@@ -55,6 +55,10 @@
 </ion-header>
 
 <ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  
     <ion-card>
       <img [src]="pregnancyCard.picture" alt="" />
       <ion-card-header>
@@ -86,7 +90,7 @@
     <ion-card-content>
 	  Surveys are a way to provide useful information and help earn points
     </ion-card-content>
-    <ion-item class="text-button" button [routerLink]="['/available']"  (click)= "updateLModuleClicks()"     >
+    <ion-item class="text-button" button [routerLink]="['/available']"  (click)= "updateSurveyClicks()"     >
       Go to your surveys
       <ion-icon md="md-arrow-forward" slot="end"></ion-icon>
     </ion-item>
@@ -104,7 +108,7 @@
         </div>
         <div *ngFor="let notif of user.recentNotifications">
           <ion-card id="rec-notif-card" (click)="goToPage(notif)">
-            {{notif}}
+            {{notif.split(",")[0]}}
           </ion-card>
         </div>
       </app-expandable>
@@ -112,4 +116,3 @@
   </ion-card>
 
 </ion-content>
-

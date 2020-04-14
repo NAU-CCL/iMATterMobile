@@ -44,7 +44,9 @@
         <ion-card-subtitle padding-horizontal>
             Currently feeling: {{ user.currentEmotion }}
         </ion-card-subtitle>
+
         <ion-card-content (click)="updateBio()">
+            <b>Bio (Tap to Edit): </b><br>
             {{ user.bio }}
         </ion-card-content>
     </ion-card>
@@ -60,13 +62,6 @@
             <ion-col class="text-center" size="7" *ngIf="user.email">
               {{user.email}}
             </ion-col>
-            <ion-col
-                    size="7"
-                    class="placeholder-profile text-center"
-                    *ngIf="!user.email"
-            >
-              <span> Tap here to edit. </span>
-            </ion-col>
           </ion-row>
         </ion-grid>
       </ion-label>
@@ -77,9 +72,7 @@
         <ion-grid>
           <ion-row>
             <ion-col class="text-left" size="5"> Password </ion-col>
-            <ion-col class="text-center" size="7" class="placeholder-profile">
-              <span> Tap here to edit. </span>
-            </ion-col>
+            <ion-col size="7" class="placeholder text-center"> Hidden</ion-col>
           </ion-row>
         </ion-grid>
       </ion-label>
@@ -89,21 +82,16 @@
           <ion-label>
               <ion-grid>
                   <ion-row>
-                      <ion-col class="text-left" size="5"> Location </ion-col>
+                      <ion-col class="text-left" size="5"> Zip Code </ion-col>
                       <ion-col class="text-center" size="7" *ngIf="user.email">
                           {{user.location}}
                       </ion-col>
-                      <ion-col
-                              size="7"
-                              class="placeholder-profile text-center"
-                              *ngIf="!user.location">
-
+                      <ion-col size="7" class="placeholder text-center" *ngIf="!user.location">
+                      Not Provided
                       </ion-col>
                   </ion-row>
               </ion-grid>
           </ion-label>
       </ion-item>
-
-
   </ion-list>
 </ion-content>

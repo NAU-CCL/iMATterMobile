@@ -18,11 +18,20 @@ export class ProfileService {
 
   }
 
+  /**
+   * The redeem table holds the information required for a user to redeem their points
+   * This function adds a new doc to this collection - which calls a cloud function
+   * that sends an email to the currently listed email
+   */
   addToRedeemTable(adminEmail, email, username, gcType) {
       this.afs.firestore.collection('usersPointsRedeem').add({adminEmail: adminEmail, email: email, username: username, gcType: gcType});
   }
 
-  updateEmail(newEmail: string, password: string, userID: string) {
+  /**
+   * Update the user's email in db, only if their password entered matches the one
+   * currently in the db
+   */
+  async updateEmail(newEmail: string, password: string, userID: string) {
       this.afs.firestore.collection('users').where('code', '==', userID)
           .get().then(snapshot => {
           snapshot.forEach(doc => {
@@ -35,7 +44,11 @@ export class ProfileService {
       });
   }
 
-  updatePassword(newPassword: string, oldPassword: string, userID: string) {
+  /**
+   * Update the user's password in db, only if their old password entered matches the one
+   * currently in the db
+   */
+  async updatePassword(newPassword: string, oldPassword: string, userID: string) {
       this.afs.firestore.collection('users').where('code', '==', userID)
           .get().then(snapshot => {
           snapshot.forEach(doc => {
@@ -48,21 +61,26 @@ export class ProfileService {
       });
   }
 
-
-
-
-
-  updateLocation(newLocation: number, userID: string) {
+  /**
+   * Update the user's location in db
+   */
+  async updateLocation(newLocation: number, userID: string) {
       return this.afs.firestore.collection('users')
           .doc(userID).update({location: newLocation});
   }
 
-  updateBio(newBio: string, userID: string) {
+  /**
+   * Update the user's bio in db
+   */
+  async updateBio(newBio: string, userID: string) {
       return this.afs.firestore.collection('users')
           .doc(userID).update({bio: newBio});
   }
 
-    updatePoints(currentPointTotal, pointsUsed, userID) {
+  /**
+   * Update the number of points a user has after they redeem points
+   */
+  async updatePoints(currentPointTotal, pointsUsed, userID) {
       const newPointTotal = currentPointTotal - pointsUsed;
       return this.afs.firestore.collection('users')
             .doc(userID).update({points: newPointTotal});
@@ -72,8 +90,7 @@ export class ProfileService {
      * Update the number of points a user has
      * Not called updatePoints because that's for redeeming points
      */
-    editRewardPoints(newPointValue: number, userID: string)
-    {
+    editRewardPoints(newPointValue: number, userID: string) {
         return this.afs.firestore.collection('users')
             .doc(userID).update({points: newPointValue});
     }
