@@ -111,6 +111,7 @@ export class HomePage implements OnInit {
   private totalDaysPregnant: any;
   private analyticss : string;
   private sessions : Observable<any>;
+  private navigationCounter;
 
   constructor(private activatedRoute: ActivatedRoute, public afs: AngularFirestore,
               private toastCtrl: ToastController,
@@ -172,7 +173,7 @@ export class HomePage implements OnInit {
       }
     });
 
-
+    this.navigationCounter = this.activatedRoute.snapshot.paramMap.get('counter');
     /*
 
     this.storage.get('weeksPregnant').then((val) => {
@@ -317,11 +318,33 @@ export class HomePage implements OnInit {
   }
 
   goToPage(notif){
-    if(notif == "There is a new survey available"){
-      this.router.navigate(['/available'])
+    var surveyID;
+    if(notif.split(",")[0] == "There is a new survey available"){
+      surveyID = notif.split(",")[1];
+      this.router.navigate(['/available/' + surveyID])
     }
     else{
       this.router.navigate(['/learning-center'])
+    }
+  }
+
+  doRefresh(event) {
+    console.log('Begin async operation');
+    this.refreshHome();
+    setTimeout(() => {
+      console.log('Async operation has ended');
+      event.target.complete();
+    }, 2000);
+  }
+
+  refreshHome(){
+    if(this.navigationCounter){
+      this.navigationCounter += 1;
+      this.router.navigate(['/home/' + this.navigationCounter])
+    }
+    else{
+      this.navigationCounter = 0;
+      this.router.navigate(['/home/' + this.navigationCounter])
     }
   }
 }
