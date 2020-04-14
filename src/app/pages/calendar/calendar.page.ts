@@ -725,7 +725,7 @@ export class CalendarPage implements OnInit {
   }
   
   async editFinished(){
-	  console.log("NO");
+
 	  const alert = await this.alertCtrl.create({
       header: 'Event has been edited',
       subHeader: '',
@@ -764,7 +764,7 @@ export class CalendarPage implements OnInit {
 				console.log("this.conirmDeleteEvent " + this.confirmDeleteEvent);
 			//this.deleteFinished(event);	*/
 
-	  this.completeEditFinished();
+	  //this.completeEditFinished();
 	  }
 	  
 	  

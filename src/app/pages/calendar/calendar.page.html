@@ -184,7 +184,7 @@
           <ion-checkbox [(ngModel)]="event.allDay"></ion-checkbox>
         </ion-item>
         <ion-button fill="outline" color="important" class=event-button (click)="showEditEvent = false"  > Cancel </ion-button>
-        <ion-button fill="outline" class=event-button (click)="addEvent()" (click)="deleteOrCancelEvent()"  [disabled]="event.title == ''" (click)="showEditEvent = false">Add Event</ion-button>
+        <ion-button fill="outline" class=event-button (click)="addEvent()"  (click)="editFinished()" (click)="editFinished()" [disabled]="event.title == ''" (click)="showEditEvent = false">Add Event</ion-button>
       </ion-card-content>
     </ion-card>
   </ion-item>
