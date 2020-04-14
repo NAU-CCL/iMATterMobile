@@ -399,7 +399,7 @@ export class CalendarPage implements OnInit {
 				.get().then(snapshot => {
 			  snapshot.forEach(doc => {
 				  this.clockType = doc.get('clockType');
-				  console.log("this.clockType " + this.clockType);
+				  //console.log("this.clockType " + this.clockType);
 				  if(this.clockType == 12){
 					  this.isTwelveHour = true;
 					  console.log("TRUE");
@@ -525,7 +525,7 @@ export class CalendarPage implements OnInit {
 			//	this.deleteIndex = i;
 			//}
 			if(this.eventSource[i].id === event.id){
-				console.log("ONE");
+				
 				this.deleteIndex = i;
 			}
 		}
@@ -557,13 +557,20 @@ export class CalendarPage implements OnInit {
 		handler: (blah) => {
         
 		this.confirmDelete(event);
-		
+		//this.deleteFinished(event);
 		this.reloadItems(event);
-		
+		this.reloadItems(event);
+		/*
 		this.loadItems();
-		
-		
+		this.myCal.loadEvents();
+		//this.deleteFinished(event);
+		this.resetEvent();
+		this.loadItems();
+		this.addView();
+		this.storage.set('my-items', this.eventSource);
+		this.loadItems();
 		this.alertOpen = false;
+		this.ngOnInit();*/
 		}
 		
 	},
@@ -604,7 +611,7 @@ export class CalendarPage implements OnInit {
 		//	this.deleteIndex = i;
 		//}
 		if(this.eventSource[i].id === event.id){
-			console.log("ONE");
+			
 			this.deleteIndex = i;
 		}
 	}
@@ -636,13 +643,18 @@ export class CalendarPage implements OnInit {
 		role: 'confirm',
 		cssClass: 'secondary',
 		handler: (blah) => {
+			//this.deleteFinished(event);
+			//this.deleteFinished(event);
+		
+			
+			//this.deleteFinished(event);
 		this.length = this.eventSource.length;
 		for (let i = 0; i < this.length; i++) {
 			//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
 			//	this.deleteIndex = i;
 			//}
 			if(this.eventSource[i].id === event.id){
-				console.log("ONE");
+				
 				this.deleteIndex = i;
 			}
 		}
@@ -656,12 +668,10 @@ export class CalendarPage implements OnInit {
 		this.storage.set('my-items', this.eventSource);
 		this.loadItems();
 		this.confirmDeleteEvent = true;
+		this.deleteFinished(event);
+		//this.myCal.loadEvents();
 				console.log("this.conirmDeleteEvent " + this.confirmDeleteEvent);
-				if(this.confirmDeleteEvent === true){
-			console.log("true");
-				this.deleteFinished(event);
-				
-		}
+			//this.deleteFinished(event);	*/
 
 	  }
 	  },
@@ -680,6 +690,54 @@ export class CalendarPage implements OnInit {
 
   }
   async deleteFinished(event){
+	  const alert = await this.alertCtrl.create({
+      header: 'Event has been deleted',
+      subHeader: '',
+      buttons: [{
+		text: 'Ok',
+		role: 'confirm',
+		cssClass: 'secondary',
+		handler: (blah) => {
+			//this.deleteFinished(event);
+			//this.deleteFinished(event);
+			
+			
+			//this.deleteFinished(event);
+		this.length = this.eventSource.length;
+		for (let i = 0; i < this.length; i++) {
+			//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
+			//	this.deleteIndex = i;
+			//}
+			if(this.eventSource[i].id === event.id){
+				
+				this.deleteIndex = i;
+			}
+		}
+		var temp = this.deleteIndex;
+		this.localNotifications.clear(this.eventSource[this.deleteIndex].id);
+		console.log("eventsource id to delete: " + this.eventSource[this.deleteIndex].id);
+
+		this.eventSource.splice(this.deleteIndex, 1);
+		console.log("notification index");
+		console.log("delete Index: " + this.deleteIndex);
+		this.storage.set('my-items', this.eventSource);
+		this.loadItems();
+		this.confirmDeleteEvent = true;
+		//this.myCal.loadEvents();
+				console.log("this.conirmDeleteEvent " + this.confirmDeleteEvent);
+			//this.deleteFinished(event);	*/
+
+	  }
+	  
+	  
+	  
+    }]});
+    alert.present();  
+	  /*
+	  console.log("THREE");
+	  console.log("deleteFInished " + this.confirmDeleteEvent);
+	  //if(this.confirmDeleteEvent === true){
+		  
 	  this.length = this.eventSource.length;
 		for (let i = 0; i < this.length; i++) {
 			//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
@@ -699,6 +757,7 @@ export class CalendarPage implements OnInit {
 		this.storage.set('my-items', this.eventSource);
 		this.loadItems();
 		this.confirmDeleteEvent = true;
+	  //}*/
 		
   }
 
