@@ -15,6 +15,16 @@ const routes: Routes = [
             path: '',
             loadChildren: () =>
               import('../pages/home/home.module').then(m => m.HomePageModule)
+          },
+          {
+            path: 'learning-center',
+            loadChildren: () =>
+                import('../pages/learning-center/learning-center.module').then(m => m.LearningCenterPageModule)
+          },
+          {
+            path: 'available',
+            loadChildren: () =>
+                import('../pages/available/available.module').then(m => m.AvailablePageModule)
           }
         ]
       },
@@ -55,16 +65,11 @@ const routes: Routes = [
             path: '',
             loadChildren: () =>
                 import('../pages/more/more.module').then(m => m.MorePageModule)
-          }
-        ]
-      },
-      {
-        path: 'learningCenter',
-        children: [
+          },
           {
-            path: '',
+            path: 'forum',
             loadChildren: () =>
-                import('../pages/learning-center/learning-center.module').then(m => m.LearningCenterPageModule)
+                import('../pages/forum/forum.module').then(m => m.ForumPageModule)
           }
         ]
       },

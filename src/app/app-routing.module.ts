@@ -34,10 +34,10 @@ const routes: Routes = [
   { path: 'forum/:id', loadChildren: './pages/forum/forum-deatails/forum-deatails.module#ForumDeatailsPageModule' },
   { path: 'forum-thread/:id', loadChildren: './pages/forum/forum-thread/forum-thread.module#ForumThreadPageModule' },
 
-  {
+  /*{
     path: 'learning-center',
     loadChildren: () => import('./pages/learning-center/learning-center.module').then( m => m.LearningCenterPageModule)
-  },
+  },*/
   {
     path: 'learning-module-content/:id',
     loadChildren: () => import('./pages/learning-center/learning-module-content/learning-module-content.module').then( m => m.LearningModuleContentPageModule)
@@ -62,10 +62,10 @@ const routes: Routes = [
     path: 'home/:counter',
     loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
   },
-  {
+  /*{
     path: 'available',
     loadChildren: () => import('./pages/available/available.module').then( m => m.AvailablePageModule)
-  },
+  },*/
   {
     path: 'available/:id',
     loadChildren: () => import('./pages/available/available.module').then( m => m.AvailablePageModule)
