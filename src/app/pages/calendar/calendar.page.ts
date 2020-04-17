@@ -395,15 +395,15 @@ export class CalendarPage implements OnInit {
 			  snapshot.forEach(doc => {
 				  this.clockType = doc.get('clockType');
 				  //console.log("this.clockType " + this.clockType);
-				  if(this.clockType == 12){
-					  this.isTwelveHour = true;
-					  console.log("TRUE");
+				  if(this.clockType == 24){
+					  this.isTwelveHour = false;
+					  console.log("false");
 					  return true;
 					  
 				  }
 				  else{
-					  this.isTwelveHour = false;
-					  console.log("FALSE");
+					  this.isTwelveHour = true;
+					  console.log("true");
 					  return false;
 				  }
 				   
