@@ -125,7 +125,7 @@
       </ion-card-header>
       <ion-card-content>
         <ion-item>
-          <ion-input type="text" placeholder="Title" [(ngModel)]="event.title"></ion-input>
+          <ion-input type="text" placeholder="Title" [(ngModel)]="event.title">this.editedEvent.title</ion-input>
         </ion-item>
         <ion-item>
           <ion-input type="text" placeholder="Description" [(ngModel)]="event.desc"></ion-input>
@@ -197,7 +197,7 @@
                 <ion-item *ngFor="let event of selectedDate?.events" (click)="onEventSelected(event)">
                         
                     <span *ngIf="event.allDay" class="monthview-eventdetail-timecolumn">All day</span>
-                    <span class="event-detail">  {{event.title}}   |   click for details</span>
+                    <span class="event-detail">  {{event.title}}   |   click to view, edit or delete</span>
                 </ion-item>
                 <ion-item *ngIf="selectedDate?.events.length==0">
                     <div class="no-events-label">{{noEventsLabel}}</div>

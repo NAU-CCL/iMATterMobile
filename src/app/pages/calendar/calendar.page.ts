@@ -860,7 +860,6 @@ export class CalendarPage implements OnInit {
 	  this.alertOpen = true;
 	const alert = await this.alertCtrl.create({
       header: 'are you sure?',
-      subHeader: 'are you sure?',
       buttons: [{
 		text: 'Yes',
 		role: 'confirm',
