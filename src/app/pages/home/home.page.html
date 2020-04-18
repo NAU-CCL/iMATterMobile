@@ -105,6 +105,7 @@
       <app-expandable expandHeight="expandSize" [expanded]="drop.expanded">
         <div>
           <ion-button fill="clear"(click)="clearArray()" >clear</ion-button>
+          <ion-icon (click)="refreshList()" id="refresh" name="md-refresh-circle" slot="end"></ion-icon>
         </div>
         <div *ngFor="let notif of user.recentNotifications">
           <ion-card id="rec-notif-card" (click)="goToPage(notif)">

@@ -59,10 +59,6 @@ const routes: Routes = [
     loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
   },
   {
-    path: 'home/:counter',
-    loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
-  },
-  {
     path: 'available',
     loadChildren: () => import('./pages/available/available.module').then( m => m.AvailablePageModule)
   },
