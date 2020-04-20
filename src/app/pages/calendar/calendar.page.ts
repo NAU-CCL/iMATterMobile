@@ -132,9 +132,7 @@ export class CalendarPage implements OnInit {
 	this.addView();
   }
 
-  goToSettings(){
-	  this.navCtrl.setRoot(settings);
-  }
+  
 
   resetEvent() {
     this.event = {
