@@ -18,8 +18,23 @@ const routes: Routes = [
           },
           {
             path: 'learning-center',
-            loadChildren: () =>
-                import('../pages/learning-center/learning-center.module').then(m => m.LearningCenterPageModule)
+            children: [
+              {
+                path: '',
+                children: [
+                  {
+                    path: '',
+                    loadChildren: () =>
+                    import('../pages/learning-center/learning-center.module').then(m => m.LearningCenterPageModule)
+                  },
+                  {
+                    path: 'learning-module-content/:id',
+                    loadChildren: () => 
+                    import('../pages/learning-center/learning-module-content/learning-module-content.module').then( m => m.LearningModuleContentPageModule)
+                  }
+                ]
+              },
+            ]
           },
           {
             path: 'available',

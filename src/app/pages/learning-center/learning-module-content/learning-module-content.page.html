@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot=start>
-    <ion-back-button class="text-button"  defaultHref="/learning-center"></ion-back-button>
+    <ion-back-button class="text-button"  defaultHref="/tabs/home/learning-center"></ion-back-button>
   </ion-buttons>
     <ion-title class="ion-text-wrap">{{learningModule.moduleTitle}} Module</ion-title>
   </ion-toolbar>
@@ -92,7 +92,7 @@
   </ion-card>
 </ng-container>
 
-<ion-button class="fill-button ion-text-wrap" [routerLink]="['/learning-module-content', learningModule.moduleNext]" 
+<ion-button class="fill-button ion-text-wrap" [routerLink]="['/tabs/home/learning-center/learning-module-content', learningModule.moduleNext]" 
   *ngIf="numberTimesQuizTaken > 0 && learningModule.moduleNext" 
   expand="block">Next Module - {{nextModuleTitle}}</ion-button>
 

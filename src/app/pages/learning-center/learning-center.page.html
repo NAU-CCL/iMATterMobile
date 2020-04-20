@@ -2,7 +2,7 @@
   <ion-toolbar>
     <ion-title>Learning Center</ion-title>
     <ion-buttons slot="start">
-      <ion-back-button class="text-button" defaultHref="/home"></ion-back-button>
+      <ion-back-button class="text-button" defaultHref="/tabs/home"></ion-back-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -23,7 +23,7 @@
     </ion-item>
 
     <ng-container *ngFor="let learningMod of ( learningModules | async )">
-      <ion-card button [routerLink]="['/learning-module-content', learningMod.id]" *ngIf="newModules.includes(learningMod.id)">
+      <ion-card button [routerLink]="['/tabs/home/learning-center/learning-module-content', learningMod.id]" *ngIf="newModules.includes(learningMod.id)">
         
       <ion-card-header>
           <ion-card-title>
@@ -46,7 +46,7 @@
 
   <ion-list>
     <ng-container *ngFor="let learningMod of ( learningModules | async )">
-      <ion-card button [routerLink]="['/learning-module-content', learningMod.id]" *ngIf="viewedModules.includes(learningMod.id)">
+      <ion-card button [routerLink]="['/tabs/home/learning-center/learning-module-content', learningMod.id]" *ngIf="viewedModules.includes(learningMod.id)">
         
       <ion-card-header>
           <ion-card-title>
