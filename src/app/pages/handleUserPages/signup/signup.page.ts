@@ -17,10 +17,6 @@ import {AngularFirestore} from '@angular/fire/firestore';
   styleUrls: ['./signup.page.scss'],
 })
 
-
-
-
-
 export class SignupPage implements OnInit {
 
   constructor(
@@ -224,9 +220,11 @@ export class SignupPage implements OnInit {
             } else {
               this.authService.signupUser(this.user).then(
                   () => {
+                    this.ionicStorage.set('userCode', this.user.code);
+
                     /*
                     this.loading.dismiss().then(() => {
-                      // this.ionicStorage.set('userCode', this.user.code);
+
                       this.showToast('You have created an account');
 
                      */

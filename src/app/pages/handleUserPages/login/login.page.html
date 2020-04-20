@@ -10,10 +10,9 @@
   </h4>
 </ion-text>
 
-
 <ion-content>
   <form [formGroup]="loginForm">
-    <ion-item>
+    <ion-item *ngIf="showEmailBox">
       <ion-label position="stacked">Email</ion-label>
       <ion-input formControlName="email" type="email" placeholder="Your email address"
               [class.invalid]="!loginForm.controls['email'].valid && loginForm.controls['email'].touched">
@@ -33,7 +32,7 @@
       <ion-label>Please enter your password.</ion-label>
     </ion-item>
 
-    <ion-button class="fill-button" (click)="validateUser(loginForm)" expand="block" [disabled]="!loginForm.valid">
+    <ion-button class="fill-button" (click)="validateUser(loginForm)" expand="block" [disabled]="password < 1">
       Log In
     </ion-button>
   </form>
