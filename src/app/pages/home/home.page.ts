@@ -346,14 +346,6 @@ export class HomePage implements OnInit {
     }
   }
 
-  doRefresh(event) {
-    console.log('Begin async operation');
-    setTimeout(() => {
-      console.log('Async operation has ended');
-      event.target.complete();
-    }, 2000);
-  }
-
   refreshList() {
     const ref = this.afs.firestore.collection('users').doc(this.user.code);
     ref.get().then((result) => {
