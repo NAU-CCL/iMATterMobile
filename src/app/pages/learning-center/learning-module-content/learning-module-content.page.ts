@@ -324,7 +324,7 @@ export class LearningModuleContentPage implements OnInit {
       videoId: this.learningModule.moduleVideoID,
       playerVars: 
       {
-        controls: 0, //shows user controls for video
+        controls: 1, //shows user controls for video
         fs: 1, //fullscreen allowed
         playsinline: 1,
         modestbranding: 1,
