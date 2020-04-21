@@ -8,6 +8,7 @@
     </ion-buttons>
     <ion-buttons slot="end">
       <ion-button class="text-press"  (click)="today()">Today</ion-button>
+	  <ion-button class="text-press"  href="/more/settings">Settings</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -30,11 +31,11 @@
         </ion-item>
         <ion-item>
           <ion-label>Start</ion-label>
-          <ion-datetime displayFormat="MM/DD/YYYY hh:mm" pickerFormat="MMM D:HH:mm" [(ngModel)]="event.startTime" ></ion-datetime>
+          <ion-datetime displayFormat="MM/DD/YYYY HH:mm" pickerFormat="MMM D:HH:mm" [(ngModel)]="event.startTime" ></ion-datetime>
         </ion-item>
         <ion-item>
           <ion-label>End</ion-label>
-          <ion-datetime displayFormat="MM/DD/YYYY hh:mm" pickerFormat="MMM D:HH:mm" [(ngModel)]="event.endTime" ></ion-datetime>
+          <ion-datetime displayFormat="MM/DD/YYYY HH:mm" pickerFormat="MMM D:HH:mm" [(ngModel)]="event.endTime" ></ion-datetime>
         </ion-item>
         <ion-item>
           <ion-label>All Day?</ion-label>
@@ -122,9 +123,11 @@
     <ion-card>
       <ion-card-header>
         <ion-card-title>Edit Event</ion-card-title>
+		<ion-card-title color="danger">Re-enter event information</ion-card-title>
       </ion-card-header>
       <ion-card-content>
         <ion-item>
+		
           <ion-input type="text" placeholder="Title" [(ngModel)]="event.title"></ion-input>
         </ion-item>
         <ion-item>
@@ -142,7 +145,7 @@
           <ion-label>All Day?</ion-label>
           <ion-checkbox [(ngModel)]="event.allDay"></ion-checkbox>
         </ion-item>
-        <ion-button fill="outline" color="important" class=event-button (click)="showEditEvent = false" > Cancel </ion-button>
+        <ion-button fill="outline" color="important" class=event-button (click)="showEditEvent = false" (click)="editCancelled()" > Cancel </ion-button>
         <ion-button fill="outline" class=event-button (click)="addEvent()" (click)="deleteOrCancelEvent(true)" (click)="showEditEvent = false" [disabled]="event.title == ''">Add Edits</ion-button>
       </ion-card-content>
     </ion-card>
@@ -156,6 +159,7 @@
     <ion-card>
       <ion-card-header>
         <ion-card-title>Edit Event</ion-card-title>
+		<ion-card-title color="danger">Re-enter event information</ion-card-title>
       </ion-card-header>
       <ion-card-content>
         <ion-item>
@@ -183,8 +187,8 @@
           <ion-label>All Day?</ion-label>
           <ion-checkbox [(ngModel)]="event.allDay"></ion-checkbox>
         </ion-item>
-        <ion-button fill="outline" color="important" class=event-button (click)="showEditEvent = false"  > Cancel </ion-button>
-        <ion-button fill="outline" class=event-button (click)="addEvent()"  (click)="editFinished()" (click)="editFinished()" [disabled]="event.title == ''" (click)="showEditEvent = false">Add Event</ion-button>
+        <ion-button fill="outline" color="important" class=event-button (click)="showEditEvent = false" (click)="editCancelled()"  > Cancel </ion-button>
+        <ion-button fill="outline" class=event-button (click)="addEvent()" [disabled]="event.title == ''" (click)="showEditEvent = false">Add Event</ion-button>
       </ion-card-content>
     </ion-card>
   </ion-item>
@@ -193,11 +197,12 @@
   </div>
   
   <ng-template #monthviewDefaultEventDetailTemplate let-showEventDetail="showEventDetail" let-selectedDate="selectedDate" let-noEventsLabel="noEventsLabel">
+  <p>Events</p>
             <ion-list class="event-detail-container" has-bouncing="false" *ngIf="showEventDetail" overflow-scroll="false" (click)="addEventDay(selectedDate)" >
                 <ion-item *ngFor="let event of selectedDate?.events" (click)="onEventSelected(event)">
                         
                     <span *ngIf="event.allDay" class="monthview-eventdetail-timecolumn">All day</span>
-                    <span class="event-detail">  {{event.title}}   |   click for details</span>
+                    <span class="event-detail">  {{event.title}}   |   click to view, edit or delete</span>
                 </ion-item>
                 <ion-item *ngIf="selectedDate?.events.length==0">
                     <div class="no-events-label">{{noEventsLabel}}</div>
@@ -214,7 +219,7 @@
           (onEventSelected)="onEventSelected($event)"
           (onTitleChanged)="onViewTitleChanged($event)"
           (onTimeSelected)="onTimeSelected($event)"
-		  (click)="clickedCalendar()"
+		  (dblclick)="clickedCalendar()"
           startHour="6"
           endHour="20"
           step="30"
