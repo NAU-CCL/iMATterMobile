@@ -123,10 +123,12 @@
     <ion-card>
       <ion-card-header>
         <ion-card-title>Edit Event</ion-card-title>
+		<ion-card-title color="danger">Re-enter event information</ion-card-title>
       </ion-card-header>
       <ion-card-content>
         <ion-item>
-          <ion-input type="text" placeholder="Title" [(ngModel)]="event.title">this.editedEvent.title</ion-input>
+		
+          <ion-input type="text" placeholder="Title" [(ngModel)]="event.title"></ion-input>
         </ion-item>
         <ion-item>
           <ion-input type="text" placeholder="Description" [(ngModel)]="event.desc"></ion-input>
