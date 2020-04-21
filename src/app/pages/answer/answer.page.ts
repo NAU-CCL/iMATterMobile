@@ -160,7 +160,7 @@ export class AnswerPage implements OnInit {
     // survey is worth, then navigate back to the home page
     let newPointValue = this.userPoints + this.survey.pointsWorth;
     this.profile.editRewardPoints(newPointValue, this.userCode);
-    this.router.navigateByUrl('/home');
+    this.router.navigateByUrl('/tabs/home');
   }
 
   isComplete(){

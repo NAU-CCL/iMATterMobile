@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from './services/user/auth.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -34,14 +33,15 @@ const routes: Routes = [
   { path: 'forum/:id', loadChildren: './pages/forum/forum-deatails/forum-deatails.module#ForumDeatailsPageModule' },
   { path: 'forum-thread/:id', loadChildren: './pages/forum/forum-thread/forum-thread.module#ForumThreadPageModule' },
 
-  {
+  //this routing is handled in tabs-routing
+  /*{
     path: 'learning-center',
     loadChildren: () => import('./pages/learning-center/learning-center.module').then( m => m.LearningCenterPageModule)
   },
   {
     path: 'learning-module-content/:id',
     loadChildren: () => import('./pages/learning-center/learning-module-content/learning-module-content.module').then( m => m.LearningModuleContentPageModule)
-  },
+  },*/
   {
     path: 'more',
     loadChildren: () => import('./pages/more/more.module').then(m => m.MorePageModule)
@@ -54,14 +54,14 @@ const routes: Routes = [
     path: 'viewable-profile/:id',
     loadChildren: () => import('./pages/viewable-profile/viewable-profile.module').then( m => m.ViewableProfilePageModule)
   },
-  {
+  /*{ //handled in tabs-routing
     path: 'home',
     loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
-  },
-  {
+  },*/
+  /*{
     path: 'available',
     loadChildren: () => import('./pages/available/available.module').then( m => m.AvailablePageModule)
-  },
+  },*/
   {
     path: 'available/:id',
     loadChildren: () => import('./pages/available/available.module').then( m => m.AvailablePageModule)

@@ -44,6 +44,8 @@ export class LearningCenterPage implements OnInit {
 
   ngOnInit() 
   {
+    console.log("NG ON INIT");
+
     this.storage.get('authenticated').then((val) => {
       if (val === 'false') {
         this.router.navigate(['/login/']);
@@ -82,6 +84,8 @@ export class LearningCenterPage implements OnInit {
       return;
     }
     
+    console.log("ION VIEW WILL ENTER");
+
     //IMPORTANT: does everything related to checking recurrences
     this.initStorageCheckRecurrence();
 
