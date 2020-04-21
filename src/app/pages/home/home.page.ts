@@ -112,7 +112,7 @@ export class HomePage implements OnInit {
   private totalDaysPregnant: any;
   private analyticss : string;
   private sessions : Observable<any>;
-  private navigationCounter;
+  
 
   constructor(private activatedRoute: ActivatedRoute, public afs: AngularFirestore,
               private toastCtrl: ToastController,
@@ -155,10 +155,6 @@ export class HomePage implements OnInit {
             this.user.cohort = doc.get('cohort');
             this.user.currentEmotion = doc.get('mood');
             this.user.code = doc.get('code');
-            this.user.recentNotifications = doc.get('recentNotifications');
-            this.expandSize = (150 + 50 * this.user.recentNotifications.length) + "px"
-            console.log("Expand Size: ", this.expandSize);
-
             const pregUpdateRef = this.afs.firestore.collection('pregnancyUpdates')
                 .where('day', '==', this.user.totalDaysPregnant);
             pregUpdateRef.get().then((res) => {
@@ -174,7 +170,7 @@ export class HomePage implements OnInit {
       }
     });
 
-    this.navigationCounter = this.activatedRoute.snapshot.paramMap.get('counter');
+    
     /*
 
     this.storage.get('weeksPregnant').then((val) => {
@@ -213,7 +209,19 @@ export class HomePage implements OnInit {
 
   ionViewWillEnter() {
   this.addView();
-
+  
+    this.storage.get('userCode').then((val) => {
+      if (val) {
+        this.userProfileID = val;
+        const ref = this.afs.firestore.collection('users').where('code', '==', val);
+        ref.get().then((result) => {
+          result.forEach(doc => {
+            this.user.recentNotifications = doc.get('recentNotifications');
+            this.expandSize = (150 + 50 * this.user.recentNotifications.length) + "px"
+          });
+        });
+      }
+    });
   }
 
   updateProfileClicks() {
@@ -338,23 +346,13 @@ export class HomePage implements OnInit {
     }
   }
 
-  doRefresh(event) {
-    console.log('Begin async operation');
-    this.refreshHome();
-    setTimeout(() => {
-      console.log('Async operation has ended');
-      event.target.complete();
-    }, 2000);
-  }
-
-  refreshHome(){
-    if(this.navigationCounter){
-      this.navigationCounter += 1;
-      this.router.navigate(['/home/' + this.navigationCounter])
-    }
-    else{
-      this.navigationCounter = 0;
-      this.router.navigate(['/home/' + this.navigationCounter])
-    }
+  refreshList() {
+    const ref = this.afs.firestore.collection('users').doc(this.user.code);
+    ref.get().then((result) => {
+      // result.forEach(doc => {
+        this.user.recentNotifications = result.get('recentNotifications');
+        this.expandSize = (150 + 50 * this.user.recentNotifications.length) + "px"
+      //});
+    });
   }
 }
