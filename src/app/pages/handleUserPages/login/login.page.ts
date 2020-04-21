@@ -55,7 +55,7 @@ export class LoginPage implements OnInit {
 
   private analyticss : string;
   private sessions : Observable<any>;
-
+  private showEmailBox: boolean;
 
     constructor(
         public loadingCtrl: LoadingController,
@@ -82,6 +82,25 @@ export class LoginPage implements OnInit {
 
     ngOnInit() {
         this.storage.set('authenticated', 'false');
+        this.storage.get('email').then((val) => {
+            if (val > 1) {
+                this.showEmailBox = false;
+                console.log(val);
+            } else {
+                this.showEmailBox = true;
+            }
+        });
+    }
+
+    ionViewDidEnter() {
+        this.storage.get('email').then((val) => {
+            if (val.toString().length > 1) {
+                this.showEmailBox = false;
+                console.log(val);
+            } else {
+                this.showEmailBox = true;
+            }
+        });
     }
 
     private notificationSetup(userID) {
@@ -111,30 +130,38 @@ console.log('successful session creation');
 
 }
 
-
     validateUser(loginForm: FormGroup) {
-        this.email = loginForm.value.email;
-        this.password = loginForm.value.password;
+        this.storage.get('email').then((val) => {
+            if (val) {
+                this.email = val.toString();
+                this.validateEmailwithPass(val, loginForm.value.password);
+                console.log('here');
+            } else {
+                this.storage.set('email', loginForm.value.email);
+                console.log(loginForm.value.email);
+                this.validateEmailwithPass(loginForm.value.email, loginForm.value.password);
+            }
+        });
 
-        this.afs.firestore.collection('users').where('email', '==', this.email)
+    }
+
+    validateEmailwithPass(email, pass) {
+        this.afs.firestore.collection('users').where('email', '==', email)
             .get().then(snapshot => {
             if (snapshot.docs.length > 0) {
                 console.log(('exists'));
                 this.userEmail = true;
-                const userRef = this.afs.firestore.collection('users').where('email', '==', this.email);
+                const userRef = this.afs.firestore.collection('users').where('email', '==', email);
                 userRef.get().then((result) => {
                     result.forEach(doc => {
                         this.userID = doc.id;
                         this.userPassword = doc.get('password');
-
-                        if ( this.userPassword === this.password) {
-
+                        if ( this.userPassword === pass) {
                             if (this.platform.is('android')) {
                                 this.storage.set('platform', 'android');
                             } else if (this.platform.is('ios')) {
                                 this.storage.set('platform', 'ios');
                             }
-
                             this.storage.set('userCode', this.userID);
                             this.storage.set('authenticated', 'true');
                             this.storage.set('username', doc.get('username'));
@@ -159,7 +186,6 @@ console.log('successful session creation');
                         } else {
                             this.showToast('Password is incorrect');
                         }
-
                     });
                 });
 
@@ -177,5 +203,5 @@ console.log('successful session creation');
             duration: 2000
         }).then(toast => toast.present());
     }
-
 }
+

@@ -175,6 +175,7 @@ export class ProfilePage implements OnInit {
                 this.profileService.updateEmail(data.newEmail, data.password, this.userProfileID)
                     .then(() => {
                             this.showToast('Your email has been updated!');
+                            this.storage.set('email', data.newEmail);
                             this.refreshPage();
                         },
                         err => {
