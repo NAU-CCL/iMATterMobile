@@ -475,9 +475,12 @@ export class CalendarPage implements OnInit {
 	storeEditedEvent(ev){
 		this.currentlyEditing = true;
 		this.event.title = ev.title;
-		this.event.desc = ev.desc;
-		this.event.startTime = new Date(ev.startTime);
-		this.event.endTime = new Date(ev.endTime);
+		this.event.desc = ev.desc;		
+		const selectedStart = new Date(ev.startTime);
+		const selectedEnd = new Date(ev.endTime);
+		this.event.startTime = selectedStart.toISOString();
+		this.event.endTime = selectedEnd.toISOString();
+		
 		  this.editedEvent = ev;
 	  }
 	  
