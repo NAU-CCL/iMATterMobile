@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Submission, UserSubmissionsService } from '../../../services/userSubmissions/user-submissions.service';
-import {AngularFirestore} from '@angular/fire/firestore';
-import {ActivatedRoute, Router} from '@angular/router';
-import {ToastController} from '@ionic/angular';
-import {Storage} from '@ionic/storage';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ToastController } from '@ionic/angular';
+import { Storage } from '@ionic/storage';
 import * as firebase from 'firebase/app';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-report',
@@ -21,6 +21,8 @@ export class ReportPage implements OnInit {
     userID: '',
     timestamp: '',
     type: '',
+    operatingSys: '',
+    version: ''
   };
 
   private reportForm: FormGroup;
@@ -50,6 +52,14 @@ export class ReportPage implements OnInit {
   }
 
   submitSubmission(submissionForm: FormGroup) {
+
+    this.storage.get('platform').then((val) => {
+      if (val) {
+        this.submission.operatingSys = val;
+      }
+    });
+
+
     this.storage.get('userCode').then((val) => {
       if (val) {
         const ref = this.afs.firestore.collection('users').where('code', '==', val);

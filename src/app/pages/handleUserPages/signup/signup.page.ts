@@ -228,7 +228,8 @@ export class SignupPage implements OnInit {
                       this.showToast('You have created an account');
 
                      */
-                      this.router.navigate(['/login']);
+                    this.showToast('You have created an account');
+                    this.router.navigate(['/login']);
                    // });
                   },
                   error => {

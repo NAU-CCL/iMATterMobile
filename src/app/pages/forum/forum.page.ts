@@ -6,6 +6,7 @@ import { Storage } from '@ionic/storage';
 import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyticsService.service';
 import * as firebase from 'firebase/app';
 import {AngularFirestore} from '@angular/fire/firestore';
+import {AlertController} from "@ionic/angular";
 
 
 @Component({
@@ -42,7 +43,8 @@ export class ForumPage implements OnInit {
               private storage: Storage,
               private router: Router,
               private afs: AngularFirestore,
-              private analyticsService: AnalyticsService) {
+              private analyticsService: AnalyticsService,
+              private alertController: AlertController) {
   }
 
   ngOnInit() {
@@ -149,6 +151,26 @@ export class ForumPage implements OnInit {
     }
   });
 }
+
+  // gets admin set point amount and uses that to
+  displayForumInfo() {
+    this.presentAlert('What is the Information Desk?',
+          'The information desk is a forum where you can ask questions and respond to other ' +
+        'user questions. Here, all users ' +
+        'can see your posts, not just your cohort. You have the option to ask or comment anonymously' +
+        ', allowing you to remain even more secret. Questions can be answered by providers, which ' +
+        'include clinic workers, nurses, and more.');
+    }
+
+  // present a basic alert -- used for displaying gc info
+  async presentAlert(header: string, message: string) {
+    const alert = await this.alertController.create({
+      header,
+      message,
+      buttons: ['OK']
+    });
+    await alert.present();
+  }
 
 
 }
