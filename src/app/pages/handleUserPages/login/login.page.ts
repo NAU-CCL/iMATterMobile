@@ -80,6 +80,17 @@ export class LoginPage implements OnInit {
                 Validators.compose([Validators.required]),
             ],
         });
+
+        platform.ready().then(() => {
+          this.platform.pause.subscribe(() => {
+              console.log('[INFO] App paused');
+              this.updateLogOut();
+          });
+
+          this.platform.resume.subscribe(() => {
+              console.log('[INFO] App resumed');
+          });
+      });
     }
 
     ngOnInit() {
@@ -92,6 +103,8 @@ export class LoginPage implements OnInit {
                 this.showEmailBox = true;
             }
         });
+
+
     }
 
     ionViewDidEnter() {
@@ -108,6 +121,14 @@ export class LoginPage implements OnInit {
     private notificationSetup(userID) {
         this.fcm.getToken(userID);
     }
+
+
+    updateLogOut() {
+     this.analyticsService.updateLogOut(this.session);
+     console.log('added LogOutTime');
+    }
+
+
 
   addSession(){
   this.storage.get('userCode').then((val) => {
@@ -175,12 +196,7 @@ console.log('successful session creation');
                             this.storage.set('daysSinceLogin', doc.get('daysSinceLogin'));
 
                             this.addSession();
-                            this.bnIdle.startWatching(20).subscribe((isTimedOut: boolean) => {
-                               if (isTimedOut) {
-                                 console.log('session expired');
-                                   this.logOut();
-                               }
-                             });
+
 
                             // update users days since last login to 0
                             this.afs.firestore.collection('users').doc(this.userID).update({

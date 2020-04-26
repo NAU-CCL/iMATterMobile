@@ -112,7 +112,7 @@ export class HomePage implements OnInit {
   private totalDaysPregnant: any;
   private analyticss : string;
   private sessions : Observable<any>;
-  
+
 
   constructor(private activatedRoute: ActivatedRoute, public afs: AngularFirestore,
               private toastCtrl: ToastController,
@@ -170,7 +170,7 @@ export class HomePage implements OnInit {
       }
     });
 
-    
+
     /*
 
     this.storage.get('weeksPregnant').then((val) => {
@@ -209,7 +209,7 @@ export class HomePage implements OnInit {
 
   ionViewWillEnter() {
   this.addView();
-  
+
     this.storage.get('userCode').then((val) => {
       if (val) {
         this.userProfileID = val;
