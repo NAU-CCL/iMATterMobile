@@ -9,6 +9,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import {ToastController} from '@ionic/angular';
 import { Storage } from '@ionic/storage';
+import { BnNgIdleService } from 'bn-ng-idle';
 import * as firebase from 'firebase/app';
 
 @Component({
@@ -68,7 +69,8 @@ export class LoginPage implements OnInit {
         private storage: Storage,
         private fcm: FcmService,
         private analyticsService: AnalyticsService,
-        private platform: Platform
+        private platform: Platform,
+        private bnIdle: BnNgIdleService
     ) {
         this.loginForm = this.formBuilder.group({
             email: ['',
@@ -173,6 +175,12 @@ console.log('successful session creation');
                             this.storage.set('daysSinceLogin', doc.get('daysSinceLogin'));
 
                             this.addSession();
+                            this.bnIdle.startWatching(20).subscribe((isTimedOut: boolean) => {
+                               if (isTimedOut) {
+                                 console.log('session expired');
+                                   this.logOut();
+                               }
+                             });
 
                             // update users days since last login to 0
                             this.afs.firestore.collection('users').doc(this.userID).update({
@@ -197,6 +205,16 @@ console.log('successful session creation');
         });
     }
 
+
+    logOut(): void {
+      this.storage.set('authenticated', 'false');
+      this.storage.remove('userCode');
+      this.storage.remove('totalDaysPregnant');
+      this.storage.remove('weeksPregnant');
+      this.storage.remove('daysPregnant');
+      this.router.navigateByUrl('login');
+    }
+
     showToast(msg) {
         this.toastCtrl.create({
             message: msg,
@@ -204,4 +222,3 @@ console.log('successful session creation');
         }).then(toast => toast.present());
     }
 }
-

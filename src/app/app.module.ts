@@ -22,6 +22,7 @@ import { NativeGeocoder, NativeGeocoderOptions } from '@ionic-native/native-geoc
 import { ShowMessagePageModule } from './pages/answer/show-message/show-message.module';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BnNgIdleService } from 'bn-ng-idle';
 
 
 @NgModule({
@@ -48,6 +49,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     ShowMessagePageModule,
     FormsModule,
     ReactiveFormsModule,
+    BnNgIdleService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: FirestoreSettingsToken, useValue: {} },
     InAppBrowser
