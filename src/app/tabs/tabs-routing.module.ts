@@ -38,9 +38,34 @@ const routes: Routes = [
           },
           {
             path: 'available',
+            children: [
+              {
+                path: '',
+                children: [
+                  {
+                    path: '',
+                    loadChildren: () =>
+                    import('../pages/available/available.module').then(m => m.AvailablePageModule)
+                  },
+                  {
+                    path: 'answer/:id',
+                    loadChildren: () => import('../pages/answer/answer.module').then( m => m.AnswerPageModule)
+                  }
+                ]
+              }
+            ]
+
+          },
+          {
+            path: 'available/:id',
             loadChildren: () =>
                 import('../pages/available/available.module').then(m => m.AvailablePageModule)
           }
+          /*{
+            path: 'available',
+            loadChildren: () =>
+                import('../pages/available/available.module').then(m => m.AvailablePageModule)
+          }*/
         ]
       },
       {
