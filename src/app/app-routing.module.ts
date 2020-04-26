@@ -54,22 +54,24 @@ const routes: Routes = [
     path: 'viewable-profile/:id',
     loadChildren: () => import('./pages/viewable-profile/viewable-profile.module').then( m => m.ViewableProfilePageModule)
   },
-  /*{ //handled in tabs-routing
+  /* THESE HAVE BEEN MOVED TO TABS-ROUTING
+  {
     path: 'home',
     loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
-  },*/
-  /*{
+  },
+  {
     path: 'available',
     loadChildren: () => import('./pages/available/available.module').then( m => m.AvailablePageModule)
-  },*/
-  /*{
+  },
+  {
     path: 'available/:id',
     loadChildren: () => import('./pages/available/available.module').then( m => m.AvailablePageModule)
-  },*/
-  /*{
+  },
+  {
     path: 'answer/:id',
     loadChildren: () => import('./pages/answer/answer.module').then( m => m.AnswerPageModule)
-  },*/
+  },
+  */
   {
     path: 'handle-user-pages',
     loadChildren: () => import('./pages/handle-user-pages/handle-user-pages.module').then( m => m.HandleUserPagesPageModule)
