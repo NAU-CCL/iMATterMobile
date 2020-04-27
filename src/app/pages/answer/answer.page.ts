@@ -95,7 +95,8 @@ export class AnswerPage implements OnInit {
   openPage(url: string) {
     // option to hide survey url
     const options: InAppBrowserOptions = {
-      hideurlbar: 'yes'
+      hideurlbar: 'yes',
+      toolbarcolor: '#ffffff',
     }
     // open the browser inside of the app, using the url, and the options
     const page = this.browser.create(url, `_blank`, options);

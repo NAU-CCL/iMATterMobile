@@ -37,10 +37,19 @@ const routes: Routes = [
             ]
           },
           {
+            path: 'learning-center/:id',
+            loadChildren: () =>
+            import('../pages/learning-center/learning-center.module').then(m => m.LearningCenterPageModule)
+          },
+          {
             path: 'available',
             loadChildren: () =>
                 import('../pages/available/available.module').then(m => m.AvailablePageModule)
-          }
+          },
+          {
+            path: 'available/:id',
+            loadChildren: () => import('../pages/available/available.module').then( m => m.AvailablePageModule)
+          },
         ]
       },
       {

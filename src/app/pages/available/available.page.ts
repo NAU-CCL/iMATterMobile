@@ -105,7 +105,7 @@ export class AvailablePage implements OnInit {
     var daysBeforeDue = Math.trunc( timeBeforeDue / (1000 * 3600 * 24) );
     
     // if the user is inside the survey's userVisibility array
-    //if(survey.userVisibility.includes(this.userCode)){
+    if(survey.userVisibility.includes(this.userCode)){
       // if the survey type is after joining, show it to the user if their join date is between 
       // a value of the daysArray and the expiration date, if the user's join date is not between
       // those dates or if they have already taken the survey for this interval then don't show
@@ -180,32 +180,33 @@ export class AvailablePage implements OnInit {
           canDisplay = true;
         }
       }
+   }
 
       // if the survey type is Emotion and the user's emotion matches the survey's
-      // emotion field, then display to the user
+      // emotion field, then display to the user. Additional checks are in place
+      // to make sure that the user doesn't take the same survey multiple times a day
       if(survey.type == 'Emotion'){
         if(survey.emotionChosen == this.emotion){
           canDisplay = true;
-          // this.answeredSurveys.forEach( answered => {
-          //   if(answered.split(":")[0] == survey.id && answered.split(":")[1] == ("" + today.getDate())){
-          //     canDisplay = true;
-          //     this.completed.push(survey.id);
-          //     includes = true;
-          //   }
-          //   if(answered.split(":")[0] == survey.id && answered.split(":")[1] != ("" + today.getDate())){
-          //     canDisplay = true;
-          //     includes = true;
-          //     this.surveyInterval.push(survey.id + ":" + today.getDate());
-          //   }
-          // })
+          this.answeredSurveys.forEach( answered => {
+            if(answered.split(":")[0] == survey.id && answered.split(":")[1] == ("" + today.getDate())){
+              canDisplay = true;
+              this.completed.push(survey.id);
+              includes = true;
+            }
+            if(answered.split(":")[0] == survey.id && answered.split(":")[1] != ("" + today.getDate())){
+              canDisplay = true;
+              includes = true;
+              this.surveyInterval.push(survey.id + ":" + today.getDate());
+            }
+          })
 
-          // if(!includes){
-          //   canDisplay = true;
-          //   this.surveyInterval.push(survey.id + ":" + today.getDate());
-          // }
+          if(!includes){
+            canDisplay = true;
+            this.surveyInterval.push(survey.id + ":" + today.getDate());
+          }
         }
       }
-   // }
 
    // return if the user can see the survey or not
     return canDisplay;
@@ -234,7 +235,7 @@ export class AvailablePage implements OnInit {
 
     // if the survey type is not inactive, take the survey interval for the current
     // survey and assign it to submit data
-    if(survey.type != 'Inactive' && survey.type != 'Emotion'){
+    if(survey.type != 'Inactive'){
       this.surveyInterval.forEach( surv => {
         if(surv.split(":")[0] == survey.id){
           submitData = surv;
@@ -242,13 +243,14 @@ export class AvailablePage implements OnInit {
       })      
     }
 
+    // if the survey has been completed, mark it as so
     if(this.isComplete(survey)){
       submitData = survey.id + ":" + "completed";
     }
   
     // since the inactive and emotion surveys are dealt with differently, 
     // just add the survey id with a 0
-    if(survey.type == 'Inactive' || survey.type == 'Emotion'){
+    if(survey.type == 'Inactive'){
       submitData = survey.id + ":" + "0";
     }
 

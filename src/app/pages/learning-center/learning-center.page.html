@@ -23,7 +23,8 @@
     </ion-item>
 
     <ng-container *ngFor="let learningMod of ( learningModules | async )">
-      <ion-card button [routerLink]="['/tabs/home/learning-center/learning-module-content', learningMod.id]" *ngIf="newModules.includes(learningMod.id)">
+      <ion-card class="cardDefault" [class.cardHighlighted]="isHighlight(learningMod)"
+      button [routerLink]="['/tabs/home/learning-center/learning-module-content', learningMod.id]" *ngIf="newModules.includes(learningMod.id)">
         
       <ion-card-header>
           <ion-card-title>
@@ -46,7 +47,8 @@
 
   <ion-list>
     <ng-container *ngFor="let learningMod of ( learningModules | async )">
-      <ion-card button [routerLink]="['/tabs/home/learning-center/learning-module-content', learningMod.id]" *ngIf="viewedModules.includes(learningMod.id)">
+      <ion-card button class="cardDefault" [class.cardHighlighted]="isHighlight(learningMod)"
+      [routerLink]="['/tabs/home/learning-center/learning-module-content', learningMod.id]" *ngIf="viewedModules.includes(learningMod.id)">
         
       <ion-card-header>
           <ion-card-title>
