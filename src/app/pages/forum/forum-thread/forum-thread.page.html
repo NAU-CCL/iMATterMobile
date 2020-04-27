@@ -10,7 +10,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content #content>
     <ion-card>
       <ion-row>
         <div *ngIf="!question.anon" >
@@ -85,7 +85,7 @@
     </ion-item>
   </ion-list>
 
-  <ion-button *ngIf="!showCommentBox" padding-horizontal expand="full" class="fill-button" (click)="displayCommentBox();">
+  <ion-button *ngIf="!showCommentBox" padding-horizontal expand="full" class="fill-button" (click)="displayCommentBox(); scrollToBottom()">
     Reply
   </ion-button>
   <div *ngIf="showCommentBox">

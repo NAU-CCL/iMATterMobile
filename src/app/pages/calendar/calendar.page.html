@@ -1,23 +1,20 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>
-      {{ viewTitle }}
-    </ion-title>
     <ion-buttons slot="start">
       <ion-button class="text-press" (click)="getAmpm()" (click)="showAddEvent = true" (click)="isTwelveHour">Add Event</ion-button>
     </ion-buttons>
     <ion-buttons slot="end">
-      <ion-button class="text-press"  (click)="today()">Today</ion-button>
+      <ion-button class="ion-button-background" size="small" (click)="today()">Today</ion-button>
 	  <ion-button class="text-press"  href="/more/settings">Settings</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-	<div class = "addEvent">
+<ion-content >
+	<div class = "addEvent" *ngIf="showAddEvent">
   <!-- Card for adding a new event -->
-  <ion-item *ngIf="!isTwelveHour">
-  <ion-item *ngIf="showAddEvent">
+  <ion-item *ngIf="!isTwelveHour" lines="none">
+  <ion-item *ngIf="showAddEvent" lines="none">
     <ion-card>
       <ion-card-header>
         <ion-card-title>Add New Event</ion-card-title>
@@ -48,8 +45,8 @@
   </ion-item>
   </ion-item>
   
-  <ion-item *ngIf="isTwelveHour">
-  <ion-item *ngIf="showAddEvent">
+  <ion-item *ngIf="isTwelveHour" lines="none">
+  <ion-item *ngIf="showAddEvent" lines="none">
     <ion-card>
       <ion-card-header>
         <ion-card-title>Add New Event</ion-card-title>
@@ -101,14 +98,17 @@
     </ion-col>
 
     <!-- Move back one screen of the slides -->
-    <ion-col size="6" text-left>
+    <ion-col size="4" text-left>
       <ion-button fill="clear" (click)="back()">
         <ion-icon name="arrow-back" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-col>
 
+    <ion-col text-center>
+        {{ viewTitle }}
+    </ion-col>
     <!-- Move forward one screen of the slides -->
-    <ion-col size="6" text-right>
+    <ion-col size="4" text-right>
       <ion-button fill="clear" (click)="next()">
         <ion-icon name="arrow-forward" slot="icon-only"  ></ion-icon>
       </ion-button>
@@ -220,18 +220,10 @@
           (onTitleChanged)="onViewTitleChanged($event)"
           (onTimeSelected)="onTimeSelected($event)"
 		  (dblclick)="clickedCalendar()"
-          startHour="6"
-          endHour="20"
+          startHour="4"
+          endHour="24"
           step="30"
           startingDayWeek="1">
-		  
-		  
-		  
-		  
   </calendar>
-  
-	
-
-
 </ion-content>
 
