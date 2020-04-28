@@ -25,7 +25,7 @@ export class ReportPage implements OnInit {
     version: ''
   };
 
-  private reportForm: FormGroup;
+  public reportForm: FormGroup;
 
   constructor(private afs: AngularFirestore,
               private activatedRoute: ActivatedRoute,

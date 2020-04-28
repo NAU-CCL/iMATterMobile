@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { Cordova, IonicNativePlugin, Plugin } from '@ionic-native/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy, RouterModule } from '@angular/router';
 import { Device } from '@ionic-native/device';
@@ -37,7 +38,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 	  }),
       AppRoutingModule,
       AngularFirestoreModule,
-      AngularFireModule.initializeApp(environment.firebase)],
+      AngularFireModule.initializeApp(environment)],
   providers: [
     StatusBar,
     SplashScreen,

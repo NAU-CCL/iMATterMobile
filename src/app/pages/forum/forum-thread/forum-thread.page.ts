@@ -41,11 +41,11 @@ export class ForumThreadPage implements OnInit {
     type: ''
   };
 
-  public showCommentBox: boolean = false;
-  private anon: boolean;
-  private currentAnon: boolean;
-  private comments: Observable<any>;
-  private commentForm: FormGroup;
+    public showCommentBox: boolean = false;
+    public anon: boolean;
+    public currentAnon: boolean;
+    public comments: Observable<any>;
+    public commentForm: FormGroup;
 
   constructor(private afs: AngularFirestore,
               private activatedRoute: ActivatedRoute,

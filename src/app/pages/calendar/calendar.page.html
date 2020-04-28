@@ -146,7 +146,7 @@
           <ion-checkbox [(ngModel)]="event.allDay"></ion-checkbox>
         </ion-item>
         <ion-button fill="outline" color="important" class=event-button (click)="showEditEvent = false" (click)="editCancelled()" > Cancel </ion-button>
-        <ion-button fill="outline" class=event-button (click)="addEvent()" (click)="deleteOrCancelEvent(true)" (click)="showEditEvent = false" [disabled]="event.title == ''">Add Edits</ion-button>
+        <ion-button fill="outline" class=event-button (click)="addEvent()" (click)="deleteOrCancelEvent()" (click)="showEditEvent = false" [disabled]="event.title == ''">Add Edits</ion-button>
       </ion-card-content>
     </ion-card>
   </ion-item>
@@ -198,7 +198,7 @@
   
   <ng-template #monthviewDefaultEventDetailTemplate let-showEventDetail="showEventDetail" let-selectedDate="selectedDate" let-noEventsLabel="noEventsLabel">
   <p>Events</p>
-            <ion-list class="event-detail-container" has-bouncing="false" *ngIf="showEventDetail" overflow-scroll="false" (click)="addEventDay(selectedDate)" >
+            <ion-list class="event-detail-container" has-bouncing="false" *ngIf="showEventDetail" overflow-scroll="false" (click)="addEventDay()" >
                 <ion-item *ngFor="let event of selectedDate?.events" (click)="onEventSelected(event)">
                         
                     <span *ngIf="event.allDay" class="monthview-eventdetail-timecolumn">All day</span>

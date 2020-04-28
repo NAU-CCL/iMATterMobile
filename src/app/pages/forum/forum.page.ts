@@ -28,8 +28,8 @@ export class ForumPage implements OnInit {
   private sessions: Observable<any>;
   private thisUsersQuestions: Observable<Question[]>;
 
-  private allPosts: boolean;
-  private usersPosts: boolean;
+  public allPosts: boolean;
+  public usersPosts: boolean;
 
   public questionList: any[];
   public loadedQuestionList: any[];
@@ -37,7 +37,7 @@ export class ForumPage implements OnInit {
   public thisUserQuestionList: any[];
   public thisUserLoadedQuestionList: any[];
 
-  private iosPlatform: boolean;
+  public iosPlatform: boolean;
 
   constructor(private questionService: QuestionService,
               private storage: Storage,

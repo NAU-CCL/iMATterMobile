@@ -74,15 +74,15 @@ export class SignupPage implements OnInit {
   public signupForm: FormGroup;
   public loading: any;
   private id: any;
-  private readMore: boolean;
-  private allPicURLs: any;
-  private picURL: any;
-  private showImages: boolean;
+  public readMore: boolean;
+  public allPicURLs: any;
+  public picURL: any;
+  public showImages: boolean;
   private dueDate: string;
-  private currentDate = new Date().toJSON().split('T')[0];
-  private maxYear = new Date().getFullYear() + 1;
-  private securityQs: Array<string>;
-  private autoProfilePic: any;
+  public currentDate = new Date().toJSON().split('T')[0];
+  public maxYear = new Date().getFullYear() + 1;
+  public securityQs: Array<string>;
+  public autoProfilePic: any;
   private emailUsed: boolean;
   private usernameTaken: boolean;
 

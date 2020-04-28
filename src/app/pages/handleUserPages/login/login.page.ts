@@ -56,7 +56,7 @@ export class LoginPage implements OnInit {
 
   private analyticss: string;
   private sessions: Observable<any>;
-  private showEmailBox: boolean;
+    public showEmailBox: boolean;
 
     constructor(
         public loadingCtrl: LoadingController,
