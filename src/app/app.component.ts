@@ -27,7 +27,7 @@ export class AppComponent {
   ) {
     this.initializeApp();
     firebase.initializeApp(firebaseConfig);
-    this.bnIdle.startWatching(20).subscribe((isTimedOut: boolean) => {
+    this.bnIdle.startWatching(300).subscribe((isTimedOut: boolean) => {
        if (isTimedOut) {
 
          console.log('session expired');
