@@ -1,23 +1,20 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>
-      {{ viewTitle }}
-    </ion-title>
     <ion-buttons slot="start">
       <ion-button class="text-press" (click)="getAmpm()" (click)="showAddEvent = true" (click)="isTwelveHour">Add Event</ion-button>
     </ion-buttons>
     <ion-buttons slot="end">
-      <ion-button class="text-press"  (click)="today()">Today</ion-button>
+      <ion-button class="ion-button-background" size="small" (click)="today()">Today</ion-button>
 	  <ion-button class="text-press"  href="/calendar-settings">Settings</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-	<div class = "addEvent">
+<ion-content >
+	<div class = "addEvent" *ngIf="showAddEvent">
   <!-- Card for adding a new event -->
-  <ion-item *ngIf="!isTwelveHour">
-  <ion-item *ngIf="showAddEvent">
+  <ion-item *ngIf="!isTwelveHour" lines="none">
+  <ion-item *ngIf="showAddEvent" lines="none">
     <ion-card>
       <ion-card-header>
         <ion-card-title>Add New Event</ion-card-title>
@@ -48,8 +45,8 @@
   </ion-item>
   </ion-item>
   
-  <ion-item *ngIf="isTwelveHour">
-  <ion-item *ngIf="showAddEvent">
+  <ion-item *ngIf="isTwelveHour" lines="none">
+  <ion-item *ngIf="showAddEvent" lines="none">
     <ion-card>
       <ion-card-header>
         <ion-card-title>Add New Event</ion-card-title>
@@ -101,14 +98,17 @@
     </ion-col>
 
     <!-- Move back one screen of the slides -->
-    <ion-col size="6" text-left>
+    <ion-col size="4" text-left>
       <ion-button fill="clear" (click)="back()">
         <ion-icon name="arrow-back" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-col>
 
+    <ion-col text-center>
+        {{ viewTitle }}
+    </ion-col>
     <!-- Move forward one screen of the slides -->
-    <ion-col size="6" text-right>
+    <ion-col size="4" text-right>
       <ion-button fill="clear" (click)="next()">
         <ion-icon name="arrow-forward" slot="icon-only"  ></ion-icon>
       </ion-button>
@@ -145,7 +145,7 @@
           <ion-checkbox [(ngModel)]="event.allDay"></ion-checkbox>
         </ion-item>
         <ion-button fill="outline" color="important" class=event-button (click)="showEditEvent = false" (click)="editCancelled()" > Cancel </ion-button>
-        <ion-button fill="outline" class=event-button (click)="addEvent()" (click)="deleteOrCancelEvent(true)" (click)="showEditEvent = false" [disabled]="event.title == ''">Add Edits</ion-button>
+        <ion-button fill="outline" class=event-button (click)="addEvent()" (click)="deleteOrCancelEvent()" (click)="showEditEvent = false" [disabled]="event.title == ''">Add Edits</ion-button>
       </ion-card-content>
     </ion-card>
   </ion-item>
@@ -196,7 +196,7 @@
   
   <ng-template #monthviewDefaultEventDetailTemplate let-showEventDetail="showEventDetail" let-selectedDate="selectedDate" let-noEventsLabel="noEventsLabel">
   <p>Events</p>
-            <ion-list class="event-detail-container" has-bouncing="false" *ngIf="showEventDetail" overflow-scroll="false" (click)="addEventDay(selectedDate)" >
+            <ion-list class="event-detail-container" has-bouncing="false" *ngIf="showEventDetail" overflow-scroll="false" (click)="addEventDay()" >
                 <ion-item *ngFor="let event of selectedDate?.events" (click)="onEventSelected(event)">
                         
                     <span *ngIf="event.allDay" class="monthview-eventdetail-timecolumn">All day</span>
@@ -218,18 +218,10 @@
           (onTitleChanged)="onViewTitleChanged($event)"
           (onTimeSelected)="onTimeSelected($event)"
 		  (dblclick)="clickedCalendar()"
-          startHour="6"
-          endHour="20"
+          startHour="4"
+          endHour="24"
           step="30"
           startingDayWeek="1">
-		  
-		  
-		  
-		  
   </calendar>
-  
-	
-
-
 </ion-content>
 

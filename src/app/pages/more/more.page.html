@@ -6,7 +6,7 @@
 
 <ion-content>
   <ion-card>
-    <ion-item button (click) = "updateInfoClicks()" [routerLink]="['/forum/']">
+    <ion-item button (click) = "updateInfoClicks()" [routerLink]="['forum']" lines="none">
       Information Desk
       <ion-icon md="md-arrow-forward" slot="end"></ion-icon>
     </ion-item>
@@ -14,28 +14,28 @@
 
 
   <ion-card>
-    <ion-item button [routerLink]="['./resources/']" >
+    <ion-item button [routerLink]="['./resources/']" lines="none">
       Resources
       <ion-icon md="md-arrow-forward" slot="end"></ion-icon>
     </ion-item>
   </ion-card>
 
   <ion-card>
-    <ion-item button [routerLink]="['./about/']" >
+    <ion-item button [routerLink]="['./about/']" lines="none">
       About
       <ion-icon md="md-arrow-forward" slot="end"></ion-icon>
     </ion-item>
   </ion-card>
 
   <ion-card>
-    <ion-item button [routerLink]="['./settings/']">
+    <ion-item button [routerLink]="['./settings/']" lines="none">
       Settings
       <ion-icon md="md-arrow-forward" slot="end"></ion-icon>
     </ion-item>
   </ion-card>
 
   <ion-card>
-    <ion-item button [routerLink]="['./report/']" >
+    <ion-item button [routerLink]="['./report/']" lines="none">
       Report A Problem
       <ion-icon md="md-arrow-forward" slot="end"></ion-icon>
     </ion-item>

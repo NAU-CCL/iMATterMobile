@@ -59,7 +59,7 @@ export class ViewableProfilePage implements OnInit {
   private currentPost: any;
   private currentCohort: any;
   private currentLoc: any;
-  private userType: string;
+  public userType: string;
 
   constructor(private afs: AngularFirestore, private activatedRoute: ActivatedRoute, private questionService: QuestionService,
               private router: Router, private storage: Storage) {

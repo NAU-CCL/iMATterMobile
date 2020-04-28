@@ -401,7 +401,7 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 							{
 								currentUser = admin.firestore().collection('users').doc(userCode);
 								currentUser.update({recentNotifications: admin.firestore.FieldValue.arrayUnion(
-									"There is a new learning module available!" + "," + "0"
+									"There is a new learning module available!" + "," + learningModule.id
 									)});
                 
 								admin.messaging().sendToDevice(userNotifToken, payload)
@@ -442,7 +442,7 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 								{
 									currentUser = admin.firestore().collection('users').doc(userCode);
 									currentUser.update({recentNotifications: admin.firestore.FieldValue.arrayUnion(
-										"There is a new learning module available!" + "," + "0"
+										"There is a new learning module available!" + "," + learningModule.id
 										)});
 
 									admin.messaging().sendToDevice(userNotifToken, payload)
@@ -462,6 +462,8 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 				learningModules.doc(learningModule.id).update({userVisibility: lmUserVisibility});
 			});
 		});
+	}).then(() => {
+		res.send("finished");
 	});
 });
 
@@ -716,5 +718,7 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 				});
 			}
 		});
+	}).then(() => {
+		res.send("finished");
 	});
 });

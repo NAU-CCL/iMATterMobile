@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
+import { Cordova, IonicNativePlugin, Plugin } from '@ionic-native/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { RouteReuseStrategy } from '@angular/router';
+import { RouteReuseStrategy, RouterModule } from '@angular/router';
+import { Device } from '@ionic-native/device';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
@@ -21,18 +23,22 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { NativeGeocoder, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
 import { ShowMessagePageModule } from './pages/answer/show-message/show-message.module';
 
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
   imports: [BrowserModule,
       IonicModule.forRoot(),
+      RouterModule.forRoot([]),
 	  HttpClientModule,
       IonicStorageModule.forRoot({
 		  name: 'exdb'
 	  }),
       AppRoutingModule,
       AngularFirestoreModule,
-      AngularFireModule.initializeApp(environment.firebase)],
+      AngularFireModule.initializeApp(environment)],
   providers: [
     StatusBar,
     SplashScreen,
@@ -42,10 +48,11 @@ import { ShowMessagePageModule } from './pages/answer/show-message/show-message.
     Geolocation,
     NativeGeocoder,
     ShowMessagePageModule,
+    FormsModule,
+    ReactiveFormsModule,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: FirestoreSettingsToken, useValue: {} },
-    InAppBrowser
-
+    InAppBrowser,
   ],
   bootstrap: [AppComponent]
 })

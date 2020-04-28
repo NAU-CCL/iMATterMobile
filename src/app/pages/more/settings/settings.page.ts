@@ -10,11 +10,13 @@ import { FcmService } from "../../../services/pushNotifications/fcm.service";
 })
 export class SettingsPage implements OnInit {
 
-  private chatNotif: boolean;
-  private learningModNotif: boolean;
-  private surveyNotif: boolean;
-  private infoDeskNotif: boolean;
-  private notificationTime: number;
+  public chatNotif: boolean;
+  public learningModNotif: boolean;
+  public surveyNotif: boolean;
+  public infoDeskNotif: boolean;
+  public notificationTime: number;
+  public clock;
+  public eventNotificationTime;
   constructor(public afs: AngularFirestore, private storage: Storage, private fcm: FcmService) {
 
 

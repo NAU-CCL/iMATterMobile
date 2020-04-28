@@ -70,13 +70,13 @@ export class ProfilePage implements OnInit {
       };
 
   private userProfileID: any;
-  private pointsForRedemption: any;
+    public pointsForRedemption: any;
   private analyticss: string;
   private sessions: Observable<any>;
-  private canRedeemPoints: boolean;
-  private displayRedeemOptions: boolean;
-  private chosenGCType: string;
-  private gcTypes: Array<string>;
+    public canRedeemPoints: boolean;
+    public displayRedeemOptions: boolean;
+    public chosenGCType: string;
+    public gcTypes: Array<string>;
 
     static checkUserPoints(userPoints, pointsNeeded): boolean {
         return userPoints >= pointsNeeded;
@@ -175,6 +175,7 @@ export class ProfilePage implements OnInit {
                 this.profileService.updateEmail(data.newEmail, data.password, this.userProfileID)
                     .then(() => {
                             this.showToast('Your email has been updated!');
+                            this.storage.set('email', data.newEmail);
                             this.refreshPage();
                         },
                         err => {

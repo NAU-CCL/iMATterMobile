@@ -17,10 +17,6 @@ import {AngularFirestore} from '@angular/fire/firestore';
   styleUrls: ['./signup.page.scss'],
 })
 
-
-
-
-
 export class SignupPage implements OnInit {
 
   constructor(
@@ -78,15 +74,15 @@ export class SignupPage implements OnInit {
   public signupForm: FormGroup;
   public loading: any;
   private id: any;
-  private readMore: boolean;
-  private allPicURLs: any;
-  private picURL: any;
-  private showImages: boolean;
+  public readMore: boolean;
+  public allPicURLs: any;
+  public picURL: any;
+  public showImages: boolean;
   private dueDate: string;
-  private currentDate = new Date().toJSON().split('T')[0];
-  private maxYear = new Date().getFullYear() + 1;
-  private securityQs: Array<string>;
-  private autoProfilePic: any;
+  public currentDate = new Date().toJSON().split('T')[0];
+  public maxYear = new Date().getFullYear() + 1;
+  public securityQs: Array<string>;
+  public autoProfilePic: any;
   private emailUsed: boolean;
   private usernameTaken: boolean;
 
@@ -224,13 +220,16 @@ export class SignupPage implements OnInit {
             } else {
               this.authService.signupUser(this.user).then(
                   () => {
+                    this.ionicStorage.set('userCode', this.user.code);
+
                     /*
                     this.loading.dismiss().then(() => {
-                      // this.ionicStorage.set('userCode', this.user.code);
+
                       this.showToast('You have created an account');
 
                      */
-                      this.router.navigate(['/login']);
+                    this.showToast('You have created an account');
+                    this.router.navigate(['/login']);
                    // });
                   },
                   error => {
@@ -251,6 +250,9 @@ export class SignupPage implements OnInit {
           });
         }
       });
+
+      //populate learning modules upon signup
+      this.populateLearningModules();
     }
   }
 
@@ -321,6 +323,86 @@ export class SignupPage implements OnInit {
       message: msg,
       duration: 2000
     }).then(toast => toast.present());
+  }
+
+  /**
+   * Goes through learning modules and updates userVisibility so this user will have 
+   * relevant LMs displayed to them upon signup (without running timed cloud function)
+   * Recycled code from index.js in cloud function code
+   */
+  populateLearningModules()
+  {
+    const learningModules = this.afs.firestore.collection('learningModules');
+    var userCode;
+  
+    learningModules.get().then((value) => {
+      value.forEach(learningModule => {
+  
+        var moduleActive = learningModule.get("moduleActive");
+        //Skip over this module if it's not active
+        if (moduleActive == false)
+        {
+          return; //return acts as "continue" in forEach loop
+        }
+        
+        var lmUserVisibility = learningModule.get("userVisibility");
+        var storedLMUserVisibility = learningModule.get("userVisibility");
+        //overdoing the splitting but does the job
+        var moduleVisibility = learningModule.get("moduleVisibilityTime").split(/(?:,| )+/);
+        var moduleExpiration = learningModule.get("moduleExpiration");
+  
+        var userDaysPregnant = this.user.totalDaysPregnant;
+
+        //Check to see this value exists/is valid
+        if (userDaysPregnant == null)
+        {
+          //return as as "continue" in forEach loop
+          return;
+        }
+
+        userCode = this.user.code;
+
+        //for each week in the module visibility list
+        moduleVisibility.forEach(week => {
+
+          //if module is to always be displayed
+          if (week == 0)
+          {
+            lmUserVisibility.push(userCode);
+
+          }
+          else
+          {
+            var daysStart = 7 * week; //number of days pregnant this module would start at
+            var daysEnd;
+
+            //if the module is never supposed to expire
+            if (moduleExpiration == 0)
+            {
+              daysEnd = daysStart + 100000; //add a large number of days (274 years)
+            }
+            else
+            {
+              daysEnd = daysStart + moduleExpiration; //number of days pregnant this module would end
+            }
+
+            //If user is within the days this LM should be visible to them
+            if (userDaysPregnant >= daysStart && userDaysPregnant <= daysEnd)
+            {
+              //to cover the case where intervals of visibility possibly overlap
+              //prevent user code from being pushed more than once
+              if (!lmUserVisibility.includes(userCode))
+              {
+                lmUserVisibility.push(userCode);
+              }
+            }
+          }
+        });
+          //IMPORTANT: update the userVisibility array
+          learningModules.doc(learningModule.id).update({previousUserVisibility: storedLMUserVisibility});
+          learningModules.doc(learningModule.id).update({userVisibility: lmUserVisibility});
+      });
+    });
   }
 
 }

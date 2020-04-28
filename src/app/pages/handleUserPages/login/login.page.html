@@ -10,10 +10,9 @@
   </h4>
 </ion-text>
 
-
 <ion-content>
   <form [formGroup]="loginForm">
-    <ion-item>
+    <ion-item *ngIf="showEmailBox">
       <ion-label position="stacked">Email</ion-label>
       <ion-input formControlName="email" type="email" placeholder="Your email address"
               [class.invalid]="!loginForm.controls['email'].valid && loginForm.controls['email'].touched">
@@ -33,13 +32,15 @@
       <ion-label>Please enter your password.</ion-label>
     </ion-item>
 
-    <ion-button class="fill-button" (click)="validateUser(loginForm)" expand="block" [disabled]="!loginForm.valid">
+    <ion-button class="fill-button" (click)="validateUser(loginForm)" expand="block">
       Log In
     </ion-button>
+    <!--
+    <ion-button class="fill-button" (click)="validateUser(loginForm)" expand="block" [disabled]="password.length < 1">
+      Log In
+    </ion-button>-->
   </form>
-</ion-content>
 
-<ion-content>
   <ion-button class="text-button" expand="block" fill="clear" routerLink="/code">
     New to iMATter? Create a new account
   </ion-button>
