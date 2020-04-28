@@ -15,7 +15,7 @@ const today = new Date();
 })
 
 export class AvailablePage implements OnInit {
-  private surveys: Observable<Survey[]>;
+  public surveys: Observable<Survey[]>;
 
   // user's due date
   dueDate;
