@@ -253,7 +253,7 @@ export class AvailablePage implements OnInit {
     }
 
     // navigate to the answer page and pass the submitData
-    this.router.navigate(['/answer/' + submitData])
+    this.router.navigate(['/tabs/home/available/answer/' + submitData])
   }
 
 
