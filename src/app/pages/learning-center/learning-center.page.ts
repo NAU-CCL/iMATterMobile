@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { Storage} from '@ionic/storage';
 import * as firebase from 'firebase/app';
 import {AngularFirestore} from '@angular/fire/firestore';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { single } from 'rxjs/operators';
 
 @Component({
@@ -30,6 +30,7 @@ export class LearningCenterPage implements OnInit {
   newModules = [];
   viewedModules = [];
   takenQuizModules = new Map();
+  highlightID;
 
   //used for keeping track of recurring modules
   lmRecurrenceMap = new Map();
@@ -40,7 +41,8 @@ export class LearningCenterPage implements OnInit {
      private storage: Storage,
      private learningModService: LearningModuleService,
      private afs: AngularFirestore,
-     private analyticsService: AnalyticsService) { }
+     private analyticsService: AnalyticsService,
+     private activatedRoute: ActivatedRoute) { }
 
   ngOnInit() 
   {
@@ -71,6 +73,8 @@ export class LearningCenterPage implements OnInit {
       console.log('error retrieving userCode: '+ e);
 
       });
+
+      this.highlightID = this.activatedRoute.snapshot.paramMap.get('id');
 
     this.addView();
 
@@ -353,5 +357,11 @@ export class LearningCenterPage implements OnInit {
     this.storage.remove(learningModID + "storedPrevUV");
     this.storage.remove(learningModID + "storedCurrentUV");
     this.storage.remove(learningModID + "localUVStoreDate");
+  }
+
+  isHighlight(learningMod: LearningModule){
+    if(this.highlightID){
+      return this.highlightID == learningMod.id;
+    }
   }
 }
