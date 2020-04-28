@@ -5,7 +5,7 @@
     </ion-buttons>
     <ion-buttons slot="end">
       <ion-button class="ion-button-background" size="small" (click)="today()">Today</ion-button>
-	  <ion-button class="text-press"  href="/more/settings">Settings</ion-button>
+	  <ion-button class="text-press"  href="/calendar-settings">Settings</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -123,12 +123,11 @@
     <ion-card>
       <ion-card-header>
         <ion-card-title>Edit Event</ion-card-title>
-		<ion-card-title color="danger">Re-enter event information</ion-card-title>
       </ion-card-header>
       <ion-card-content>
         <ion-item>
 		
-          <ion-input type="text" placeholder="Title" [(ngModel)]="event.title"></ion-input>
+          <ion-input type="text" placeholder="Title" [(ngModel)]="event.title" name="title"></ion-input>
         </ion-item>
         <ion-item>
           <ion-input type="text" placeholder="Description" [(ngModel)]="event.desc"></ion-input>
@@ -139,7 +138,7 @@
         </ion-item>
         <ion-item>
           <ion-label>End</ion-label>
-          <ion-datetime displayFormat="MM/DD/YYYY hh:mm" pickerFormat="MMM D:HH:mm" [(ngModel)]="event.endTime" ></ion-datetime>
+          <ion-datetime displayFormat="MM/DD/YYYY hh:mm" pickerFormat="MMM D:HH:mm" [(ngModel)]="event.endTime" name="desc"></ion-datetime>
         </ion-item>
         <ion-item>
           <ion-label>All Day?</ion-label>
@@ -159,18 +158,17 @@
     <ion-card>
       <ion-card-header>
         <ion-card-title>Edit Event</ion-card-title>
-		<ion-card-title color="danger">Re-enter event information</ion-card-title>
       </ion-card-header>
       <ion-card-content>
         <ion-item>
-          <ion-input type="text" placeholder="Title" [(ngModel)]="event.title"></ion-input>
+          <ion-input type="text" placeholder="Title" [(ngModel)]="event.title"  name="title"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-input type="text" placeholder="Description" [(ngModel)]="event.desc"></ion-input>
+          <ion-input type="text" placeholder="Description" [(ngModel)]="event.desc" name="desc"></ion-input>
         </ion-item>
         <ion-item>
           <ion-label>Start</ion-label>
-          <ion-datetime displayFormat="MM/DD/YYYY hh:mm" pickerFormat="MMM D:hh:mm" [(ngModel)]="event.startTime" ></ion-datetime>
+          <ion-datetime displayFormat="MM/DD/YYYY hh:mm" pickerFormat="MMM D:hh:mm" [(ngModel)]="event.startTime"></ion-datetime>
         </ion-item>
 		<ion-item>
 		 <ion-label>AM or PM?</ion-label>
@@ -181,7 +179,7 @@
 		  </ion-item>
         <ion-item>
           <ion-label>End</ion-label>
-          <ion-datetime displayFormat="MM/DD/YYYY hh:mm" pickerFormat="MMM D:hh:mm" [(ngModel)]="event.endTime" ></ion-datetime>
+          <ion-datetime displayFormat="MM/DD/YYYY hh:mm" pickerFormat="MMM D:hh:mm" [(ngModel)]="event.endTime"  ></ion-datetime>
         </ion-item>
         <ion-item>
           <ion-label>All Day?</ion-label>

@@ -79,7 +79,12 @@ const routes: Routes = [
   {
     path: 'recovery-code',
     loadChildren: () => import('./pages/handleUserPages/recovery-code/recovery-code.module').then( m => m.RecoveryCodePageModule)
+  },
+  {
+    path: 'calendar-settings',
+    loadChildren: () => import('./pages/calendar-settings/calendar-settings.module').then( m => m.CalendarSettingsPageModule)
   }
+
 ];
 @NgModule({
   imports: [

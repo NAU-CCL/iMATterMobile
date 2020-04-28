@@ -91,8 +91,13 @@ export class CalendarPage implements OnInit {
  alertOpen: boolean;
  isNotMonthView: boolean;
  deleteEditedEvent: boolean;
+ currentlyEditing: boolean;
  
  editedEvent: any;
+ 
+ 
+ 
+ product:any= {};
  
   // @ts-ignore
   @ViewChild(CalendarComponent) myCal: CalendarComponent;
@@ -116,6 +121,8 @@ export class CalendarPage implements OnInit {
             {title: 'Saturday', dayCode: 6, checked: false},
             {title: 'Sunday', dayCode: 0, checked: false}
         ];
+
+	this.product.content='123';
 
 	}
 
@@ -182,7 +189,7 @@ export class CalendarPage implements OnInit {
 
   // Create the right event format and reload source
   addEvent() {
-
+	  this.currentlyEditing = false;
 	  this.notificationIndex = Math.floor(Math.random() * 100000000000);
 	  let eventCopy = {
 		  title: this.event.title,
@@ -466,6 +473,14 @@ export class CalendarPage implements OnInit {
   }
 
 	storeEditedEvent(ev){
+		this.currentlyEditing = true;
+		this.event.title = ev.title;
+		this.event.desc = ev.desc;		
+		const selectedStart = new Date(ev.startTime);
+		const selectedEnd = new Date(ev.endTime);
+		this.event.startTime = selectedStart.toISOString();
+		this.event.endTime = selectedEnd.toISOString();
+		
 		  this.editedEvent = ev;
 	  }
 	  
@@ -1069,10 +1084,15 @@ export class CalendarPage implements OnInit {
 // Time slot was clicked
   onTimeSelected(ev) {
 	  console.log("DAY");
-    const selected = new Date(ev.selectedTime);
-    this.event.startTime = selected.toISOString();
-    selected.setHours(selected.getHours() + 1);
-    this.event.endTime = (selected.toISOString());
+	  if(this.currentlyEditing === true){
+		  console.log("editing");
+	  }
+	  else{
+		const selected = new Date(ev.selectedTime);
+		this.event.startTime = selected.toISOString();
+		selected.setHours(selected.getHours() + 3);
+		this.event.endTime = (selected.toISOString());
+	  }
 
 	
 	
