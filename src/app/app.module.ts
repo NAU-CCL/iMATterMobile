@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
+import { Cordova, IonicNativePlugin, Plugin } from '@ionic-native/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy, RouterModule } from '@angular/router';
+import { Device } from '@ionic-native/device';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
@@ -37,7 +39,7 @@ import { BnNgIdleService } from 'bn-ng-idle';
 	  }),
       AppRoutingModule,
       AngularFirestoreModule,
-      AngularFireModule.initializeApp(environment.firebase)],
+      AngularFireModule.initializeApp(environment)],
   providers: [
     StatusBar,
     SplashScreen,
@@ -52,8 +54,7 @@ import { BnNgIdleService } from 'bn-ng-idle';
     BnNgIdleService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: FirestoreSettingsToken, useValue: {} },
-    InAppBrowser
-
+    InAppBrowser,
   ],
   bootstrap: [AppComponent]
 })

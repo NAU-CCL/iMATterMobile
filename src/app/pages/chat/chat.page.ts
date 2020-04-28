@@ -50,8 +50,8 @@ analytic: Analytics =
   sessionID: ''
 };
 
-  private cohortChat: string;
-  private chats: Observable<any>;
+  public cohortChat: string;
+  public chats: Observable<any>;
   private hasEntered: boolean;
 
   private analyticss: string;

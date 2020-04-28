@@ -18,7 +18,7 @@ import { environment } from '../../../environments/environment';
     FormsModule,
     IonicModule,
     LearningCenterPageRoutingModule,
-    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireModule.initializeApp(environment),
     AngularFirestoreModule
   ],
   providers: [

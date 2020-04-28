@@ -339,10 +339,10 @@ export class HomePage implements OnInit {
     var surveyID;
     if(notif.split(",")[0] == "There is a new survey available"){
       surveyID = notif.split(",")[1];
-      this.router.navigate(['/available/' + surveyID])
+      this.router.navigate(['/tabs/home/available/' + surveyID])
     }
     else{
-      this.router.navigate(['/learning-center'])
+      this.router.navigate(['/tabs/home/learning-center'])
     }
   }
 

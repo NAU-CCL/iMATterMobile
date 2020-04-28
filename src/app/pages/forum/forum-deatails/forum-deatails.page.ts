@@ -31,8 +31,8 @@ export class ForumDeatailsPage implements OnInit {
     commenters: []
   };
 
-  private anon: boolean;
-  private questionForm: FormGroup;
+  public anon: boolean;
+  public questionForm: FormGroup;
 
   constructor(private afs: AngularFirestore,
               private activatedRoute: ActivatedRoute,
