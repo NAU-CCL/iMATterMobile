@@ -140,6 +140,8 @@ export class LoginPage implements OnInit {
           this.session.userID= val;
           this.session.LoginTime = firebase.firestore.FieldValue.serverTimestamp();
           this.analyticsService.addSession(this.session).then(()=> {
+            console.log('successful session creation');
+            console.log(this.session.id);
 
           }, err => {
           console.log('trouble adding session');
@@ -149,7 +151,7 @@ export class LoginPage implements OnInit {
     });
   }
 });
-console.log('successful session creation');
+
 
 }
 
@@ -180,6 +182,7 @@ console.log('successful session creation');
                         this.userID = doc.id;
                         this.userPassword = doc.get('password');
                         if ( this.userPassword === pass) {
+                            this.addSession();
                             if (this.platform.is('android')) {
                                 this.storage.set('platform', 'android');
                             } else if (this.platform.is('ios')) {
@@ -194,9 +197,6 @@ console.log('successful session creation');
                             this.storage.set('weeksPregnant', doc.get('weeksPregnant'));
                             this.storage.set('daysPregnant', doc.get('daysPregnant'));
                             this.storage.set('daysSinceLogin', doc.get('daysSinceLogin'));
-
-                            this.addSession();
-
 
                             // update users days since last login to 0
                             this.afs.firestore.collection('users').doc(this.userID).update({
