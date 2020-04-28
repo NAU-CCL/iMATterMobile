@@ -68,7 +68,7 @@ export class CalendarPage implements OnInit {
   private sessions : Observable<any>;
 
   length : number;
-  private showAddEvent: boolean;
+	public showAddEvent: boolean;
 
 
 

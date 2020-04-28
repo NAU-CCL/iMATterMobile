@@ -35,7 +35,7 @@ export class LearningCenterPage implements OnInit {
   //used for keeping track of recurring modules
   lmRecurrenceMap = new Map();
 
-  private learningModules: Observable<LearningModule[]>;
+  public learningModules: Observable<LearningModule[]>;
 
   constructor(private router: Router,
      private storage: Storage,

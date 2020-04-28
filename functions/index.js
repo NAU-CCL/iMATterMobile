@@ -462,6 +462,8 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 				learningModules.doc(learningModule.id).update({userVisibility: lmUserVisibility});
 			});
 		});
+	}).then(() => {
+		res.send("finished");
 	});
 });
 
@@ -716,5 +718,7 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
 				});
 			}
 		});
+	}).then(() => {
+		res.send("finished");
 	});
 });

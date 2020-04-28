@@ -15,7 +15,7 @@ const today = new Date();
 })
 
 export class AvailablePage implements OnInit {
-  private surveys: Observable<Survey[]>;
+  public surveys: Observable<Survey[]>;
 
   // user's due date
   dueDate;
@@ -255,7 +255,7 @@ export class AvailablePage implements OnInit {
     }
 
     // navigate to the answer page and pass the submitData
-    this.router.navigate(['/answer/' + submitData])
+    this.router.navigate(['/tabs/home/available/answer/' + submitData])
   }
 
 

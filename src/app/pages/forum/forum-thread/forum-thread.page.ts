@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import { QuestionService, Question, Comment } from 'src/app/services/infoDesk/question.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {ToastController} from '@ionic/angular';
+import {IonContent, ToastController} from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import {Observable} from 'rxjs';
 import {AngularFirestore} from '@angular/fire/firestore';
@@ -15,6 +15,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
   styleUrls: ['./forum-thread.page.scss'],
 })
 export class ForumThreadPage implements OnInit {
+    @ViewChild('content', {static: true}) content: IonContent;
 
   question: Question = {
     title: '',
@@ -40,11 +41,11 @@ export class ForumThreadPage implements OnInit {
     type: ''
   };
 
-  public showCommentBox: boolean = false;
-  private anon: boolean;
-  private currentAnon: boolean;
-  private comments: Observable<any>;
-  private commentForm: FormGroup;
+    public showCommentBox: boolean = false;
+    public anon: boolean;
+    public currentAnon: boolean;
+    public comments: Observable<any>;
+    public commentForm: FormGroup;
 
   constructor(private afs: AngularFirestore,
               private activatedRoute: ActivatedRoute,
@@ -81,6 +82,7 @@ export class ForumThreadPage implements OnInit {
   }
 
   addComment(commentForm: FormGroup) {
+      this.scrollToBottom();
       console.log(commentForm.value.anon);
       if (!commentForm.valid) {
           this.showToast('Please enter a comment');
@@ -139,4 +141,14 @@ export class ForumThreadPage implements OnInit {
       this.storage.set('currentPost', questionID);
       this.storage.set('currentLoc', 'forum/forum-thread');
   }
+
+    scrollToBottom() {
+        setTimeout(() => {
+            if (this.content.scrollToBottom) {
+                this.content.scrollToBottom(100);
+            }
+        }, 500);
+    }
+
+
 }
