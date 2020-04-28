@@ -5,6 +5,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 import { LoginPageRoutingModule } from './login-routing.module';
+import { BnNgIdleService } from 'bn-ng-idle';
 
 import { LoginPage } from './login.page';
 
