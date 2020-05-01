@@ -253,6 +253,8 @@ export class SignupPage implements OnInit {
 
       //populate learning modules upon signup
       this.populateLearningModules();
+      //populate surveys upon signup
+      this.populateSurveys();
     }
   }
 
@@ -401,6 +403,75 @@ export class SignupPage implements OnInit {
           //IMPORTANT: update the userVisibility array
           learningModules.doc(learningModule.id).update({previousUserVisibility: storedLMUserVisibility});
           learningModules.doc(learningModule.id).update({userVisibility: lmUserVisibility});
+      });
+    });
+  }
+
+  populateSurveys(){
+    // grab the survey collection
+    const surveys = this.afs.firestore.collection('surveys');
+    // initialize today's date
+    const today = new Date();
+    // declare userCode variable for later use
+    var userCode;
+  
+    // for each individual survey in the collection do the following
+    surveys.get().then((value) => {
+      value.forEach(survey => {
+        // get the survey type
+        var surveyType = survey.get("type");
+        
+        // get the user visibility array of the survey
+        var surveyUserVisibility = survey.get("userVisibility");
+  
+        // get the expiration days of the survey
+        var expireDays = survey.get("daysTillExpire")
+        
+        // assign the user code 
+        userCode = this.user.code;
+
+        // if the survey type is After Joining
+        if(surveyType == 'After Joining'){
+          // declare daysArray which will have all of the days that the survey will appear
+          var daysArray = survey.get("daysTillRelease").split(/(?:,| )+/);
+
+          // for each day in the array check if the user has been a user for that many days, if so
+          // add the user code to the userVisibility array to make sure the survey is visible to them
+          daysArray.forEach(day => {
+            if(this.user.daysAUser >= parseInt(day) && this.user.daysAUser <= parseInt(day) + expireDays){
+              surveyUserVisibility.push(userCode);
+            }
+          })
+
+        }
+
+        // if the survey type is Due Date
+        if(surveyType == 'Due Date'){
+          // declare daysArray which will have all of the days that the survey will appear
+          var daysArray = survey.get("daysBeforeDueDate").split(/(?:,| )+/);
+          // grab the user's DueDate and make it into an array of [month, day, year]
+          var userDueDate = this.user.dueDate.split('-');
+          // make it into a date object
+          var dateDue = new Date(userDueDate[1] + "/" + userDueDate[2] + "/" + userDueDate[0]);
+          // subtract the current day from the dueDate and get the time in ms
+          var timeBeforeDue =  dateDue.getTime() - today.getTime();
+          // convert the time into days
+          var daysBeforeDue = Math.trunc( timeBeforeDue / (1000 * 3600 * 24) );
+
+          // for each day in the array check if the user's due date is within the those days, if so
+          // add the user code to the userVisibility array to make sure the survey is visible to them
+          daysArray.forEach(day => {
+            if(daysBeforeDue <= parseInt(day) && daysBeforeDue >= parseInt(day) - expireDays){
+              surveyUserVisibility.push(userCode);
+            }
+          })
+        }
+
+        // Survey Type Emotion doesn't check userVisibility, so there is no need to handle them here
+        // Survey Type Inactive a user cannot be inactive if they just signed up, so there is no need to handle
+
+          //IMPORTANT: update the userVisibility array
+          surveys.doc(survey.id).update({userVisibility: surveyUserVisibility});
       });
     });
   }
