@@ -410,14 +410,17 @@ export class SignupPage implements OnInit {
   populateSurveys(){
     // grab the survey collection
     const surveys = this.afs.firestore.collection('surveys');
+
     // initialize today's date
     const today = new Date();
+
     // declare userCode variable for later use
     var userCode;
   
     // for each individual survey in the collection do the following
     surveys.get().then((value) => {
       value.forEach(survey => {
+
         // get the survey type
         var surveyType = survey.get("type");
         
@@ -432,6 +435,7 @@ export class SignupPage implements OnInit {
 
         // if the survey type is After Joining
         if(surveyType == 'After Joining'){
+
           // declare daysArray which will have all of the days that the survey will appear
           var daysArray = survey.get("daysTillRelease").split(/(?:,| )+/);
 
@@ -447,14 +451,19 @@ export class SignupPage implements OnInit {
 
         // if the survey type is Due Date
         if(surveyType == 'Due Date'){
+
           // declare daysArray which will have all of the days that the survey will appear
           var daysArray = survey.get("daysBeforeDueDate").split(/(?:,| )+/);
+
           // grab the user's DueDate and make it into an array of [month, day, year]
           var userDueDate = this.user.dueDate.split('-');
+
           // make it into a date object
           var dateDue = new Date(userDueDate[1] + "/" + userDueDate[2] + "/" + userDueDate[0]);
+
           // subtract the current day from the dueDate and get the time in ms
           var timeBeforeDue =  dateDue.getTime() - today.getTime();
+          
           // convert the time into days
           var daysBeforeDue = Math.trunc( timeBeforeDue / (1000 * 3600 * 24) );
 

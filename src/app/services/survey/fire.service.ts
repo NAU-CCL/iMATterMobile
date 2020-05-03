@@ -3,6 +3,7 @@ import { AngularFirestore, AngularFirestoreCollection, DocumentReference } from 
 import { map, take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
+// declares Survey object interface, making sure every Survey object has these fields
 export interface Survey {
   id?: string;
   title: string;
@@ -29,7 +30,10 @@ export class FireService {
   constructor(private angularfs: AngularFirestore) {}
 
    getSurveyCollection(){
+     // gets the collection of surveys
     this.surveyCollection = this.angularfs.collection<Survey>('surveys');
+
+    //  looks for changes and updates, also grabs the data
     this.surveys = this.surveyCollection.snapshotChanges().pipe(
       map(actions => {
         return actions.map(a => {
@@ -41,11 +45,13 @@ export class FireService {
     );
    }
 
+   // gets all of the surveys in the survey collection
    getSurveys(): Observable<Survey[]>{
      this.getSurveyCollection();
     return this.surveys;
   }
 
+  // gets an individual survey with id provided
   getSurvey(id: string){
     return this.surveyCollection.doc<Survey>(id).valueChanges().pipe(
       take(1),
@@ -56,48 +62,13 @@ export class FireService {
     );
   }
   
-  addSurvey(survey: Survey): Promise<DocumentReference>{
-    return this.surveyCollection.add(survey);
-  }
-
-  updateSurvey(survey: Survey): Promise<void>{
-    return this.surveyCollection.doc(survey.id).update({ 
-      title: survey.title,
-      surveyLink: survey.surveyLink,
-      type: survey.type,
-      daysTillRelease: survey.daysTillRelease,
-      daysBeforeDueDate: survey.daysBeforeDueDate,
-      daysTillExpire: survey.daysTillExpire,
-      daysInactive: survey.daysInactive,
-      emotionChosen: survey.emotionChosen });
-  }
-
-  deleteSurvey(id: string): Promise<void>{
-    return this.surveyCollection.doc(id).delete();
-  }
-
-  getTime(timeString: string){
-
-    var dateFormat = timeString.split("-");
-    var dateSplit = dateFormat[2].split(":");
-    var minute = dateSplit[1];
-    var year = dateFormat[0];
-    var month = dateFormat[1];
-
-    var secondSplit = dateSplit[0].split("T");
-    var day = secondSplit[0];
-    var hour = secondSplit[1];
-    
-    var dateChose = year + " " + month + " " + day + " " + hour + " " + minute;
-    
-    return dateChose;
-  }
-
+  // updates user's answeredSurveys list
   updateAnsweredSurveys(userID: string, answered: any[]){
     return this.angularfs.firestore.collection('users')
     .doc(userID).update({answeredSurveys: answered});
   }
 
+  // updates user's recentNotifications list
   updateRecentNot(userID: string, recent: any[]){
     return this.angularfs.firestore.collection('users')
     .doc(userID).update({recentNotifications: recent});
