@@ -79,26 +79,26 @@ export class CalendarPage implements OnInit {
   notificationIndex : number;
   deleteNotificationIndex : number;
   showEditEvent : boolean;
-  
+
   confirmDeleteEvent: boolean;
   subtractTime: number;
   notificationTime: any;
   testers: number;
  isTwelveHour: boolean;
  clockType: number;
- 
+
  clicked: boolean;
  alertOpen: boolean;
  isNotMonthView: boolean;
  deleteEditedEvent: boolean;
  currentlyEditing: boolean;
- 
+
  editedEvent: any;
- 
- 
- 
+
+
+
  product:any= {};
- 
+
   // @ts-ignore
   @ViewChild(CalendarComponent) myCal: CalendarComponent;
 
@@ -139,7 +139,7 @@ export class CalendarPage implements OnInit {
 	this.addView();
   }
 
-  
+
 
   resetEvent() {
     this.event = {
@@ -182,7 +182,7 @@ export class CalendarPage implements OnInit {
   deleteEvent(){
 	  //window.plugins.calendar.deleteEvent(newTitle,eventLocation,notes,startDate,endDate,success,error);
   }
-  
+
   addEventDay(){
 	  console.log("CHANGE");
   }
@@ -219,18 +219,18 @@ export class CalendarPage implements OnInit {
 		  //eventCopy.startTime = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate()));
 		  //eventCopy.endTime = new Date(Date.UTC(end.getUTCFullYear(), end.getUTCMonth(), end.getUTCDate() + 1));
 		}
-		
+
 		if(eventCopy.startTime.getHours() === 12){
 			console.log("equals 12");
 			eventCopy.startTime.setMinutes(eventCopy.startTime.getMinutes() - 720);
-			
+
 		}
-		
+
 		if(eventCopy.AMPM === 'pm'){
 			console.log('eventCopy.AMPM: ' + eventCopy.AMPM);
 			console.log('eventCopy.startTime.getMinutes: ' + eventCopy.startTime.getMinutes())
 			eventCopy.startTime.setMinutes(eventCopy.startTime.getMinutes() + 720);
-			
+
 		}
 		console.log("PM STARTTIME: " + eventCopy.startTime);
 		this.storage.get('userCode').then((val) => {
@@ -250,7 +250,7 @@ export class CalendarPage implements OnInit {
 					  console.log("TESTERS: " + this.testers);
 					  eventCopy.startTime.setMinutes( eventCopy.startTime.getMinutes() - this.subtractTime );
 					  console.log(eventCopy.startTime);
-					  
+
 					  this.localNotifications.schedule({
 						   id: this.notificationIndex,
 						   text: 'You have an event, check your calendar!',
@@ -258,12 +258,12 @@ export class CalendarPage implements OnInit {
 						   led: 'FF0000',
 						   sound: null
 						});
-						
-						
+
+
 				  });
 				});
 			  }
-			});		
+			});
 
 		var currentID = this.notificationIndex;
 
@@ -290,12 +290,12 @@ export class CalendarPage implements OnInit {
 		});
 		this.resetEvent();
 		this.showAddEvent = false;
-		
-	
+
+
 	  }
 	  else{
-	 
-	
+
+
 	console.log("IS TWELVEHOUR: " + this.isTwelveHour);
 	console.log(this.notificationIndex);
     if (eventCopy.allDay) {
@@ -305,8 +305,8 @@ export class CalendarPage implements OnInit {
       eventCopy.startTime = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate()));
       eventCopy.endTime = new Date(Date.UTC(end.getUTCFullYear(), end.getUTCMonth(), end.getUTCDate() + 1));
     }
-	
-	
+
+
 
 	// add notification when creating event
 	//if(this.notificationIndex == null){
@@ -316,7 +316,7 @@ export class CalendarPage implements OnInit {
 
 
 
-	
+
 	this.storage.get('userCode').then((val) => {
 		  if (val) {
 			this.afs.firestore.collection('users').where('code', '==', val)
@@ -333,7 +333,7 @@ export class CalendarPage implements OnInit {
 				  console.log("TESTERS: " + this.testers);
 				  eventCopy.startTime.setMinutes( eventCopy.startTime.getMinutes() - this.subtractTime );
 				  console.log(eventCopy.startTime);
-				  
+
 				  this.localNotifications.schedule({
 					   id: this.notificationIndex,
 					   text: 'You have an event, check your calendar!',
@@ -341,17 +341,17 @@ export class CalendarPage implements OnInit {
 					   led: 'FF0000',
 					   sound: null
 				    });
-					
-					
+
+
 			  });
 			});
 		  }
 		});
 
-	
-    
-	
-	
+
+
+
+
 
 	var currentID = this.notificationIndex;
 
@@ -379,8 +379,25 @@ export class CalendarPage implements OnInit {
     this.resetEvent();
     this.showAddEvent = false;
 	  }
-	
+
   }
+
+async displayCalendarInfo(){
+  const alert = await this.alertCtrl.create({
+      message: 'Calendar will not sync with phones calendar',
+      buttons: ['OK']
+  });
+  await alert.present();
+  //this.presentAlert('calendar', 'This calendar will not sync with your phones calendar');
+
+}
+async presentAlert(header: string, message: string){
+  const alert = await this.alertController.create({
+    message,
+    buttons: ['OK']
+  });
+  await alert.present();
+}
 
   loadItems() {
     this.storageService.getItems().then(items => {
@@ -407,19 +424,19 @@ export class CalendarPage implements OnInit {
 					  this.isTwelveHour = false;
 					  console.log("false");
 					  return true;
-					  
+
 				  }
 				  else{
 					  this.isTwelveHour = true;
 					  console.log("true");
 					  return false;
 				  }
-				   
-					
-					
+
+
+
 			  });
 			});
-		  
+
 		}
 	});
 	}
@@ -468,22 +485,22 @@ export class CalendarPage implements OnInit {
 // Selected date reange and hence title changed
   onViewTitleChanged(title) {
     this.viewTitle = title;
-	
+
 	console.log("vew change test");
   }
 
 	storeEditedEvent(ev){
 		this.currentlyEditing = true;
 		this.event.title = ev.title;
-		this.event.desc = ev.desc;		
+		this.event.desc = ev.desc;
 		const selectedStart = new Date(ev.startTime);
 		const selectedEnd = new Date(ev.endTime);
 		this.event.startTime = selectedStart.toISOString();
 		this.event.endTime = selectedEnd.toISOString();
-		
+
 		  this.editedEvent = ev;
 	  }
-	  
+
   editCancelled(){
 		this.notificationIndex = Math.floor(Math.random() * 100000000000);
 	  let eventCopy = {
@@ -514,18 +531,18 @@ export class CalendarPage implements OnInit {
 		  //eventCopy.startTime = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate()));
 		  //eventCopy.endTime = new Date(Date.UTC(end.getUTCFullYear(), end.getUTCMonth(), end.getUTCDate() + 1));
 		}
-		
+
 		if(eventCopy.startTime.getHours() === 12){
 			console.log("equals 12");
 			eventCopy.startTime.setMinutes(eventCopy.startTime.getMinutes() - 720);
-			
+
 		}
-		
+
 		if(eventCopy.AMPM === 'pm'){
 			console.log('eventCopy.AMPM: ' + eventCopy.AMPM);
 			console.log('eventCopy.startTime.getMinutes: ' + eventCopy.startTime.getMinutes())
 			eventCopy.startTime.setMinutes(eventCopy.startTime.getMinutes() + 720);
-			
+
 		}
 		console.log("PM STARTTIME: " + eventCopy.startTime);
 		this.storage.get('userCode').then((val) => {
@@ -545,7 +562,7 @@ export class CalendarPage implements OnInit {
 					  console.log("TESTERS: " + this.testers);
 					  eventCopy.startTime.setMinutes( eventCopy.startTime.getMinutes() - this.subtractTime );
 					  console.log(eventCopy.startTime);
-					  
+
 					  this.localNotifications.schedule({
 						   id: this.notificationIndex,
 						   text: 'You have an event, check your calendar!',
@@ -553,12 +570,12 @@ export class CalendarPage implements OnInit {
 						   led: 'FF0000',
 						   sound: null
 						});
-						
-						
+
+
 				  });
 				});
 			  }
-			});		
+			});
 
 		var currentID = this.notificationIndex;
 
@@ -585,12 +602,12 @@ export class CalendarPage implements OnInit {
 		});
 		this.resetEvent();
 		this.showAddEvent = false;
-		
-	
+
+
 	  }
 	  else{
-	 
-	
+
+
 	console.log("IS TWELVEHOUR: " + this.isTwelveHour);
 	console.log(this.notificationIndex);
     if (eventCopy.allDay) {
@@ -600,8 +617,8 @@ export class CalendarPage implements OnInit {
       eventCopy.startTime = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate()));
       eventCopy.endTime = new Date(Date.UTC(end.getUTCFullYear(), end.getUTCMonth(), end.getUTCDate() + 1));
     }
-	
-	
+
+
 
 	// add notification when creating event
 	//if(this.notificationIndex == null){
@@ -611,7 +628,7 @@ export class CalendarPage implements OnInit {
 
 
 
-	
+
 	this.storage.get('userCode').then((val) => {
 		  if (val) {
 			this.afs.firestore.collection('users').where('code', '==', val)
@@ -628,7 +645,7 @@ export class CalendarPage implements OnInit {
 				  console.log("TESTERS: " + this.testers);
 				  eventCopy.startTime.setMinutes( eventCopy.startTime.getMinutes() - this.subtractTime );
 				  console.log(eventCopy.startTime);
-				  
+
 				  this.localNotifications.schedule({
 					   id: this.notificationIndex,
 					   text: 'You have an event, check your calendar!',
@@ -636,17 +653,17 @@ export class CalendarPage implements OnInit {
 					   led: 'FF0000',
 					   sound: null
 				    });
-					
-					
+
+
 			  });
 			});
 		  }
 		});
 
-	
-    
-	
-	
+
+
+
+
 
 	var currentID = this.notificationIndex;
 
@@ -674,16 +691,16 @@ export class CalendarPage implements OnInit {
     this.resetEvent();
     this.showAddEvent = false;
 	  }
-	
-    
+
+
 	}
-	  
+
 	deleteOrCancelEvent(){
 		   //let event = this.editedEvent;
 			//this.deleteFinished(event);
 			//this.deleteFinished(event);
 			console.log("ONE");
-			
+
 			//this.deleteFinished(event);
 			console.log("NEW");
 			this.length = this.eventSource.length;
@@ -710,14 +727,14 @@ export class CalendarPage implements OnInit {
 			//this.myCal.loadEvents();
 					console.log("this.conirmDeleteEvent " + this.confirmDeleteEvent);
 				//this.deleteFinished(event);	*/
-			   
+
 			   /*if(bool === true){
 				   console.log("init");
 				   console.log("editedEvent" + JSON.stringify(this.editedEvent));
 				   this.confirmDelete(this.editedEvent);
-			
+
 					this.reloadItems(this.editedEvent);
-					
+
 					this.loadItems();
 				   //this.deleteFinished(this.editedEvent);
 			   }
@@ -735,11 +752,11 @@ export class CalendarPage implements OnInit {
 	console.log("CLICK " + this.clicked);
     let start = formatDate(event.startTime, 'medium', this.locale);
     let end = formatDate(event.endTime, 'medium', this.locale);
-	
+
 	this.alertOpen = true;
-  
-  
-	
+
+
+
 	const alert = await this.alertCtrl.create({
       header: event.title,
       subHeader: event.desc,
@@ -756,15 +773,15 @@ export class CalendarPage implements OnInit {
 		else{
 			this.showEditEvent = true;
 		}
-		
+
 		this.length = this.eventSource.length;
 		for (let i = 0; i < this.length; i++) {
-			
+
 			//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
 			//	this.deleteIndex = i;
 			//}
 			if(this.eventSource[i].id === event.id){
-				
+
 				this.deleteIndex = i;
 			}
 		}
@@ -777,24 +794,24 @@ export class CalendarPage implements OnInit {
 		console.log("delete Index: " + this.deleteIndex);
 		this.storage.set('my-items', this.eventSource);
 		this.loadItems();
-		
+
 		//this.deleteOrCancelEvent(true);
 		//this.confirmDelete(event);
-		
+
 				//this.reloadItems(event);
-				
+
 				//this.loadItems();
 			   //this.deleteFinished(this.editedEvent);
 		this.alertOpen = false;
-		
+
       }
-    }, 
+    },
 	{
 		text: 'Delete',
 		role: 'Delete',
 		cssClass: 'secondary',
 		handler: (blah) => {
-        
+
 		this.confirmDelete(event);
 		//this.deleteFinished(event);
 		this.reloadItems(event);
@@ -811,20 +828,20 @@ export class CalendarPage implements OnInit {
 		this.alertOpen = false;
 		this.ngOnInit();*/
 		}
-		
+
 	},
 	{
       text: 'Okay',
       handler: () => {
         console.log('Confirm Okay')
-		
+
       }
     }
   ]
     });
     alert.present();
 	//this.alertOpen = false;
-	
+
 	/*
 	let eventCopy = {
       title: event.title,
@@ -863,15 +880,15 @@ export class CalendarPage implements OnInit {
 	console.log("delete Index: " + this.deleteIndex);
 	this.storage.set('my-items', this.eventSource);
 
-	this.loadItems();*/	
+	this.loadItems();*/
   }
   async reloadItems(event){
 	  this.storage.set('my-items', this.eventSource);
 		this.loadItems();
   }
-  
-  
-  
+
+
+
   async confirmDelete(event){
 	  this.alertOpen = true;
 	const alert = await this.alertCtrl.create({
@@ -883,8 +900,8 @@ export class CalendarPage implements OnInit {
 		handler: (blah) => {
 			//this.deleteFinished(event);
 			//this.deleteFinished(event);
-		
-			
+
+
 			//this.deleteFinished(event);
 		this.length = this.eventSource.length;
 		for (let i = 0; i < this.length; i++) {
@@ -892,7 +909,7 @@ export class CalendarPage implements OnInit {
 			//	this.deleteIndex = i;
 			//}
 			if(this.eventSource[i].id === event.id){
-				
+
 				this.deleteIndex = i;
 			}
 		}
@@ -920,14 +937,14 @@ export class CalendarPage implements OnInit {
 		handler: (blah) => {
 		this.confirmDeleteEvent = false;
 		this.alertOpen = false;
-		
+
       }
-	  
+
     }]});
-    alert.present();  
+    alert.present();
 
   }
-  
+
   async editFinished(){
 
 	  const alert = await this.alertCtrl.create({
@@ -942,7 +959,7 @@ export class CalendarPage implements OnInit {
 			//this.deleteFinished(event);
 			//this.deleteFinished(event);
 			console.log("ONE");
-			
+
 			//this.deleteFinished(event);
 		this.length = this.eventSource.length;
 		for (let i = 0; i < this.length; i++) {
@@ -970,17 +987,17 @@ export class CalendarPage implements OnInit {
 
 	  //this.completeEditFinished();
 	  }
-	  
-	  
-	  
+
+
+
     }]});
-    alert.present(); 
+    alert.present();
   }
-  
+
   /*
   completeEditFinished(){
 	  console.log("ONE");
-			
+
 			//this.deleteFinished(event);
 		this.length = this.eventSource.length;
 		for (let i = 0; i < this.length; i++) {
@@ -1004,11 +1021,11 @@ export class CalendarPage implements OnInit {
 		this.confirmDeleteEvent = true;
 		//this.myCal.loadEvents();
 				console.log("this.conirmDeleteEvent " + this.confirmDeleteEvent);
-			//this.deleteFinished(event);	
+			//this.deleteFinished(event);
 
 	  }*/
-  
-  
+
+
   async deleteFinished(event){
 	  const alert = await this.alertCtrl.create({
       header: 'Event has been deleted',
@@ -1021,7 +1038,7 @@ export class CalendarPage implements OnInit {
 			//this.deleteFinished(event);
 			//this.deleteFinished(event);
 			console.log("ONE");
-			
+
 			//this.deleteFinished(event);
 		this.length = this.eventSource.length;
 		for (let i = 0; i < this.length; i++) {
@@ -1048,16 +1065,16 @@ export class CalendarPage implements OnInit {
 			//this.deleteFinished(event);	*/
 
 	  }
-	  
-	  
-	  
+
+
+
     }]});
-    alert.present();  
+    alert.present();
 	  /*
 	  console.log("THREE");
 	  console.log("deleteFInished " + this.confirmDeleteEvent);
 	  //if(this.confirmDeleteEvent === true){
-		  
+
 	  this.length = this.eventSource.length;
 		for (let i = 0; i < this.length; i++) {
 			//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
@@ -1078,7 +1095,7 @@ export class CalendarPage implements OnInit {
 		this.loadItems();
 		this.confirmDeleteEvent = true;
 	  //}*/
-		
+
   }
 
 // Time slot was clicked
@@ -1094,8 +1111,8 @@ export class CalendarPage implements OnInit {
 		this.event.endTime = (selected.toISOString());
 	  }
 
-	
-	
+
+
   }
   async addToThisDay(){
 	  if(this.clicked === true && this.alertOpen !== true && this.isNotMonthView !== true){
@@ -1110,7 +1127,7 @@ export class CalendarPage implements OnInit {
 		handler: (blah) => {
 		this.getAmpm();
 		this.showAddEvent = true;
-		
+
 	  }
 	  },
 	  {
@@ -1121,24 +1138,24 @@ export class CalendarPage implements OnInit {
 		this.confirmDeleteEvent = false;
 
       }
-	  
+
     }]});
-    alert.present(); 
+    alert.present();
 	  }
 	  this.alertOpen = false;
-	  
+
   }
   clickedCalendar(){
 	  if(this.alertOpen === true){
-		  
+
 		  this.clicked = false;
-		  
+
 	  }
 	  else{
-		  
+
 	  this.clicked = true;
 	  this.addToThisDay();
 	  }
   }
-  
+
 }
