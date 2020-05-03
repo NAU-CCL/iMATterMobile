@@ -210,46 +210,40 @@ export class CalendarPage implements OnInit {
 		  id: this.notificationIndex,
 		  AMPM: this.event.AMPM
 		};
-		console.log("12 HOUR INIT");
-		console.log("EVEN>AMPM" + eventCopy.AMPM);
+
 		if (eventCopy.allDay) {
 		  let start = eventCopy.startTime;
 		  let end = eventCopy.endTime;
 
-		  //eventCopy.startTime = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate()));
-		  //eventCopy.endTime = new Date(Date.UTC(end.getUTCFullYear(), end.getUTCMonth(), end.getUTCDate() + 1));
+
 		}
 
 		if(eventCopy.startTime.getHours() === 12){
-			console.log("equals 12");
 			eventCopy.startTime.setMinutes(eventCopy.startTime.getMinutes() - 720);
 
 		}
 
 		if(eventCopy.AMPM === 'pm'){
-			console.log('eventCopy.AMPM: ' + eventCopy.AMPM);
-			console.log('eventCopy.startTime.getMinutes: ' + eventCopy.startTime.getMinutes())
+
 			eventCopy.startTime.setMinutes(eventCopy.startTime.getMinutes() + 720);
 
 		}
-		console.log("PM STARTTIME: " + eventCopy.startTime);
+
 		this.storage.get('userCode').then((val) => {
 			  if (val) {
 				this.afs.firestore.collection('users').where('code', '==', val)
 					.get().then(snapshot => {
 				  snapshot.forEach(doc => {
 					  this.subtractTime = doc.get('notificationTime');
-					  console.log("INIT");
-					  console.log(this.subtractTime);
+
 					  if(this.subtractTime == null){
 						  this.subtractTime = 0;
 					  }
-					  console.log("M" + doc.get('notificationTime'));
-					  console.log("subTIME init" + this.subtractTime);
+
 					  this.testers = eventCopy.startTime.getMinutes() - this.subtractTime;
-					  console.log("TESTERS: " + this.testers);
+
 					  eventCopy.startTime.setMinutes( eventCopy.startTime.getMinutes() - this.subtractTime );
-					  console.log(eventCopy.startTime);
+
 
 					  this.localNotifications.schedule({
 						   id: this.notificationIndex,
@@ -272,13 +266,13 @@ export class CalendarPage implements OnInit {
 		this.eventSource.push(eventCopy);
 		this.test.push('1');
 
-		console.log(JSON.stringify(this.eventSource));
+
 		this.myCal.loadEvents();
-		console.log("notification index" +this.notificationIndex);
+
 
 		this.storageService.addItem(eventCopy).then(item => {
 
-			console.log('?');
+
 		  this.loadItems();
 		});
 		this.localNotifications.schedule({
@@ -296,8 +290,7 @@ export class CalendarPage implements OnInit {
 	  else{
 
 
-	console.log("IS TWELVEHOUR: " + this.isTwelveHour);
-	console.log(this.notificationIndex);
+
     if (eventCopy.allDay) {
       let start = eventCopy.startTime;
       let end = eventCopy.endTime;
@@ -307,32 +300,21 @@ export class CalendarPage implements OnInit {
     }
 
 
-
-	// add notification when creating event
-	//if(this.notificationIndex == null){
-	//	this.notificationIndex = 0;
-
-	//}
-
-
-
-
 	this.storage.get('userCode').then((val) => {
 		  if (val) {
 			this.afs.firestore.collection('users').where('code', '==', val)
 				.get().then(snapshot => {
 			  snapshot.forEach(doc => {
 				  this.subtractTime = doc.get('notificationTime');
-				  console.log("INIT");
+
 				  if(this.subtractTime == null){
 						this.subtractTime = 0;
 					}
-				  console.log("M" + doc.get('notificationTime'));
-				  console.log("subTIME init" + this.subtractTime);
+
 				  this.testers = eventCopy.startTime.getMinutes() - this.subtractTime;
-				  console.log("TESTERS: " + this.testers);
+
 				  eventCopy.startTime.setMinutes( eventCopy.startTime.getMinutes() - this.subtractTime );
-				  console.log(eventCopy.startTime);
+
 
 				  this.localNotifications.schedule({
 					   id: this.notificationIndex,
@@ -360,13 +342,13 @@ export class CalendarPage implements OnInit {
     this.eventSource.push(eventCopy);
 	this.test.push('1');
 
-	console.log(JSON.stringify(this.eventSource));
+
     this.myCal.loadEvents();
-	console.log("notification index" +this.notificationIndex);
+
 
 	this.storageService.addItem(eventCopy).then(item => {
 
-		console.log('?');
+
       this.loadItems();
 	});
 	this.localNotifications.schedule({
@@ -388,16 +370,10 @@ async displayCalendarInfo(){
       buttons: ['OK']
   });
   await alert.present();
-  //this.presentAlert('calendar', 'This calendar will not sync with your phones calendar');
+
 
 }
-async presentAlert(header: string, message: string){
-  const alert = await this.alertController.create({
-    message,
-    buttons: ['OK']
-  });
-  await alert.present();
-}
+
 
   loadItems() {
     this.storageService.getItems().then(items => {
@@ -419,16 +395,16 @@ async presentAlert(header: string, message: string){
 				.get().then(snapshot => {
 			  snapshot.forEach(doc => {
 				  this.clockType = doc.get('clockType');
-				  //console.log("this.clockType " + this.clockType);
+
 				  if(this.clockType == 24){
 					  this.isTwelveHour = false;
-					  console.log("false");
+
 					  return true;
 
 				  }
 				  else{
 					  this.isTwelveHour = true;
-					  console.log("true");
+
 					  return false;
 				  }
 
@@ -451,7 +427,7 @@ async presentAlert(header: string, message: string){
 
   showEvent(){
 	  this.storage.get('event').then( (val) =>{
-		  console.log("value is " + val)
+
 	  })
   }
 
@@ -468,7 +444,7 @@ async presentAlert(header: string, message: string){
 // Change between month/week/day
   changeMode(mode) {
     this.calendar.mode = mode;
-	console.log(this.calendar.mode);
+
 	if(mode === 'day' || mode === 'week'){
 		this.isNotMonthView = true;
 	}
@@ -485,8 +461,6 @@ async presentAlert(header: string, message: string){
 // Selected date reange and hence title changed
   onViewTitleChanged(title) {
     this.viewTitle = title;
-
-	console.log("vew change test");
   }
 
 	storeEditedEvent(ev){
@@ -522,46 +496,40 @@ async presentAlert(header: string, message: string){
 		  id: this.notificationIndex,
 		  AMPM: this.editedEvent.AMPM
 		};
-		console.log("12 HOUR INIT");
-		console.log("EVEN>AMPM" + eventCopy.AMPM);
 		if (eventCopy.allDay) {
 		  let start = eventCopy.startTime;
 		  let end = eventCopy.endTime;
 
-		  //eventCopy.startTime = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate()));
-		  //eventCopy.endTime = new Date(Date.UTC(end.getUTCFullYear(), end.getUTCMonth(), end.getUTCDate() + 1));
+
 		}
 
 		if(eventCopy.startTime.getHours() === 12){
-			console.log("equals 12");
+
 			eventCopy.startTime.setMinutes(eventCopy.startTime.getMinutes() - 720);
 
 		}
 
 		if(eventCopy.AMPM === 'pm'){
-			console.log('eventCopy.AMPM: ' + eventCopy.AMPM);
-			console.log('eventCopy.startTime.getMinutes: ' + eventCopy.startTime.getMinutes())
+
 			eventCopy.startTime.setMinutes(eventCopy.startTime.getMinutes() + 720);
 
 		}
-		console.log("PM STARTTIME: " + eventCopy.startTime);
+
 		this.storage.get('userCode').then((val) => {
 			  if (val) {
 				this.afs.firestore.collection('users').where('code', '==', val)
 					.get().then(snapshot => {
 				  snapshot.forEach(doc => {
 					  this.subtractTime = doc.get('notificationTime');
-					  console.log("INIT");
-					  console.log(this.subtractTime);
+
 					  if(this.subtractTime == null){
 						  this.subtractTime = 0;
 					  }
-					  console.log("M" + doc.get('notificationTime'));
-					  console.log("subTIME init" + this.subtractTime);
+
 					  this.testers = eventCopy.startTime.getMinutes() - this.subtractTime;
-					  console.log("TESTERS: " + this.testers);
+
 					  eventCopy.startTime.setMinutes( eventCopy.startTime.getMinutes() - this.subtractTime );
-					  console.log(eventCopy.startTime);
+
 
 					  this.localNotifications.schedule({
 						   id: this.notificationIndex,
@@ -584,9 +552,9 @@ async presentAlert(header: string, message: string){
 		this.eventSource.push(eventCopy);
 		this.test.push('1');
 
-		console.log(JSON.stringify(this.eventSource));
+
 		this.myCal.loadEvents();
-		console.log("notification index" +this.notificationIndex);
+
 
 		this.storageService.addItem(eventCopy).then(item => {
 
@@ -608,8 +576,7 @@ async presentAlert(header: string, message: string){
 	  else{
 
 
-	console.log("IS TWELVEHOUR: " + this.isTwelveHour);
-	console.log(this.notificationIndex);
+
     if (eventCopy.allDay) {
       let start = eventCopy.startTime;
       let end = eventCopy.endTime;
@@ -619,12 +586,6 @@ async presentAlert(header: string, message: string){
     }
 
 
-
-	// add notification when creating event
-	//if(this.notificationIndex == null){
-	//	this.notificationIndex = 0;
-
-	//}
 
 
 
