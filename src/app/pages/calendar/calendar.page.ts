@@ -558,7 +558,7 @@ async displayCalendarInfo(){
 
 		this.storageService.addItem(eventCopy).then(item => {
 
-			console.log('?');
+			//lod
 		  this.loadItems();
 		});
 		this.localNotifications.schedule({
@@ -596,16 +596,11 @@ async displayCalendarInfo(){
 				.get().then(snapshot => {
 			  snapshot.forEach(doc => {
 				  this.subtractTime = doc.get('notificationTime');
-				  console.log("INIT");
 				  if(this.subtractTime == null){
 						this.subtractTime = 0;
 					}
-				  console.log("M" + doc.get('notificationTime'));
-				  console.log("subTIME init" + this.subtractTime);
 				  this.testers = eventCopy.startTime.getMinutes() - this.subtractTime;
-				  console.log("TESTERS: " + this.testers);
 				  eventCopy.startTime.setMinutes( eventCopy.startTime.getMinutes() - this.subtractTime );
-				  console.log(eventCopy.startTime);
 
 				  this.localNotifications.schedule({
 					   id: this.notificationIndex,
@@ -632,10 +627,8 @@ async displayCalendarInfo(){
 
     this.eventSource.push(eventCopy);
 	this.test.push('1');
-
-	console.log(JSON.stringify(this.eventSource));
     this.myCal.loadEvents();
-	console.log("notification index" +this.notificationIndex);
+
 
 	this.storageService.addItem(eventCopy).then(item => {
 
@@ -657,52 +650,25 @@ async displayCalendarInfo(){
 	}
 
 	deleteOrCancelEvent(){
-		   //let event = this.editedEvent;
-			//this.deleteFinished(event);
-			//this.deleteFinished(event);
-			console.log("ONE");
-
-			//this.deleteFinished(event);
-			console.log("NEW");
 			this.length = this.eventSource.length;
 			for (let i = 0; i < this.length; i++) {
-				//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
-				//	this.deleteIndex = i;
-				//}
+				
 				if(this.eventSource[i].id === this.editedEvent.id){
-					console.log("ONE");
+
 					this.deleteIndex = i;
 				}
 			}
 			var temp = this.deleteIndex;
 			this.localNotifications.clear(this.eventSource[this.deleteIndex].id);
-			console.log("eventsource id to delete: " + this.eventSource[this.deleteIndex].id);
+
 
 			this.eventSource.splice(this.deleteIndex, 1);
-			console.log("notification index");
-			console.log("delete Index: " + this.deleteIndex);
+
 			this.storage.set('my-items', this.eventSource);
 			this.loadItems();
 			this.confirmDeleteEvent = true;
 			this.editFinished();
-			//this.myCal.loadEvents();
-					console.log("this.conirmDeleteEvent " + this.confirmDeleteEvent);
-				//this.deleteFinished(event);	*/
-
-			   /*if(bool === true){
-				   console.log("init");
-				   console.log("editedEvent" + JSON.stringify(this.editedEvent));
-				   this.confirmDelete(this.editedEvent);
-
-					this.reloadItems(this.editedEvent);
-
-					this.loadItems();
-				   //this.deleteFinished(this.editedEvent);
-			   }
-			   else{
-				   return;
-			   }
-			   */
+			
 
 	   }
 
@@ -726,7 +692,7 @@ async displayCalendarInfo(){
 		text: 'Edit',
 		role: 'edit',
 		cssClass: 'secondary',
-		handler: (blah) => {
+		handler: (handle) => {
 		this.storeEditedEvent(event);
         if(this.showEditEvent === true){
 		this.showEditEvent = false;
@@ -738,9 +704,7 @@ async displayCalendarInfo(){
 		this.length = this.eventSource.length;
 		for (let i = 0; i < this.length; i++) {
 
-			//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
-			//	this.deleteIndex = i;
-			//}
+			
 			if(this.eventSource[i].id === event.id){
 
 				this.deleteIndex = i;
@@ -748,21 +712,11 @@ async displayCalendarInfo(){
 		}
 		var temp = this.deleteIndex;
 		this.localNotifications.clear(this.eventSource[this.deleteIndex].id);
-		console.log("eventsource id to delete: " + this.eventSource[this.deleteIndex].id);
 
 		this.eventSource.splice(this.deleteIndex, 1);
-		console.log("notification index");
-		console.log("delete Index: " + this.deleteIndex);
+
 		this.storage.set('my-items', this.eventSource);
 		this.loadItems();
-
-		//this.deleteOrCancelEvent(true);
-		//this.confirmDelete(event);
-
-				//this.reloadItems(event);
-
-				//this.loadItems();
-			   //this.deleteFinished(this.editedEvent);
 		this.alertOpen = false;
 
       }
@@ -771,23 +725,12 @@ async displayCalendarInfo(){
 		text: 'Delete',
 		role: 'Delete',
 		cssClass: 'secondary',
-		handler: (blah) => {
+		handler: (handle) => {
 
 		this.confirmDelete(event);
-		//this.deleteFinished(event);
 		this.reloadItems(event);
 		this.reloadItems(event);
-		/*
-		this.loadItems();
-		this.myCal.loadEvents();
-		//this.deleteFinished(event);
-		this.resetEvent();
-		this.loadItems();
-		this.addView();
-		this.storage.set('my-items', this.eventSource);
-		this.loadItems();
-		this.alertOpen = false;
-		this.ngOnInit();*/
+		
 		}
 
 	},
@@ -801,47 +744,9 @@ async displayCalendarInfo(){
   ]
     });
     alert.present();
-	//this.alertOpen = false;
+	
 
-	/*
-	let eventCopy = {
-      title: event.title,
-      startTime:  event.startTime,
-      endTime: event.endTime,
-      allDay: event.allDay,
-      desc: event.desc,
-	  id: event.id
-    };
-	if(this.showEditEvent === true){
-		this.showEditEvent = false;
-	}
-	else{
-		this.showEditEvent = true;
-	}
-
-	this.length = this.eventSource.length;
-	for (let i = 0; i < this.length; i++) {
-		console.log("eventSource " + this.eventSource[i].id);
-		console.log("eventCopy" + JSON.stringify(this.eventSource[i]));
-		console.log("event.id: " + event.id);
-		//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
-		//	this.deleteIndex = i;
-		//}
-		if(this.eventSource[i].id === event.id){
-			console.log("ONE");
-			this.deleteIndex = i;
-		}
-	}
-	var temp = this.deleteIndex;
-	this.localNotifications.clear(this.eventSource[this.deleteIndex].id);
-	console.log("eventsource id to delete: " + this.eventSource[this.deleteIndex].id);
-
-	this.eventSource.splice(this.deleteIndex, 1);
-	console.log("notification index");
-	console.log("delete Index: " + this.deleteIndex);
-	this.storage.set('my-items', this.eventSource);
-
-	this.loadItems();*/
+	
   }
   async reloadItems(event){
 	  this.storage.set('my-items', this.eventSource);
@@ -858,17 +763,11 @@ async displayCalendarInfo(){
 		text: 'Yes',
 		role: 'confirm',
 		cssClass: 'secondary',
-		handler: (blah) => {
-			//this.deleteFinished(event);
-			//this.deleteFinished(event);
+		handler: (handle) => {
 
-
-			//this.deleteFinished(event);
 		this.length = this.eventSource.length;
 		for (let i = 0; i < this.length; i++) {
-			//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
-			//	this.deleteIndex = i;
-			//}
+			
 			if(this.eventSource[i].id === event.id){
 
 				this.deleteIndex = i;
@@ -876,18 +775,15 @@ async displayCalendarInfo(){
 		}
 		var temp = this.deleteIndex;
 		this.localNotifications.clear(this.eventSource[this.deleteIndex].id);
-		console.log("eventsource id to delete: " + this.eventSource[this.deleteIndex].id);
+		
 
 		this.eventSource.splice(this.deleteIndex, 1);
-		console.log("notification index");
-		console.log("delete Index: " + this.deleteIndex);
+
 		this.storage.set('my-items', this.eventSource);
 		this.loadItems();
 		this.confirmDeleteEvent = true;
 		this.deleteFinished(event);
-		//this.myCal.loadEvents();
-				console.log("this.conirmDeleteEvent " + this.confirmDeleteEvent);
-			//this.deleteFinished(event);	*/
+
 
 	  }
 	  },
@@ -895,7 +791,7 @@ async displayCalendarInfo(){
 		text: 'cancel',
 		role: 'cancel',
 		cssClass: 'secondary',
-		handler: (blah) => {
+		handler: (handle) => {
 		this.confirmDeleteEvent = false;
 		this.alertOpen = false;
 
@@ -915,38 +811,26 @@ async displayCalendarInfo(){
 		text: 'Ok',
 		role: 'confirm',
 		cssClass: 'secondary',
-		handler: (blah) => {
-			//let event = this.editedEvent;
-			//this.deleteFinished(event);
-			//this.deleteFinished(event);
-			console.log("ONE");
-
-			//this.deleteFinished(event);
+		handler: (handle) => {
+			
 		this.length = this.eventSource.length;
 		for (let i = 0; i < this.length; i++) {
-			//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
-			//	this.deleteIndex = i;
-			//}
+			
 			if(this.eventSource[i].id === this.editedEvent.id){
-				console.log("ONE");
+				
 				this.deleteIndex = i;
 			}
 		}
 		var temp = this.deleteIndex;
 		this.localNotifications.clear(this.eventSource[this.deleteIndex].id);
-		console.log("eventsource id to delete: " + this.eventSource[this.deleteIndex].id);
+
 
 		this.eventSource.splice(this.deleteIndex, 1);
-		console.log("notification index");
-		console.log("delete Index: " + this.deleteIndex);
+
 		this.storage.set('my-items', this.eventSource);
 		this.loadItems();
 		this.confirmDeleteEvent = true;
-		//this.myCal.loadEvents();
-				console.log("this.conirmDeleteEvent " + this.confirmDeleteEvent);
-			//this.deleteFinished(event);	*/
-
-	  //this.completeEditFinished();
+		
 	  }
 
 
@@ -955,36 +839,7 @@ async displayCalendarInfo(){
     alert.present();
   }
 
-  /*
-  completeEditFinished(){
-	  console.log("ONE");
-
-			//this.deleteFinished(event);
-		this.length = this.eventSource.length;
-		for (let i = 0; i < this.length; i++) {
-			//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
-			//	this.deleteIndex = i;
-			//}
-			if(this.eventSource[i].id === this.editedEvent.id){
-				console.log("ONE");
-				this.deleteIndex = i;
-			}
-		}
-		var temp = this.deleteIndex;
-		this.localNotifications.clear(this.eventSource[this.deleteIndex].id);
-		console.log("eventsource id to delete: " + this.eventSource[this.deleteIndex].id);
-
-		this.eventSource.splice(this.deleteIndex, 1);
-		console.log("notification index");
-		console.log("delete Index: " + this.deleteIndex);
-		this.storage.set('my-items', this.eventSource);
-		this.loadItems();
-		this.confirmDeleteEvent = true;
-		//this.myCal.loadEvents();
-				console.log("this.conirmDeleteEvent " + this.confirmDeleteEvent);
-			//this.deleteFinished(event);
-
-	  }*/
+  
 
 
   async deleteFinished(event){
@@ -995,19 +850,13 @@ async displayCalendarInfo(){
 		text: 'Ok',
 		role: 'confirm',
 		cssClass: 'secondary',
-		handler: (blah) => {
-			//this.deleteFinished(event);
-			//this.deleteFinished(event);
-			console.log("ONE");
-
-			//this.deleteFinished(event);
+		handler: (handle) => {
+			
 		this.length = this.eventSource.length;
 		for (let i = 0; i < this.length; i++) {
-			//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
-			//	this.deleteIndex = i;
-			//}
+			
 			if(this.eventSource[i].id === event.id){
-				console.log("ONE");
+				
 				this.deleteIndex = i;
 			}
 		}
@@ -1016,14 +865,11 @@ async displayCalendarInfo(){
 		console.log("eventsource id to delete: " + this.eventSource[this.deleteIndex].id);
 
 		this.eventSource.splice(this.deleteIndex, 1);
-		console.log("notification index");
-		console.log("delete Index: " + this.deleteIndex);
+		
 		this.storage.set('my-items', this.eventSource);
 		this.loadItems();
 		this.confirmDeleteEvent = true;
-		//this.myCal.loadEvents();
-				console.log("this.conirmDeleteEvent " + this.confirmDeleteEvent);
-			//this.deleteFinished(event);	*/
+		
 
 	  }
 
@@ -1031,31 +877,7 @@ async displayCalendarInfo(){
 
     }]});
     alert.present();
-	  /*
-	  console.log("THREE");
-	  console.log("deleteFInished " + this.confirmDeleteEvent);
-	  //if(this.confirmDeleteEvent === true){
-
-	  this.length = this.eventSource.length;
-		for (let i = 0; i < this.length; i++) {
-			//if (JSON.stringify(eventCopy) === JSON.stringify(this.eventSource[i]) ){
-			//	this.deleteIndex = i;
-			//}
-			if(this.eventSource[i].id === event.id){
-				this.deleteIndex = i;
-			}
-		}
-		var temp = this.deleteIndex;
-		this.localNotifications.clear(this.eventSource[this.deleteIndex].id);
-		console.log("eventsource id to delete: " + this.eventSource[this.deleteIndex].id);
-
-		this.eventSource.splice(this.deleteIndex, 1);
-		console.log("notification index");
-		console.log("delete Index: " + this.deleteIndex);
-		this.storage.set('my-items', this.eventSource);
-		this.loadItems();
-		this.confirmDeleteEvent = true;
-	  //}*/
+	  
 
   }
 
@@ -1077,15 +899,14 @@ async displayCalendarInfo(){
   }
   async addToThisDay(){
 	  if(this.clicked === true && this.alertOpen !== true && this.isNotMonthView !== true){
-		  console.log(this.alertOpen);
-		  console.log("CLICKED" + this.clicked);
+		  
 	  const alert = await this.alertCtrl.create({
       header: 'Would you like to add an event to this day?',
       buttons: [{
 		text: 'Yes',
 		role: 'confirm',
 		cssClass: 'secondary',
-		handler: (blah) => {
+		handler: (handle) => {
 		this.getAmpm();
 		this.showAddEvent = true;
 
@@ -1095,7 +916,7 @@ async displayCalendarInfo(){
 		text: 'cancel',
 		role: 'cancel',
 		cssClass: 'secondary',
-		handler: (blah) => {
+		handler: (handle) => {
 		this.confirmDeleteEvent = false;
 
       }
