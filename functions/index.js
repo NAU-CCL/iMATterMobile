@@ -223,6 +223,7 @@ exports.sendChatNotification =
 		return 'true';
 	});
 
+//works for BOTH administrators and provideres
 exports.sendProviderRecoveryEmail=functions.firestore.document('provider_recovery_email/{docID}').onCreate((snap,context)=>{	
 	const data=snap.data();
 	let authData = nodemailer.createTransport({
