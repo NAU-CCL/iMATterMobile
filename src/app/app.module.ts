@@ -25,8 +25,10 @@ import { ShowMessagePageModule } from './pages/answer/show-message/show-message.
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BnNgIdleService } from 'bn-ng-idle';
 import {Device} from '@ionic-native/device/ngx';
+import * as firebase from 'firebase/app';
 
 
+firebase.initializeApp(environment.firebase);
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -39,7 +41,8 @@ import {Device} from '@ionic-native/device/ngx';
 	  }),
       AppRoutingModule,
       AngularFirestoreModule,
-      AngularFireModule.initializeApp(environment)],
+      AngularFireModule.initializeApp(environment)
+    ],
   providers: [
     StatusBar,
     SplashScreen,
