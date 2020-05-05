@@ -85,17 +85,22 @@ export class ResourcesPage implements OnInit, AfterViewInit {
 
      ionViewDidEnter()
      {
-       this.geoMaps(this.userLocation);
-       this.getLocations();
+       this.initializeLocations();
      }
 
-     getLocations ()
+     async initializeLocations ()
+     {
+       await this.geoMaps(this.userLocation);
+      await this.getLocations();
+     }
+
+     async getLocations ()
      {
 
-      firebase.firestore().collection("resourceLocations").get()
+      await firebase.firestore().collection("resourceLocations").get()
       .then(querySnapshot => {
 
-        querySnapshot.docs.forEach(doc => {
+        querySnapshot.docs.forEach( async doc => {
         this.dtitle = doc.get("title");
         this.dlongitude = Number (doc.get("longitude"));
         this.dlatitude = Number( doc.get("latitude"));
@@ -120,39 +125,16 @@ export class ResourcesPage implements OnInit, AfterViewInit {
 
 
 
-/*
-     geoMaps()
-     {
-       this.geolocation.getCurrentPosition().then((resp) => {
-          this.latitude = resp.coords.latitude;
-          this.longitude = resp.coords.longitude;
-          this.map = new google.maps.Map(this.mapNativeElement.nativeElement, {
-            center: {lat: this.latitude, lng: this.longitude},
-            zoom: 16
-          });
 
-          console.log("displayed the map");
-
-
-        }).catch((error) => {
-          console.log('Error getting location', error);
-        });
-     }
-
-
-     **/
-
-
-     geoMaps(userLocation)
+     async geoMaps(userLocation)
      {
 
-      console.log("here we are in the geomaps" + this.userLocation);
 
        if(this.userLocation !== '')
        {
          console.log("enteredt user location thingy ");
 
-         this.nativeGeocoder.forwardGeocode(this.userLocation)
+         await this.nativeGeocoder.forwardGeocode(this.userLocation)
          .then((result: NativeGeocoderResult[]) => {
            console.log('The coordinates are latitude=' + result[0].latitude + ' and longitude=' + result[0].longitude);
            this.latitude = parseFloat(result[0].latitude);
@@ -173,7 +155,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
 
      else
      {
-         this.geolocation.getCurrentPosition().then((resp) => {
+         await this.geolocation.getCurrentPosition().then((resp) => {
             this.latitude = resp.coords.latitude;
             this.longitude = resp.coords.longitude;
             this.map = new google.maps.Map(this.mapNativeElement.nativeElement, {
@@ -194,7 +176,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
 
 
 
-     addMarker(dtitle, dlongitude, dlatitude, dcontent , dicon)
+     async addMarker(dtitle, dlongitude, dlatitude, dcontent , dicon)
      {
        console.log('added pin');
 
@@ -226,7 +208,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
          };
        }
 
-         const marker = new google.maps.Marker({
+         const marker = await new google.maps.Marker({
            position: pos,
            map: this.map,
            title: this.dtitle,
@@ -251,7 +233,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
          '<div id = "phone">'+ 'Phone: ' + this.dphone+ '</div>'+
          '</div>';
 
-         google.maps.event.addListener(marker, 'click', function(){
+         await google.maps.event.addListener(marker, 'click', function(){
            var infowindow = new google.maps.InfoWindow({
              content: contentString,
              maxWidth: 300
