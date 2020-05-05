@@ -13,7 +13,7 @@
   
   <ion-card>
 
-    <ion-card-header color="medium">{{learningModule.moduleContent}}</ion-card-header>
+    <ion-card-header class="custom-divider">{{learningModule.moduleContent}}</ion-card-header>
 
     <ion-button *ngIf="learningModule.moduleVideoID" fill="clear" (click)="displayVideoPlayerInfo()">
       <ion-icon name="help-circle-outline"></ion-icon>
@@ -32,7 +32,7 @@
  
 <ng-container *ngIf="learningModule.moduleQuiz.length > 0">
   <ion-card *ngIf="videoHasEnded == true || sanitizedPPTurl">
-    <ion-card-header color="medium">Questions</ion-card-header>  
+    <ion-card-header class="custom-divider">Questions</ion-card-header>  
     <form [formGroup]="quizForm">
       <ion-list>
         <ion-radio-group (ionChange)="quizRadioChange(quizQuestion.questionText, $event)" 
