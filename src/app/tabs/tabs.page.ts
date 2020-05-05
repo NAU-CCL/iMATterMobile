@@ -52,7 +52,7 @@ export class TabsPage implements OnInit {
 
   updateMoreClicks()
   {
-    this.analyticsService.updateMoreClicks(this.session);
+    this.analyticsService.updateCalendarClicks(this.session);
     console.log('added more click');
 
   }
