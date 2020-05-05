@@ -1,11 +1,11 @@
 <ion-header>
   <ion-toolbar>
-
-    <ion-title>Signup</ion-title>
+    <ion-title>Sign Up</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-text padding-horizontal color="dark">
+<ion-content >
+  <div padding-horizontal>
   <h3>
     Welcome to iMATter!
   </h3>
@@ -45,9 +45,8 @@
     Show Less
   </ion-button>
 </div>
-</ion-text>
+  </div>
 
-<ion-content>
   <form [formGroup]="signupForm">
     <ion-item>
       <ion-row>
@@ -123,7 +122,8 @@
 
     <ion-item>
       <ion-label position="stacked">Short Bio (Optional)</ion-label>
-      <ion-textarea autoGrow="true" spellcheck="true" autocapitalize="true" formControlName="bio" placeholder="Say Something About Yourself ">
+      <ion-textarea autoGrow="true" spellcheck="true" autocapitalize="true" formControlName="bio"
+                    placeholder="Say Something About Yourself ">
       </ion-textarea>
     </ion-item>
 

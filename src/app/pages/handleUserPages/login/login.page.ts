@@ -107,8 +107,6 @@ export class LoginPage implements OnInit {
                 this.showEmailBox = true;
             }
         });
-
-
     }
 
     ionViewDidEnter() {

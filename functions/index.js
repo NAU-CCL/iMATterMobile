@@ -189,7 +189,57 @@ exports.sendInfoDeskNotification =
 		return 'true';
 	});
 
+exports.sendChatNotifications =
+	functions.firestore.document('chats/{chatID}').onCreate(async (snap, context) => {
+		const newChat = snap.data();
+		const payload = {
+			notification: {
+				title: 'iMATter Chat Room',
+				body: 'There is a new message in the chat room',
+				sound: "default"
+			},
+		};
 
+		console.log(newChat.cohort);
+
+		if (newChat.type !== 'auto') {
+			const ref = admin.firestore().collection('users').where('cohort', '==', newChat.cohort);
+			ref.get().then((result) => {
+				result.forEach(doc => {
+					{
+						//Check to see this value exists/is valid
+						if (doc.get('cohort') == null) {
+							//return as as "continue" in forEach loop
+							return;
+						}
+
+						userNotifToken = doc.get('token');
+
+						if (userNotifToken === '') {
+							return;
+						}
+						if (doc.get('chatNotif') === true && newChat.userID !== doc.get('code')) {
+							token = doc.get('token');
+							admin.messaging().sendToDevice(token, payload)
+								.then((response) => {
+									console.log('sent notification');
+									return payload;
+								}).catch((err) => {
+								console.log('entered doc, but did not send', err);
+							});
+						}
+					}
+				});
+				return 'true';
+			}).catch(error => {
+				console.log('did not send', error)
+			});
+			return 'true';
+		}
+	});
+
+
+/*
 exports.sendChatNotification =
 	functions.firestore.document('chats/{chatID}').onCreate(async (snap, context) => {
 		const newChat = snap.data();
@@ -201,9 +251,15 @@ exports.sendChatNotification =
 			},
 		};
 
-		if(newChat.type !== 'auto'){
+		if(newChat.type === 'auto') {
+			return;
+		}
+
+	//	if(newChat.type !== 'auto'){
 			const ref = admin.firestore().collection('users').where('cohort', '==', newChat.cohort);
 			ref.get().then((result) => {
+				console.log('before iter', err);
+			//	if(newChat.type !== 'auto'){
 				result.forEach(doc => {
 					if(doc.get('chatNotif') === true && newChat.userID !== doc.get('code')) {
 						token = doc.get('token');
@@ -217,12 +273,13 @@ exports.sendChatNotification =
 						});
 					}
 				});
+			//	}
 				return 'true';
 			}).catch(error => {console.log('did not send', error)});
-		}
+		//}
 		return 'true';
 	});
-
+*/
 //works for BOTH administrators and provideres
 exports.sendProviderRecoveryEmail=functions.firestore.document('provider_recovery_email/{docID}').onCreate((snap,context)=>{	
 	const data=snap.data();
@@ -321,10 +378,9 @@ exports.deleteOldChatMessages = functions.https.onRequest((req, res)=> {
 			if(doc.get('visibility') === false) {
 				batch.delete(doc.ref);
 			}
-
 		});
 		batch.commit();
-		return batch;
+		return 'finished';
 	}).catch(error => {console.log('did not check', error)});
 	return 'worked';
 });

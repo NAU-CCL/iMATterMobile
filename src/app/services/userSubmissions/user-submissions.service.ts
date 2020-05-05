@@ -14,6 +14,7 @@ export interface Submission {
   type: any;
   operatingSys: string;
   version: string;
+  viewed: false;
 }
 
 export interface LocationSuggestion {
@@ -25,6 +26,7 @@ export interface LocationSuggestion {
   userID: string;
   timestamp: any;
   type: any;
+  viewed: false;
 }
 
 @Injectable({
