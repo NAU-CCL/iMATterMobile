@@ -174,11 +174,7 @@ export class SignupPage implements OnInit {
 
   async signupUser(signupForm: FormGroup): Promise<void> {
     if (!signupForm.valid) {
-      console.log(
-          'Need to complete the form, current value: ', signupForm.value
-      );
-
-      this.showToast('Please enter: ' +  signupForm.value.toString());
+      this.showToast('Please check to make sure all info is added');
     } else {
 
       this.user.code = this.id;
@@ -207,45 +203,26 @@ export class SignupPage implements OnInit {
       this.afs.firestore.collection('users').where('email', '==', this.user.email)
           .get().then(snapshot => {
         if (snapshot.docs.length > 0) {
-          console.log(('taken'));
           this.emailUsed = true;
           this.showToast('Email already in use!');
         } else {
           this.afs.firestore.collection('users').where('username', '==', this.user.username)
               .get().then(snap => {
             if (snap.docs.length > 0) {
-              console.log(('taken'));
               this.usernameTaken = true;
               this.showToast('Username taken!');
             } else {
               this.authService.signupUser(this.user).then(
                   () => {
                     this.ionicStorage.set('userCode', this.user.code);
-
-                    /*
-                    this.loading.dismiss().then(() => {
-
-                      this.showToast('You have created an account');
-
-                     */
                     this.showToast('You have created an account');
                     this.router.navigate(['/login']);
                    // });
                   },
                   error => {
-                    /*
-                    this.loading.dismiss().then(async () => {
-                      const alert = await this.alertCtrl.create({
-                        message: error.message,
-                        buttons: [{text: 'Ok', role: 'cancel'}],
-                      });
-                      await alert.present();
-                    });*/
                     this.showToast('An error occurred while creating your account');
                   }
               );
-              // this.loading = await this.loadingCtrl.create();
-              // await this.loading.present();
             }
           });
         }

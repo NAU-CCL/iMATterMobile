@@ -69,17 +69,11 @@ export class RecoveryCodePage implements OnInit {
 
         var recoveryEmail;
 		var theCode;
-		console.log("1");
-		console.log(this.recoveryCode);
-		console.log("recoveryEmail");
-		console.log(this.recoveryPassword.toString());
 		//const newPassword: string = this.recoveryPassword;
 		let newPassword = this.enterCodeForm.controls['recoveryPassword'].value;
-		console.log(newPassword);
         this.afs.firestore.collection('recovery_email').where('code', '==', this.recoveryCode)
             .get().then(snapshot => {
             if (snapshot.docs.length > 0) {
-                console.log(('exists'));
 				const recoveryRef = this.afs.firestore.collection('recovery_email');
 				recoveryRef.get().then((result) => {
                     result.forEach(doc => {
@@ -91,8 +85,6 @@ export class RecoveryCodePage implements OnInit {
 								code: "",
 								email: ""
 							});
-							console.log(recoveryEmail);
-							console.log("5");
                         } else {
                         }
                     });

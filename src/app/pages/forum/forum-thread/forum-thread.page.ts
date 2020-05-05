@@ -77,13 +77,11 @@ export class ForumThreadPage implements OnInit {
               this.question = question;
           });
           this.comments = this.questionService.getComments(id);
-          console.log(this.comments);
       }
   }
 
   addComment(commentForm: FormGroup) {
       this.scrollToBottom();
-      console.log(commentForm.value.anon);
       if (!commentForm.valid) {
           this.showToast('Please enter a comment');
       } else {

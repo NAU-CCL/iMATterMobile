@@ -170,40 +170,6 @@ export class HomePage implements OnInit {
     });
 
 
-    /*
-
-    this.storage.get('weeksPregnant').then((val) => {
-      if (val) {
-        this.weeksPregnant = val;
-        console.log(val);
-
-      }
-    });
-
-    this.storage.get('daysPregnant').then((val) => {
-      if (val >= 0 ) {
-        this.daysPregnant = val;
-        console.log(val);
-
-      }
-    });
-
-    this.storage.get('totalDaysPregnant').then((val) => {
-      if (val) {
-        this.totalDaysPregnant = val.toString();
-        console.log(val);
-        const ref = this.afs.firestore.collection('pregnancyUpdates')
-            .where('day', '==', this.totalDaysPregnant);
-        ref.get().then((result) => {
-          result.forEach(doc => {
-            this.pregnancyCard.day = doc.get('day');
-            this.pregnancyCard.picture = doc.get('picture');
-            this.pregnancyCard.description = doc.get('description');
-          });
-        });
-      }
-    });*/
-
   }
 
   ionViewWillEnter() {

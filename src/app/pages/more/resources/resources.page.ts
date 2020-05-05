@@ -58,9 +58,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                     this.userLocationHolder = doc.get('location');
 
 
-                    console.log(this.userLocationHolder);
                     this.saveUserLocation(this.userLocationHolder);
-                    console.log("hheeeeeeeeeeeeeeee");
 
 
                   });
@@ -74,7 +72,6 @@ export class ResourcesPage implements OnInit, AfterViewInit {
     saveUserLocation(userLocationHolder)
     {
       this.userLocation = this.userLocationHolder;
-      console.log("inside saveUserLocation" + this.userLocation);
 
 
     }

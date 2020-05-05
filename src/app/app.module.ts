@@ -9,7 +9,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { IonicStorageModule } from '@ionic/storage';
 
 import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
+import {AppComponent} from './app.component';
 import { environment } from '../environments/environment';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule, FirestoreSettingsToken, AngularFirestore } from '@angular/fire/firestore';
@@ -25,7 +25,8 @@ import { ShowMessagePageModule } from './pages/answer/show-message/show-message.
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BnNgIdleService } from 'bn-ng-idle';
 import {Device} from '@ionic-native/device/ngx';
-
+import {firebaseConfig} from "./firebaseCredentials";
+import * as firebase from 'firebase/app';
 
 @NgModule({
   declarations: [AppComponent],

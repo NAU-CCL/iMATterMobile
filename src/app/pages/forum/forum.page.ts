@@ -103,7 +103,6 @@ export class ForumPage implements OnInit {
   }
 
   filterUserQuestions(event) {
-    console.log('called');
     this.initializeUserQuestions();
 
     const searchInput = event.target.value;
@@ -116,7 +115,6 @@ export class ForumPage implements OnInit {
   }
 
   filterQuestions(event) {
-    console.log('called');
     this.initializeQuestions();
 
     const searchInput = event.target.value;

@@ -102,7 +102,6 @@ export class ViewableProfilePage implements OnInit {
           result.forEach(doc => {
             this.userType = 'user';
             this.user.username = doc.get('username');
-            console.log(this.user.username);
             this.user.bio = doc.get('bio');
             this.user.cohort = doc.get('cohort');
             this.user.currentEmotion = doc.get('mood');
@@ -129,41 +128,6 @@ export class ViewableProfilePage implements OnInit {
       }
     });
   }
-          /*
-          let ref = this.afs.firestore.collection('users');
-          console.log(this.userProfileID);
-          ref.where('code', '==', this.userProfileID)
-              .get().then(snapshot => {
-            if (snapshot.docs.length > 0) {
-              ref.get().then((result) => {
-                result.forEach(doc => {
-                  this.userType = 'user';
-                  this.user.username = doc.get('username');
-                  console.log(this.user.username);
-                  this.user.weeksPregnant = doc.get('weeksPregnant');
-                  this.user.bio = doc.get('bio');
-                  this.user.cohort = doc.get('cohort');
-                  this.user.currentEmotion = doc.get('mood');
-                  this.user.profilePic = doc.get('profilePic');
-                });
-              });
-            } else {
-              ref = this.afs.firestore.collection('providers');
-              ref.where('code', '==', this.userProfileID)
-                  .get().then(snap => {
-                if (snap.docs.length > 0) {
-                  ref.get().then((result) => {
-                    result.forEach(doc => {
-                      this.userType = 'provider';
-                      this.provider.username = doc.get('username');
-                      this.provider.bio = doc.get('bio');
-                      this.provider.profilePic = doc.get('profilePic');
-                    });
-                  });
-                }
-              });
-            }
-          });*/
 
   ionViewWillEnter() {
 

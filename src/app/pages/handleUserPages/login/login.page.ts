@@ -172,7 +172,6 @@ export class LoginPage implements OnInit {
         this.afs.firestore.collection('users').where('email', '==', email)
             .get().then(snapshot => {
             if (snapshot.docs.length > 0) {
-                console.log(('exists'));
                 this.userEmail = true;
                 const userRef = this.afs.firestore.collection('users').where('email', '==', email);
                 userRef.get().then((result) => {
@@ -217,7 +216,6 @@ export class LoginPage implements OnInit {
                 });
 
             } else {
-                console.log('Email does not exist');
                 this.showToast('Email is incorrect');
                 this.userEmail = false;
             }

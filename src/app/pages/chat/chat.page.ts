@@ -225,11 +225,6 @@ analytic: Analytics =
     });
   }
 
-
-  checkForNewChat() {
-
-  }
-
   ionViewWillLeave() {
     this.addChat('autoLeft');
     this.storage.get('cohort').then((val) => {

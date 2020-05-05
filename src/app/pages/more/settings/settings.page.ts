@@ -83,7 +83,6 @@ export class SettingsPage implements OnInit {
   }
 
   private notificationSetup(userID) {
-    console.log(userID);
     this.fcm.getToken(userID);
   }
 
