@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { Cordova, IonicNativePlugin, Plugin } from '@ionic-native/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy, RouterModule } from '@angular/router';
-import { Device } from '@ionic-native/device';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
@@ -25,8 +24,11 @@ import { ShowMessagePageModule } from './pages/answer/show-message/show-message.
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BnNgIdleService } from 'bn-ng-idle';
+import {Device} from '@ionic-native/device/ngx';
+import * as firebase from 'firebase/app';
 
 
+firebase.initializeApp(environment.firebase);
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -39,10 +41,12 @@ import { BnNgIdleService } from 'bn-ng-idle';
 	  }),
       AppRoutingModule,
       AngularFirestoreModule,
-      AngularFireModule.initializeApp(environment)],
+      AngularFireModule.initializeApp(environment)
+    ],
   providers: [
     StatusBar,
     SplashScreen,
+      Device,
 	LocalNotifications,
     AngularFirestore,
     FirebaseX,

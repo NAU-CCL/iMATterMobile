@@ -3,6 +3,7 @@
     <ion-buttons slot="start">
       <ion-button class="text-press" (click)="getAmpm()" (click)="showAddEvent = true" (click)="isTwelveHour">Add Event</ion-button>
     </ion-buttons>
+    <ion-icon name="information-circle" (click)="displayCalendarInfo()"></ion-icon>
     <ion-buttons slot="end">
       <ion-button class="ion-button-background" size="small" (click)="today()">Today</ion-button>
 	  <ion-button class="text-press"  href="/calendar-settings">Settings</ion-button>
@@ -44,7 +45,7 @@
     </ion-card>
   </ion-item>
   </ion-item>
-  
+
   <ion-item *ngIf="isTwelveHour" lines="none">
   <ion-item *ngIf="showAddEvent" lines="none">
     <ion-card>
@@ -114,8 +115,8 @@
       </ion-button>
     </ion-col>
   </ion-row>
-  
-  
+
+
   <!-- Card for editing event -->
   <div class = "test">
   <ion-item *ngIf="showEditEvent">
@@ -126,7 +127,7 @@
       </ion-card-header>
       <ion-card-content>
         <ion-item>
-		
+
           <ion-input type="text" placeholder="Title" [(ngModel)]="event.title" name="title"></ion-input>
         </ion-item>
         <ion-item>
@@ -151,8 +152,8 @@
   </ion-item>
   </ion-item>
   </div>
-  
-  <div class = "edit">	 
+
+  <div class = "edit">
   <ion-item *ngIf="showEditEvent">
    <ion-item *ngIf="isTwelveHour">
     <ion-card>
@@ -191,14 +192,14 @@
     </ion-card>
   </ion-item>
   </ion-item>
-  
+
   </div>
-  
+
   <ng-template #monthviewDefaultEventDetailTemplate let-showEventDetail="showEventDetail" let-selectedDate="selectedDate" let-noEventsLabel="noEventsLabel">
   <p>Events</p>
             <ion-list class="event-detail-container" has-bouncing="false" *ngIf="showEventDetail" overflow-scroll="false" (click)="addEventDay()" >
                 <ion-item *ngFor="let event of selectedDate?.events" (click)="onEventSelected(event)">
-                        
+
                     <span *ngIf="event.allDay" class="monthview-eventdetail-timecolumn">All day</span>
                     <span class="event-detail">  {{event.title}}   |   click to view, edit or delete</span>
                 </ion-item>
@@ -207,13 +208,13 @@
                 </ion-item>
             </ion-list>
         </ng-template>
-    
+
 
   <calendar
           [eventSource]="eventSource"
           [calendarMode]="calendar.mode"
           [currentDate]="calendar.currentDate"
-		  [monthviewEventDetailTemplate]="monthviewDefaultEventDetailTemplate"	  
+		  [monthviewEventDetailTemplate]="monthviewDefaultEventDetailTemplate"
           (onEventSelected)="onEventSelected($event)"
           (onTitleChanged)="onViewTitleChanged($event)"
           (onTimeSelected)="onTimeSelected($event)"
@@ -221,7 +222,7 @@
           startHour="4"
           endHour="24"
           step="30"
-          startingDayWeek="1">
+          startingDayWeek="1"
+          formatDayHeader="E">
   </calendar>
 </ion-content>
-

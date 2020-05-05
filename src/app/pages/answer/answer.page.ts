@@ -6,7 +6,6 @@ import { ProfileService } from 'src/app/services/user/profile.service';
 import { Storage} from '@ionic/storage';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { ModalController } from '@ionic/angular';
-import { ShowMessagePage } from './show-message/show-message.page';
 import { AlertController } from '@ionic/angular';
 
 @Component({
@@ -93,34 +92,22 @@ export class AnswerPage implements OnInit {
 
   // opens survey link
   openPage(url: string) {
-    // option to hide survey url
+
+    // option to hide survey url and change toolbar color
     const options: InAppBrowserOptions = {
       hideurlbar: 'yes',
       toolbarcolor: '#ffffff',
     }
+
     // open the browser inside of the app, using the url, and the options
     const page = this.browser.create(url, `_blank`, options);
     
     // When the user exits the survey page show them a message
     page.on('exit').subscribe(event => {
+    
       //this.showMessage()
       this.presentAlert();
     })
-  }
-
-  // message for the user on exiting the survey page
-  async showMessage(){
-    // create and display the message modal to the user
-    const modal = await this.modalController.create({
-      component: ShowMessagePage
-    });
-
-    // When the user closes the message submit the survey
-    modal.onDidDismiss().then( val =>{
-      this.submit();
-    });
-
-    return await modal.present();
   }
 
   // submits survey
@@ -151,8 +138,8 @@ export class AnswerPage implements OnInit {
       this.fs.updateAnsweredSurveys(this.userCode, this.userSurveysTaken);
     }
 
-    // set the local storage daysSinceLogin to 0, this is so that the inactive days
-    // survey disappears
+    // If the survey type is inactive set the local storage daysSinceLogin to 0, 
+    // this is so that the inactive days survey disappears
     if(this.survey.type == 'Inactive'){
       this.storage.set('daysSinceLogin', 0);
     }
@@ -164,6 +151,7 @@ export class AnswerPage implements OnInit {
     this.router.navigateByUrl('/tabs/home');
   }
 
+  // determines if the survey is completed
   isComplete(){
     if(this.surveyData.split(":")[1] == "completed"){
       return true;
@@ -172,6 +160,7 @@ export class AnswerPage implements OnInit {
     return false;
   }
 
+  // message that is presented after completing the survey
   async presentAlert(){
     const alert = await this.alertController.create({
     header: 'You Completed The Survey',

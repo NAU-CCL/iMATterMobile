@@ -168,37 +168,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
        })
          .catch((error: any) => console.log(error));
 
-/*
 
-          let options: NativeGeocoderOptions = {
-              useLocale: true,
-              maxResults: 5
-          };
-
-          this.nativeGeocoder.reverseGeocode(52.5072095, 13.1452818, options)
-            .then((result: NativeGeocoderResult[]) => console.log(JSON.stringify(result[0])))
-            .catch((error: any) => console.log(error));
-
-          this.nativeGeocoder.forwardGeocode('Berlin', options)
-            .then((result: NativeGeocoderResult[]) => console.log('The coordinates are latitude=' + result[0].latitude + ' and longitude=' + result[0].longitude))
-            .catch((error: any) => console.log(error));
-
-         this.userLocationHolder = Number(this.userLocationHolder);
-**/
-/*
-             this.nativeGeocoder.geocode({ 'address': this.userLocation }, (results, status) => {
-               if (status === 'OK') {
-                 this.position = {
-                   "lat": results[0].geometry.location.lat(),
-                   "lng": results[0].geometry.location.lng()
-                 }
-            //     this.userLat = this.position[0];
-              //   this.userLng = this.position[1];
-               } else {
-                 console.log('Geocode was not successful for the following reason: ' + status);
-               }
-             });
-**/
       }
 
      else

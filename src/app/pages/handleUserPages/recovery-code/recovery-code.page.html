@@ -1,6 +1,6 @@
 <ion-content padding>
 
-  <form *ngIf="enterCodeForm" [formGroup]="enterCodeForm" >
+  <form *ngIf="enterCodeForm" [formGroup]="enterCodeForm" (ngSubmit)="onSubmit()" >
     <ion-item>
       <ion-label position="stacked">Code</ion-label>
       <ion-input
@@ -8,9 +8,11 @@
               type="recoveryCode"
               type="text"
               placeholder="Enter your code"
-              
+
       >
       </ion-input>
+	  </ion-item>
+	  <ion-item>
 	  <ion-input
 			  formControlName="recoveryPassword"
               type="password"

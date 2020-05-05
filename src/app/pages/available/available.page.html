@@ -10,12 +10,19 @@
 <ion-content>
 
   <ion-list>
+<<<<<<< HEAD
     <ion-item-divider class="custom-divider">
+=======
+    <!-- Card Divider for Available Surveys -->
+    <ion-item-divider color="medium">
+>>>>>>> cae6e9ad0f95bcd3e4f5f5853a6917bb674dbc17
       <ion-label>
         Available Surveys
       </ion-label>
     </ion-item-divider>
     
+    <!-- Filters Available Surveys and displays their information in a card,
+        card is highlighted if necessary -->
     <ng-container *ngFor="let survey of (surveys | async)">
       
       <ion-card button class="cardDefault" [class.cardHighlighted]="isHighlight(survey)"
@@ -45,12 +52,14 @@
       </ion-card>
     </ng-container>
 
+    <!-- Card Divider for Completed Surveys -->
     <ion-item-divider class="custom-divider">
       <ion-label>
         Completed Surveys
       </ion-label>
     </ion-item-divider>
 
+    <!-- Filters Completed Surveys and displays their information in a card -->
     <ng-container *ngFor="let survey of (surveys | async)">
       <ion-card button *ngIf="isDisplayed(survey) == true" (click)="answerSurvey(survey)">
         

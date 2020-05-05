@@ -9,6 +9,7 @@
 
 <ion-content>
 
+  <!-- If the survey is not completed, opens the webpage containing the Survey -->
   <div *ngIf="!isComplete()">
     
     <ion-button expand="block" class="fill-button" (click)="openPage(survey.surveyLink)">
@@ -17,12 +18,11 @@
 
   </div>
   
+  <!-- If the survey is completed, tells the user that it is completed -->
   <div *ngIf="isComplete()">
 
     <h1>You have already taken this survey</h1>
     
   </div>
-
-
 
 </ion-content>

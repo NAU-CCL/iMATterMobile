@@ -26,8 +26,8 @@ export class RecoveryCodePage implements OnInit {
 	private theCode: string;
 	private wantedUserID: string;
 	private recoveryPassword: string;
-	
-	
+
+
 
   public enterCodeForm: FormGroup;
   constructor(
@@ -55,18 +55,18 @@ export class RecoveryCodePage implements OnInit {
 
   ngOnInit() {
   }
-  
+
   showToast(msg) {
         this.toastCtrl.create({
             message: msg,
             duration: 2000
         }).then(toast => toast.present());
     }
-  
+
   validateUser(enterCodeForm: FormGroup) {
         this.recoveryCode = enterCodeForm.value.recoveryCode;
 		this.recoveryPassword = enterCodeForm.value.recoveryPassword;
-		
+
         var recoveryEmail;
 		var theCode;
 		console.log("1");
@@ -84,7 +84,7 @@ export class RecoveryCodePage implements OnInit {
 				recoveryRef.get().then((result) => {
                     result.forEach(doc => {
                         this.userID = doc.id;
-                        this.theCode = doc.get('code');						
+                        this.theCode = doc.get('code');
                         if ( this.theCode === this.recoveryCode) {
                             recoveryEmail = doc.get('email');
 							this.afs.firestore.collection('recovery_email').doc(doc.id).update({
@@ -92,12 +92,12 @@ export class RecoveryCodePage implements OnInit {
 								email: ""
 							});
 							console.log(recoveryEmail);
-							console.log("5");                                                    
-                        } else {                            
+							console.log("5");
+                        } else {
                         }
                     });
-                });				
-				
+                });
+
                 const userRef = this.afs.firestore.collection('users');
                 userRef.get().then((result) => {
                     result.forEach(doc => {
@@ -105,24 +105,25 @@ export class RecoveryCodePage implements OnInit {
                         this.userEmail = doc.get('email');
 						this.password = doc.get('password');
 
-                        if ( this.userEmail === recoveryEmail) {                            							
+                        if ( this.userEmail === recoveryEmail) {
 							this.wantedUserID = this.userID;
 							console.log(newPassword);
 							this.afs.firestore.collection('users').doc(this.wantedUserID).update({
 								password: newPassword
 							});
+              this.showToast('Password has been changed!')
 							this.router.navigate(['/login/']);
-                        } else {                           
+                        } else {
                         }
                     });
-                });				
+                });
             } else {
                 console.log('Email does not exist');
                 this.userEmail = false;
             }
         });
     }
-	
-	
+
+
 
 }

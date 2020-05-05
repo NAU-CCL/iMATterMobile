@@ -9,7 +9,7 @@ import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyti
 import * as firebase from 'firebase/app';
 import {Observable} from 'rxjs';
 import { FireService } from 'src/app/services/survey/fire.service';
-import { MoodProviderNotifService, EmotionNotif } from "../../services/mood-provider-notif.service";
+import { MoodProviderNotifService, EmotionNotif } from '../../services/mood-provider-notif.service';
 
 
 @Component({
@@ -135,7 +135,6 @@ export class HomePage implements OnInit {
     });
 
     this.userProfileID = this.storage.get('userCode');
-    //this.id = this.activatedRoute.snapshot.paramMap.get('id');
     this.storage.get('userCode').then((val) => {
       if (val) {
         this.userProfileID = val;
@@ -149,7 +148,7 @@ export class HomePage implements OnInit {
             this.user.weeksPregnant = doc.get('weeksPregnant');
             this.user.daysPregnant = doc.get('daysPregnant');
             this.user.totalDaysPregnant = doc.get('totalDaysPregnant');
-            this.user.password = doc.get('password');
+            // this.user.password = doc.get('password');
             this.user.bio = doc.get('bio');
             this.user.location = doc.get('location');
             this.user.cohort = doc.get('cohort');
@@ -295,7 +294,8 @@ export class HomePage implements OnInit {
 
     if (emotion === 'sad' || emotion === 'overwhelmed' || emotion === 'angry') {
       this.presentAlert('Stay Strong!',
-          'Remember you have your cohort to support you and health modules available to you!');
+          'Remember you have your cohort to support you and health modules available to you! If you need help,' +
+          'please go to the Resources page to find help near you.');
 
       this.emotionNotif.userID = this.userProfileID;
       this.emotionNotif.username = this.user.username;
