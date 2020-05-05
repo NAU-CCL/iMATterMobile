@@ -77,7 +77,7 @@ export class ReportPage implements OnInit {
             this.submission.version = this.device.version;
 
             this.userSubmissionService.addSubmission(this.submission).then(() => {
-              this.router.navigateByUrl('/more');
+              this.router.navigateByUrl('/tabs/more');
               this.showToast('Report sent');
               this.submission.title = '';
               this.submission.description = '';
