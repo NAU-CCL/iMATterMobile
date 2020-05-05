@@ -23,7 +23,8 @@ export class ReportPage implements OnInit {
     timestamp: '',
     type: '',
     operatingSys: '',
-    version: ''
+    version: '',
+    viewed: false
   };
 
   public reportForm: FormGroup;

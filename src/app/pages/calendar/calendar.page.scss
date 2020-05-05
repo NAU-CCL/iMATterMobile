@@ -11,6 +11,7 @@
   }
 
   .ion-button-background {
+    color: #ffffff;
     --background: var(--main-color);
     --background-activated: var(--main-color);
     --background-hover: var(--secondary-color);
@@ -30,10 +31,10 @@
 
 
 ion-card {
-   border-top: 3px solid purple;
-  border-left: 3px solid purple;
-  border-right: 3px solid purple;
-  border-bottom: 3px solid purple;
+   border-top: 3px var(--main-color);
+  border-left: 3px var(--main-color);
+  border-right: 3px var(--main-color);
+  border-bottom: 3px var(--main-color);
 }
 
 div.test {

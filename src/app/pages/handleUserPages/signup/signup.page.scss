@@ -20,7 +20,11 @@ ion-input {
 
 .content {
   color: black;
-  font-size: 16px;
+  font-size: 14px;
+}
+
+ion-content {
+  padding: 2%;
 }
 
 .invalid {
