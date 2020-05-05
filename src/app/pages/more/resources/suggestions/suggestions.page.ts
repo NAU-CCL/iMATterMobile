@@ -59,7 +59,6 @@ export class SuggestionsPage implements OnInit {
               this.showToast('There was a problem sending the suggestion');
             });
 
-
           });
         });
       }
