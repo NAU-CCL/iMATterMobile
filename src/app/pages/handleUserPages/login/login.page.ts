@@ -160,10 +160,8 @@ export class LoginPage implements OnInit {
             if (val) {
                 this.email = val.toString();
                 this.validateEmailwithPass(val, loginForm.value.password);
-                console.log('here');
             } else {
                 this.storage.set('email', loginForm.value.email);
-                console.log(loginForm.value.email);
                 this.validateEmailwithPass(loginForm.value.email, loginForm.value.password);
             }
         });

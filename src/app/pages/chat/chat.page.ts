@@ -86,15 +86,21 @@ analytic: Analytics =
     this.storage.get('cohort').then((val) => {
       if (val) {
         this.chats = this.chatService.getChats(val);
+        const ref = firebase.firestore().collection('chats').where('cohort', '==', this.cohort.name).orderBy('timestamp');
+        ref.get().then((res) => {
+          res.forEach(doc => {
+            this.numberOfCurrentChats += 1;
+          });
+        });
       }
     });
 
     this.getCohort();
 
     /*
-
-    const timer = Observable.timer(1000);
+    const timer = Observable.timer(0, 1000);
     timer.subscribe(tick => {
+      console.log('tic');
       const ref = firebase.firestore().collection('chats').where('cohort', '==', this.cohort.name).orderBy('timestamp');
       ref.get().then((res) => {
         this.numOfChats = this.numberOfCurrentChats;
