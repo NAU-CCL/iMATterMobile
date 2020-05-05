@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LearningModuleService, LearningModule, Question } from '../../../services/learningModule/learning-module.service';
 import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
@@ -9,6 +9,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { ProfileService } from '../../../services/user/profile.service';
 import { Observable } from 'rxjs';
 import { AlertController } from '@ionic/angular';
+import {IonContent} from '@ionic/angular';
 
 @Component({
   selector: 'app-learning-module-content',
@@ -22,6 +23,8 @@ import { AlertController } from '@ionic/angular';
  */
 
 export class LearningModuleContentPage implements OnInit {
+
+  @ViewChild('content', {static: true}) content: IonContent;
 
   public learningModules: Observable<LearningModule[]>;
 
@@ -373,6 +376,14 @@ export class LearningModuleContentPage implements OnInit {
     });
   }
 
+  scrollToBottom() {
+    setTimeout(() => {
+      if (this.content.scrollToBottom) {
+        this.content.scrollToBottom(100);
+      }
+    }, 500);
+  }
+
   /**
    * Handles checking user selections against the correct answers and counting the number of questions that are correct.
    * This function will not be called if quiz limit is reached
@@ -424,6 +435,8 @@ export class LearningModuleContentPage implements OnInit {
 
       this.numberTimesQuizTaken += 1;
       this.storage.set(this.learningModule.id + "numberTimesQuizTaken", this.numberTimesQuizTaken);
+
+      this.scrollToBottom();
     }
     else
     {
