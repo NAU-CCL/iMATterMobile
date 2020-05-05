@@ -43,7 +43,7 @@ export class CalendarPage implements OnInit {
   chosenMinutes: number;
   eventList: any[] = [];
 
-  minDate = new Date().toISOString();
+  minDate = moment().toDate().toISOString();
 
   test = [];
   eventSource = [];
@@ -51,7 +51,7 @@ export class CalendarPage implements OnInit {
 
   calendar = {
     mode: 'month',
-    currentDate: new Date(),
+    currentDate: moment().toDate(),
   };
 
   analytic: Analytics =
@@ -145,8 +145,8 @@ export class CalendarPage implements OnInit {
     this.event = {
       title: '',
       desc: '',
-      startTime: new Date().toISOString(),
-      endTime: new Date().toISOString(),
+      startTime: moment().toDate().toISOString(),
+      endTime: moment().toDate().toISOString(),
       allDay: false,
 	  id: '',
 	  AMPM: ''
@@ -193,8 +193,8 @@ export class CalendarPage implements OnInit {
 	  this.notificationIndex = Math.floor(Math.random() * 100000000000);
 	  let eventCopy = {
 		  title: this.event.title,
-		  startTime:  new Date(this.event.startTime),
-		  endTime: new Date(this.event.endTime),
+		  startTime:  moment(this.event.startTime).toDate(),
+		  endTime: moment(this.event.endTime).toDate(),
 		  allDay: this.event.allDay,
 		  desc: this.event.desc,
 		  id: this.notificationIndex,
@@ -203,8 +203,8 @@ export class CalendarPage implements OnInit {
 	  if(this.clockType == 12){
 		  let eventCopy = {
 		  title: this.event.title,
-		  startTime:  new Date(this.event.startTime),
-		  endTime: new Date(this.event.endTime),
+		  startTime: moment(this.event.startTime).toDate(),
+		  endTime: moment(this.event.endTime).toDate(),
 		  allDay: this.event.allDay,
 		  desc: this.event.desc,
 		  id: this.notificationIndex,
@@ -248,7 +248,7 @@ export class CalendarPage implements OnInit {
 					  this.localNotifications.schedule({
 						   id: this.notificationIndex,
 						   text: 'You have an event, check your calendar!',
-						   trigger: {at: new Date(eventCopy.startTime)},
+						   trigger: {at: moment(eventCopy.startTime).toDate()},
 						   led: 'FF0000',
 						   sound: null
 						});
@@ -278,7 +278,7 @@ export class CalendarPage implements OnInit {
 		this.localNotifications.schedule({
 		   id: this.notificationIndex,
 		   text: 'You have an event, check your calendar!',
-		   trigger: {at: new Date(this.event.startTime)},
+		   trigger: {at: moment(this.event.startTime).toDate()},
 		   led: 'FF0000',
 		   sound: null
 		});
@@ -295,8 +295,8 @@ export class CalendarPage implements OnInit {
       let start = eventCopy.startTime;
       let end = eventCopy.endTime;
 
-      eventCopy.startTime = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate()));
-      eventCopy.endTime = new Date(Date.UTC(end.getUTCFullYear(), end.getUTCMonth(), end.getUTCDate() + 1));
+      eventCopy.startTime = moment(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate())).toDate();
+      eventCopy.endTime = moment(Date.UTC(end.getUTCFullYear(), end.getUTCMonth(), end.getUTCDate() + 1)).toDate();
     }
 
 
@@ -319,7 +319,7 @@ export class CalendarPage implements OnInit {
 				  this.localNotifications.schedule({
 					   id: this.notificationIndex,
 					   text: 'You have an event, check your calendar!',
-					   trigger: {at: new Date(eventCopy.startTime)},
+					   trigger: {at: moment(eventCopy.startTime).toDate()},
 					   led: 'FF0000',
 					   sound: null
 				    });
@@ -354,7 +354,7 @@ export class CalendarPage implements OnInit {
 	this.localNotifications.schedule({
 	   id: this.notificationIndex,
 	   text: 'You have an event, check your calendar!',
-	   trigger: {at: new Date(this.event.startTime)},
+	   trigger: {at: moment(this.event.startTime).toDate()},
 	   led: 'FF0000',
 	   sound: null
 	});
@@ -455,7 +455,7 @@ async displayCalendarInfo(){
 
 // Focus today
   today() {
-    this.calendar.currentDate = new Date();
+    this.calendar.currentDate = moment().toDate();
   }
 
 // Selected date reange and hence title changed
@@ -467,8 +467,8 @@ async displayCalendarInfo(){
 		this.currentlyEditing = true;
 		this.event.title = ev.title;
 		this.event.desc = ev.desc;
-		const selectedStart = new Date(ev.startTime);
-		const selectedEnd = new Date(ev.endTime);
+		const selectedStart = moment(ev.startTime).toDate();
+		const selectedEnd = moment(ev.endTime).toDate();
 		this.event.startTime = selectedStart.toISOString();
 		this.event.endTime = selectedEnd.toISOString();
 
@@ -479,8 +479,8 @@ async displayCalendarInfo(){
 		this.notificationIndex = Math.floor(Math.random() * 100000000000);
 	  let eventCopy = {
 		  title: this.editedEvent.title,
-		  startTime:  new Date(this.editedEvent.startTime),
-		  endTime: new Date(this.editedEvent.endTime),
+		  startTime:  moment(this.editedEvent.startTime).toDate(),
+		  endTime: moment(this.editedEvent.endTime).toDate(),
 		  allDay: this.editedEvent.allDay,
 		  desc: this.editedEvent.desc,
 		  id: this.notificationIndex,
@@ -489,8 +489,8 @@ async displayCalendarInfo(){
 	  if(this.clockType == 12){
 		  let eventCopy = {
 		  title: this.editedEvent.title,
-		  startTime:  new Date(this.editedEvent.startTime),
-		  endTime: new Date(this.editedEvent.endTime),
+		  startTime:  moment(this.editedEvent.startTime).toDate(),
+		  endTime: moment(this.editedEvent.endTime).toDate(),
 		  allDay: this.editedEvent.allDay,
 		  desc: this.editedEvent.desc,
 		  id: this.notificationIndex,
@@ -534,7 +534,7 @@ async displayCalendarInfo(){
 					  this.localNotifications.schedule({
 						   id: this.notificationIndex,
 						   text: 'You have an event, check your calendar!',
-						   trigger: {at: new Date(eventCopy.startTime)},
+						   trigger: {at: moment(eventCopy.startTime).toDate()},
 						   led: 'FF0000',
 						   sound: null
 						});
@@ -564,7 +564,7 @@ async displayCalendarInfo(){
 		this.localNotifications.schedule({
 		   id: this.notificationIndex,
 		   text: 'You have an event, check your calendar!',
-		   trigger: {at: new Date(this.event.startTime)},
+		   trigger: {at: moment(this.event.startTime).toDate()},
 		   led: 'FF0000',
 		   sound: null
 		});
@@ -581,8 +581,8 @@ async displayCalendarInfo(){
       let start = eventCopy.startTime;
       let end = eventCopy.endTime;
 
-      eventCopy.startTime = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate()));
-      eventCopy.endTime = new Date(Date.UTC(end.getUTCFullYear(), end.getUTCMonth(), end.getUTCDate() + 1));
+      eventCopy.startTime = moment(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate())).toDate();
+      eventCopy.endTime = moment(Date.UTC(end.getUTCFullYear(), end.getUTCMonth(), end.getUTCDate() + 1)).toDate();
     }
 
 
@@ -605,7 +605,7 @@ async displayCalendarInfo(){
 				  this.localNotifications.schedule({
 					   id: this.notificationIndex,
 					   text: 'You have an event, check your calendar!',
-					   trigger: {at: new Date(eventCopy.startTime)},
+					   trigger: {at: moment(eventCopy.startTime).toDate()},
 					   led: 'FF0000',
 					   sound: null
 				    });
@@ -638,7 +638,7 @@ async displayCalendarInfo(){
 	this.localNotifications.schedule({
 	   id: this.notificationIndex,
 	   text: 'You have an event, check your calendar!',
-	   trigger: {at: new Date(this.event.startTime)},
+	   trigger: {at: moment(this.event.startTime).toDate()},
 	   led: 'FF0000',
 	   sound: null
 	});
@@ -888,7 +888,7 @@ async displayCalendarInfo(){
 		  console.log("editing");
 	  }
 	  else{
-		const selected = new Date(ev.selectedTime);
+		const selected = moment(ev.selectedTime).toDate();
 		this.event.startTime = selected.toISOString();
 		selected.setHours(selected.getHours() + 3);
 		this.event.endTime = (selected.toISOString());
