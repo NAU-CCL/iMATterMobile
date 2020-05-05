@@ -88,7 +88,7 @@ export class ForumDeatailsPage implements OnInit {
               }
 
               this.questionService.addQuestion(this.question).then(() => {
-                this.router.navigateByUrl('/forum');
+                this.router.navigateByUrl('/tabs/more/forum');
                 this.showToast('Question posted');
                 this.questionForm.reset();
               }, err => {

@@ -51,7 +51,7 @@ export class SuggestionsPage implements OnInit {
             this.locationSuggestion.type = 'Location Suggestion';
 
             this.userSubmissionService.addLocationSuggestion(this.locationSuggestion).then(() => {
-              this.router.navigateByUrl('/more');
+              this.router.navigateByUrl('/tabs/more/resources');
               this.showToast('Suggestion sent');
               this.locationSuggestion.name = '';
               this.locationSuggestion.address = '';
@@ -59,7 +59,6 @@ export class SuggestionsPage implements OnInit {
             }, err => {
               this.showToast('There was a problem sending the suggestion');
             });
-
 
           });
         });

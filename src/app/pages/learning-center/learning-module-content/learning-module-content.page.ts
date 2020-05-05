@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LearningModuleService, LearningModule, Question } from '../../../services/learningModule/learning-module.service';
 import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
@@ -9,6 +9,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { ProfileService } from '../../../services/user/profile.service';
 import { Observable } from 'rxjs';
 import { AlertController } from '@ionic/angular';
+import {IonContent} from '@ionic/angular';
 
 @Component({
   selector: 'app-learning-module-content',
@@ -22,6 +23,8 @@ import { AlertController } from '@ionic/angular';
  */
 
 export class LearningModuleContentPage implements OnInit {
+
+  @ViewChild('content', {static: true}) content: IonContent;
 
   public learningModules: Observable<LearningModule[]>;
 
@@ -324,7 +327,7 @@ export class LearningModuleContentPage implements OnInit {
       videoId: this.learningModule.moduleVideoID,
       playerVars: 
       {
-        controls: 1, //shows user controls for video
+        controls: 0, //shows user controls for video
         fs: 1, //fullscreen allowed
         playsinline: 1,
         modestbranding: 1,
@@ -371,6 +374,14 @@ export class LearningModuleContentPage implements OnInit {
       }
       
     });
+  }
+
+  scrollToBottom() {
+    setTimeout(() => {
+      if (this.content.scrollToBottom) {
+        this.content.scrollToBottom(100);
+      }
+    }, 500);
   }
 
   /**
@@ -424,6 +435,8 @@ export class LearningModuleContentPage implements OnInit {
 
       this.numberTimesQuizTaken += 1;
       this.storage.set(this.learningModule.id + "numberTimesQuizTaken", this.numberTimesQuizTaken);
+
+      this.scrollToBottom();
     }
     else
     {
