@@ -29,12 +29,11 @@
     --background: var(--secondary-color);
   }
 
-
 ion-card {
-  --border-top: 3px var(--main-color);
-  --border-left: 3px var(--main-color);
-  --border-right: 3px var(--main-color);
-  --border-bottom: 3px var(--main-color);
+  --border-top: 3px #9370DB;
+  --border-left: 3px #9370DB;
+  --border-right: 3px #9370DB;
+  --border-bottom: 3px #9370DB;
 }
 
 div.test {
