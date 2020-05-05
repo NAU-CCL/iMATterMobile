@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import * as firebase from 'firebase/app';
+import { Device } from '@ionic-native/device/ngx';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -33,7 +34,9 @@ export class ReportPage implements OnInit {
               private toastCtrl: ToastController,
               private router: Router,
               private storage: Storage,
-              private formBuilder: FormBuilder) {
+              private formBuilder: FormBuilder,
+              private device: Device
+              ) {
 
     this.reportForm = this.formBuilder.group({
       subject: ['',
@@ -55,7 +58,7 @@ export class ReportPage implements OnInit {
 
     this.storage.get('platform').then((val) => {
       if (val) {
-        this.submission.operatingSys = val;
+        this.submission.operatingSys = val + ' ' + this.device.model;
       }
     });
 
@@ -71,6 +74,7 @@ export class ReportPage implements OnInit {
             this.submission.timestamp = firebase.firestore.FieldValue.serverTimestamp();
             this.submission.username = doc.get('username');
             this.submission.type = 'Problem';
+            this.submission.version = this.device.version;
 
             this.userSubmissionService.addSubmission(this.submission).then(() => {
               this.router.navigateByUrl('/more');
