@@ -57,8 +57,8 @@ export class LoginPage implements OnInit {
       };
 
 
-  private analyticss: string;
-  private sessions: Observable<any>;
+  public analyticss: string;
+  public sessions: Observable<any>;
     public showEmailBox: boolean;
 
     constructor(
@@ -126,8 +126,6 @@ export class LoginPage implements OnInit {
         this.fcm.getToken(userID);
     }
 
-
-
     updateLogOut() {
      this.analyticsService.updateLogOut(this.session);
      console.log('added LogOutTime');
@@ -145,9 +143,6 @@ export class LoginPage implements OnInit {
 
           this.analyticsService.addSession(this.session).then(()=> {
             console.log('successful session creation');
-            console.log(this.session.id);
-
-
           }, err => {
           console.log('trouble adding session');
 
@@ -185,15 +180,18 @@ export class LoginPage implements OnInit {
                         this.userID = doc.id;
                         this.userPassword = doc.get('password');
                         if ( this.userPassword === pass) {
-                            this.addSession();
+
                             if (this.platform.is('android')) {
                                 this.storage.set('platform', 'android');
                             } else if (this.platform.is('ios')) {
                                 this.storage.set('platform', 'ios');
                             }
 
+
+
                             //this.storage.set('version', this.device.version);
                             this.storage.set('userCode', this.userID);
+                            this.addSession();
                             this.storage.set('authenticated', 'true');
                             this.storage.set('username', doc.get('username'));
                             this.storage.set('dueDate', doc.get('dueDate'));
