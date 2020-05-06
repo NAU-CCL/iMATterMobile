@@ -128,7 +128,7 @@ export class ForumDeatailsPage implements OnInit {
 
   sendEmail(questionForm: FormGroup) {
     if (questionForm.valid) {
-      this.http.get('https://us-central1-techdemofirebase.cloudfunctions.net/sendEmailNotification').subscribe((response) => {
+      this.http.get('https://us-central1-imatter-nau.cloudfunctions.net/sendEmailNotification').subscribe((response) => {
         console.log(response);
       });
     }
