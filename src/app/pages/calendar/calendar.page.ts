@@ -367,7 +367,7 @@ export class CalendarPage implements OnInit {
 
 async displayCalendarInfo(){
   const alert = await this.alertCtrl.create({
-      message: 'Calendar will not sync with phones calendar',
+      message: 'For privacy reasons, this calendar will not sync with phones calendar',
       buttons: ['OK']
   });
   await alert.present();
