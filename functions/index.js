@@ -124,7 +124,8 @@ exports.updateDays=functions.https.onRequest((req, res)=>{
 					return;
 				}
 
-				console.log("USER: " + currentUser.get('username'));
+				console.log("USER: ");
+				console.log(currentUser.get('username'));
 
 				var new_days = doc.data().daysAUser + 1;
 				var sinceLogin = doc.data().daysSinceLogin + 1;
@@ -137,16 +138,21 @@ exports.updateDays=functions.https.onRequest((req, res)=>{
 				const currentDateString = new Date().toJSON().split('T')[0];
 				const currentDate = new Date(currentDateString);
 
+				console.log("CURRENT DATE");
 				console.log(currentDate);
 
 				const userDueDate = new Date(dueDate);
 
+				console.log("DUE DATE");
 				console.log(dueDate);
+
+				console.log("USER DUE DATE");
 				console.log(userDueDate);
 
 				const dateDiff = Math.abs(currentDate.getTime() - userDueDate.getTime());
 				const diffInDays = Math.ceil(dateDiff / (24 * 3600 * 1000));
 
+				console.log("DIFF IN DAYS");
 				console.log(diffInDays);
 
 				//if user is still within 280 days of pregnancy
