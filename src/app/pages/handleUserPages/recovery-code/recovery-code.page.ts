@@ -111,13 +111,14 @@ export class RecoveryCodePage implements OnInit {
 							this.afs.firestore.collection('users').doc(this.wantedUserID).update({
 								password: newPassword
 							});
-              this.showToast('Password has been changed!')
+              this.showToast('Password has been changed!');
 							this.router.navigate(['/login/']);
                         } else {
                         }
                     });
                 });
             } else {
+				this.showToast('Code invalid')
                 console.log('Email does not exist');
                 this.userEmail = false;
             }

@@ -1,9 +1,40 @@
 
 
+
+ :host ::ng-deep .monthview-current { 
+ background-color: #d2b2e5 !important; 
+ color: white !important; 
+ border-top: 3px solid blue !important; 
+ border-left: 3px solid blue !important;
+  border-right: 3px solid blue !important;
+  border-bottom: 3px solid blue !important
+  }
+  
+  
+  
   .primary-color {
     background-color: var(--main-color);
   }
+  
+  
+  :host ::ng-deep .monthview-primary-with-event { background-color: #cec1e7 !important; color: white !important; }
+  
+  :host ::ng-deep .monthview-selected { background-color: #9370DB !important;}
+  
+:host ::ng-deep .weekview-normal-event-container {
+position: relative;
+}
 
+:host ::ng-deep .dayview-normal-event-container {
+position: relative;
+}
+:host ::ng-deep .weekview-normal-event-container {
+position: relative;
+}
+
+:host ::ng-deep .dayview-normal-event-container {
+position: relative;
+}
 
   .event-button {
     border-color: var(--main-color);
@@ -28,6 +59,7 @@
   .noHighlight{
     --background: var(--secondary-color);
   }
+
 
 ion-card {
   border-top: 3px solid #9370DB;
@@ -69,6 +101,8 @@ div.addEvent {
 div.monthview-container {
  height: 60%
 }
+
+
 
 p{
 	color: #9370DB;
