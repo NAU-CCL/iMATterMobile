@@ -237,15 +237,12 @@ export class HomePage implements OnInit {
 
   }
 
-
-
   updateSurveyClicks()
   {
     this.analyticsService.updateSurveyClicks(this.session);
     console.log("added survery click");
 
   }
-
 
   addView(){
 
@@ -272,7 +269,6 @@ export class HomePage implements OnInit {
   });
 }
 
-
   saveEmotion(emotion: string) {
     this.afs.firestore.collection('users').doc(this.userProfileID)
         .update({mood: emotion});
@@ -294,7 +290,7 @@ export class HomePage implements OnInit {
 
     if (emotion === 'sad' || emotion === 'overwhelmed' || emotion === 'angry') {
       this.presentAlert('Stay Strong!',
-          'Remember you have your cohort to support you and health modules available to you! If you need help,' +
+          'Remember you have your cohort to support you and health modules available to you! If you need help, ' +
           'please go to the Resources page to find help near you.');
 
       this.emotionNotif.userID = this.userProfileID;
@@ -339,11 +335,44 @@ export class HomePage implements OnInit {
     var notifID;
     if(notif.split(",")[0] == "There is a new survey available"){
       notifID = notif.split(",")[1];
-      this.router.navigate(['/tabs/home/available/' + notifID])
+
+      const dbSurvey = this.afs.firestore.collection('surveys');
+
+      console.log("SURVEY NOTIF ID: " + notifID);
+      console.log(dbSurvey);
+      
+      //survey still exists
+      if (dbSurvey.doc(notifID).get())
+      {
+        console.log('exists');
+        this.router.navigate(['/tabs/home/available/' + notifID]);
+      }
+      else //if it's been deleted since notif was sent
+      {
+        console.log("does not exist");
+        this.showToast("Sorry, this survey is no longer available.");
+      }
     }
-    else{
+    else
+    {
       notifID = notif.split(",")[1];
-      this.router.navigate(['/tabs/home/learning-center/' + notifID])
+
+      const dbLearningModules = this.afs.firestore.collection('learningModules');
+
+      console.log("LM NOTIF ID: " + notifID);
+
+      console.log(dbLearningModules);
+      //LM still exists
+      if (dbLearningModules.doc(notifID).get())
+      {
+        console.log('exists');
+        this.router.navigate(['/tabs/home/learning-center/' + notifID]);
+      }
+      else //it's been deleted since notif was sent
+      {
+        console.log("does not exist");
+        this.showToast("Sorry, this learning module is no longer available.");
+      }
     }
   }
 
@@ -356,4 +385,13 @@ export class HomePage implements OnInit {
       //});
     });
   }
+
+  showToast(msg:string)
+  {
+    this.toastCtrl.create({
+      message: msg,
+      duration: 2000
+    }).then(toast => toast.present());
+  }
+  
 }
