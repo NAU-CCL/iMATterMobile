@@ -100,6 +100,17 @@ export class ResourcesPage implements OnInit, AfterViewInit {
 
       await firebase.firestore().collection("resourceLocations").get()
       .then(querySnapshot => {
+        this.dtitle = '';
+        this.dlongitude = 0  ;
+        this.dlatitude = 0 ;
+        this.dcontent = '' ;
+        this.dicon = '';
+        this.dstreet = '';
+        this.doperationWeekday = '';
+        this.doperationSaturday = '';
+        this.dphone = '';
+        this.doperationSunday = '';
+        this.dspecialNote = '';
 
         querySnapshot.docs.forEach( async doc => {
         this.dtitle = doc.get("title");
@@ -114,7 +125,9 @@ export class ResourcesPage implements OnInit, AfterViewInit {
         this.doperationWeekday = doc.get("operationMF");
         this.dspecialNote = doc.get("special");
 
-        this.addMarker(this.dtitle, this.dlongitude, this.dlatitude, this.dcontent, this.dicon);
+        this.addMarker(this.dtitle, this.dlongitude, this.dlatitude, this.dcontent, this.dicon,
+                        this.doperationWeekday, this.doperationSaturday, this.doperationSunday,
+                      this.dphone, this.dstreet , this.dspecialNote);
 
 
         console.log(this.dlongitude);
@@ -178,7 +191,8 @@ export class ResourcesPage implements OnInit, AfterViewInit {
 
 
 
-     async addMarker(dtitle, dlongitude, dlatitude, dcontent , dicon)
+     async addMarker(dtitle, dlongitude, dlatitude, dcontent , dicon,
+       doperationWeekday, doperationSaturday, doperationSunday, dphone, dstreet , dspecialNote )
      {
        console.log('added pin');
 
@@ -213,7 +227,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
          const marker = await new google.maps.Marker({
            position: pos,
            map: this.map,
-           title: this.dtitle,
+           title: dtitle,
            icon: this.icon
          });
 
@@ -221,19 +235,19 @@ export class ResourcesPage implements OnInit, AfterViewInit {
          '<div id="content">'+
          '<div id= "siteNotice" ' +
          '</div>' +
-         '<h1 id="firstHeading" class="firstHeading">' + this.dtitle  + '</h1>' +
+         '<h1 id="firstHeading" class="firstHeading">' + dtitle  + '</h1>' +
          '<div id="bodyContent">' +
-         '<p>' + this.dcontent + '</p>' +
+         '<p>' + dcontent + '</p>' +
          '</div>'+
-         '<div id = "phone">'+ 'Phone: ' + this.dphone+ '</div>'+
-         '<div id= "street">'+ 'Street Address: ' + this.dstreet + '</div>' +
+         '<div id = "phone">'+ 'Phone: ' + dphone+ '</div>'+
+         '<div id= "street">'+ 'Street Address: ' + dstreet + '</div>' +
 
          '<div id = "operation">'+ 'Hours of Operation' + '</div>' +
-         '<div id = "weekday">'+ 'Monday - Friday: '+ this.doperationWeekday + '</div>'+
-         '<div id = "saturday">'+ 'Saturday: ' +  this.doperationSaturday + '</div>'+
-         '<div id = "sunday">'+ 'Sunday: ' + this.doperationSunday + '</div>'+
+         '<div id = "weekday">'+ 'Monday - Friday: '+ doperationWeekday + '</div>'+
+         '<div id = "saturday">'+ 'Saturday: ' +  doperationSaturday + '</div>'+
+         '<div id = "sunday">'+ 'Sunday: ' + doperationSunday + '</div>'+
          '<div id = "blank">'+ '<p>'+  '       ' + '</p>'  + '</div>' +
-         '<div id = "specialNote">'+ 'Admin Note: ' + this.dspecialNote+ '</div>'+
+         '<div id = "specialNote">'+ 'Admin Note: ' + dspecialNote+ '</div>'+
          '</div>';
 
          await google.maps.event.addListener(marker, 'click', function(){
