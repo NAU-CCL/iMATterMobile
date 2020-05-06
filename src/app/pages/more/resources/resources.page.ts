@@ -23,6 +23,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
     dcontent: string;
     dphone: string;
     dstreet: string;
+    dspecialNote: string;
     doperationSunday: string;
     doperationWeekday: string;
     doperationSaturday: string;
@@ -111,6 +112,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
         this.doperationSaturday = doc.get("operationSaturday");
         this.dphone = doc.get("phone");
         this.doperationWeekday = doc.get("operationMF");
+        this.dspecialNote = doc.get("special");
 
         this.addMarker(this.dtitle, this.dlongitude, this.dlatitude, this.dcontent, this.dicon);
 
@@ -223,6 +225,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
          '<div id="bodyContent">' +
          '<p>' + this.dcontent + '</p>' +
          '</div>'+
+         '<div id = "phone">'+ 'Phone: ' + this.dphone+ '</div>'+
          '<div id= "street">'+ 'Street Address: ' + this.dstreet + '</div>' +
 
          '<div id = "operation">'+ 'Hours of Operation' + '</div>' +
@@ -230,7 +233,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
          '<div id = "saturday">'+ 'Saturday: ' +  this.doperationSaturday + '</div>'+
          '<div id = "sunday">'+ 'Sunday: ' + this.doperationSunday + '</div>'+
          '<div id = "blank">'+ '<p>'+  '       ' + '</p>'  + '</div>' +
-         '<div id = "phone">'+ 'Phone: ' + this.dphone+ '</div>'+
+         '<div id = "specialNote">'+ 'Admin Note: ' + this.dspecialNote+ '</div>'+
          '</div>';
 
          await google.maps.event.addListener(marker, 'click', function(){
