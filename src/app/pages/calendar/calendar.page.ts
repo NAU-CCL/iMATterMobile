@@ -137,6 +137,7 @@ export class CalendarPage implements OnInit {
     this.resetEvent();
 	this.loadItems();
 	this.addView();
+	this.getAmpm();
   }
 
 

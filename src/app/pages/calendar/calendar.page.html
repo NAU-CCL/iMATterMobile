@@ -146,7 +146,7 @@
           <ion-checkbox [(ngModel)]="event.allDay"></ion-checkbox>
         </ion-item>
         <ion-button fill="outline" color="important" class=event-button (click)="showEditEvent = false" (click)="editCancelled()" > Cancel </ion-button>
-        <ion-button fill="outline" class=event-button (click)="addEvent()" (click)="deleteOrCancelEvent()" (click)="showEditEvent = false" [disabled]="event.title == ''">Add Edits</ion-button>
+        <ion-button fill="outline" class=event-button (click)="addEvent()" (click)="deleteOrCancelEvent()" (click)="showEditEvent = false" [disabled]="event.title == ''">Confirm Edits</ion-button>
       </ion-card-content>
     </ion-card>
   </ion-item>
@@ -187,7 +187,7 @@
           <ion-checkbox [(ngModel)]="event.allDay"></ion-checkbox>
         </ion-item>
         <ion-button fill="outline" color="important" class=event-button (click)="showEditEvent = false" (click)="editCancelled()"  > Cancel </ion-button>
-        <ion-button fill="outline" class=event-button (click)="addEvent()" [disabled]="event.title == ''" (click)="showEditEvent = false">Add Event</ion-button>
+        <ion-button fill="outline" class=event-button (click)="addEvent()" [disabled]="event.title == ''" (click)="showEditEvent = false">Confirm Edits</ion-button>
       </ion-card-content>
     </ion-card>
   </ion-item>
@@ -200,8 +200,19 @@
             <ion-list class="event-detail-container" has-bouncing="false" *ngIf="showEventDetail" overflow-scroll="false" (click)="addEventDay()" >
                 <ion-item *ngFor="let event of selectedDate?.events" (click)="onEventSelected(event)">
 
+				
+
+
                     <span *ngIf="event.allDay" class="monthview-eventdetail-timecolumn">All day</span>
-                    <span class="event-detail">  {{event.title}}   |   click to view, edit or delete</span>
+                    <span *ngIf="isTwelveHour" class="event-detail">  {{event.title}}   |  {{event.startTime|date: 'hh:mm'}}
+                            -
+                            {{event.endTime|date: 'hh:mm'}} | click to view, edit or delete</span>
+							
+					 <span *ngIf="!isTwelveHour" class="event-detail">  {{event.title}}   |  {{event.startTime|date: 'HH:mm'}}
+                            -
+                            {{event.endTime|date: 'HH:mm'}} | click to view, edit or delete</span>
+					
+					
                 </ion-item>
                 <ion-item *ngIf="selectedDate?.events.length==0">
                     <div class="no-events-label">{{noEventsLabel}}</div>
