@@ -32,9 +32,9 @@ exports.sendEmailNotification=functions.https.onRequest((req, res)=>{
 				authData.sendMail({
 					from: 'imatternotification@gmail.com',
 					to: email, // list of receivers
-					subject: "Imatter InfoDesk", // Subject line
-					text: "There is a new question on the InfoDesk!", // plain text body
-					html: "<b>There is a new question on the InfoDesk!</b>" // html body
+					subject: "iMATter InfoDesk", // Subject line
+					text: "There is a new question in the InfoDesk!", // plain text body
+					html: "<b>There is a new question in the InfoDesk!</b>" // html body
 				}).then(res=>console.log('successfully sent that mail')).catch(err=>console.log(err));
 			  });
 			  //if the res.send is the same each time, for some reason it stops working? Added random number so its different each send.
@@ -66,7 +66,7 @@ exports.sendRecoveryEmail=functions.firestore.document('recovery_email/{docID}')
 	authData.sendMail({
 		from: 'imatternotification@gmail.com',
 		to: data.email, // list of receivers
-		subject: "Imatter InfoDesk", // Subject line
+		subject: "iMATter InfoDesk", // Subject line
 		text: "Here is your recovery code: " + data.code, // plain text body
 		html: "Here is your recovery code: " + data.code // html body
 		//res.send("sent");
@@ -100,18 +100,35 @@ exports.sendGCRequestEmail = functions.firestore.document('usersPointsRedeem/{do
 
 });
 
-
+/**
+ * Updates the following fields for a user:
+ * Days a user, totalDaysPregnant, daysPregnant, daysSinceLogin, and weeksPregnant
+ */
 exports.updateDays=functions.https.onRequest((req, res)=>{	
 	
-	//const increment = admin.firestore().FieldValue.increment(1);
+	console.log("got here");
+
 	const ref = admin.firestore().collection('users');
 			ref.get().then((result) => {			
 			  result.forEach(doc => {
+
 				docID = doc.get('code');
+
+				console.log('got here2');
 				var currentUser = admin.firestore().collection('users').doc(docID);
+
+				//user hasn't signed up yet, skip them
+				if (currentUser.get('joined') === null)
+				{
+					console.log("not joined, skip");
+					return;
+				}
+
+				console.log("USER: " + currentUser.get('username'));
+
 				var new_days = doc.data().daysAUser + 1;
 				var sinceLogin = doc.data().daysSinceLogin + 1;
-				//doc.update({ "daysAUser": new_days});
+
 				currentUser.update({
 					daysAUser: new_days
 				});
@@ -119,37 +136,58 @@ exports.updateDays=functions.https.onRequest((req, res)=>{
 				var dueDate = doc.data().dueDate;
 				const currentDateString = new Date().toJSON().split('T')[0];
 				const currentDate = new Date(currentDateString);
+
 				console.log(currentDate);
+
 				const userDueDate = new Date(dueDate);
+
 				console.log(dueDate);
 				console.log(userDueDate);
+
 				const dateDiff = Math.abs(currentDate.getTime() - userDueDate.getTime());
 				const diffInDays = Math.ceil(dateDiff / (24 * 3600 * 1000));
+
 				console.log(diffInDays);
-				const totalDays = 280 - diffInDays - 1;
-				console.log(totalDays);				
-				currentUser.update({
-					totalDaysPregnant: totalDays
-				});
-				console.log(totalDays);
-				const weeksPregnant = Math.floor(totalDays / 7);
-				console.log(weeksPregnant);
-				const daysPregnant = totalDays % 7;
-				currentUser.update({
-					daysPregnant: daysPregnant
-				});
+
+				//if user is still within 280 days of pregnancy
+				if (dateDiff <= 280)
+				{
+					const totalDays = 280 - diffInDays - 1;
+
+					console.log(totalDays);		
+
+					currentUser.update({
+						totalDaysPregnant: totalDays
+					});
+
+					console.log(totalDays);
+
+					const weeksPregnant = Math.floor(totalDays / 7);
+
+					console.log(weeksPregnant);
+
+					const daysPregnant = totalDays % 7;
+
+					currentUser.update({
+						daysPregnant: daysPregnant
+					});
+
+					console.log(daysPregnant);
+
+					currentUser.update({
+						weeksPregnant: weeksPregnant
+					});
+				}
+				else if (dateDiff )
+
 				currentUser.update({
 					daysSinceLogin: sinceLogin
 				});
-				console.log(daysPregnant);
-				currentUser.update({
-					weeksPregnant: weeksPregnant
-				});
-
 			});
+
 			//if the res.send is the same each time, for some reason it stops working? Added random number so its different each send.
-			  var number = Math.random();
-			  res.send("days have been updated" + number);
+			var number = Math.random();
+			res.send("days have been updated" + number);
 
 			return null;
 			}).catch(err => {
