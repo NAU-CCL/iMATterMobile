@@ -4,7 +4,13 @@
   .primary-color {
     background-color: var(--main-color);
   }
+:host ::ng-deep .weekview-normal-event-container {
+position: relative;
+}
 
+:host ::ng-deep .dayview-normal-event-container {
+position: relative;
+}
 
   .event-button {
     border-color: var(--main-color);
