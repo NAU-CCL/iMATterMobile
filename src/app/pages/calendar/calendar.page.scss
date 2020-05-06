@@ -1,5 +1,6 @@
 
 
+
  :host ::ng-deep .monthview-current { 
  background-color: #d2b2e5 !important; 
  color: white !important; 
@@ -9,7 +10,7 @@
   border-bottom: 3px solid red !important
   }
   
-  :host ::ng-deep .monthview-selected { background-color: #9370DB !important;}
+  
   
   .primary-color {
     background-color: var(--main-color);
@@ -17,6 +18,8 @@
   
   
   :host ::ng-deep .monthview-primary-with-event { background-color: #cec1e7 !important; color: white !important; }
+  
+  :host ::ng-deep .monthview-selected { background-color: #9370DB !important;}
   
 :host ::ng-deep .weekview-normal-event-container {
 position: relative;
