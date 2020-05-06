@@ -1,5 +1,6 @@
 
-
+ :host ::ng-deep .monthview-current { background-color: #9370DB !important; color: green !important;}
+  
   .primary-color {
     background-color: var(--main-color);
   }
@@ -28,6 +29,7 @@
   .noHighlight{
     --background: var(--secondary-color);
   }
+
 
 ion-card {
   border-top: 3px solid #9370DB;
@@ -69,6 +71,8 @@ div.addEvent {
 div.monthview-container {
  height: 60%
 }
+
+
 
 p{
 	color: #9370DB;
