@@ -46,6 +46,7 @@ export class ForumThreadPage implements OnInit {
     public currentAnon: boolean;
     public comments: Observable<any>;
     public commentForm: FormGroup;
+    public anonPic: string;
 
   constructor(private afs: AngularFirestore,
               private activatedRoute: ActivatedRoute,
@@ -77,7 +78,7 @@ export class ForumThreadPage implements OnInit {
               this.question = question;
           });
           this.comments = this.questionService.getComments(id);
-          console.log(this.comments);
+          this.getAutoProfilePic();
       }
   }
 
@@ -106,7 +107,7 @@ export class ForumThreadPage implements OnInit {
                           } else {
                               this.currentAnon = true;
                               this.comment.username = 'Anonymous';
-                              this.comment.profilePic = 'https://firebasestorage.googleapis.com/v0/b/techdemofirebase.appspot.com/o/ProfileImages%2Fauto.png?alt=media&token=e5601f32-30f8-4b38-9a2c-ff2d7e6ad59a';
+                              this.comment.profilePic = this.anonPic;
                           }
                           this.comment.timestamp = firebase.firestore.FieldValue.serverTimestamp();
 
@@ -150,5 +151,10 @@ export class ForumThreadPage implements OnInit {
         }, 500);
     }
 
+    getAutoProfilePic() {
+        firebase.firestore().collection('mobileSettings').doc('userSignUpSettings').get().then((result) => {
+            this.anonPic = result.get('autoProfilePic');
+        });
+    }
 
 }

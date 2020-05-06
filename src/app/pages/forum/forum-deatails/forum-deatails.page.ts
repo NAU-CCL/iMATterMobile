@@ -33,6 +33,7 @@ export class ForumDeatailsPage implements OnInit {
 
   public anon: boolean;
   public questionForm: FormGroup;
+  public anonPic: string;
 
   constructor(private afs: AngularFirestore,
               private activatedRoute: ActivatedRoute,
@@ -59,6 +60,7 @@ export class ForumDeatailsPage implements OnInit {
         this.router.navigate(['/login/']);
       }
     });
+    this.getAutoProfilePic();
   }
 
   addQuestion(questionForm: FormGroup) {
@@ -84,7 +86,7 @@ export class ForumDeatailsPage implements OnInit {
                 this.question.profilePic = doc.get('profilePic');
               } else {
                 this.question.username = 'Anonymous';
-                this.question.profilePic = 'https://firebasestorage.googleapis.com/v0/b/techdemofirebase.appspot.com/o/ProfileImages%2Fauto.png?alt=media&token=e5601f32-30f8-4b38-9a2c-ff2d7e6ad59a';
+                this.question.profilePic = this.anonPic;
               }
 
               this.questionService.addQuestion(this.question).then(() => {
@@ -133,4 +135,10 @@ export class ForumDeatailsPage implements OnInit {
       });
     }
 	}
+
+  getAutoProfilePic() {
+    firebase.firestore().collection('mobileSettings').doc('userSignUpSettings').get().then((result) => {
+      this.anonPic = result.get('autoProfilePic');
+    });
+  }
 }
