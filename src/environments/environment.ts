@@ -5,14 +5,14 @@
 export const environment = {
   production: false,
   firebase: {
-    apiKey: "AIzaSyBuzbsBUVWvgyqvc3hiUrDWLMMSsCf3a0E",
-    authDomain: "techdemofirebase.firebaseapp.com",
-    databaseURL: "https://techdemofirebase.firebaseio.com",
-    projectId: "techdemofirebase",
-    storageBucket: "techdemofirebase.appspot.com",
-    messagingSenderId: "173430196657",
-    appId: "1:173430196657:web:0fbdaa83280d442f711590",
-    measurementId: "G-MR0K7XSQHB"
+    apiKey: "AIzaSyAee_ZhwbI6bgXOoRwe_BfkiQAVYMOg4HQ",
+    authDomain: "imatter-nau.firebaseapp.com",
+    databaseURL: "https://imatter-nau.firebaseio.com",
+    projectId: "imatter-nau",
+    storageBucket: "imatter-nau.appspot.com",
+    messagingSenderId: "626066789753",
+    appId: "1:626066789753:web:ae9a78b6023013b4528ba8",
+    measurementId: "G-ZEPTDPEYZH"
   }
 };
 

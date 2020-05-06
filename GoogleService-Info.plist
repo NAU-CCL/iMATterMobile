@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>173430196657-qk4boikbonjnnd5niq8shbkjs2ohlgjg.apps.googleusercontent.com</string>
+	<string>626066789753-pcf1vsvi3uubbuveth29vll6n5vtrvq1.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.173430196657-qk4boikbonjnnd5niq8shbkjs2ohlgjg</string>
+	<string>com.googleusercontent.apps.626066789753-pcf1vsvi3uubbuveth29vll6n5vtrvq1</string>
 	<key>API_KEY</key>
-	<string>AIzaSyDKbJD2EiL9LxvKjiTa870IeHIJA4bwaXg</string>
+	<string>AIzaSyBGRSo302R_AU6agMhvUHs3SLuhWW8C2is</string>
 	<key>GCM_SENDER_ID</key>
-	<string>173430196657</string>
+	<string>626066789753</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.nau.iMATter</string>
 	<key>PROJECT_ID</key>
-	<string>techdemofirebase</string>
+	<string>imatter-nau</string>
 	<key>STORAGE_BUCKET</key>
-	<string>techdemofirebase.appspot.com</string>
+	<string>imatter-nau.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,8 +29,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:173430196657:ios:feb9244731484cf2711590</string>
+	<string>1:626066789753:ios:54de62a303b6973a528ba8</string>
 	<key>DATABASE_URL</key>
-	<string>https://techdemofirebase.firebaseio.com</string>
+	<string>https://imatter-nau.firebaseio.com</string>
 </dict>
 </plist>

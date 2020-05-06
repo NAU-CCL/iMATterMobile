@@ -6,7 +6,7 @@ import { Storage } from '@ionic/storage';
 import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyticsService.service';
 import * as firebase from 'firebase/app';
 import {AngularFirestore} from '@angular/fire/firestore';
-import {AlertController} from "@ionic/angular";
+import {AlertController} from '@ionic/angular';
 
 
 @Component({
@@ -28,8 +28,8 @@ export class ForumPage implements OnInit {
   private sessions: Observable<any>;
   private thisUsersQuestions: Observable<Question[]>;
 
-  public allPosts: boolean;
-  public usersPosts: boolean;
+  public allQuestions: boolean;
+  public usersQuestions: boolean;
 
   public questionList: any[];
   public loadedQuestionList: any[];
@@ -63,8 +63,8 @@ export class ForumPage implements OnInit {
 
     // need to keep this
     this.questions = this.questionService.getQuestions();
-    this.allPosts = true;
-    this.usersPosts = false;
+    this.allQuestions = true;
+    this.usersQuestions = false;
   }
 
   ionViewWillEnter() {
@@ -77,7 +77,6 @@ export class ForumPage implements OnInit {
          this.afs.collection('questions', ref => ref.where('userID', '==', val).orderBy('timestamp', 'desc'))
              .valueChanges({ idField: 'id' }).subscribe(questionList => {
            this.thisUserQuestionList = questionList;
-
            this.thisUserLoadedQuestionList = questionList;
          });
        }
@@ -157,7 +156,7 @@ export class ForumPage implements OnInit {
     this.presentAlert('What is the Information Desk?',
           'The information desk is a forum where you can ask questions and respond to other ' +
         'user questions. Here, all users ' +
-        'can see your posts, not just your cohort. You have the option to ask or comment anonymously' +
+        'can see your questions, not just your cohort. You have the option to ask or comment anonymously' +
         ', allowing you to remain even more secret. Questions can be answered by providers, which ' +
         'include clinic workers, nurses, and more.');
     }

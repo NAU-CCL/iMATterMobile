@@ -21,7 +21,7 @@
 
 <div *ngIf="readMore">
   <p class="content">
-    <b>Secret identity:</b> To keep this application anonymous, we ask you to create a secret identity. This is
+    <b>iMATter Screen Name:</b> To keep this application anonymous, we ask you to create a secret identity. This is
     what will be shown to other users.
   </p>
 
@@ -83,8 +83,8 @@
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked">Secret Identity</ion-label>
-      <ion-input formControlName="username" placeholder="Secret Identity"
+      <ion-label position="stacked">iMATter Screen Name</ion-label>
+      <ion-input formControlName="username" placeholder="An Anonymous Name"
                  [class.invalid]="!signupForm.controls['username'].valid && signupForm.controls['username'].touched">
       </ion-input>
     </ion-item>
@@ -121,9 +121,9 @@
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked">Short Bio (Optional)</ion-label>
+      <ion-label position="stacked">Short Bio About You(Optional)</ion-label>
       <ion-textarea autoGrow="true" spellcheck="true" autocapitalize="true" formControlName="bio"
-                    placeholder="Say Something About Yourself ">
+                    placeholder="Nothing Personal!">
       </ion-textarea>
     </ion-item>
 

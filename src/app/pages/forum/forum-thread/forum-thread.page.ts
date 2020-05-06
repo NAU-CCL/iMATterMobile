@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import { QuestionService, Question, Comment } from 'src/app/services/infoDesk/question.service';
+import { QuestionService, Question, Answer } from 'src/app/services/infoDesk/question.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {IonContent, ToastController} from '@ionic/angular';
 import { Storage } from '@ionic/storage';
@@ -26,14 +26,14 @@ export class ForumThreadPage implements OnInit {
     profilePic: '',
     anon: false,
     type: '',
-    numOfComments: 0,
+    numOfAnswers: 0,
     commenters: []
   };
 
-  comment: Comment = {
+    answer: Answer = {
     input: '',
     username: '',
-    postID: '',
+    questionID: '',
     userID: '',
     timestamp: FieldValue,
     profilePic: '',
@@ -41,11 +41,12 @@ export class ForumThreadPage implements OnInit {
     type: ''
   };
 
-    public showCommentBox: boolean = false;
+    public showAnswerBox: boolean = false;
     public anon: boolean;
     public currentAnon: boolean;
-    public comments: Observable<any>;
-    public commentForm: FormGroup;
+    public answers: Observable<any>;
+    public answerForm: FormGroup;
+    public anonPic: string;
 
   constructor(private afs: AngularFirestore,
               private activatedRoute: ActivatedRoute,
@@ -55,7 +56,7 @@ export class ForumThreadPage implements OnInit {
               private storage: Storage,
               private formBuilder: FormBuilder) {
 
-      this.commentForm = this.formBuilder.group({
+      this.answerForm = this.formBuilder.group({
           comment: ['',
               Validators.compose([Validators.required, Validators.minLength(1)])],
           anon: [],
@@ -76,46 +77,46 @@ export class ForumThreadPage implements OnInit {
           this.questionService.getQuestion(id).subscribe(question => {
               this.question = question;
           });
-          this.comments = this.questionService.getComments(id);
-          console.log(this.comments);
+          this.answers = this.questionService.getAnswers(id);
+          this.getAutoProfilePic();
       }
   }
 
-  addComment(commentForm: FormGroup) {
+  addAnswer(answerForm: FormGroup) {
       this.scrollToBottom();
-      console.log(commentForm.value.anon);
-      if (!commentForm.valid) {
-          this.showToast('Please enter a comment');
+      console.log(answerForm.value.anon);
+      if (!answerForm.valid) {
+          this.showToast('Please enter an answer');
       } else {
-          this.comment.type = 'user';
-          this.comment.anon = commentForm.value.anon;
-          this.comment.postID = this.question.id;
-          this.comment.input = commentForm.value.comment;
+          this.answer.type = 'user';
+          this.answer.anon = answerForm.value.anon;
+          this.answer.questionID = this.question.id;
+          this.answer.input = answerForm.value.comment;
           this.storage.get('userCode').then((val) => {
               if (val) {
                   const ref = this.afs.firestore.collection('users').where('code', '==', val);
                   ref.get().then((result) => {
                       result.forEach(doc => {
 
-                          this.comment.userID = val;
+                          this.answer.userID = val;
 
-                          if (!this.comment.anon) {
+                          if (!this.answer.anon) {
                               this.currentAnon = false;
-                              this.comment.username = doc.get('username');
-                              this.comment.profilePic = doc.get('profilePic');
+                              this.answer.username = doc.get('username');
+                              this.answer.profilePic = doc.get('profilePic');
                           } else {
                               this.currentAnon = true;
-                              this.comment.username = 'Anonymous';
-                              this.comment.profilePic = 'https://firebasestorage.googleapis.com/v0/b/techdemofirebase.appspot.com/o/ProfileImages%2Fauto.png?alt=media&token=e5601f32-30f8-4b38-9a2c-ff2d7e6ad59a';
+                              this.answer.username = 'Anonymous';
+                              this.answer.profilePic = this.anonPic;
                           }
-                          this.comment.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+                          this.answer.timestamp = firebase.firestore.FieldValue.serverTimestamp();
 
-                          this.questionService.addComment(this.comment).then(() => {
-                              this.showToast('Comment added');
-                              this.commentForm.reset();
-                              this.showCommentBox = false;
+                          this.questionService.addAnswer(this.answer).then(() => {
+                              this.showToast('Answer added');
+                              this.answerForm.reset();
+                              this.showAnswerBox = false;
                           }, err => {
-                              this.showToast('There was a problem adding your comment');
+                              this.showToast('There was a problem adding your answer');
                           });
 
                       });
@@ -132,8 +133,8 @@ export class ForumThreadPage implements OnInit {
     }).then(toast => toast.present());
   }
 
-  displayCommentBox() {
-    this.showCommentBox = true;
+  displayAnswerBox() {
+    this.showAnswerBox = true;
   }
 
   goToProfile(userID: string, questionID: string) {
@@ -150,5 +151,10 @@ export class ForumThreadPage implements OnInit {
         }, 500);
     }
 
+    getAutoProfilePic() {
+        firebase.firestore().collection('settings').doc('userSignUpSettings').get().then((result) => {
+            this.anonPic = result.get('autoProfilePic');
+        });
+    }
 
 }

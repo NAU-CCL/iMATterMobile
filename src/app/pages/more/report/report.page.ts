@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Submission, UserSubmissionsService } from '../../../services/userSubmissions/user-submissions.service';
+import { Report, UserSubmissionsService } from '../../../services/userSubmissions/user-submissions.service';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
@@ -15,7 +15,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class ReportPage implements OnInit {
 
-  submission: Submission = {
+  report: Report = {
     title: '',
     description: '',
     username: '',
@@ -59,7 +59,7 @@ export class ReportPage implements OnInit {
 
     this.storage.get('platform').then((val) => {
       if (val) {
-        this.submission.operatingSys = val + ' ' + this.device.model;
+        this.report.operatingSys = val + ' ' + this.device.model;
       }
     });
 
@@ -69,19 +69,19 @@ export class ReportPage implements OnInit {
         const ref = this.afs.firestore.collection('users').where('code', '==', val);
         ref.get().then((result) => {
           result.forEach(doc => {
-            this.submission.title = submissionForm.value.subject;
-            this.submission.description = submissionForm.value.description;
-            this.submission.userID = val;
-            this.submission.timestamp = firebase.firestore.FieldValue.serverTimestamp();
-            this.submission.username = doc.get('username');
-            this.submission.type = 'Problem';
-            this.submission.version = this.device.version;
+            this.report.title = submissionForm.value.subject;
+            this.report.description = submissionForm.value.description;
+            this.report.userID = val;
+            this.report.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+            this.report.username = doc.get('username');
+            this.report.type = 'Problem';
+            this.report.version = this.device.version;
 
-            this.userSubmissionService.addSubmission(this.submission).then(() => {
+            this.userSubmissionService.addReport(this.report).then(() => {
               this.router.navigateByUrl('/tabs/more');
               this.showToast('Report sent');
-              this.submission.title = '';
-              this.submission.description = '';
+              this.report.title = '';
+              this.report.description = '';
             }, err => {
               this.showToast('There was a problem sending your problem report');
             });

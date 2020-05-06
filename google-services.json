@@ -1,77 +1,41 @@
 {
   "project_info": {
-    "project_number": "173430196657",
-    "firebase_url": "https://techdemofirebase.firebaseio.com",
-    "project_id": "techdemofirebase",
-    "storage_bucket": "techdemofirebase.appspot.com"
+    "project_number": "626066789753",
+    "firebase_url": "https://imatter-nau.firebaseio.com",
+    "project_id": "imatter-nau",
+    "storage_bucket": "imatter-nau.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:173430196657:android:a0d2f079b0326cd7711590",
+        "mobilesdk_app_id": "1:626066789753:android:ec45dbd5a177fe70528ba8",
         "android_client_info": {
           "package_name": "com.nau.iMATter"
         }
       },
       "oauth_client": [
         {
-          "client_id": "173430196657-73pv7jdl40pdldfqhacq1f96kfrio0ki.apps.googleusercontent.com",
+          "client_id": "626066789753-d0jm6t0ape6tnfvomv2ojuvf73glllk5.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDwjFMnXpFA_JEWgQV_B6qmX4fByh-bH1w"
+          "current_key": "AIzaSyDwcQkAZwpwDHu1T5d8sjnYuJXgo0u4PWo"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "173430196657-73pv7jdl40pdldfqhacq1f96kfrio0ki.apps.googleusercontent.com",
+              "client_id": "626066789753-d0jm6t0ape6tnfvomv2ojuvf73glllk5.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "173430196657-0fv3nbqch1geukvbon28ptspnkr7gmsh.apps.googleusercontent.com",
+              "client_id": "626066789753-pcf1vsvi3uubbuveth29vll6n5vtrvq1.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "reboot.package"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:173430196657:android:207b2e36a358b73c711590",
-        "android_client_info": {
-          "package_name": "reboot.package"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "173430196657-73pv7jdl40pdldfqhacq1f96kfrio0ki.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDwjFMnXpFA_JEWgQV_B6qmX4fByh-bH1w"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "173430196657-73pv7jdl40pdldfqhacq1f96kfrio0ki.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "173430196657-0fv3nbqch1geukvbon28ptspnkr7gmsh.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "reboot.package"
+                "bundle_id": "com.nau.iMATter"
               }
             }
           ]

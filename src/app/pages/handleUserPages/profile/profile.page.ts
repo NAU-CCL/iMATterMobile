@@ -162,6 +162,7 @@ export class ProfilePage implements OnInit {
   // allows user to update email if the put in their current password
   async updateEmail(): Promise<void> {
     const alert = await this.alertCtrl.create({
+        header: 'Update Email',
       inputs: [
         { type: 'text', name: 'newEmail', placeholder: 'Your new email' },
         { name: 'password', placeholder: 'Your password', type: 'password' },
@@ -194,9 +195,10 @@ export class ProfilePage implements OnInit {
 
   async updatePassword(): Promise<void> {
     const alert = await this.alertCtrl.create({
+        header: 'Update Password',
       inputs: [
-        { name: 'newPassword', placeholder: 'New password', type: 'password' },
         { name: 'oldPassword', placeholder: 'Old password', type: 'password' },
+        { name: 'newPassword', placeholder: 'New password', type: 'password' },
       ],
       buttons: [
         { text: 'Cancel' },
@@ -232,6 +234,7 @@ export class ProfilePage implements OnInit {
 
   async updateLocation(): Promise<void> {
     const alert = await this.alertCtrl.create({
+        header: 'Update Location (Zip Code)',
         inputs: [
             { type: 'text', name: 'newLocation', placeholder: 'Leave empty to remove'},
         ],
@@ -261,8 +264,9 @@ export class ProfilePage implements OnInit {
 
   async updateBio(): Promise<void> {
      const alert = await this.alertCtrl.create({
+         header: 'Update Bio',
          inputs: [
-             { type: 'text', name: 'newBio', placeholder: 'Your new bio' },
+             { type: 'text', name: 'newBio', placeholder: 'Nothing personal!' },
          ],
          buttons: [
              { text: 'Cancel' },
@@ -302,7 +306,7 @@ export class ProfilePage implements OnInit {
                       this.user.profilePic = doc.get('profilePic');
                       this.user.points = doc.get('points');
 
-                      const pointRef = firebase.firestore().collection('mobileSettings').doc('giftCardSettings').get();
+                      const pointRef = firebase.firestore().collection('settings').doc('giftCardSettings').get();
                       pointRef.then((res) => {
                           this.pointsForRedemption =  res.get('points');
                           this.gcTypes = res.get('types');
@@ -316,7 +320,7 @@ export class ProfilePage implements OnInit {
 
   // gets admin set point amount and uses that to
   displayPointInfo() {
-      const pointRef = firebase.firestore().collection('mobileSettings').doc('giftCardSettings').get();
+      const pointRef = firebase.firestore().collection('settings').doc('giftCardSettings').get();
       pointRef.then((res) => {
           const points = res.get('points');
           this.presentAlert('Earning Points',
@@ -335,7 +339,7 @@ export class ProfilePage implements OnInit {
         this.refreshPage();
 
         // send an email
-        firebase.firestore().collection('mobileSettings').doc('giftCardSettings').get().then((result) => {
+        firebase.firestore().collection('settings').doc('giftCardSettings').get().then((result) => {
             const adminEmail = result.get('email');
             this.profileService.addToRedeemTable(adminEmail, email, username, gcType);
         });

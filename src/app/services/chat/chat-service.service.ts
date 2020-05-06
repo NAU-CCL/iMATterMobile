@@ -106,7 +106,7 @@ export class ChatService {
   async iterateChats(cohortID, timeCalled) {
     console.log('iterateChats called');
     // get what the admin has set to determine user visibility of chats
-    firebase.firestore().collection('mobileSettings').doc('chatroomSettings').get().then((result) => {
+    firebase.firestore().collection('settings').doc('chatroomSettings').get().then((result) => {
       const lifeType = result.get('lifeType');
 
       // if chat visibility is based on number of hours the chat has existed

@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button class="text-button" defaultHref="/forum"></ion-back-button>
     </ion-buttons>
-    <ion-title>Create Post</ion-title>
+    <ion-title>Ask A Question</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -34,10 +34,10 @@
     <ion-footer *ngIf="!question.id">
       <ion-toolbar>
         <ion-button *ngIf="questionForm.valid" expand="full" class="fill-button" (click)="addQuestion(questionForm)" (click)="sendEmail(questionForm)">
-          Post
+          Post Question
         </ion-button>
         <ion-button *ngIf="!questionForm.valid" disabled="true" expand="full" class="fill-button" (click)="addQuestion(questionForm)" (click)="sendEmail(questionForm)">
-          Post
+          Post Question
         </ion-button>
       </ion-toolbar>
     </ion-footer>

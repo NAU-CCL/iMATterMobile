@@ -205,21 +205,21 @@ export class ResourcesPage implements OnInit, AfterViewInit {
        if (this.dicon === "hospital")
        {
          this.icon = {
-           url: 'https://firebasestorage.googleapis.com/v0/b/techdemofirebase.appspot.com/o/locationIcon%2FhospitalPin.png?alt=media&token=c37b5cb1-efd4-4472-ae79-7f1492930f49', // image url
+           url: 'https://firebasestorage.googleapis.com/v0/b/imatter-nau.appspot.com/o/locationIcon%2FhospitalPin.png?alt=media&token=f1c91506-8a91-4021-9e89-2549b257f373', // image url
            scaledSize: new google.maps.Size(80, 80), // scaled size
          };
 
        }else if (this.dicon === "clinic")
        {
          this.icon = {
-           url: 'https://firebasestorage.googleapis.com/v0/b/techdemofirebase.appspot.com/o/locationIcon%2Flocationpin.png?alt=media&token=a04dd171-e687-4504-a9ae-53eb1cb3986f', // image url
+           url: 'https://firebasestorage.googleapis.com/v0/b/imatter-nau.appspot.com/o/locationIcon%2Flocationpin.png?alt=media&token=d3777314-2607-4d4d-991f-638feed705d2', // image url
            scaledSize: new google.maps.Size(80, 80), // scaled size
          };
        }
        else if (this.dicon === "therapy")
        {
          this.icon = {
-           url: 'https://firebasestorage.googleapis.com/v0/b/techdemofirebase.appspot.com/o/locationIcon%2FtherapyPin.png?alt=media&token=96c62651-a76f-463d-a7cd-4f403eb75f68', // image url
+           url: 'https://firebasestorage.googleapis.com/v0/b/imatter-nau.appspot.com/o/locationIcon%2FtherapyPin.png?alt=media&token=ff228dbe-361d-4399-a5ae-475d058369d5', // image url
            scaledSize: new google.maps.Size(80, 80), // scaled size
          };
        }
