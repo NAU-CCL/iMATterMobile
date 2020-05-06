@@ -335,15 +335,68 @@ export class HomePage implements OnInit {
     this.fs.updateRecentNot(this.user.code, this.user.recentNotifications);
   }
 
+  // attempts to go to page and highlight the card with the corresponding id
   goToPage(notif){
+    
+    // notifID declared will contain the id of the LM or Survey
     var notifID;
+
+    // depending on the message received, the user will navigate to either Learning Center or Survey
     if(notif.split(",")[0] == "There is a new survey available"){
+      // grab the id and assign it to notifID
       notifID = notif.split(",")[1];
-      this.router.navigate(['/tabs/home/available/' + notifID])
+
+      // first the surveys collection with the id needed will be grabbed
+      const dbSurvey = this.afs.firestore.collection('surveys').doc(notifID);
+
+      console.log("SURVEY NOTIF ID: " + notifID);
+      console.log(dbSurvey);
+
+      // if the survey with the corresponding id exists then navigate to the survey page
+      // and highlight the correct card. if it doesn't, display a toast telling the user
+      // what went wrong
+      dbSurvey.get()
+      .then((docSnapshot) => {
+        if (docSnapshot.exists) {
+          dbSurvey.onSnapshot((doc) => {
+            console.log('exists');
+            this.router.navigate(['/tabs/home/available/' + notifID]);
+          });
+          }
+          else {
+            console.log("does not exist");
+            this.showToast("Sorry, this survey is no longer available.");
+           }
+          });
     }
-    else{
+    else
+    {
+      // grab the id and assign it to notifID
       notifID = notif.split(",")[1];
-      this.router.navigate(['/tabs/home/learning-center/' + notifID])
+
+      // first the LM collection with the id needed will be grabbed
+      const dbLearningModules = this.afs.firestore.collection('learningModules').doc(notifID);
+
+      console.log("LM NOTIF ID: " + notifID);
+
+      console.log(dbLearningModules);
+      
+      // if the LM with the corresponding id exists then navigate to the Learning Center
+      // and highlight the correct card. if it doesn't, display a toast telling the user
+      // what went wrong
+      dbLearningModules.get()
+      .then((docSnapshot) => {
+        if (docSnapshot.exists) {
+          dbLearningModules.onSnapshot((doc) => {
+            console.log('exists');
+            this.router.navigate(['/tabs/home/learning-center/' + notifID]);
+          });
+          }
+          else {
+            console.log("does not exist");
+             this.showToast("Sorry, this learning module is no longer available.");
+           }
+          });
     }
   }
 
@@ -355,5 +408,13 @@ export class HomePage implements OnInit {
         this.expandSize = (150 + 50 * this.user.recentNotifications.length) + "px"
       //});
     });
+  }
+
+  showToast(msg:string)
+  {
+    this.toastCtrl.create({
+      message: msg,
+      duration: 2000
+    }).then(toast => toast.present());
   }
 }
