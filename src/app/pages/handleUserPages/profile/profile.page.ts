@@ -306,7 +306,7 @@ export class ProfilePage implements OnInit {
                       this.user.profilePic = doc.get('profilePic');
                       this.user.points = doc.get('points');
 
-                      const pointRef = firebase.firestore().collection('mobileSettings').doc('giftCardSettings').get();
+                      const pointRef = firebase.firestore().collection('settings').doc('giftCardSettings').get();
                       pointRef.then((res) => {
                           this.pointsForRedemption =  res.get('points');
                           this.gcTypes = res.get('types');
@@ -320,7 +320,7 @@ export class ProfilePage implements OnInit {
 
   // gets admin set point amount and uses that to
   displayPointInfo() {
-      const pointRef = firebase.firestore().collection('mobileSettings').doc('giftCardSettings').get();
+      const pointRef = firebase.firestore().collection('settings').doc('giftCardSettings').get();
       pointRef.then((res) => {
           const points = res.get('points');
           this.presentAlert('Earning Points',
@@ -339,7 +339,7 @@ export class ProfilePage implements OnInit {
         this.refreshPage();
 
         // send an email
-        firebase.firestore().collection('mobileSettings').doc('giftCardSettings').get().then((result) => {
+        firebase.firestore().collection('settings').doc('giftCardSettings').get().then((result) => {
             const adminEmail = result.get('email');
             this.profileService.addToRedeemTable(adminEmail, email, username, gcType);
         });

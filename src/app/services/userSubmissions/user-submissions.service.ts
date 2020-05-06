@@ -3,8 +3,7 @@ import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument,
 import { map, take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
-
-export interface Submission {
+export interface Report {
   id?: string;
   title: string;
   description: string;
@@ -34,16 +33,16 @@ export interface LocationSuggestion {
 })
 
 export class UserSubmissionsService {
-  private submissions: Observable<Submission[]>;
-  private submissionCollection: AngularFirestoreCollection<Submission>;
+  private reports: Observable<Report[]>;
+  private reportCollection: AngularFirestoreCollection<Report>;
 
   private locationSuggestions: Observable<LocationSuggestion[]>;
   private locationSuggestionsCollection: AngularFirestoreCollection<LocationSuggestion>;
 
   constructor(private afs: AngularFirestore) {
-    this.submissionCollection = this.afs.collection<Submission>('submissions', ref => ref.orderBy('timestamp', 'desc'));
+    this.reportCollection = this.afs.collection<Report>('reports', ref => ref.orderBy('timestamp', 'desc'));
 
-    this.submissions = this.submissionCollection.snapshotChanges().pipe(
+    this.reports = this.reportCollection.snapshotChanges().pipe(
         map(actions => {
           return actions.map(a => {
             const data = a.payload.doc.data();
@@ -66,8 +65,8 @@ export class UserSubmissionsService {
     );
   }
 
-  addSubmission(submission: Submission): Promise<DocumentReference> {
-    return this.submissionCollection.add(submission);
+  addReport(report: Report): Promise<DocumentReference> {
+    return this.reportCollection.add(report);
   }
 
   addLocationSuggestion(locationSuggestion: LocationSuggestion): Promise<DocumentReference> {

@@ -303,19 +303,19 @@ export class SignupPage implements OnInit {
 
 
   getSecurityQs() {
-    firebase.firestore().collection('mobileSettings').doc('userSignUpSettings').get().then((result) => {
+    firebase.firestore().collection('settings').doc('userSignUpSettings').get().then((result) => {
       this.securityQs = result.get('securityQs');
     });
   }
 
   getAutoProfilePic() {
-    firebase.firestore().collection('mobileSettings').doc('userSignUpSettings').get().then((result) => {
+    firebase.firestore().collection('settings').doc('userSignUpSettings').get().then((result) => {
       this.picURL = result.get('autoProfilePic');
     });
   }
 
   getProfilePictureChoices() {
-    firebase.firestore().collection('mobileSettings').doc('userSignUpSettings').get().then((result) => {
+    firebase.firestore().collection('settings').doc('userSignUpSettings').get().then((result) => {
       this.allPicURLs = result.get('profilePictures');
     });
   }

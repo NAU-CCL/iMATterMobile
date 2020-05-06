@@ -15,13 +15,13 @@ export interface Question {
   profilePic: any;
   anon: boolean;
   type: any;
-  numOfComments: number;
+  numOfAnswers: number;
   commenters: any;
 }
 
-export interface Comment {
+export interface Answer {
   id?: string;
-  postID: string;
+  questionID: string;
   input: string;
   username: string;
   userID: string;
@@ -42,9 +42,9 @@ export class QuestionService {
   private thisUsersQuestions: Observable<Question[]>;
   private thisUsersQsCollection: AngularFirestoreCollection<Question>;
 
-  private commentCollection: AngularFirestoreCollection<Comment>;
-  private comments: Observable<Comment[]>;
-  private comment: Comment;
+  private answerCollection: AngularFirestoreCollection<Answer>;
+  private answers: Observable<Answer[]>;
+  private answer: Answer;
 
   private username: string;
 
@@ -95,15 +95,15 @@ export class QuestionService {
   }
 
 
-  getComments(postID) {
-    this.getCommentCollection(postID);
-    return this.comments;
+  getAnswers(questionID) {
+    this.getAnswerCollection(questionID);
+    return this.answers;
   }
 
-  getCommentCollection(postID) {
-    this.commentCollection = this.afs.collection('comments', ref => ref.where('postID', '==', postID).orderBy('timestamp'));
-    console.log(this.commentCollection);
-    this.comments = this.commentCollection.snapshotChanges().pipe(
+  getAnswerCollection(questionID) {
+    this.answerCollection = this.afs.collection('answers', ref => ref.where('questionID', '==', questionID).orderBy('timestamp'));
+    console.log(this.answerCollection);
+    this.answers = this.answerCollection.snapshotChanges().pipe(
         map(actions => {
           return actions.map(a => {
             const data = a.payload.doc.data();
@@ -138,19 +138,19 @@ export class QuestionService {
     return this.questionCollection.doc(id).delete();
   }
 
-  async addComment(comment: Comment) {
+  async addAnswer(answer: Answer) {
 
     this.afs.firestore.collection('questions')
-        .doc(comment.postID).update({numOfComments: firebase.firestore.FieldValue.increment(1)});
+        .doc(answer.questionID).update({numOfAnswers: firebase.firestore.FieldValue.increment(1)});
 
-    this.afs.collection('comments').add({
-      username: comment.username,
-      input: comment.input,
-      postID: comment.postID,
-      userID: comment.userID,
-      timestamp: comment.timestamp,
-      profilePic: comment.profilePic,
-      anon: comment.anon
+    this.afs.collection('answers').add({
+      username: answer.username,
+      input: answer.input,
+      questionID: answer.questionID,
+      userID: answer.userID,
+      timestamp: answer.timestamp,
+      profilePic: answer.profilePic,
+      anon: answer.anon
     });
   }
 

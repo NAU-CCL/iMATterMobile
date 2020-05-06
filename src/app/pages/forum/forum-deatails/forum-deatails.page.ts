@@ -27,7 +27,7 @@ export class ForumDeatailsPage implements OnInit {
     profilePic: '',
     anon: false,
     type: '',
-    numOfComments: 0,
+    numOfAnswers: 0,
     commenters: []
   };
 
@@ -94,7 +94,7 @@ export class ForumDeatailsPage implements OnInit {
                 this.showToast('Question posted');
                 this.questionForm.reset();
               }, err => {
-                this.showToast('There was a problem adding your post');
+                this.showToast('There was a problem adding your question');
               });
 
             });
@@ -137,7 +137,7 @@ export class ForumDeatailsPage implements OnInit {
 	}
 
   getAutoProfilePic() {
-    firebase.firestore().collection('mobileSettings').doc('userSignUpSettings').get().then((result) => {
+    firebase.firestore().collection('settings').doc('userSignUpSettings').get().then((result) => {
       this.anonPic = result.get('autoProfilePic');
     });
   }
