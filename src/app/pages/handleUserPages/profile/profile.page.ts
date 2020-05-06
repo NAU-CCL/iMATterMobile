@@ -162,6 +162,7 @@ export class ProfilePage implements OnInit {
   // allows user to update email if the put in their current password
   async updateEmail(): Promise<void> {
     const alert = await this.alertCtrl.create({
+        header: 'Update Email',
       inputs: [
         { type: 'text', name: 'newEmail', placeholder: 'Your new email' },
         { name: 'password', placeholder: 'Your password', type: 'password' },
@@ -194,9 +195,10 @@ export class ProfilePage implements OnInit {
 
   async updatePassword(): Promise<void> {
     const alert = await this.alertCtrl.create({
+        header: 'Update Password',
       inputs: [
-        { name: 'newPassword', placeholder: 'New password', type: 'password' },
         { name: 'oldPassword', placeholder: 'Old password', type: 'password' },
+        { name: 'newPassword', placeholder: 'New password', type: 'password' },
       ],
       buttons: [
         { text: 'Cancel' },
@@ -232,6 +234,7 @@ export class ProfilePage implements OnInit {
 
   async updateLocation(): Promise<void> {
     const alert = await this.alertCtrl.create({
+        header: 'Update Location (Zip Code)',
         inputs: [
             { type: 'text', name: 'newLocation', placeholder: 'Leave empty to remove'},
         ],
@@ -261,8 +264,9 @@ export class ProfilePage implements OnInit {
 
   async updateBio(): Promise<void> {
      const alert = await this.alertCtrl.create({
+         header: 'Update Bio',
          inputs: [
-             { type: 'text', name: 'newBio', placeholder: 'Your new bio' },
+             { type: 'text', name: 'newBio', placeholder: 'Nothing personal!' },
          ],
          buttons: [
              { text: 'Cancel' },
