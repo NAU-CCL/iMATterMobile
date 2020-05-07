@@ -105,90 +105,72 @@ exports.sendGCRequestEmail = functions.firestore.document('usersPointsRedeem/{do
  * Days a user, totalDaysPregnant, daysPregnant, daysSinceLogin, and weeksPregnant
  */
 exports.updateDays=functions.https.onRequest((req, res)=>{	
-	
-	console.log("got here");
 
 	const ref = admin.firestore().collection('users');
-			ref.get().then((result) => {			
-			  result.forEach(doc => {
+		ref.get().then((result) => {			
+			result.forEach(doc => {
 
 				docID = doc.get('code');
 
-				console.log('got here2');
 				var currentUser = admin.firestore().collection('users').doc(docID);
 
 				//user hasn't signed up yet, skip them
-				if (currentUser.get('joined') === null)
+				if (doc.get('codeEntered') === false)
 				{
-					console.log("not joined, skip");
 					return;
 				}
 
-				console.log("USER: ");
-				console.log(currentUser.get('username'));
+				var username = doc.get('username');
 
+				//Update daysAUser and daysSinceLogin
 				var new_days = doc.data().daysAUser + 1;
 				var sinceLogin = doc.data().daysSinceLogin + 1;
 
 				currentUser.update({
 					daysAUser: new_days
 				});
-				
-				var dueDate = doc.data().dueDate;
-				const currentDateString = new Date().toJSON().split('T')[0];
-				const currentDate = new Date(currentDateString);
-
-				console.log("CURRENT DATE");
-				console.log(currentDate);
-
-				const userDueDate = new Date(dueDate);
-
-				console.log("DUE DATE");
-				console.log(dueDate);
-
-				console.log("USER DUE DATE");
-				console.log(userDueDate);
-
-				const dateDiff = Math.abs(currentDate.getTime() - userDueDate.getTime());
-				const diffInDays = Math.ceil(dateDiff / (24 * 3600 * 1000));
-
-				console.log("DIFF IN DAYS");
-				console.log(diffInDays);
-
-				//if user is still within 280 days of pregnancy
-				if (dateDiff <= 280)
-				{
-					const totalDays = 280 - diffInDays - 1;
-
-					console.log(totalDays);		
-
-					currentUser.update({
-						totalDaysPregnant: totalDays
-					});
-
-					console.log(totalDays);
-
-					const weeksPregnant = Math.floor(totalDays / 7);
-
-					console.log(weeksPregnant);
-
-					const daysPregnant = totalDays % 7;
-
-					currentUser.update({
-						daysPregnant: daysPregnant
-					});
-
-					console.log(daysPregnant);
-
-					currentUser.update({
-						weeksPregnant: weeksPregnant
-					});
-				}
-				else if (dateDiff )
 
 				currentUser.update({
 					daysSinceLogin: sinceLogin
 				});
+				
+				//Calculate pregnancy days stuff
+				var dueDate = doc.data().dueDate;
+				const currentDateString = new Date().toJSON().split('T')[0];
+				const currentDate = new Date(currentDateString);
+				const userDueDate = new Date(dueDate);
+
+				const dateDiff = Math.abs(currentDate.getTime() - userDueDate.getTime());
+				const diffInDays = Math.ceil(dateDiff / (24 * 3600 * 1000));
+
+				var totalDays;
+
+				//if user is still within 280 days of pregnancy
+				if (userDueDate >= currentDate)
+				{
+					totalDays = 280 - diffInDays - 1;
+				}
+				else if (userDueDate < currentDate) //past due date
+				{
+					//start adding onto 280
+					totalDays = 280 + diffInDays;
+				}
+
+				const weeksPregnant = Math.floor(totalDays / 7);
+				const daysPregnant = totalDays % 7;
+
+				currentUser.update({
+					totalDaysPregnant: totalDays
+				});
+
+				currentUser.update({
+					daysPregnant: daysPregnant
+				});
+
+				currentUser.update({
+					weeksPregnant: weeksPregnant
+				});
+
 			});
 
 			//if the res.send is the same each time, for some reason it stops working? Added random number so its different each send.
