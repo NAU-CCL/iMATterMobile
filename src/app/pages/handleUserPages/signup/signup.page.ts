@@ -80,7 +80,9 @@ export class SignupPage implements OnInit {
   public showImages: boolean;
   private dueDate: string;
   public currentDate = new Date().toJSON().split('T')[0];
+  public currentYear = new Date().getFullYear();
   public maxYear = new Date().getFullYear() + 1;
+  public minYear = new Date().getFullYear() - 2;
   public securityQs: Array<string>;
   public autoProfilePic: any;
   private emailUsed: boolean;
@@ -118,31 +120,33 @@ export class SignupPage implements OnInit {
   static findCohort(month: string) {
     let cohort = '';
 
-    if (month === '01') {
-      cohort = 'January';
-    } else if (month === '02') {
-      cohort = 'February';
-    } else if (month === '03') {
-      cohort = 'March';
-    } else if (month === '04') {
-      cohort = 'April';
-    } else if (month === '05') {
-      cohort = 'May';
-    } else if (month === '06') {
-      cohort = 'June';
-    } else if (month === '07') {
-      cohort = 'July';
-    } else if (month === '08') {
-      cohort = 'August';
-    } else if (month === '09') {
-      cohort = 'September';
-    } else if (month === '10') {
-      cohort = 'October';
-    } else if (month === '11') {
-      cohort = 'November';
-    } else if (month === '12') {
-      cohort = 'December';
-    }
+    cohort = 'January';
+
+    // if (month === '01') {
+    //   cohort = 'January';
+    // } else if (month === '02') {
+    //   cohort = 'February';
+    // } else if (month === '03') {
+    //   cohort = 'March';
+    // } else if (month === '04') {
+    //   cohort = 'April';
+    // } else if (month === '05') {
+    //   cohort = 'May';
+    // } else if (month === '06') {
+    //   cohort = 'June';
+    // } else if (month === '07') {
+    //   cohort = 'July';
+    // } else if (month === '08') {
+    //   cohort = 'August';
+    // } else if (month === '09') {
+    //   cohort = 'September';
+    // } else if (month === '10') {
+    //   cohort = 'October';
+    // } else if (month === '11') {
+    //   cohort = 'November';
+    // } else if (month === '12') {
+    //   cohort = 'December';
+    // }
 
     return cohort;
   }
@@ -251,9 +255,9 @@ export class SignupPage implements OnInit {
         }
       });
 
-      //populate learning modules upon signup
+      // populate learning modules upon signup
       this.populateLearningModules();
-      //populate surveys upon signup
+      // populate surveys upon signup
       this.populateSurveys();
     }
   }
@@ -328,86 +332,75 @@ export class SignupPage implements OnInit {
   }
 
   /**
-   * Goes through learning modules and updates userVisibility so this user will have 
+   * Goes through learning modules and updates userVisibility so this user will have
    * relevant LMs displayed to them upon signup (without running timed cloud function)
    * Recycled code from index.js in cloud function code
    */
-  populateLearningModules()
-  {
+  populateLearningModules() {
     const learningModules = this.afs.firestore.collection('learningModules');
-    var userCode;
-  
+    let userCode;
+
     learningModules.get().then((value) => {
       value.forEach(learningModule => {
-  
-        var moduleActive = learningModule.get("moduleActive");
-        //Skip over this module if it's not active
-        if (moduleActive == false)
-        {
-          return; //return acts as "continue" in forEach loop
-        }
-        
-        var lmUserVisibility = learningModule.get("userVisibility");
-        var storedLMUserVisibility = learningModule.get("userVisibility");
-        //overdoing the splitting but does the job
-        var moduleVisibility = learningModule.get("moduleVisibilityTime").split(/(?:,| )+/);
-        var moduleExpiration = learningModule.get("moduleExpiration");
-  
-        var userDaysPregnant = this.user.totalDaysPregnant;
 
-        //Check to see this value exists/is valid
-        if (userDaysPregnant == null)
-        {
-          //return as as "continue" in forEach loop
+        let moduleActive = learningModule.get('moduleActive');
+        // Skip over this module if it's not active
+        if (moduleActive == false) {
+          return; // return acts as "continue" in forEach loop
+        }
+
+        let lmUserVisibility = learningModule.get('userVisibility');
+        let storedLMUserVisibility = learningModule.get('userVisibility');
+        // overdoing the splitting but does the job
+        let moduleVisibility = learningModule.get('moduleVisibilityTime').split(/(?:,| )+/);
+        let moduleExpiration = learningModule.get('moduleExpiration');
+
+        let userDaysPregnant = this.user.totalDaysPregnant;
+
+        // Check to see this value exists/is valid
+        if (userDaysPregnant == null) {
+          // return as as "continue" in forEach loop
           return;
         }
 
         userCode = this.user.code;
 
-        //for each week in the module visibility list
+        // for each week in the module visibility list
         moduleVisibility.forEach(week => {
 
-          //if module is to always be displayed
-          if (week == 0)
-          {
+          // if module is to always be displayed
+          if (week == 0) {
             lmUserVisibility.push(userCode);
 
-          }
-          else
-          {
-            var daysStart = 7 * week; //number of days pregnant this module would start at
-            var daysEnd;
+          } else {
+            let daysStart = 7 * week; // number of days pregnant this module would start at
+            let daysEnd;
 
-            //if the module is never supposed to expire
-            if (moduleExpiration == 0)
-            {
-              daysEnd = daysStart + 100000; //add a large number of days (274 years)
-            }
-            else
-            {
-              daysEnd = daysStart + moduleExpiration; //number of days pregnant this module would end
+            // if the module is never supposed to expire
+            if (moduleExpiration == 0) {
+              daysEnd = daysStart + 100000; // add a large number of days (274 years)
+            } else {
+              daysEnd = daysStart + moduleExpiration; // number of days pregnant this module would end
             }
 
-            //If user is within the days this LM should be visible to them
-            if (userDaysPregnant >= daysStart && userDaysPregnant <= daysEnd)
-            {
-              //to cover the case where intervals of visibility possibly overlap
-              //prevent user code from being pushed more than once
-              if (!lmUserVisibility.includes(userCode))
-              {
+            // If user is within the days this LM should be visible to them
+            if (userDaysPregnant >= daysStart && userDaysPregnant <= daysEnd) {
+              // to cover the case where intervals of visibility possibly overlap
+              // prevent user code from being pushed more than once
+              if (!lmUserVisibility.includes(userCode)) {
                 lmUserVisibility.push(userCode);
               }
             }
           }
         });
-          //IMPORTANT: update the userVisibility array
-          learningModules.doc(learningModule.id).update({previousUserVisibility: storedLMUserVisibility});
-          learningModules.doc(learningModule.id).update({userVisibility: lmUserVisibility});
+          // IMPORTANT: update the userVisibility array
+        learningModules.doc(learningModule.id).update({previousUserVisibility: storedLMUserVisibility});
+        learningModules.doc(learningModule.id).update({userVisibility: lmUserVisibility});
       });
     });
   }
 
-  populateSurveys(){
+  populateSurveys() {
     // grab the survey collection
     const surveys = this.afs.firestore.collection('surveys');
 
@@ -415,72 +408,73 @@ export class SignupPage implements OnInit {
     const today = new Date();
 
     // declare userCode variable for later use
-    var userCode;
-  
+    let userCode;
+
     // for each individual survey in the collection do the following
     surveys.get().then((value) => {
       value.forEach(survey => {
 
         // get the survey type
-        var surveyType = survey.get("type");
-        
+        let surveyType = survey.get('type');
+
         // get the user visibility array of the survey
-        var surveyUserVisibility = survey.get("userVisibility");
-  
+        let surveyUserVisibility = survey.get('userVisibility');
+
         // get the expiration days of the survey
-        var expireDays = survey.get("daysTillExpire")
-        
-        // assign the user code 
+        let expireDays = survey.get('daysTillExpire');
+
+        // assign the user code
         userCode = this.user.code;
 
         // if the survey type is After Joining
-        if(surveyType == 'After Joining'){
+        if (surveyType == 'After Joining') {
 
           // declare daysArray which will have all of the days that the survey will appear
-          var daysArray = survey.get("daysTillRelease").split(/(?:,| )+/);
+          let daysArray = survey.get('daysTillRelease').split(/(?:,| )+/);
 
           // for each day in the array check if the user has been a user for that many days, if so
           // add the user code to the userVisibility array to make sure the survey is visible to them
           daysArray.forEach(day => {
-            if(this.user.daysAUser >= parseInt(day) && this.user.daysAUser <= parseInt(day) + expireDays){
+            if (this.user.daysAUser >= parseInt(day) && this.user.daysAUser <= parseInt(day) + expireDays) {
               surveyUserVisibility.push(userCode);
             }
-          })
+          });
 
         }
 
         // if the survey type is Due Date
-        if(surveyType == 'Due Date'){
+        // tslint:disable-next-line:triple-equals
+        if (surveyType == 'Due Date') {
 
           // declare daysArray which will have all of the days that the survey will appear
-          var daysArray = survey.get("daysBeforeDueDate").split(/(?:,| )+/);
+          let daysArray = survey.get('daysBeforeDueDate').split(/(?:,| )+/);
 
           // grab the user's DueDate and make it into an array of [month, day, year]
-          var userDueDate = this.user.dueDate.split('-');
+          let userDueDate = this.user.dueDate.split('-');
 
           // make it into a date object
-          var dateDue = new Date(userDueDate[1] + "/" + userDueDate[2] + "/" + userDueDate[0]);
+          let dateDue = new Date(userDueDate[1] + '/' + userDueDate[2] + '/' + userDueDate[0]);
 
           // subtract the current day from the dueDate and get the time in ms
-          var timeBeforeDue =  dateDue.getTime() - today.getTime();
-          
+          let timeBeforeDue =  dateDue.getTime() - today.getTime();
+
           // convert the time into days
-          var daysBeforeDue = Math.trunc( timeBeforeDue / (1000 * 3600 * 24) );
+          let daysBeforeDue = Math.trunc( timeBeforeDue / (1000 * 3600 * 24) );
 
           // for each day in the array check if the user's due date is within the those days, if so
           // add the user code to the userVisibility array to make sure the survey is visible to them
           daysArray.forEach(day => {
-            if(daysBeforeDue <= parseInt(day) && daysBeforeDue >= parseInt(day) - expireDays){
+            if (daysBeforeDue <= parseInt(day) && daysBeforeDue >= parseInt(day) - expireDays) {
               surveyUserVisibility.push(userCode);
             }
-          })
+          });
         }
 
         // Survey Type Emotion doesn't check userVisibility, so there is no need to handle them here
         // Survey Type Inactive a user cannot be inactive if they just signed up, so there is no need to handle
 
-          //IMPORTANT: update the userVisibility array
-          surveys.doc(survey.id).update({userVisibility: surveyUserVisibility});
+          // IMPORTANT: update the userVisibility array
+        surveys.doc(survey.id).update({userVisibility: surveyUserVisibility});
       });
     });
   }

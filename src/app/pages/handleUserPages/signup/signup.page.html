@@ -94,9 +94,14 @@
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked">Due Date </ion-label>
-      <ion-datetime formControlName="dateDue"  min="{{currentDate}}" max="{{maxYear}}" placeholder="Your due date"> </ion-datetime>
+      <ion-label position="stacked">End Rehab Date </ion-label>
+      <ion-datetime formControlName="dateDue"  min="{{minYear}}" max="{{currentYear}}" placeholder="The day your finished rehab"> </ion-datetime>
     </ion-item>
+
+<!--    <ion-item>-->
+<!--      <ion-label position="stacked">Rehab Graduation Date </ion-label>-->
+<!--      <ion-datetime min="{{minYear}}" max="{{currentYear}}" placeholder="The day your finished rehab"> </ion-datetime>-->
+<!--    </ion-item>-->
 
     <ion-item>
       <ion-label position="stacked">Zip Code (Optional)</ion-label>
