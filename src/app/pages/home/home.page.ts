@@ -25,6 +25,11 @@ export class HomePage implements OnInit {
     description: ''
   };
 
+  quoteCard = {
+    description: '',
+    picture: ''
+  };
+
   cohort: Cohort = {
     name: ''
   };
@@ -47,6 +52,7 @@ export class HomePage implements OnInit {
     email:  '',
     password: '',
     dueDate: '',
+    endRehabDate: '',
     location: 0,
     cohort: '',
     weeksPregnant: '',
@@ -203,7 +209,6 @@ export class HomePage implements OnInit {
         });
       }
     });*/
-
   }
 
   ionViewWillEnter() {

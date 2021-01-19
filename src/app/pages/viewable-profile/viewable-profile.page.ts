@@ -18,6 +18,7 @@ export class ViewableProfilePage implements OnInit {
     email:  '',
     password: '',
     dueDate: '',
+    endRehabDate: '',
     location: 0,
     weeksPregnant: '',
     daysPregnant: '',

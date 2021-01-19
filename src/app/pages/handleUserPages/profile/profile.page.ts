@@ -22,6 +22,7 @@ export class ProfilePage implements OnInit {
       email:  '',
       password: '',
       dueDate: '',
+      endRehabDate: '',
       location: 0,
       cohort: '',
       weeksPregnant: '',

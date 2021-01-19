@@ -49,7 +49,11 @@ export class SignupPage implements OnInit {
         '',
         Validators.compose([Validators.required, Validators.maxLength(21)]),
       ],
-      dateDue: [
+      // dateDue: [
+      //   '',
+      //   Validators.compose([Validators.required]),
+      // ],
+      endRehabDate: [
         '',
         Validators.compose([Validators.required]),
       ],
@@ -78,7 +82,7 @@ export class SignupPage implements OnInit {
   public allPicURLs: any;
   public picURL: any;
   public showImages: boolean;
-  private dueDate: string;
+  private endRehabDate: string;
   public currentDate = new Date().toJSON().split('T')[0];
   public currentYear = new Date().getFullYear();
   public maxYear = new Date().getFullYear() + 1;
@@ -94,6 +98,7 @@ export class SignupPage implements OnInit {
     email:  '',
     password: '',
     dueDate: '',
+    endRehabDate: '',
     location: 0,
     cohort: '',
     weeksPregnant: '',
@@ -120,7 +125,7 @@ export class SignupPage implements OnInit {
   static findCohort(month: string) {
     let cohort = '';
 
-    cohort = 'January';
+    cohort = 'default';
 
     // if (month === '01') {
     //   cohort = 'January';
@@ -189,7 +194,9 @@ export class SignupPage implements OnInit {
       this.user.username = signupForm.value.username;
       this.user.email =  signupForm.value.email;
       this.user.password = signupForm.value.password;
-      this.user.dueDate = signupForm.value.dateDue.split('T')[0];
+      // this.user.dueDate = signupForm.value.dateDue.split('T')[0];
+      this.user.dueDate = '2021-12-31';
+      this.user.endRehabDate = signupForm.value.endRehabDate.split('T')[0];
       this.user.location = signupForm.value.location;
       this.user.bio = signupForm.value.bio;
       this.user.profilePic = this.picURL;
@@ -199,9 +206,12 @@ export class SignupPage implements OnInit {
 
 
       // find user current pregnancy status
-      this.user.totalDaysPregnant = SignupPage.findTotalDaysPregnant(this.user.dueDate);
-      this.user.weeksPregnant = SignupPage.findWeeksPregnant(this.user.totalDaysPregnant);
-      this.user.daysPregnant = SignupPage.findDaysPregnant(this.user.totalDaysPregnant);
+      // this.user.totalDaysPregnant = SignupPage.findTotalDaysPregnant(this.user.dueDate);
+      // this.user.weeksPregnant = SignupPage.findWeeksPregnant(this.user.totalDaysPregnant);
+      // this.user.daysPregnant = SignupPage.findDaysPregnant(this.user.totalDaysPregnant);
+      this.user.totalDaysPregnant = 0;
+      this.user.weeksPregnant = 0;
+      this.user.daysPregnant = 0;
 
       // find user cohort
         // get user due month
@@ -343,19 +353,19 @@ export class SignupPage implements OnInit {
     learningModules.get().then((value) => {
       value.forEach(learningModule => {
 
-        let moduleActive = learningModule.get('moduleActive');
+        const moduleActive = learningModule.get('moduleActive');
         // Skip over this module if it's not active
         if (moduleActive == false) {
           return; // return acts as "continue" in forEach loop
         }
 
-        let lmUserVisibility = learningModule.get('userVisibility');
-        let storedLMUserVisibility = learningModule.get('userVisibility');
+        const lmUserVisibility = learningModule.get('userVisibility');
+        const storedLMUserVisibility = learningModule.get('userVisibility');
         // overdoing the splitting but does the job
-        let moduleVisibility = learningModule.get('moduleVisibilityTime').split(/(?:,| )+/);
-        let moduleExpiration = learningModule.get('moduleExpiration');
+        const moduleVisibility = learningModule.get('moduleVisibilityTime').split(/(?:,| )+/);
+        const moduleExpiration = learningModule.get('moduleExpiration');
 
-        let userDaysPregnant = this.user.totalDaysPregnant;
+        const userDaysPregnant = this.user.totalDaysPregnant;
 
         // Check to see this value exists/is valid
         if (userDaysPregnant == null) {
@@ -373,7 +383,7 @@ export class SignupPage implements OnInit {
             lmUserVisibility.push(userCode);
 
           } else {
-            let daysStart = 7 * week; // number of days pregnant this module would start at
+            const daysStart = 7 * week; // number of days pregnant this module would start at
             let daysEnd;
 
             // if the module is never supposed to expire
@@ -415,13 +425,13 @@ export class SignupPage implements OnInit {
       value.forEach(survey => {
 
         // get the survey type
-        let surveyType = survey.get('type');
+        const surveyType = survey.get('type');
 
         // get the user visibility array of the survey
-        let surveyUserVisibility = survey.get('userVisibility');
+        const surveyUserVisibility = survey.get('userVisibility');
 
         // get the expiration days of the survey
-        let expireDays = survey.get('daysTillExpire');
+        const expireDays = survey.get('daysTillExpire');
 
         // assign the user code
         userCode = this.user.code;
@@ -430,7 +440,7 @@ export class SignupPage implements OnInit {
         if (surveyType == 'After Joining') {
 
           // declare daysArray which will have all of the days that the survey will appear
-          let daysArray = survey.get('daysTillRelease').split(/(?:,| )+/);
+          const daysArray = survey.get('daysTillRelease').split(/(?:,| )+/);
 
           // for each day in the array check if the user has been a user for that many days, if so
           // add the user code to the userVisibility array to make sure the survey is visible to them
@@ -447,19 +457,19 @@ export class SignupPage implements OnInit {
         if (surveyType == 'Due Date') {
 
           // declare daysArray which will have all of the days that the survey will appear
-          let daysArray = survey.get('daysBeforeDueDate').split(/(?:,| )+/);
+          const daysArray = survey.get('daysBeforeDueDate').split(/(?:,| )+/);
 
           // grab the user's DueDate and make it into an array of [month, day, year]
-          let userDueDate = this.user.dueDate.split('-');
+          const userDueDate = this.user.dueDate.split('-');
 
           // make it into a date object
-          let dateDue = new Date(userDueDate[1] + '/' + userDueDate[2] + '/' + userDueDate[0]);
+          const dateDue = new Date(userDueDate[1] + '/' + userDueDate[2] + '/' + userDueDate[0]);
 
           // subtract the current day from the dueDate and get the time in ms
-          let timeBeforeDue =  dateDue.getTime() - today.getTime();
+          const timeBeforeDue =  dateDue.getTime() - today.getTime();
 
           // convert the time into days
-          let daysBeforeDue = Math.trunc( timeBeforeDue / (1000 * 3600 * 24) );
+          const daysBeforeDue = Math.trunc( timeBeforeDue / (1000 * 3600 * 24) );
 
           // for each day in the array check if the user's due date is within the those days, if so
           // add the user code to the userVisibility array to make sure the survey is visible to them
