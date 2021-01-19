@@ -58,6 +58,9 @@ export class HomePage implements OnInit {
     weeksPregnant: '',
     daysPregnant: '',
     totalDaysPregnant: '',
+    weeksRecovery: '',
+    daysRecovery: '',
+    totalDaysRecovery: '',
     bio:  '',
     securityQ: '',
     securityA: '',
@@ -151,9 +154,12 @@ export class HomePage implements OnInit {
             this.user.profilePic = doc.get('profilePic');
             this.user.email = doc.get('email');
             this.user.dueDate = doc.get('dueDate');
-            this.user.weeksPregnant = doc.get('weeksPregnant');
-            this.user.daysPregnant = doc.get('daysPregnant');
-            this.user.totalDaysPregnant = doc.get('totalDaysPregnant');
+            // this.user.weeksPregnant = doc.get('weeksPregnant');
+            // this.user.daysPregnant = doc.get('daysPregnant');
+            // this.user.totalDaysPregnant = doc.get('totalDaysPregnant');
+            this.user.weeksRecovery = doc.get('weeksRecovery');
+            this.user.daysRecovery = doc.get('daysRecovery');
+            this.user.totalDaysRecovery = doc.get('totalDaysRecovery');
             // this.user.password = doc.get('password');
             this.user.bio = doc.get('bio');
             this.user.location = doc.get('location');

@@ -104,6 +104,9 @@ export class SignupPage implements OnInit {
     weeksPregnant: '',
     daysPregnant: '',
     totalDaysPregnant: '',
+    weeksRecovery: '',
+    daysRecovery: '',
+    totalDaysRecovery: '',
     bio:  '',
     securityQ: '',
     securityA: '',
@@ -175,6 +178,23 @@ export class SignupPage implements OnInit {
     return totalDays;
   }
 
+  static findDaysRecovery(totalDays) {
+    return totalDays % 7;
+  }
+
+  static findWeeksRecovery(totalDays) {
+    return Math.floor(totalDays / 7);
+  }
+
+  static findTotalDaysRecovery(endRehabDate) {
+    const currentDateString = new Date().toJSON().split('T')[0];
+    const currentDate = new Date(currentDateString);
+    const userDate = new Date(endRehabDate);
+    const dateDiff = Math.abs(currentDate.getTime() - userDate.getTime());
+    const diffInDays = Math.ceil(dateDiff / (24 * 3600 * 1000));
+    return diffInDays;
+  }
+
   ngOnInit() {}
 
   ionViewWillEnter() {
@@ -195,7 +215,7 @@ export class SignupPage implements OnInit {
       this.user.email =  signupForm.value.email;
       this.user.password = signupForm.value.password;
       // this.user.dueDate = signupForm.value.dateDue.split('T')[0];
-      this.user.dueDate = '2021-12-31';
+      this.user.dueDate = '';
       this.user.endRehabDate = signupForm.value.endRehabDate.split('T')[0];
       this.user.location = signupForm.value.location;
       this.user.bio = signupForm.value.bio;
@@ -212,6 +232,11 @@ export class SignupPage implements OnInit {
       this.user.totalDaysPregnant = 0;
       this.user.weeksPregnant = 0;
       this.user.daysPregnant = 0;
+
+      // find user recovery status
+      this.user.totalDaysRecovery = SignupPage.findTotalDaysRecovery(this.user.endRehabDate);
+      this.user.weeksRecovery = SignupPage.findWeeksRecovery(this.user.totalDaysRecovery);
+      this.user.daysRecovery = SignupPage.findDaysRecovery(this.user.totalDaysRecovery);
 
       // find user cohort
         // get user due month
