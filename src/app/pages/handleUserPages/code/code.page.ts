@@ -41,9 +41,8 @@ export class CodePage implements OnInit {
       if (docData.exists && docData.get('codeEntered') === false) {
         console.log('Exists');
         this.codeValidated = true;
-        this.afs.firestore.collection('users')
-            .doc(code).update({codeEntered: true});
-        this.router.navigate(['/signup/', code ]);
+        this.afs.firestore.collection('users').doc(code).update({codeEntered: true}).then(value => value);
+        this.router.navigate(['/signup/', code]).then(value => value);
       } else if (docData.get('codeEntered') === true) {
         this.showToast('Code already used');
         this.codeValidated = false;

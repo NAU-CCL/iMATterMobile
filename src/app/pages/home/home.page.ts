@@ -25,6 +25,11 @@ export class HomePage implements OnInit {
     description: ''
   };
 
+  quoteCard = {
+    description: '',
+    picture: ''
+  };
+
   cohort: Cohort = {
     name: ''
   };
@@ -47,11 +52,15 @@ export class HomePage implements OnInit {
     email:  '',
     password: '',
     dueDate: '',
+    endRehabDate: '',
     location: 0,
     cohort: '',
     weeksPregnant: '',
     daysPregnant: '',
     totalDaysPregnant: '',
+    weeksRecovery: '',
+    daysRecovery: '',
+    totalDaysRecovery: '',
     bio:  '',
     securityQ: '',
     securityA: '',
@@ -145,9 +154,12 @@ export class HomePage implements OnInit {
             this.user.profilePic = doc.get('profilePic');
             this.user.email = doc.get('email');
             this.user.dueDate = doc.get('dueDate');
-            this.user.weeksPregnant = doc.get('weeksPregnant');
-            this.user.daysPregnant = doc.get('daysPregnant');
-            this.user.totalDaysPregnant = doc.get('totalDaysPregnant');
+            // this.user.weeksPregnant = doc.get('weeksPregnant');
+            // this.user.daysPregnant = doc.get('daysPregnant');
+            // this.user.totalDaysPregnant = doc.get('totalDaysPregnant');
+            this.user.weeksRecovery = doc.get('weeksRecovery');
+            this.user.daysRecovery = doc.get('daysRecovery');
+            this.user.totalDaysRecovery = doc.get('totalDaysRecovery');
             // this.user.password = doc.get('password');
             this.user.bio = doc.get('bio');
             this.user.location = doc.get('location');
@@ -203,7 +215,6 @@ export class HomePage implements OnInit {
         });
       }
     });*/
-
   }
 
   ionViewWillEnter() {

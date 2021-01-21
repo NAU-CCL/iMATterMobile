@@ -14,10 +14,14 @@ export interface User {
   email: string;
   password: string;
   dueDate: string;
+  endRehabDate: string;
   location: number;
   weeksPregnant: any;
   daysPregnant: any;
   totalDaysPregnant: any;
+  weeksRecovery: any;
+  daysRecovery: any;
+  totalDaysRecovery: any;
   cohort: any;
   securityQ: string;
   securityA: string;
