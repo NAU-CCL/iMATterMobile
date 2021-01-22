@@ -305,7 +305,8 @@ export class ProfilePage implements OnInit {
                       this.user.password = doc.get('password');
                       this.user.bio = doc.get('bio');
                       this.user.location = doc.get('location');
-                      this.user.cohort = doc.get('cohort');
+                      // this.user.cohort = doc.get('cohort');
+                      this.user.endRehabDate = doc.get('endRehabDate');
                       this.user.currentEmotion = doc.get('mood');
                       this.user.profilePic = doc.get('profilePic');
                       this.user.points = doc.get('points');
