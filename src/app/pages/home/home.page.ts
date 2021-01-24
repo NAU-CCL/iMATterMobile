@@ -10,6 +10,7 @@ import * as firebase from 'firebase/app';
 import {Observable} from 'rxjs';
 import { FireService } from 'src/app/services/survey/fire.service';
 import { MoodProviderNotifService, EmotionNotif } from '../../services/mood-provider-notif.service';
+import {delay} from "rxjs/operators";
 
 
 @Component({
@@ -26,7 +27,6 @@ export class HomePage implements OnInit {
   };
 
   quoteCard = {
-    description: '',
     picture: ''
   };
 
@@ -58,9 +58,6 @@ export class HomePage implements OnInit {
     weeksPregnant: '',
     daysPregnant: '',
     totalDaysPregnant: '',
-    weeksRecovery: '',
-    daysRecovery: '',
-    totalDaysRecovery: '',
     bio:  '',
     securityQ: '',
     securityA: '',
@@ -114,6 +111,7 @@ export class HomePage implements OnInit {
 
   public dropDown: any = [];
   public expandSize;
+  public daysInRecovery;
   private userProfileID: any;
   private id: any;
   private weeksPregnant: any;
@@ -143,10 +141,13 @@ export class HomePage implements OnInit {
       }
     });
 
+    this.getRandomQuote();
+
     this.userProfileID = this.storage.get('userCode');
     this.storage.get('userCode').then((val) => {
       if (val) {
         this.userProfileID = val;
+
         const ref = this.afs.firestore.collection('users').where('code', '==', val);
         ref.get().then((result) => {
           result.forEach(doc => {
@@ -157,15 +158,16 @@ export class HomePage implements OnInit {
             // this.user.weeksPregnant = doc.get('weeksPregnant');
             // this.user.daysPregnant = doc.get('daysPregnant');
             // this.user.totalDaysPregnant = doc.get('totalDaysPregnant');
-            this.user.weeksRecovery = doc.get('weeksRecovery');
-            this.user.daysRecovery = doc.get('daysRecovery');
-            this.user.totalDaysRecovery = doc.get('totalDaysRecovery');
+            this.user.endRehabDate = doc.get('endRehabDate');
             // this.user.password = doc.get('password');
             this.user.bio = doc.get('bio');
             this.user.location = doc.get('location');
             this.user.cohort = doc.get('cohort');
             this.user.currentEmotion = doc.get('mood');
             this.user.code = doc.get('code');
+            this.daysInRecovery = this.getDaysInRecovery(this.user.endRehabDate);
+
+
             const pregUpdateRef = this.afs.firestore.collection('pregnancyUpdates')
                 .where('day', '==', this.user.totalDaysPregnant);
             pregUpdateRef.get().then((res) => {
@@ -232,6 +234,29 @@ export class HomePage implements OnInit {
         });
       }
     });
+  }
+
+  async getRandomQuote() {
+    const quotes: string[] = [];
+    const imgs = this.afs.firestore.collection('quotes');
+    imgs.get().then((result) => {
+      result.forEach(doc => {
+        quotes.push(doc.get('picture'));
+      });
+      console.log(quotes);
+      console.log(quotes.length);
+      const randIndex = Math.floor(Math.random() * Math.floor(quotes.length));
+      console.log(randIndex);
+      this.quoteCard.picture = quotes[randIndex];
+    });
+  }
+
+  getDaysInRecovery(dateString) {
+    const currentDateString = new Date().toJSON().split('T')[0];
+    const currentDate = new Date(currentDateString);
+    const userDate = new Date(dateString);
+    const dateDiff = Math.abs(currentDate.getTime() - userDate.getTime());
+    return Math.ceil(dateDiff / (24 * 3600 * 1000));
   }
 
   updateProfileClicks() {

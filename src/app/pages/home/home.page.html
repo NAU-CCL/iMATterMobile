@@ -57,7 +57,7 @@
 <ion-content>  
     <ion-card>
       <ion-card-header>
-        <ion-card-title> Congratulations! You have been in recovery for: {{user.totalDaysRecovery}} Days</ion-card-title>
+        <ion-card-title> Congratulations! You have been in recovery for: {{daysInRecovery}} Days</ion-card-title>
       </ion-card-header>
       <ion-card-content>
         <p> {{pregnancyCard.description}} </p>
@@ -67,7 +67,7 @@
     <ion-card-title class="ion-padding-horizontal">
     </ion-card-title>
     <ion-card-content>
-      <img src="assets/1_7.jpg" alt="couldn't load">
+      <img src="{{quoteCard.picture}}" alt="couldn't load">
     </ion-card-content>
   </ion-card>
 

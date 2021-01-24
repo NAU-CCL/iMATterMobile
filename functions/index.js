@@ -126,7 +126,7 @@ exports.updateDays=functions.https.onRequest((req, res)=>{
 				var new_days = doc.data().daysAUser + 1;
 				var sinceLogin = doc.data().daysSinceLogin + 1;
 
-				var recoveryDays = doc.data().totalDaysRecovery + 1;
+				// var recoveryDays = doc.data().totalDaysRecovery + 1;
 
 				currentUser.update({
 					daysAUser: new_days
@@ -136,17 +136,17 @@ exports.updateDays=functions.https.onRequest((req, res)=>{
 					daysSinceLogin: sinceLogin
 				});
 
-				currentUser.update({
-					totalDaysRecovery: recoveryDays
-				});
-
-				currentUser.update({
-					daysRecovery: recoveryDays % 7
-				});
-
-				currentUser.update({
-					totalDaysRecovery: Math.floor(recoveryDays / 7)
-				});
+				// currentUser.update({
+				// 	totalDaysRecovery: recoveryDays
+				// });
+				//
+				// currentUser.update({
+				// 	daysRecovery: recoveryDays % 7
+				// });
+				//
+				// currentUser.update({
+				// 	totalDaysRecovery: Math.floor(recoveryDays / 7)
+				// });
 				// Calculate pregnancy days stuff
 				// var dueDate = doc.data().dueDate;
 				// const currentDateString = new Date().toJSON().split('T')[0];

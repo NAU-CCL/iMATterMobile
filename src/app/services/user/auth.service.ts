@@ -19,9 +19,6 @@ export interface User {
   weeksPregnant: any;
   daysPregnant: any;
   totalDaysPregnant: any;
-  weeksRecovery: any;
-  daysRecovery: any;
-  totalDaysRecovery: any;
   cohort: any;
   securityQ: string;
   securityA: string;

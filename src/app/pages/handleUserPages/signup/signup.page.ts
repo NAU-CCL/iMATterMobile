@@ -109,9 +109,6 @@ export class SignupPage implements OnInit {
     weeksPregnant: '',
     daysPregnant: '',
     totalDaysPregnant: '',
-    weeksRecovery: '',
-    daysRecovery: '',
-    totalDaysRecovery: '',
     bio:  '',
     securityQ: '',
     securityA: '',
@@ -243,11 +240,6 @@ export class SignupPage implements OnInit {
       this.user.totalDaysPregnant = 0;
       this.user.weeksPregnant = 0;
       this.user.daysPregnant = 0;
-
-      // find user recovery status
-      this.user.totalDaysRecovery = SignupPage.findTotalDaysRecovery(this.user.endRehabDate);
-      this.user.weeksRecovery = SignupPage.findWeeksRecovery(this.user.totalDaysRecovery);
-      this.user.daysRecovery = SignupPage.findDaysRecovery(this.user.totalDaysRecovery);
 
       // find user cohort
         // get user due month
