@@ -58,7 +58,7 @@ export class ProfilePage implements OnInit {
     sessionID: ''
   };
 
-  session : Sessions =
+  session: Sessions =
       {
           userID: '',
           LogOutTime: '',
@@ -75,7 +75,7 @@ export class ProfilePage implements OnInit {
 
   private userProfileID: any;
     public pointsForRedemption: any;
-  private analyticss: string;
+  private analytics: string;
   private sessions: Observable<any>;
     public canRedeemPoints: boolean;
     public displayRedeemOptions: boolean;
@@ -122,21 +122,21 @@ export class ProfilePage implements OnInit {
   }
 
   addView() {
-  //this.analytic.sessionID = this.session.id;
-  this.storage.get('userCode').then((val) =>{
+  // this.analytic.sessionID = this.session.id;
+  this.storage.get('userCode').then((val) => {
     if (val) {
       const ref = this.afs.firestore.collection('users').where('code', '==', val);
-      ref.get().then((result) =>{
-        result.forEach(doc =>{
+      ref.get().then((result) => {
+        result.forEach(doc => {
           this.analytic.page = 'profile';
           this.analytic.userID = val;
           this.analytic.timestamp = firebase.firestore.FieldValue.serverTimestamp();
-          //this.analytic.sessionID = this.idReference;
-          this.analyticsService.addView(this.analytic).then (() =>{
+          // this.analytic.sessionID = this.idReference;
+          this.analyticsService.addView(this.analytic).then (() => {
             console.log('successful added view: profile');
 
           }, err => {
-            console.log('unsucessful added view: profile');
+            console.log('unsuccessful added view: profile');
 
           });
         });
@@ -156,11 +156,7 @@ export class ProfilePage implements OnInit {
   }
 
     validateEmail(email) {
-        if ( /(.+)@(.+){2,}\.(.+){2,}/.test(email)) {
-            return true;
-        } else {
-            return false;
-        }
+        return /(.+)@(.+){2,}\.(.+){2,}/.test(email);
     }
 
   // allows user to update email if the put in their current password
@@ -229,11 +225,7 @@ export class ProfilePage implements OnInit {
   }
 
   validateLocation(zip) {
-    if (/^[0-9]{5}(?:-[0-9]{4})?$/.test(zip) || zip === '') {
-        return true;
-    } else {
-        return false;
-    }
+    return /^[0-9]{5}(?:-[0-9]{4})?$/.test(zip) || zip === '';
   }
 
   async updateLocation(): Promise<void> {

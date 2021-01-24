@@ -78,10 +78,19 @@
       </ion-input>
     </ion-item>
     <ion-item class="error-message"
-            *ngIf="!signupForm.controls['password'].valid  && signupForm.controls['password'].touched">
-      <ion-label>Your password needs more than 6 characters.</ion-label>
+              *ngIf="!signupForm.controls['password'].valid  && signupForm.controls['password'].touched">
+      <ion-label>Your password needs more than 8 characters.</ion-label>
     </ion-item>
-
+    <ion-item>
+      <ion-label position="stacked">Confirm Password</ion-label>
+      <ion-input formControlName="confirmPassword" type="password" placeholder="Retype your password"
+                 [class.invalid]="!signupForm.controls['confirmPassword'].valid && signupForm.controls['confirmPassword'].touched">
+      </ion-input>
+    </ion-item>
+    <ion-item class="error-message"
+              *ngIf="signupForm.hasError('notSame')">
+      <ion-label>Password fields do not match/</ion-label>
+    </ion-item>
     <ion-item>
       <ion-label position="stacked">iMATter Screen Name</ion-label>
       <ion-input formControlName="username" placeholder="An Anonymous Name"

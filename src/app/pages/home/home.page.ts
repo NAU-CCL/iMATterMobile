@@ -97,7 +97,7 @@ export class HomePage implements OnInit {
 
 
 
-  session : Sessions =
+  session: Sessions =
       {
           userID: '',
           LogOutTime: '',
@@ -110,7 +110,7 @@ export class HomePage implements OnInit {
           numOfClickProfile: 0,
           numOfClickMore: 0,
           numOfClickHome: 0
-      }
+      };
 
   public dropDown: any = [];
   public expandSize;
@@ -119,8 +119,8 @@ export class HomePage implements OnInit {
   private weeksPregnant: any;
   private daysPregnant: any;
   private totalDaysPregnant: any;
-  private analyticss : string;
-  private sessions : Observable<any>;
+  private analyticss: string;
+  private sessions: Observable<any>;
 
 
   constructor(private activatedRoute: ActivatedRoute, public afs: AngularFirestore,
@@ -220,14 +220,14 @@ export class HomePage implements OnInit {
   ionViewWillEnter() {
   this.addView();
 
-    this.storage.get('userCode').then((val) => {
+  this.storage.get('userCode').then((val) => {
       if (val) {
         this.userProfileID = val;
         const ref = this.afs.firestore.collection('users').where('code', '==', val);
         ref.get().then((result) => {
           result.forEach(doc => {
             this.user.recentNotifications = doc.get('recentNotifications');
-            this.expandSize = (150 + 50 * this.user.recentNotifications.length) + "px"
+            this.expandSize = (150 + 50 * this.user.recentNotifications.length) + 'px';
           });
         });
       }
@@ -236,44 +236,41 @@ export class HomePage implements OnInit {
 
   updateProfileClicks() {
     this.analyticsService.updateProfileClicks(this.session);
-    console.log("added profile click");
+    console.log('added profile click');
 
   }
 
 
-  updateLModuleClicks()
-  {
+  updateLModuleClicks() {
     this.analyticsService.updateLModuleClicks(this.session);
-    console.log("added learning module click");
+    console.log('added learning module click');
 
   }
 
 
 
-  updateSurveyClicks()
-  {
+  updateSurveyClicks() {
     this.analyticsService.updateSurveyClicks(this.session);
-    console.log("added survery click");
+    console.log('added survery click');
 
   }
 
+  addView() {
 
-  addView(){
-
-  //this.analytic.sessionID = this.session.id;
-  this.storage.get('userCode').then((val) =>{
+  // this.analytic.sessionID = this.session.id;
+  this.storage.get('userCode').then((val) => {
     if (val) {
       const ref = this.afs.firestore.collection('users').where('code', '==', val);
-      ref.get().then((result) =>{
-        result.forEach(doc =>{
+      ref.get().then((result) => {
+        result.forEach(doc => {
           this.analytic.page = 'home';
           this.analytic.userID = val;
           this.analytic.timestamp = firebase.firestore.FieldValue.serverTimestamp();
-          //this.analytic.sessionID = this.idReference;
-          this.analyticsService.addView(this.analytic).then (() =>{
+          // this.analytic.sessionID = this.idReference;
+          this.analyticsService.addView(this.analytic).then (() => {
             console.log('successful added view: home');
 
-          }, err =>{
+          }, err => {
             console.log('unsucessful added view: home');
 
           });
@@ -341,26 +338,26 @@ export class HomePage implements OnInit {
     }
   }
 
-  clearArray(){
+  clearArray() {
     this.user.recentNotifications = [];
     this.fs.updateRecentNot(this.user.code, this.user.recentNotifications);
   }
 
   // attempts to go to page and highlight the card with the corresponding id
-  goToPage(notif){
-    
+  goToPage(notif) {
+
     // notifID declared will contain the id of the LM or Survey
-    var notifID;
+    let notifID;
 
     // depending on the message received, the user will navigate to either Learning Center or Survey
-    if(notif.split(",")[0] == "There is a new survey available"){
+    if (notif.split(',')[0] == 'There is a new survey available') {
       // grab the id and assign it to notifID
-      notifID = notif.split(",")[1];
+      notifID = notif.split(',')[1];
 
       // first the surveys collection with the id needed will be grabbed
       const dbSurvey = this.afs.firestore.collection('surveys').doc(notifID);
 
-      console.log("SURVEY NOTIF ID: " + notifID);
+      console.log('SURVEY NOTIF ID: ' + notifID);
       console.log(dbSurvey);
 
       // if the survey with the corresponding id exists then navigate to the survey page
@@ -373,25 +370,22 @@ export class HomePage implements OnInit {
             console.log('exists');
             this.router.navigate(['/tabs/home/available/' + notifID]);
           });
-          }
-          else {
-            console.log("does not exist");
-            this.showToast("Sorry, this survey is no longer available.");
+          } else {
+            console.log('does not exist');
+            this.showToast('Sorry, this survey is no longer available.');
            }
           });
-    }
-    else
-    {
+    } else {
       // grab the id and assign it to notifID
-      notifID = notif.split(",")[1];
+      notifID = notif.split(',')[1];
 
       // first the LM collection with the id needed will be grabbed
       const dbLearningModules = this.afs.firestore.collection('learningModules').doc(notifID);
 
-      console.log("LM NOTIF ID: " + notifID);
+      console.log('LM NOTIF ID: ' + notifID);
 
       console.log(dbLearningModules);
-      
+
       // if the LM with the corresponding id exists then navigate to the Learning Center
       // and highlight the correct card. if it doesn't, display a toast telling the user
       // what went wrong
@@ -402,10 +396,9 @@ export class HomePage implements OnInit {
             console.log('exists');
             this.router.navigate(['/tabs/home/learning-center/' + notifID]);
           });
-          }
-          else {
-            console.log("does not exist");
-             this.showToast("Sorry, this learning module is no longer available.");
+          } else {
+            console.log('does not exist');
+            this.showToast('Sorry, this learning module is no longer available.');
            }
           });
     }
@@ -416,13 +409,12 @@ export class HomePage implements OnInit {
     ref.get().then((result) => {
       // result.forEach(doc => {
         this.user.recentNotifications = result.get('recentNotifications');
-        this.expandSize = (150 + 50 * this.user.recentNotifications.length) + "px"
-      //});
+        this.expandSize = (150 + 50 * this.user.recentNotifications.length) + 'px';
+      // });
     });
   }
 
-  showToast(msg:string)
-  {
+  showToast(msg: string) {
     this.toastCtrl.create({
       message: msg,
       duration: 2000

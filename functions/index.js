@@ -126,6 +126,8 @@ exports.updateDays=functions.https.onRequest((req, res)=>{
 				var new_days = doc.data().daysAUser + 1;
 				var sinceLogin = doc.data().daysSinceLogin + 1;
 
+				var recoveryDays = doc.data().totalDaysRecovery + 1;
+
 				currentUser.update({
 					daysAUser: new_days
 				});
@@ -133,44 +135,54 @@ exports.updateDays=functions.https.onRequest((req, res)=>{
 				currentUser.update({
 					daysSinceLogin: sinceLogin
 				});
-				
-				//Calculate pregnancy days stuff
-				var dueDate = doc.data().dueDate;
-				const currentDateString = new Date().toJSON().split('T')[0];
-				const currentDate = new Date(currentDateString);
-				const userDueDate = new Date(dueDate);
-
-				const dateDiff = Math.abs(currentDate.getTime() - userDueDate.getTime());
-				const diffInDays = Math.ceil(dateDiff / (24 * 3600 * 1000));
-
-				var totalDays;
-
-				//if user is still within 280 days of pregnancy
-				if (userDueDate >= currentDate)
-				{
-					totalDays = 280 - diffInDays - 1;
-				}
-				else if (userDueDate < currentDate) //past due date
-				{
-					//start adding onto 280
-					totalDays = 280 + diffInDays;
-				}
-
-				const weeksPregnant = Math.floor(totalDays / 7);
-				const daysPregnant = totalDays % 7;
 
 				currentUser.update({
-					totalDaysPregnant: totalDays
+					totalDaysRecovery: recoveryDays
 				});
 
 				currentUser.update({
-					daysPregnant: daysPregnant
+					daysRecovery: recoveryDays % 7
 				});
 
 				currentUser.update({
-					weeksPregnant: weeksPregnant
+					totalDaysRecovery: Math.floor(recoveryDays / 7)
 				});
-
+				// Calculate pregnancy days stuff
+				// var dueDate = doc.data().dueDate;
+				// const currentDateString = new Date().toJSON().split('T')[0];
+				// const currentDate = new Date(currentDateString);
+				// const userDueDate = new Date(dueDate);
+				//
+				// const dateDiff = Math.abs(currentDate.getTime() - userDueDate.getTime());
+				// const diffInDays = Math.ceil(dateDiff / (24 * 3600 * 1000));
+				//
+				// var totalDays;
+				//
+				// //if user is still within 280 days of pregnancy
+				// if (userDueDate >= currentDate)
+				// {
+				// 	totalDays = 280 - diffInDays - 1;
+				// }
+				// else if (userDueDate < currentDate) //past due date
+				// {
+				// 	//start adding onto 280
+				// 	totalDays = 280 + diffInDays;
+				// }
+				//
+				// const weeksPregnant = Math.floor(totalDays / 7);
+				// const daysPregnant = totalDays % 7;
+				//
+				// currentUser.update({
+				// 	totalDaysPregnant: totalDays
+				// });
+				//
+				// currentUser.update({
+				// 	daysPregnant: daysPregnant
+				// });
+				//
+				// currentUser.update({
+				// 	weeksPregnant: weeksPregnant
+				// });
 			});
 
 			//if the res.send is the same each time, for some reason it stops working? Added random number so its different each send.

@@ -74,7 +74,7 @@ export class LoginPage implements OnInit {
         private analyticsService: AnalyticsService,
         private platform: Platform,
         private bnIdle: BnNgIdleService
-        //private device: Device
+        // private device: Device
     ) {
         this.loginForm = this.formBuilder.group({
             email: ['',
@@ -141,7 +141,7 @@ export class LoginPage implements OnInit {
           this.session.userID = val;
           this.session.LoginTime = firebase.firestore.FieldValue.serverTimestamp();
 
-          this.analyticsService.addSession(this.session).then(()=> {
+          this.analyticsService.addSession(this.session).then(() => {
             console.log('successful session creation');
 
           }, err => {
@@ -187,16 +187,20 @@ export class LoginPage implements OnInit {
                                 this.storage.set('platform', 'ios');
                             }
 
-                            //this.storage.set('version', this.device.version);
+                            // this.storage.set('version', this.device.version);
                             this.storage.set('userCode', this.userID);
                             this.addSession();
                             this.storage.set('authenticated', 'true');
                             this.storage.set('username', doc.get('username'));
-                            this.storage.set('dueDate', doc.get('dueDate'));
+                            // this.storage.set('dueDate', doc.get('dueDate'));
+                            this.storage.set('endRehabDate', doc.get('endRehabDate'));
                             this.storage.set('cohort', doc.get('cohort'));
-                            this.storage.set('totalDaysPregnant', doc.get('totalDays'));
-                            this.storage.set('weeksPregnant', doc.get('weeksPregnant'));
-                            this.storage.set('daysPregnant', doc.get('daysPregnant'));
+                            // this.storage.set('totalDaysPregnant', doc.get('totalDays'));
+                            // this.storage.set('weeksPregnant', doc.get('weeksPregnant'));
+                            // this.storage.set('daysPregnant', doc.get('daysPregnant'));
+                            this.storage.set('totalDaysRecovery', doc.get('totalDays'));
+                            this.storage.set('weeksRecovery', doc.get('weeksPregnant'));
+                            this.storage.set('daysRecovery', doc.get('daysPregnant'));
                             this.storage.set('daysSinceLogin', doc.get('daysSinceLogin'));
 
                             // update users days since last login to 0
@@ -226,9 +230,12 @@ export class LoginPage implements OnInit {
     logOut(): void {
       this.storage.set('authenticated', 'false');
       this.storage.remove('userCode');
-      this.storage.remove('totalDaysPregnant');
-      this.storage.remove('weeksPregnant');
-      this.storage.remove('daysPregnant');
+      // this.storage.remove('totalDaysPregnant');
+      // this.storage.remove('weeksPregnant');
+      // this.storage.remove('daysPregnant');
+      this.storage.remove('totalDaysRecovery');
+      this.storage.remove('weeksRecovery');
+      this.storage.remove('daysRecovery');
       this.router.navigateByUrl('login');
     }
 

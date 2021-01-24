@@ -45,6 +45,10 @@ export class SignupPage implements OnInit {
         '',
         Validators.compose([Validators.minLength(8), Validators.required]),
       ],
+      confirmPassword: [
+        '',
+        Validators.compose([Validators.minLength(8), Validators.required]),
+      ],
       username: [
         '',
         Validators.compose([Validators.required, Validators.maxLength(21)]),
@@ -73,8 +77,9 @@ export class SignupPage implements OnInit {
         '',
         Validators.compose([Validators.required, Validators.maxLength(300)]),
       ],
-    });
+    }, {validators: this.checkPasswords});
   }
+
   public signupForm: FormGroup;
   public loading: any;
   private id: any;
@@ -195,6 +200,12 @@ export class SignupPage implements OnInit {
     return diffInDays;
   }
 
+  checkPasswords(group: FormGroup) {
+    const pass = group.controls.password.value;
+    const confirmPass = group.controls.confirmPassword.value;
+    return pass === confirmPass ? null : { notSame: true };
+  }
+
   ngOnInit() {}
 
   ionViewWillEnter() {
@@ -208,7 +219,7 @@ export class SignupPage implements OnInit {
       );
 
       this.showToast('Please enter: ' +  signupForm.value.toString());
-    } else {
+    }  else {
 
       this.user.code = this.id;
       this.user.username = signupForm.value.username;
