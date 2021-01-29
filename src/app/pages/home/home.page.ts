@@ -445,4 +445,16 @@ export class HomePage implements OnInit {
       duration: 2000
     }).then(toast => toast.present());
   }
+
+  toggleDarkTheme() {
+    const icon = document.getElementById('darkMode');
+    console.log(icon.name);
+    if (icon.name === 'moon') {
+      icon.name = 'sunny';
+    } else {
+      icon.name = 'moon';
+    }
+
+    document.body.classList.toggle('dark');
+  }
 }

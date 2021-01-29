@@ -4,10 +4,10 @@
  :host ::ng-deep .monthview-current { 
  background-color: #d2b2e5 !important; 
  color: white !important; 
- border-top: 3px solid blue !important; 
- border-left: 3px solid blue !important;
-  border-right: 3px solid blue !important;
-  border-bottom: 3px solid blue !important
+ border-top: 3px solid var(--ion-color-success) !important;
+ border-left: 3px solid var(--ion-color-success) !important;
+  border-right: 3px solid var(--ion-color-success) !important;
+  border-bottom: 3px solid var(--ion-color-success) !important
   }
   
   
@@ -17,9 +17,9 @@
   }
   
   
-  :host ::ng-deep .monthview-primary-with-event { background-color: #cec1e7 !important; color: white !important; }
+  :host ::ng-deep .monthview-primary-with-event { background-color: var(--main-tint) !important; color: white !important; }
   
-  :host ::ng-deep .monthview-selected { background-color: #9370DB !important;}
+  :host ::ng-deep .monthview-selected { background-color: var(--tertiary-color) !important;}
   
 :host ::ng-deep .weekview-normal-event-container {
 position: relative;
@@ -62,10 +62,7 @@ position: relative;
 
 
 ion-card {
-  border-top: 3px solid #9370DB;
-  border-left: 3px solid #9370DB;
-  border-right: 3px solid #9370DB;
-  border-bottom: 3px solid #9370DB;
+  border: 3px solid var(--tertiary-color);
 }
 
 div.test {
@@ -105,7 +102,7 @@ div.monthview-container {
 
 
 p{
-	color: #9370DB;
+	color: var(--main-color);
 	text-align: center;
 }
 
