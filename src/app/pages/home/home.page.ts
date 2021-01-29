@@ -447,14 +447,12 @@ export class HomePage implements OnInit {
   }
 
   toggleDarkTheme() {
-    const icon = document.getElementById('darkMode');
-    console.log(icon.name);
+    const icon = ( document.getElementById('darkMode') as HTMLInputElement);
     if (icon.name === 'moon') {
       icon.name = 'sunny';
     } else {
       icon.name = 'moon';
     }
-
     document.body.classList.toggle('dark');
   }
 }
