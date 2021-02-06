@@ -9,6 +9,7 @@ import {Observable} from 'rxjs';
 import * as firebase from 'firebase/app';
 import {AnalyticsService, Analytics, Sessions} from 'src/app/services/analyticsService.service';
 import {HttpClient} from '@angular/common/http';
+import {DatePipe} from '@angular/common';
 
 @Component({
     selector: 'app-profile',
@@ -95,6 +96,7 @@ export class ProfilePage implements OnInit {
         private alertController: AlertController,
         private toastCtrl: ToastController,
         private http: HttpClient,
+        private datePipe: DatePipe,
     ) {
     }
 
@@ -304,7 +306,10 @@ export class ProfilePage implements OnInit {
                         // this.user.cohort = doc.get('cohort');
                         // const rehabDate = new Date(doc.get('endRehabDate'));
                         // this.user.endRehabDate = this.datepipe.transform(rehabDate, 'D MM YYYY');
-                        this.user.endRehabDate = doc.get('endRehabDate');
+                        // this.user.endRehabDate = doc.get('endRehabDate');
+                        const date = new Date(doc.get('endRehabDate') + 'T12:00:00');
+                        const dateString = this.datePipe.transform(date, 'MMMM d, yyyy');
+                        this.user.endRehabDate = dateString;
                         this.user.currentEmotion = doc.get('mood');
                         this.user.profilePic = doc.get('profilePic');
                         this.user.points = doc.get('points');
