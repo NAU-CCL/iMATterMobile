@@ -10,6 +10,8 @@ import * as firebase from 'firebase/app';
 import {AnalyticsService, Analytics, Sessions} from 'src/app/services/analyticsService.service';
 import {HttpClient} from '@angular/common/http';
 import {DatePipe} from '@angular/common';
+import { MoodProviderNotifService, EmotionNotif } from '../../../services/mood-provider-notif.service';
+import { ChatService, Cohort, Chat } from '../../../services/chat/chat-service.service';
 
 @Component({
     selector: 'app-profile',
@@ -48,6 +50,18 @@ export class ProfilePage implements OnInit {
 
     };
 
+    chat: Chat = {
+        cohort: '',
+        username: '',
+        userID: '',
+        timestamp: '',
+        message: '',
+        profilePic: '',
+        type: '',
+        visibility: true,
+        count: 0
+    };
+
     analytic: Analytics =
         {
             page: '',
@@ -55,6 +69,14 @@ export class ProfilePage implements OnInit {
             timestamp: '',
             sessionID: ''
         };
+
+    emotionNotif: EmotionNotif = {
+        userID: '',
+        username: '',
+        emotionEntered: '',
+        viewed: false,
+        timestamp: ''
+    };
 
     session: Sessions =
         {
@@ -79,6 +101,17 @@ export class ProfilePage implements OnInit {
     public displayRedeemOptions: boolean;
     public chosenGCType: string;
     public gcTypes: Array<string>;
+    public userEmotionIcon: string;
+
+    public emotionIcons = {
+        excited: '🤗',
+        happy: '😃',
+        loved: '🥰',
+        indifferent: '😐',
+        overwhelmed: '😩',
+        sad: '😢',
+        angry: '😡',
+    };
 
     static checkUserPoints(userPoints, pointsNeeded): boolean {
         return userPoints >= pointsNeeded;
@@ -97,6 +130,8 @@ export class ProfilePage implements OnInit {
         private toastCtrl: ToastController,
         private http: HttpClient,
         private datePipe: DatePipe,
+        private chatService: ChatService,
+        private mpnService: MoodProviderNotifService
     ) {
     }
 
@@ -313,6 +348,7 @@ export class ProfilePage implements OnInit {
                         this.user.currentEmotion = doc.get('mood');
                         this.user.profilePic = doc.get('profilePic');
                         this.user.points = doc.get('points');
+                        this.userEmotionIcon = this.getUserEmotionIcon(this.user.currentEmotion);
 
                         const pointRef = firebase.firestore().collection('settings').doc('giftCardSettings').get();
                         pointRef.then((res) => {
@@ -352,6 +388,64 @@ export class ProfilePage implements OnInit {
             this.profileService.addToRedeemTable(adminEmail, email, username, gcType);
         });
         this.showToast('An email was sent for your gift card request!');
+    }
+
+    saveEmotion(emotion: string) {
+        this.afs.firestore.collection('users').doc(this.userProfileID)
+            .update({mood: emotion});
+
+        this.user.currentEmotion = emotion;
+
+        this.chat.cohort = this.user.cohort;
+        this.chat.userID = this.userProfileID;
+        this.chat.username = this.user.username;
+        this.chat.profilePic = this.user.profilePic;
+        this.chat.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+        this.chat.message = this.chat.username + ' is currently feeling ' + emotion;
+        this.chat.type = 'emotion';
+        this.chat.visibility = true;
+
+        this.chatService.addChat(this.chat).then(() => {
+            this.chat.message = '';
+        });
+
+        this.updateEmotionBadge(this.user.currentEmotion);
+
+        if (emotion === 'sad' || emotion === 'overwhelmed' || emotion === 'angry') {
+            this.presentAlert('Stay Strong!',
+                'Remember you have your cohort to support you and health modules available to you! If you need help,' +
+                'please go to the Resources page to find help near you.');
+
+            this.emotionNotif.userID = this.userProfileID;
+            this.emotionNotif.username = this.user.username;
+            this.emotionNotif.emotionEntered = emotion;
+            this.emotionNotif.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+            this.mpnService.addEmotionNotif(this.emotionNotif);
+        }
+    }
+
+    updateEmotionBadge(emotion: string) {
+        const emotionBadge = this.getUserEmotionIcon(emotion);
+        const badge = document.getElementsByTagName('ion-badge');
+        badge.item(0).innerHTML = emotionBadge;
+    }
+
+    getUserEmotionIcon(emotion: string) {
+        if (emotion === 'excited') {
+            return this.emotionIcons.excited;
+        } else if (emotion === 'happy') {
+            return this.emotionIcons.happy;
+        } else if (emotion === 'loved') {
+            return this.emotionIcons.loved;
+        } else if (emotion === 'indifferent') {
+            return this.emotionIcons.indifferent;
+        } else if (emotion === 'overwhelmed') {
+            return this.emotionIcons.overwhelmed;
+        } else if (emotion === 'sad') {
+            return this.emotionIcons.sad;
+        } else if (emotion === 'angry') {
+            return this.emotionIcons.angry;
+        }
     }
 
     // present a basic alert -- used for displaying gc info
