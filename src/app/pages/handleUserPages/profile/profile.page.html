@@ -11,46 +11,63 @@
         </ion-buttons>
     </ion-toolbar>
 </ion-header>
+<ion-header>
     <ion-toolbar class="emotion-toolbar">
+        <ion-text class="ion-padding-horizontal"> Currently I am feeling: {{user.currentEmotion}} </ion-text>
+
         <ion-row class="ion-justify-content-center">
-            <ion-col size="1.5">
+            <ion-col size="1.7">
                 <ion-button [class.highlight]="this.user.currentEmotion == 'excited'"
-                            size = "small" fill = "clear" (click)="saveEmotion('excited')">
+                            size="small" fill="clear" (click)="saveEmotion('excited')">
                     🤗
                 </ion-button>
+                <p>EXCITED</p>
             </ion-col>
-            <ion-col size="1.5">
-                <ion-button [class.highlight]="this.user.currentEmotion == 'happy'" size = "small" fill = "clear" (click)="saveEmotion('happy')">
+            <ion-col size="1.7">
+                <ion-button [class.highlight]="this.user.currentEmotion == 'happy'" size="small" fill="clear"
+                            (click)="saveEmotion('happy')">
                     😃
                 </ion-button>
+                <p>HAPPY</p>
             </ion-col>
-            <ion-col size="1.5">
-                <ion-button [class.highlight]="this.user.currentEmotion == 'loved'" size = "small" fill = "clear" (click)="saveEmotion('loved')">
+            <ion-col size="1.7">
+                <ion-button [class.highlight]="this.user.currentEmotion == 'loved'" size="small" fill="clear"
+                            (click)="saveEmotion('loved')">
                     🥰
                 </ion-button>
+                <p>LOVED</p>
             </ion-col>
-            <ion-col size="1.5">
-                <ion-button [class.highlight]="this.user.currentEmotion == 'indifferent'" size = "small" fill = "clear" (click)="saveEmotion('indifferent')">
+            <ion-col size="1.7">
+                <ion-button [class.highlight]="this.user.currentEmotion == 'indifferent'" size="small" fill="clear"
+                            (click)="saveEmotion('indifferent')">
                     😐
                 </ion-button>
+                <p>INDIFFERENT</p>
             </ion-col>
-            <ion-col size="1.5">
-                <ion-button [class.highlight]="this.user.currentEmotion == 'overwhelmed'" size = "small" fill = "clear"(click)="saveEmotion('overwhelmed')">
+            <ion-col size="1.7">
+                <ion-button [class.highlight]="this.user.currentEmotion == 'overwhelmed'" size="small" fill="clear"
+                            (click)="saveEmotion('overwhelmed')">
                     😩
                 </ion-button>
+                <p>STRESSED</p>
             </ion-col>
-            <ion-col size="1.5">
-                <ion-button [class.highlight]="this.user.currentEmotion == 'sad'" size = "small" fill = "clear" (click)="saveEmotion('sad')">
+            <ion-col size="1.7">
+                <ion-button [class.highlight]="this.user.currentEmotion == 'sad'" size="small" fill="clear"
+                            (click)="saveEmotion('sad')">
                     😢
                 </ion-button>
+                <p>SAD</p>
             </ion-col>
-            <ion-col size="1.5">
-                <ion-button [class.highlight]="this.user.currentEmotion == 'angry'" size = "small" fill = "clear" (click)="saveEmotion('angry')">
+            <ion-col size="1.7">
+                <ion-button [class.highlight]="this.user.currentEmotion == 'angry'" size="small" fill="clear"
+                            (click)="saveEmotion('angry')">
                     😡
                 </ion-button>
+                <p>ANGRY</p>
             </ion-col>
         </ion-row>
     </ion-toolbar>
+</ion-header>
 <ion-content>
     <!--    <ion-item lines="none">-->
     <!--        <ion-icon name="information-circle" (click)="displayPointInfo()"> </ion-icon>-->
@@ -74,7 +91,8 @@
             <ion-col size="6">
                 <ion-row>
                     <ion-card>
-                        <ion-badge style="z-index: 2; background-color: transparent; position: absolute;">{{ userEmotionIcon }}</ion-badge>
+                        <ion-badge
+                                style="z-index: 2; background-color: transparent; position: absolute;">{{ userEmotionIcon }}</ion-badge>
                         <ion-img src="{{ user.profilePic }}" style="position: relative;"></ion-img>
                     </ion-card>
                 </ion-row>

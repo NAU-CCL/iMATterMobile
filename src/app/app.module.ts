@@ -28,7 +28,6 @@ import {BnNgIdleService} from 'bn-ng-idle';
 import {Device} from '@ionic-native/device/ngx';
 import * as firebase from 'firebase/app';
 
-
 firebase.initializeApp(environment.firebase);
 
 @NgModule({
