@@ -265,12 +265,12 @@ export class HomePage implements OnInit {
 
   }
 
-
-  updateLModuleClicks() {
-    this.analyticsService.updateLModuleClicks(this.session);
-    console.log('added learning module click');
+  updateInfoClicks() {
+    this.analyticsService.updateInfoClicks(this.session);
+    console.log('added info click');
 
   }
+
 
 
 
