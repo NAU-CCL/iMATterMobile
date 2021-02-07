@@ -17,29 +17,9 @@ const routes: Routes = [
               import('../pages/home/home.module').then(m => m.HomePageModule)
           },
           {
-            path: 'learning-center',
-            children: [
-              {
-                path: '',
-                children: [
-                  {
-                    path: '',
-                    loadChildren: () =>
-                    import('../pages/learning-center/learning-center.module').then(m => m.LearningCenterPageModule)
-                  },
-                  {
-                    path: 'learning-module-content/:id',
-                    loadChildren: () => 
-                    import('../pages/learning-center/learning-module-content/learning-module-content.module').then( m => m.LearningModuleContentPageModule)
-                  }
-                ]
-              },
-            ]
-          },
-          {
-            path: 'learning-center/:id',
+            path: 'forum',
             loadChildren: () =>
-            import('../pages/learning-center/learning-center.module').then(m => m.LearningCenterPageModule)
+                import('../pages/forum/forum.module').then(m => m.ForumPageModule)
           },
           {
             path: 'available',
@@ -106,15 +86,36 @@ const routes: Routes = [
         path: 'more',
         children: [
           {
+            path: 'learning-center',
+            children: [
+              {
+                path: '',
+                children: [
+                  {
+                    path: '',
+                    loadChildren: () =>
+                        import('../pages/learning-center/learning-center.module').then(m => m.LearningCenterPageModule)
+                  },
+                  {
+                    path: 'learning-module-content/:id',
+                    loadChildren: () =>
+                        import('../pages/learning-center/learning-module-content/learning-module-content.module').then( m => m.LearningModuleContentPageModule)
+                  }
+                ]
+              },
+            ]
+          },
+          {
+            path: 'learning-center/:id',
+            loadChildren: () =>
+                import('../pages/learning-center/learning-center.module').then(m => m.LearningCenterPageModule)
+          },
+          {
             path: '',
             loadChildren: () =>
                 import('../pages/more/more.module').then(m => m.MorePageModule)
           },
-          {
-            path: 'forum',
-            loadChildren: () =>
-                import('../pages/forum/forum.module').then(m => m.ForumPageModule)
-          }
+
         ]
       },
       {

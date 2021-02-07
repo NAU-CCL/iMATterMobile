@@ -22,9 +22,9 @@ export class MorePage implements OnInit {
     userID: '',
     timestamp: '',
     sessionID: ''
-  }
+  };
 
-  session : Sessions =
+  session: Sessions =
       {
           userID: '',
           LogOutTime: '',
@@ -37,10 +37,10 @@ export class MorePage implements OnInit {
           numOfClickProfile: 0,
           numOfClickMore: 0,
           numOfClickHome: 0
-      }
+      };
 
-  private analyticss : string;
-  private sessions : Observable<any>;
+  private analyticss: string;
+  private sessions: Observable<any>;
 
 
   constructor(private router: Router,
@@ -61,33 +61,29 @@ export class MorePage implements OnInit {
       }
     });
 
-     this.addView();
+    this.addView();
   }
 
-
-
-  updateInfoClicks()
-  {
-    this.analyticsService.updateInfoClicks(this.session);
-    console.log("added info click");
+  updateLModuleClicks() {
+    this.analyticsService.updateLModuleClicks(this.session);
+    console.log('added learning module click');
 
   }
 
-
-  addView(){
-  this.storage.get('userCode').then((val) =>{
+  addView() {
+  this.storage.get('userCode').then((val) => {
     if (val) {
       const ref = this.afs.firestore.collection('users').where('code', '==', val);
-      ref.get().then((result) =>{
-        result.forEach(doc =>{
+      ref.get().then((result) => {
+        result.forEach(doc => {
           this.analytic.page = 'morePage';
           this.analytic.userID = val;
           this.analytic.timestamp = firebase.firestore.FieldValue.serverTimestamp();
-          //this.analytic.sessionID = this.idReference;
-          this.analyticsService.addView(this.analytic).then (() =>{
+          // this.analytic.sessionID = this.idReference;
+          this.analyticsService.addView(this.analytic).then (() => {
             console.log('successful added view: morePage');
 
-          }, err =>{
+          }, err => {
             console.log('unsucessful added view: morePage');
 
           });
