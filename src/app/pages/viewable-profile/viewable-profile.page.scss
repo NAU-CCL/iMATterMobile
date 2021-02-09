@@ -1,3 +1,15 @@
 .ion-text-button {
   --color: var(--main-color);
 }
+
+h1 {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 3em;
+}
+
+ion-row{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}

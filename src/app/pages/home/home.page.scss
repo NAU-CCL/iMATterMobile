@@ -8,6 +8,8 @@ ion-title {
   text-align: center;
 }
 
+
+
 .welcome-card img {
   max-height: 35vh;
   overflow: hidden;
@@ -23,6 +25,15 @@ ion-title {
   ion-text {
     padding-left: 10px;
     font-weight: bolder;
+  }
+  ion-col {
+    padding: 5px 0 5px;
+    margin: 0;
+    text-align: center;
+    p {
+      font-size: 0.4em;
+      margin: 0;
+    }
   }
 }
 

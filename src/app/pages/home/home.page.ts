@@ -10,7 +10,7 @@ import * as firebase from 'firebase/app';
 import {Observable} from 'rxjs';
 import { FireService } from 'src/app/services/survey/fire.service';
 import { MoodProviderNotifService, EmotionNotif } from '../../services/mood-provider-notif.service';
-import {delay} from "rxjs/operators";
+import {delay} from 'rxjs/operators';
 
 
 @Component({
