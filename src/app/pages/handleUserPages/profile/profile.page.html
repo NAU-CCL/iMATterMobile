@@ -89,7 +89,7 @@
     <ion-grid>
         <ion-row>
             <ion-col style="z-index: 2; position: absolute; font-size: 1.2em;">
-                <ion-icon float-right padding-top name="create" (click)="presentAlert('Edit profile now', '')"></ion-icon>
+                <ion-icon class="ion-float-right ion-padding-horizontal ion-padding-top" name="create" (click)="presentAlert('Edit profile now', '')"></ion-icon>
             </ion-col>
         </ion-row>
         <ion-row>
@@ -114,7 +114,7 @@
         <ion-row>
             <ion-col>
                 <ion-card>
-                    <ion-card-title padding-horizontal padding-top>About Me:</ion-card-title>
+                    <ion-card-title class="ion-padding-horizontal ion-padding-top">About Me:</ion-card-title>
                     <ion-card-content>{{ user.bio }}</ion-card-content>
                 </ion-card>
             </ion-col>
@@ -150,7 +150,7 @@
                             {{user.email}}
                         </ion-col>
                         <ion-col>
-                            <ion-icon float-right padding-horizontal color="black" name="create" (click)="updateEmail()"></ion-icon>
+                            <ion-icon class="ion-float-right ion-padding-horizontal padding-horizontal" color="black" name="create" (click)="updateEmail()"></ion-icon>
                         </ion-col>
                     </ion-row>
                 </ion-grid>
@@ -164,7 +164,7 @@
                         <ion-col class="text-left" size="4"> Password</ion-col>
                         <ion-col size="4" class="placeholder text-center"> Hidden</ion-col>
                         <ion-col>
-                            <ion-icon float-right padding-horizontal color="black" name="create" (click)="updatePassword()"></ion-icon>
+                            <ion-icon class="ion-float-right ion-padding-horizontal padding-horizontal" color="black" name="create" (click)="updatePassword()"></ion-icon>
                         </ion-col>
                     </ion-row>
                 </ion-grid>
@@ -183,7 +183,7 @@
                             Not Provided
                         </ion-col>
                         <ion-col>
-                            <ion-icon float-right padding-horizontal color="black" name="create" (click)="updateLocation()"></ion-icon>
+                            <ion-icon class="ion-float-right ion-padding-horizontal padding-horizontal" color="black" name="create" (click)="updateLocation()"></ion-icon>
                         </ion-col>
                     </ion-row>
                 </ion-grid>
