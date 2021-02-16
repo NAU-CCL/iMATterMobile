@@ -1,7 +1,7 @@
 <ion-header>
     <ion-toolbar>
         <ion-buttons slot="start">
-            <ion-back-button class="text-button" defaultHref="/tabs/home"></ion-back-button>
+            <ion-back-button class="text-button" [routerLink]="['/tabs/home']"></ion-back-button>
         </ion-buttons>
         <ion-title>Profile Page</ion-title>
         <ion-buttons slot="end">
@@ -45,8 +45,8 @@
                 <p>INDIFFERENT</p>
             </ion-col>
             <ion-col size="1.7">
-                <ion-button [class.highlight]="this.user.currentEmotion == 'overwhelmed'" size="small" fill="clear"
-                            (click)="saveEmotion('overwhelmed')">
+                <ion-button [class.highlight]="this.user.currentEmotion == 'stressed'" size="small" fill="clear"
+                            (click)="saveEmotion('stressed')">
                     😩
                 </ion-button>
                 <p>STRESSED</p>

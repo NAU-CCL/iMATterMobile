@@ -21,19 +21,25 @@
     <ion-list id="locationList">
         <ion-card *ngFor="let location of this.locationList">
           <ion-card-title class="ion-padding-top ion-padding-horizontal">{{location.title}}</ion-card-title>
-          <ion-card-subtitle class="ion-padding-top ion-padding-horizontal">{{location.phone}} | {{location.street}}</ion-card-subtitle>
+          <ion-card-subtitle *ngIf="!location.callCenter" class="ion-padding-top ion-padding-horizontal">{{location.phone}} | {{location.street}}</ion-card-subtitle>
+          <ion-card-subtitle *ngIf="location.callCenter" class="ion-padding-top ion-padding-horizontal">{{location.phone}} | Call Center</ion-card-subtitle>
           <ion-card-subtitle class="ion-padding" style="font-size: 0.8em">
             {{location.type}} <div id="moreButton" class="ion-float-right" (click)="showMoreContent()">(more)</div></ion-card-subtitle>
           <ion-card-content *ngIf="this.moreContent">
             {{location.content}}
-            <div id = "operation" class="ion-padding-top"><h2>Hours of Operation</h2></div>
-            <div>  Monday: {{location.mOpen}} - {{location.mClose}}  </div>
-            <div>  Tuesday: {{location.tOpen}} - {{location.tClose}}  </div>
-            <div>  Wednesday: {{location.wOpen}} - {{location.wClose}}  </div>
-            <div>  Thursday: {{location.thOpen}} - {{location.thClose}}  </div>
-            <div>  Friday: {{location.fOpen}} - {{location.fClose}}  </div>
-            <div>  Saturday: {{location.satOpen}} - {{location.satClose}}  </div>
-            <div>  Sunday: {{location.sunOpen}} - {{location.sunClose}}  </div>
+              <div *ngIf="!location.openAllDay">
+                <div id = "operation" class="ion-padding-top"><h2>Hours of Operation</h2></div>
+                <div>  Monday: {{location.mOpen}} - {{location.mClose}}  </div>
+                <div>  Tuesday: {{location.tOpen}} - {{location.tClose}}  </div>
+                <div>  Wednesday: {{location.wOpen}} - {{location.wClose}}  </div>
+                <div>  Thursday: {{location.thOpen}} - {{location.thClose}}  </div>
+                <div>  Friday: {{location.fOpen}} - {{location.fClose}}  </div>
+                <div>  Saturday: {{location.satOpen}} - {{location.satClose}}  </div>
+                <div>  Sunday: {{location.sunOpen}} - {{location.sunClose}}  </div>
+              </div>
+              <div *ngIf="location.openAllDay">
+                <div class="ion-padding-top"><h2>Open All Day</h2></div>
+              </div>
           </ion-card-content>
         </ion-card>
     </ion-list>

@@ -12,6 +12,7 @@ import {HttpClient} from '@angular/common/http';
 import {DatePipe} from '@angular/common';
 import { MoodProviderNotifService, EmotionNotif } from '../../../services/mood-provider-notif.service';
 import { ChatService, Cohort, Chat } from '../../../services/chat/chat-service.service';
+import { HomePage } from '../../home/home.page';
 
 @Component({
     selector: 'app-profile',
@@ -131,7 +132,7 @@ export class ProfilePage implements OnInit {
         private http: HttpClient,
         private datePipe: DatePipe,
         private chatService: ChatService,
-        private mpnService: MoodProviderNotifService
+        private mpnService: MoodProviderNotifService,
     ) {
     }
 

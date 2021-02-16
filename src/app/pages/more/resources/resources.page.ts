@@ -38,6 +38,8 @@ export class ResourcesPage implements OnInit, AfterViewInit {
     doperationSatClose: string;
     doperationSunOpen: string;
     doperationSunClose: string;
+    openAllDay: boolean;
+    callCenter: boolean;
     userLocation: string;
     userLocationHolder: string;
     userProfileID: any;
@@ -132,6 +134,8 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                 this.doperationSatClose = '';
                 this.doperationSunOpen = '';
                 this.doperationSunClose = '';
+                this.openAllDay = false;
+                this.callCenter = false;
                 this.dphone = '';
                 this.dspecialNote = '';
 
@@ -156,13 +160,15 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                     this.doperationSatClose = doc.get('SatClose');
                     this.doperationSunOpen = doc.get('SunOpen');
                     this.doperationSunClose = doc.get('SunClose');
+                    this.callCenter = doc.get('callCenter');
+                    this.openAllDay = doc.get('openAllDay');
                     this.dphone = doc.get('phone');
                     this.dspecialNote = doc.get('special');
 
                     this.addMarker(this.dtitle, this.dlongitude, this.dlatitude, this.dcontent, this.dicon,
                         this.doperationMOpen, this.doperationMClose, this.doperationTOpen, this.doperationTClose, this.doperationWOpen,
                         this.doperationWClose, this.doperationThOpen, this.doperationThClose, this.doperationFOpen, this.doperationFClose,
-                        this.doperationSatOpen, this.doperationSatClose, this.doperationSunOpen, this.doperationSunClose,
+                        this.doperationSatOpen, this.doperationSatClose, this.doperationSunOpen, this.doperationSunClose, this.callCenter, this.openAllDay,
                         this.dphone, this.dstreet, this.dspecialNote);
 
 
@@ -220,7 +226,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
     async addMarker(dtitle, dlongitude, dlatitude, dcontent, dicon,
                     doperationMOpen, doperationMClose, doperationTOpen, doperationTClose, doperationWOpen,
                     doperationWClose, doperationThOpen, doperationThClose, doperationFOpen, doperationFClose,
-                    doperationSatOpen, doperationSatClose, doperationSunOpen, doperationSunClose,
+                    doperationSatOpen, doperationSatClose, doperationSunOpen, doperationSunClose, callCenter, openAllDay,
                     dphone, dstreet, dspecialNote) {
         console.log('added pin');
 
@@ -258,28 +264,39 @@ export class ResourcesPage implements OnInit, AfterViewInit {
             icon: this.icon
         });
 
-        const contentString =
-            '<div id="content">' +
+        let contentString = '<div id="content">' +
             '<div id= "siteNotice" ' +
             '</div>' +
             '<h1 id="firstHeading" class="firstHeading">' + dtitle + '</h1>' +
             '<div id="bodyContent">' +
             '<p>' + dcontent + '</p>' +
             '</div>' +
-            '<div id = "phone">' + 'Phone: ' + dphone + '</div>' +
-            '<div id= "street">' + 'Street Address: ' + dstreet + '</div>' +
-
-            '<div id = "operation">' + 'Hours of Operation' + '</div>' +
-            '<div id = "monday">' + 'Monday: ' + doperationMOpen + '-' + doperationMClose + '</div>' +
-            '<div id = "tuesday">' + 'Tuesday: ' + doperationTOpen + '-' + doperationTClose + '</div>' +
-            '<div id = "wednesday">' + 'Wednesday: ' + doperationWOpen + '-' + doperationWClose + '</div>' +
-            '<div id = "thursday">' + 'Thursday: ' + doperationThOpen + '-' + doperationThClose + '</div>' +
-            '<div id = "friday">' + 'Friday: ' + doperationFOpen + '-' + doperationFClose + '</div>' +
-            '<div id = "saturday">' + 'Saturday: ' + doperationSatOpen + '-' + doperationSatClose + '</div>' +
-            '<div id = "sunday">' + 'Sunday: ' + doperationSunOpen + '-' + doperationSunClose + '</div>' +
-            '<div id = "blank">' + '<p>' + '       ' + '</p>' + '</div>' +
-            '<div id = "specialNote">' + 'Admin Note: ' + dspecialNote + '</div>' +
+            '<div id = "phone">' + 'Phone: ' + dphone + '</div>';
+        if (!callCenter) {
+            contentString +=
+                '<div id= "street">' + 'Street Address: ' + dstreet + '</div>';
+        } else {
+            contentString +=
+                '<div id= "street">' +  'Call Center (no physical location)' + '</div>';
+        }
+        if (!openAllDay) {
+            contentString +=
+                '<div id = "operation">' + 'Hours of Operation' + '</div>' +
+                '<div id = "monday">' + 'Monday: ' + doperationMOpen + '-' + doperationMClose + '</div>' +
+                '<div id = "tuesday">' + 'Tuesday: ' + doperationTOpen + '-' + doperationTClose + '</div>' +
+                '<div id = "wednesday">' + 'Wednesday: ' + doperationWOpen + '-' + doperationWClose + '</div>' +
+                '<div id = "thursday">' + 'Thursday: ' + doperationThOpen + '-' + doperationThClose + '</div>' +
+                '<div id = "friday">' + 'Friday: ' + doperationFOpen + '-' + doperationFClose + '</div>' +
+                '<div id = "saturday">' + 'Saturday: ' + doperationSatOpen + '-' + doperationSatClose + '</div>' +
+                '<div id = "sunday">' + 'Sunday: ' + doperationSunOpen + '-' + doperationSunClose + '</div>' +
+                '<div id = "blank">' + '<p>' + '       ' + '</p>' + '</div>' +
+                '<div id = "specialNote">' + 'Admin Note: ' + dspecialNote + '</div>' +
+                '</div>';
+        } else {
+            contentString +=
+            '<div id = "operation">' + 'Open 24 Hours' + '</div>' +
             '</div>';
+        }
 
         await google.maps.event.addListener(marker, 'click', function() {
             const infowindow = new google.maps.InfoWindow({
@@ -324,6 +341,8 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                 this.doperationSatClose = '';
                 this.doperationSunOpen = '';
                 this.doperationSunClose = '';
+                this.callCenter = false;
+                this.openAllDay = false;
                 this.dphone = '';
                 this.dspecialNote = '';
 
@@ -348,6 +367,8 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                     this.doperationSatClose = doc.get('SatClose');
                     this.doperationSunOpen = doc.get('SunOpen');
                     this.doperationSunClose = doc.get('SunClose');
+                    this.callCenter = doc.get('callCenter');
+                    this.openAllDay = doc.get('openAllDay');
                     this.dphone = doc.get('phone');
                     this.dspecialNote = doc.get('special');
 
@@ -370,7 +391,10 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                         satOpen: this.doperationMOpen,
                         satClose: this.doperationMClose,
                         sunOpen: this.doperationMOpen,
-                        sunClose: this.doperationMClose
+                        sunClose: this.doperationMClose,
+                        callCenter: this.callCenter,
+                        openAllDay: this.openAllDay,
+                        specialNote: this.dspecialNote
                     };
 
                     this.locationList.push(locationObj);
