@@ -1,7 +1,7 @@
 <ion-header>
     <ion-toolbar>
         <ion-buttons slot="start">
-            <ion-back-button class="text-button" defaultHref="/tabs/home"></ion-back-button>
+            <ion-back-button class="text-button" [routerLink]="['/tabs/home']"></ion-back-button>
         </ion-buttons>
         <ion-title>Profile Page</ion-title>
         <ion-buttons slot="end">
@@ -45,8 +45,8 @@
                 <p>INDIFFERENT</p>
             </ion-col>
             <ion-col size="1.7">
-                <ion-button [class.highlight]="this.user.currentEmotion == 'overwhelmed'" size="small" fill="clear"
-                            (click)="saveEmotion('overwhelmed')">
+                <ion-button [class.highlight]="this.user.currentEmotion == 'stressed'" size="small" fill="clear"
+                            (click)="saveEmotion('stressed')">
                     😩
                 </ion-button>
                 <p>STRESSED</p>
@@ -88,6 +88,11 @@
     <!--    </div>-->
     <ion-grid>
         <ion-row>
+            <ion-col style="z-index: 2; position: absolute; font-size: 1.2em;">
+                <ion-icon class="ion-float-right ion-padding-horizontal ion-padding-top" name="create" (click)="presentAlert('Edit profile now', '')"></ion-icon>
+            </ion-col>
+        </ion-row>
+        <ion-row>
             <ion-col size="6">
                 <ion-row>
                     <ion-card>
@@ -109,11 +114,12 @@
         <ion-row>
             <ion-col>
                 <ion-card>
-                    <ion-card-title padding-horizontal padding-top>About Me:</ion-card-title>
+                    <ion-card-title class="ion-padding-horizontal ion-padding-top">About Me:</ion-card-title>
                     <ion-card-content>{{ user.bio }}</ion-card-content>
                 </ion-card>
             </ion-col>
         </ion-row>
+
 
 
         <!--    &lt;!&ndash; Viewable profile to all users &ndash;&gt;-->
@@ -134,41 +140,50 @@
     </ion-grid>
     <!--    &lt;!&ndash; Personal User info &ndash;&gt;-->
     <ion-list>
-        <ion-list-header> Personal Information (Tap to Edit)</ion-list-header>
-        <ion-item (click)="updateEmail()">
+        <ion-list-header> Personal Information </ion-list-header>
+        <ion-item>
             <ion-label>
                 <ion-grid>
                     <ion-row>
-                        <ion-col class="text-left" size="5"> Email</ion-col>
-                        <ion-col class="text-center" size="7" *ngIf="user.email">
+                        <ion-col class="text-left" size="4"> Email</ion-col>
+                        <ion-col class="text-center" size="4" *ngIf="user.email">
                             {{user.email}}
                         </ion-col>
+                        <ion-col>
+                            <ion-icon class="ion-float-right ion-padding-horizontal padding-horizontal" color="black" name="create" (click)="updateEmail()"></ion-icon>
+                        </ion-col>
                     </ion-row>
                 </ion-grid>
             </ion-label>
         </ion-item>
 
-        <ion-item (click)="updatePassword()">
+        <ion-item>
             <ion-label>
                 <ion-grid>
                     <ion-row>
-                        <ion-col class="text-left" size="5"> Password</ion-col>
-                        <ion-col size="7" class="placeholder text-center"> Hidden</ion-col>
+                        <ion-col class="text-left" size="4"> Password</ion-col>
+                        <ion-col size="4" class="placeholder text-center"> Hidden</ion-col>
+                        <ion-col>
+                            <ion-icon class="ion-float-right ion-padding-horizontal padding-horizontal" color="black" name="create" (click)="updatePassword()"></ion-icon>
+                        </ion-col>
                     </ion-row>
                 </ion-grid>
             </ion-label>
         </ion-item>
 
-        <ion-item (click)="updateLocation()">
+        <ion-item>
             <ion-label>
                 <ion-grid>
                     <ion-row>
-                        <ion-col class="text-left" size="5"> Zip Code</ion-col>
-                        <ion-col class="text-center" size="7" *ngIf="user.email">
+                        <ion-col class="text-left" size="4"> Zip Code</ion-col>
+                        <ion-col class="text-center" size="4" *ngIf="user.email">
                             {{user.location}}
                         </ion-col>
-                        <ion-col size="7" class="placeholder text-center" *ngIf="!user.location">
+                        <ion-col size="6" class="placeholder text-center" *ngIf="!user.location">
                             Not Provided
+                        </ion-col>
+                        <ion-col>
+                            <ion-icon class="ion-float-right ion-padding-horizontal padding-horizontal" color="black" name="create" (click)="updateLocation()"></ion-icon>
                         </ion-col>
                     </ion-row>
                 </ion-grid>
@@ -176,4 +191,6 @@
         </ion-item>
     </ion-list>
 </ion-content>
+
+<script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
 

@@ -47,12 +47,12 @@
 }
 
 .custom-divider {
-  --background: #cec1e7;
+  --background: var(--main-tint);
   color: black;
 }
 
 .custom-divider-header {
-  --background: #cec1e7;
+  --background: var(--main-tint);
   color: black;
   font-weight: bold;
 }

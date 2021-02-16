@@ -1,17 +1,49 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Resources </ion-title>
-    <ion-buttons class="text-button" slot="end">
-      <ion-button [routerLink]="['./suggestions']">
-        <ion-button class="text-button"> Suggest A Resource </ion-button>
-      </ion-button>
+    <ion-buttons slot="start">
+      <ion-back-button class="text-button" defaultHref="/tabs/more"></ion-back-button>
     </ion-buttons>
+    <ion-title>Resources </ion-title>
+    <ion-toggle slot="end" (ionChange)="toggleView()"></ion-toggle>
   </ion-toolbar>
+
 </ion-header>
+<ion-buttons class="text-button" style="justify-content: center; background-color: var(--main-tint)">
+  <ion-button [routerLink]="['./suggestions']" style="text-align: center">
+    <ion-button class="text-button"> Suggest A Resource </ion-button>
+  </ion-button>
+</ion-buttons>
 
 <ion-content>
-  <div #mapElement class="map"></div>
 
+  <div #mapElement class="map" *ngIf="mapView"></div>
+  <div #listElement class="list" *ngIf="!mapView">
+    <ion-list id="locationList">
+        <ion-card *ngFor="let location of this.locationList">
+          <ion-card-title class="ion-padding-top ion-padding-horizontal">{{location.title}}</ion-card-title>
+          <ion-card-subtitle *ngIf="!location.callCenter" class="ion-padding-top ion-padding-horizontal">{{location.phone}} | {{location.street}}</ion-card-subtitle>
+          <ion-card-subtitle *ngIf="location.callCenter" class="ion-padding-top ion-padding-horizontal">{{location.phone}} | Call Center</ion-card-subtitle>
+          <ion-card-subtitle class="ion-padding" style="font-size: 0.8em">
+            {{location.type}} <div id="moreButton" class="ion-float-right" (click)="showMoreContent()">(more)</div></ion-card-subtitle>
+          <ion-card-content *ngIf="this.moreContent">
+            {{location.content}}
+              <div *ngIf="!location.openAllDay">
+                <div id = "operation" class="ion-padding-top"><h2>Hours of Operation</h2></div>
+                <div>  Monday: {{location.mOpen}} - {{location.mClose}}  </div>
+                <div>  Tuesday: {{location.tOpen}} - {{location.tClose}}  </div>
+                <div>  Wednesday: {{location.wOpen}} - {{location.wClose}}  </div>
+                <div>  Thursday: {{location.thOpen}} - {{location.thClose}}  </div>
+                <div>  Friday: {{location.fOpen}} - {{location.fClose}}  </div>
+                <div>  Saturday: {{location.satOpen}} - {{location.satClose}}  </div>
+                <div>  Sunday: {{location.sunOpen}} - {{location.sunClose}}  </div>
+              </div>
+              <div *ngIf="location.openAllDay">
+                <div class="ion-padding-top"><h2>Open All Day</h2></div>
+              </div>
+          </ion-card-content>
+        </ion-card>
+    </ion-list>
+  </div>
 
   <h6 padding-horizontal>National Hot Line:</h6>
   <p padding-horizontal>
@@ -19,3 +51,6 @@
   </p>
 
 </ion-content>
+
+
+
