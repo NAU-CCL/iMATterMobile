@@ -107,7 +107,7 @@ export class LoginPage implements OnInit {
             if (val > 1) {
                 this.storageEmail = val;
                 // this.showEmailBox = false;
-                // console.log('VAL: ' + val);
+                console.log('VAL: ' + val);
             }
             // } else {
             //     this.showEmailBox = true;
@@ -121,9 +121,9 @@ export class LoginPage implements OnInit {
         this.storage.get('email').then((val) => {
             if (val.toString().length > 1) {
                 this.storageEmail = val;
+                console.log('VAL: ' + val);
             }
             //     this.showEmailBox = false;
-            //     console.log('VAL: ' + val);
             // } else {
             //     this.showEmailBox = true;
             //     console.log('VAL: ' + val);
@@ -169,13 +169,13 @@ export class LoginPage implements OnInit {
 
     validateUser(loginForm: FormGroup) {
         this.storage.get('email').then((val) => {
-            if (val) {
-                this.email = val.toString();
-                this.validateEmailwithPass(val, loginForm.value.password);
-            } else {
+            // if (val) {
+            //     this.email = val.toString();
+            //     this.validateEmailwithPass(val, loginForm.value.password);
+            // } else {
                 this.storage.set('email', loginForm.value.email);
                 this.validateEmailwithPass(loginForm.value.email, loginForm.value.password);
-            }
+            // }
         });
 
     }
