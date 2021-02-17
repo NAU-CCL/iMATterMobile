@@ -14,7 +14,7 @@
   <form [formGroup]="loginForm">
     <ion-item *ngIf="showEmailBox">
       <ion-label position="stacked">Email</ion-label>
-      <ion-input formControlName="email" type="email" placeholder="Your email address"
+      <ion-input formControlName="email" type="email" value="{{this.storageEmail}}" placeholder="Your email"
               [class.invalid]="!loginForm.controls['email'].valid && loginForm.controls['email'].touched">
       </ion-input>
     </ion-item>

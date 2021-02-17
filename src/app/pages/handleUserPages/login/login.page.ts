@@ -60,6 +60,7 @@ export class LoginPage implements OnInit {
     public analyticss: string;
     public sessions: Observable<any>;
     public showEmailBox: boolean;
+    public storageEmail: string;
 
     constructor(
         public loadingCtrl: LoadingController,
@@ -76,6 +77,8 @@ export class LoginPage implements OnInit {
         private bnIdle: BnNgIdleService
         // private device: Device
     ) {
+        this.showEmailBox = true;
+
         this.loginForm = this.formBuilder.group({
             email: ['',
                 Validators.compose([Validators.required, Validators.email])],
@@ -99,24 +102,32 @@ export class LoginPage implements OnInit {
 
     ngOnInit() {
         this.storage.set('authenticated', 'false');
+        console.log('STORAGE: ' + this.storage.get('email'));
         this.storage.get('email').then((val) => {
             if (val > 1) {
-                this.showEmailBox = false;
-                console.log(val);
-            } else {
-                this.showEmailBox = true;
+                this.storageEmail = val;
+                // this.showEmailBox = false;
+                // console.log('VAL: ' + val);
             }
+            // } else {
+            //     this.showEmailBox = true;
+            //     console.log('VAL: ' + val);
+            // }
         });
     }
 
     ionViewDidEnter() {
+        console.log('STORAGE: ' + this.storage.get('email'));
         this.storage.get('email').then((val) => {
             if (val.toString().length > 1) {
-                this.showEmailBox = false;
-                console.log(val);
-            } else {
-                this.showEmailBox = true;
+                this.storageEmail = val;
             }
+            //     this.showEmailBox = false;
+            //     console.log('VAL: ' + val);
+            // } else {
+            //     this.showEmailBox = true;
+            //     console.log('VAL: ' + val);
+            // }
         });
     }
 
@@ -230,6 +241,7 @@ export class LoginPage implements OnInit {
     logOut(): void {
       this.storage.set('authenticated', 'false');
       this.storage.remove('userCode');
+      this.storage.remove('email');
       // this.storage.remove('totalDaysPregnant');
       // this.storage.remove('weeksPregnant');
       // this.storage.remove('daysPregnant');
