@@ -1,17 +1,17 @@
-import { Component, OnInit, Version} from '@angular/core';
-import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyticsService.service';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { LoadingController, AlertController, Platform} from '@ionic/angular';
-import { AuthServiceProvider } from '../../../services/user/auth.service';
-import { FcmService } from '../../../services/pushNotifications/fcm.service';
-import { Router } from '@angular/router';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
-import { ToastController} from '@ionic/angular';
-import { Storage } from '@ionic/storage';
+import {Component, OnInit, Version} from '@angular/core';
+import {AnalyticsService, Analytics, Sessions} from 'src/app/services/analyticsService.service';
+import {FormGroup, Validators, FormBuilder} from '@angular/forms';
+import {LoadingController, AlertController, Platform} from '@ionic/angular';
+import {AuthServiceProvider} from '../../../services/user/auth.service';
+import {FcmService} from '../../../services/pushNotifications/fcm.service';
+import {Router} from '@angular/router';
+import {AngularFirestore} from '@angular/fire/firestore';
+import {Observable} from 'rxjs';
+import {ToastController} from '@ionic/angular';
+import {Storage} from '@ionic/storage';
 
-import { BnNgIdleService } from 'bn-ng-idle';
-import { Device } from '@ionic-native/device';
+import {BnNgIdleService} from 'bn-ng-idle';
+import {Device} from '@ionic-native/device';
 
 import * as firebase from 'firebase/app';
 
@@ -31,30 +31,30 @@ export class LoginPage implements OnInit {
     private userID: string;
     private userEmail: boolean;
     private userPassword: string;
-	private daysSinceLogin: number;
+    private daysSinceLogin: number;
 
     analytic: Analytics =
-  {
-    page: '',
-    userID: '',
-    timestamp: '',
-    sessionID: ''
-  };
+        {
+            page: '',
+            userID: '',
+            timestamp: '',
+            sessionID: ''
+        };
 
-  session: Sessions =
-      {
-          userID: '',
-          LogOutTime: '',
-          LoginTime: '',
-          numOfClickChat: 0,
-          numOfClickCalendar: 0,
-          numOfClickLModule: 0,
-          numOfClickInfo: 0,
-          numOfClickSurvey: 0,
-          numOfClickProfile: 0,
-          numOfClickMore: 0,
-          numOfClickHome: 0
-      };
+    session: Sessions =
+        {
+            userID: '',
+            LogOutTime: '',
+            LoginTime: '',
+            numOfClickChat: 0,
+            numOfClickCalendar: 0,
+            numOfClickLModule: 0,
+            numOfClickInfo: 0,
+            numOfClickSurvey: 0,
+            numOfClickProfile: 0,
+            numOfClickMore: 0,
+            numOfClickHome: 0
+        };
 
 
     public analyticss: string;
@@ -89,15 +89,15 @@ export class LoginPage implements OnInit {
         });
 
         platform.ready().then(() => {
-          this.platform.pause.subscribe(() => {
-              console.log('[INFO] App paused');
-              this.updateLogOut();
-          });
+            this.platform.pause.subscribe(() => {
+                console.log('[INFO] App paused');
+                this.updateLogOut();
+            });
 
-          this.platform.resume.subscribe(() => {
-              console.log('[INFO] App resumed');
-          });
-      });
+            this.platform.resume.subscribe(() => {
+                console.log('[INFO] App resumed');
+            });
+        });
     }
 
     ngOnInit() {
@@ -136,36 +136,35 @@ export class LoginPage implements OnInit {
     }
 
 
-
     updateLogOut() {
-     this.analyticsService.updateLogOut(this.session);
-     console.log('added LogOutTime');
+        this.analyticsService.updateLogOut(this.session);
+        console.log('added LogOutTime');
     }
 
-  addSession() {
-  this.storage.get('userCode').then((val) => {
-    if (val) {
-      const ref = this.afs.firestore.collection('users').where('code', '==', val);
-      ref.get().then((result) => {
-        result.forEach(doc => {
+    addSession() {
+        this.storage.get('userCode').then((val) => {
+            if (val) {
+                const ref = this.afs.firestore.collection('users').where('code', '==', val);
+                ref.get().then((result) => {
+                    result.forEach(doc => {
 
-          this.session.userID = val;
-          this.session.LoginTime = firebase.firestore.FieldValue.serverTimestamp();
+                        this.session.userID = val;
+                        this.session.LoginTime = firebase.firestore.FieldValue.serverTimestamp();
 
-          this.analyticsService.addSession(this.session).then(() => {
-            console.log('successful session creation');
+                        this.analyticsService.addSession(this.session).then(() => {
+                            console.log('successful session creation');
 
-          }, err => {
-          console.log('trouble adding session');
+                        }, err => {
+                            console.log('trouble adding session');
 
+                        });
+                    });
+                });
+            }
         });
-      });
-    });
-  }
-});
 
 
-}
+    }
 
     validateUser(loginForm: FormGroup) {
         this.storage.get('email').then((val) => {
@@ -173,8 +172,8 @@ export class LoginPage implements OnInit {
             //     this.email = val.toString();
             //     this.validateEmailwithPass(val, loginForm.value.password);
             // } else {
-                this.storage.set('email', loginForm.value.email);
-                this.validateEmailwithPass(loginForm.value.email, loginForm.value.password);
+            this.storage.set('email', loginForm.value.email);
+            this.validateEmailwithPass(loginForm.value.email, loginForm.value.password);
             // }
         });
 
@@ -191,7 +190,7 @@ export class LoginPage implements OnInit {
                     result.forEach(doc => {
                         this.userID = doc.id;
                         this.userPassword = doc.get('password');
-                        if ( this.userPassword === pass) {
+                        if (this.userPassword === pass) {
                             if (this.platform.is('android')) {
                                 this.storage.set('platform', 'android');
                             } else if (this.platform.is('ios')) {
@@ -216,7 +215,8 @@ export class LoginPage implements OnInit {
 
                             // update users days since last login to 0
                             this.afs.firestore.collection('users').doc(this.userID).update({
-                                daysSinceLogin: 0 });
+                                daysSinceLogin: 0
+                            });
 
                             // get and save token
                             this.notificationSetup(this.userID);
@@ -239,16 +239,16 @@ export class LoginPage implements OnInit {
 
 
     logOut(): void {
-      this.storage.set('authenticated', 'false');
-      this.storage.remove('userCode');
-      this.storage.remove('email');
-      // this.storage.remove('totalDaysPregnant');
-      // this.storage.remove('weeksPregnant');
-      // this.storage.remove('daysPregnant');
-      this.storage.remove('totalDaysRecovery');
-      this.storage.remove('weeksRecovery');
-      this.storage.remove('daysRecovery');
-      this.router.navigateByUrl('login');
+        this.storage.set('authenticated', 'false');
+        this.storage.remove('userCode');
+        this.storage.remove('email');
+        // this.storage.remove('totalDaysPregnant');
+        // this.storage.remove('weeksPregnant');
+        // this.storage.remove('daysPregnant');
+        this.storage.remove('totalDaysRecovery');
+        this.storage.remove('weeksRecovery');
+        this.storage.remove('daysRecovery');
+        this.router.navigateByUrl('login');
     }
 
     showToast(msg) {

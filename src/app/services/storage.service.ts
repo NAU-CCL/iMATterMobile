@@ -36,9 +36,10 @@ export class StorageService {
     return this.storage.get(ITEMS_KEY);
   }
 
-	deleteItem(event): Promise<any> {
-		this.storage.remove(event);
-		return null;
+  deleteItem(event): Promise<any> {
+    this.storage.remove(event);
+    return null;
+  }
     //return this.storage.get(ITEMS_KEY).then((items: Item[]) => {
     //  if (items) {
         //items.removeItem(item);
@@ -46,7 +47,6 @@ export class StorageService {
      //   return null;
      // } else {
       //  return null;
-      }
     //});
   //}
 
