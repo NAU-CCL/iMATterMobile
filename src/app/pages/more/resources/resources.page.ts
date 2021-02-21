@@ -64,7 +64,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                 private geolocation: Geolocation,
                 private nativeGeocoder: NativeGeocoder,
                 public afs: AngularFirestore,
-                private storage: Storage, ) {
+                private storage: Storage,) {
     }
 
     ngOnInit() {
@@ -277,7 +277,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                 '<div id= "street">' + 'Street Address: ' + dstreet + '</div>';
         } else {
             contentString +=
-                '<div id= "street">' +  'Call Center (no physical location)' + '</div>';
+                '<div id= "street">' + 'Call Center (no physical location)' + '</div>';
         }
         if (!openAllDay) {
             contentString +=
@@ -294,11 +294,11 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                 '</div>';
         } else {
             contentString +=
-            '<div id = "operation">' + 'Open 24 Hours' + '</div>' +
-            '</div>';
+                '<div id = "operation">' + 'Open 24 Hours' + '</div>' +
+                '</div>';
         }
 
-        await google.maps.event.addListener(marker, 'click', function() {
+        await google.maps.event.addListener(marker, 'click', function () {
             const infowindow = new google.maps.InfoWindow({
                 content: contentString,
                 maxWidth: 300
@@ -307,14 +307,14 @@ export class ResourcesPage implements OnInit, AfterViewInit {
         });
     }
 
-    toggleView() {
-        if (this.mapView) {
-            this.mapView = false;
-            this.getListView();
-        } else {
-            this.mapView = true;
-            this.ionViewDidEnter();
-        }
+    showMapView() {
+        this.mapView = true;
+        this.ionViewDidEnter();
+    }
+
+    showListView() {
+        this.mapView = true;
+        this.getListView();
     }
 
     getListView() {
@@ -394,7 +394,8 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                         sunClose: this.doperationMClose,
                         callCenter: this.callCenter,
                         openAllDay: this.openAllDay,
-                        specialNote: this.dspecialNote
+                        specialNote: this.dspecialNote,
+                        className: this.dtitle.split(' ').join('-')
                     };
 
                     this.locationList.push(locationObj);
@@ -404,17 +405,9 @@ export class ResourcesPage implements OnInit, AfterViewInit {
             });
     }
 
-    showMoreContent() {
-        this.moreContent = !this.moreContent;
-        const more = document.getElementById('moreButton');
-        // const cardContent = (more.parentElement.parentElement).children[3];
-        // console.log(cardContent);
-        if (more.innerText === '(more)') {
-            // cardContent.classList.remove('ion-hide');
-            more.innerText = '(less)';
-        } else {
-            // cardContent.classList.add('ion-hide');
-            more.innerText = '(more)';
-        }
+    showMoreContent(locationTitle: string) {
+        // document.getElementById('moreContent').classList.remove('ion-hide');
+        console.log(locationTitle);
+
     }
 }
