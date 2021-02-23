@@ -1,94 +1,99 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button class="text-button" defaultHref="/tabs/more"></ion-back-button>
-    </ion-buttons>
-    <ion-title>Resources </ion-title>
-<!--    <ion-toggle slot="end" (ionChange)="toggleView()"></ion-toggle>-->
-  </ion-toolbar>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button class="text-button" defaultHref="/tabs/more"></ion-back-button>
+        </ion-buttons>
+        <ion-title>Resources</ion-title>
+        <!--    <ion-toggle slot="end" (ionChange)="toggleView()"></ion-toggle>-->
+    </ion-toolbar>
 
 </ion-header>
-  <ion-row>
+<ion-row>
     <ion-col>
-      <ion-buttons class="text-button" style="justify-content: center">
-        <ion-button  style="text-align: center">
-          <ion-button class="text-button" (click)="showMapView()"> Map View </ion-button>
-        </ion-button>
-      </ion-buttons>
+        <ion-buttons class="text-button" style="justify-content: center">
+            <ion-button style="text-align: center">
+                <ion-button class="text-button" (click)="showMapView()"> Map View</ion-button>
+            </ion-button>
+        </ion-buttons>
     </ion-col>
     <ion-col>
-      <ion-buttons class="text-button" style="justify-content: center">
-        <ion-button style="text-align: center">
-          <ion-button class="text-button" (click)="showListView()"> List View </ion-button>
-        </ion-button>
-      </ion-buttons>
+        <ion-buttons class="text-button" style="justify-content: center">
+            <ion-button style="text-align: center">
+                <ion-button class="text-button" (click)="showListView()"> List View</ion-button>
+            </ion-button>
+        </ion-buttons>
     </ion-col>
-  </ion-row>
+</ion-row>
 
 <ion-content>
 
-  <div #mapElement class="map" *ngIf="mapView">
-    <ion-card>
-      <ion-card-title class="ion-padding">
-        <ion-row>
-          <ion-col size="10">
-            Suggest A Resource
-          </ion-col>
-          <ion-col text-left>
-            <ion-icon name="add-circle-outline" style="text-align: left"></ion-icon>
-          </ion-col>
-        </ion-row>
-      </ion-card-title>
-    </ion-card>
-  </div>
-  <div #listElement class="list" *ngIf="!mapView">
-    <ion-list id="locationList">
-      <ion-card>
-        <ion-card-title class="ion-padding">
-          <ion-row>
-            <ion-col size="10">
-              Suggest A Resource
-            </ion-col>
-            <ion-col text-left>
-              <ion-icon name="add-circle-outline" style="text-align: left"></ion-icon>
-            </ion-col>
-          </ion-row>
-        </ion-card-title>
-      </ion-card>
-      <ng-container *ngFor="let location of this.locationList">
+    <div #mapElement class="map" *ngIf="mapView">
         <ion-card>
-          <ion-card-title class="ion-padding-top ion-padding-horizontal">{{location.title}}</ion-card-title>
-          <ion-card-subtitle *ngIf="!location.callCenter" class="ion-padding-top ion-padding-horizontal">{{location.phone}} | {{location.street}}</ion-card-subtitle>
-          <ion-card-subtitle *ngIf="location.callCenter" class="ion-padding-top ion-padding-horizontal">{{location.phone}} | Call Center</ion-card-subtitle>
-          <ion-card-subtitle class="ion-padding" style="font-size: 0.8em">
-            {{location.type}} <div id="moreButton" class="ion-float-right" (click)="showMoreContent(location.title)">(more)</div></ion-card-subtitle>
-          <ion-card-content class="ion-hide">
-            {{location.content}}
-            <div *ngIf="!location.openAllDay">
-              <div  class="ion-padding-top"><h2>Hours of Operation</h2></div>
-              <div>  Monday: {{location.mOpen}} - {{location.mClose}}  </div>
-              <div>  Tuesday: {{location.tOpen}} - {{location.tClose}}  </div>
-              <div>  Wednesday: {{location.wOpen}} - {{location.wClose}}  </div>
-              <div>  Thursday: {{location.thOpen}} - {{location.thClose}}  </div>
-              <div>  Friday: {{location.fOpen}} - {{location.fClose}}  </div>
-              <div>  Saturday: {{location.satOpen}} - {{location.satClose}}  </div>
-              <div>  Sunday: {{location.sunOpen}} - {{location.sunClose}}  </div>
-            </div>
-            <div *ngIf="location.openAllDay">
-              <div class="ion-padding-top"><h2>Open All Day</h2></div>
-            </div>
-          </ion-card-content>
+            <ion-card-title class="ion-padding">
+                <ion-row>
+                    <ion-col size="10">
+                        Suggest A Resource
+                    </ion-col>
+                    <ion-col text-left>
+                        <ion-icon name="add-circle-outline" style="text-align: left"></ion-icon>
+                    </ion-col>
+                </ion-row>
+            </ion-card-title>
         </ion-card>
-      </ng-container>
-    </ion-list>
-  </div>
+    </div>
+    <div #listElement class="list" *ngIf="!mapView">
+        <ion-list id="locationList">
+            <ion-card>
+                <ion-card-title class="ion-padding">
+                    <ion-row>
+                        <ion-col size="10">
+                            Suggest A Resource
+                        </ion-col>
+                        <ion-col text-left>
+                            <ion-icon name="add-circle-outline" style="text-align: left"></ion-icon>
+                        </ion-col>
+                    </ion-row>
+                </ion-card-title>
+            </ion-card>
+            <ng-container *ngFor="let location of this.locationList">
+                <ion-card [ngClass]="location.className">
+                    <ion-card-title class="ion-padding-top ion-padding-horizontal">{{location.title}}</ion-card-title>
+                    <ion-card-subtitle *ngIf="location.addressType === 'physical'"
+                                       class="ion-padding-top ion-padding-horizontal">{{location.phone}}
+                        | {{location.street}}</ion-card-subtitle>
+                    <ion-card-subtitle *ngIf="location.addressType === 'callCenter'"
+                                       class="ion-padding-top ion-padding-horizontal">{{location.phone}} | Call Center
+                    </ion-card-subtitle>
+                    <ion-card-subtitle class="ion-padding" style="font-size: 0.8em">
+                        {{location.type}}
+                        <div id="moreButton" class="ion-float-right" (click)="showMoreContent()">(more)</div>
+                    </ion-card-subtitle>
+                    <ion-card-content class="ion-hide" id="cardContent">
+                        {{location.content}}
+                        <div *ngIf="location.hourType === 'specific'">
+                            <div class="ion-padding-top"><h2>Hours of Operation</h2></div>
+                            <div> Monday: {{location.mOpen}} - {{location.mClose}}  </div>
+                            <div> Tuesday: {{location.tOpen}} - {{location.tClose}}  </div>
+                            <div> Wednesday: {{location.wOpen}} - {{location.wClose}}  </div>
+                            <div> Thursday: {{location.thOpen}} - {{location.thClose}}  </div>
+                            <div> Friday: {{location.fOpen}} - {{location.fClose}}  </div>
+                            <div> Saturday: {{location.satOpen}} - {{location.satClose}}  </div>
+                            <div> Sunday: {{location.sunOpen}} - {{location.sunClose}}  </div>
+                        </div>
+                        <div *ngIf="location.hourType === '24hr'">
+                            <div class="ion-padding-top"><h2>Open All Day</h2></div>
+                        </div>
+                    </ion-card-content>
+                </ion-card>
+            </ng-container>
+        </ion-list>
+    </div>
 
-  <h6 padding-horizontal>National Hot Line:</h6>
-  <p padding-horizontal>
-    <b>SAMHSA's National Helpline:</b><br> 1-800-662-HELP (4357)
-  </p>
+    <h6 padding-horizontal>National Hot Line:</h6>
+    <p padding-horizontal>
+        <b>SAMHSA's National Helpline:</b><br> 1-800-662-HELP (4357)
+    </p>
 
 </ion-content>
-
 
 

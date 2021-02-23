@@ -4,6 +4,7 @@ import {AngularFirestore} from '@angular/fire/firestore';
 import {Storage} from '@ionic/storage';
 import {NativeGeocoder, NativeGeocoderOptions, NativeGeocoderResult} from '@ionic-native/native-geocoder/ngx';
 import * as firebase from 'firebase/app';
+import {compilerSetStylingMode} from '@angular/compiler/src/render3/view/styling_state';
 
 
 declare var google;
@@ -38,8 +39,8 @@ export class ResourcesPage implements OnInit, AfterViewInit {
     doperationSatClose: string;
     doperationSunOpen: string;
     doperationSunClose: string;
-    openAllDay: boolean;
-    callCenter: boolean;
+    hourType: string;
+    addressType: string;
     userLocation: string;
     userLocationHolder: string;
     userProfileID: any;
@@ -64,7 +65,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                 private geolocation: Geolocation,
                 private nativeGeocoder: NativeGeocoder,
                 public afs: AngularFirestore,
-                private storage: Storage,) {
+                private storage: Storage, ) {
     }
 
     ngOnInit() {
@@ -134,8 +135,8 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                 this.doperationSatClose = '';
                 this.doperationSunOpen = '';
                 this.doperationSunClose = '';
-                this.openAllDay = false;
-                this.callCenter = false;
+                this.hourType = '';
+                this.addressType = '';
                 this.dphone = '';
                 this.dspecialNote = '';
 
@@ -160,16 +161,16 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                     this.doperationSatClose = doc.get('SatClose');
                     this.doperationSunOpen = doc.get('SunOpen');
                     this.doperationSunClose = doc.get('SunClose');
-                    this.callCenter = doc.get('callCenter');
-                    this.openAllDay = doc.get('openAllDay');
+                    this.hourType = doc.get('hourType');
+                    this.addressType = doc.get('addressType');
                     this.dphone = doc.get('phone');
                     this.dspecialNote = doc.get('special');
 
                     this.addMarker(this.dtitle, this.dlongitude, this.dlatitude, this.dcontent, this.dicon,
                         this.doperationMOpen, this.doperationMClose, this.doperationTOpen, this.doperationTClose, this.doperationWOpen,
                         this.doperationWClose, this.doperationThOpen, this.doperationThClose, this.doperationFOpen, this.doperationFClose,
-                        this.doperationSatOpen, this.doperationSatClose, this.doperationSunOpen, this.doperationSunClose, this.callCenter, this.openAllDay,
-                        this.dphone, this.dstreet, this.dspecialNote);
+                        this.doperationSatOpen, this.doperationSatClose, this.doperationSunOpen, this.doperationSunClose,
+                        this.addressType, this.hourType, this.dphone, this.dstreet, this.dspecialNote);
 
 
                     console.log(this.dlongitude);
@@ -226,7 +227,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
     async addMarker(dtitle, dlongitude, dlatitude, dcontent, dicon,
                     doperationMOpen, doperationMClose, doperationTOpen, doperationTClose, doperationWOpen,
                     doperationWClose, doperationThOpen, doperationThClose, doperationFOpen, doperationFClose,
-                    doperationSatOpen, doperationSatClose, doperationSunOpen, doperationSunClose, callCenter, openAllDay,
+                    doperationSatOpen, doperationSatClose, doperationSunOpen, doperationSunClose, addressType, hourType,
                     dphone, dstreet, dspecialNote) {
         console.log('added pin');
 
@@ -272,14 +273,14 @@ export class ResourcesPage implements OnInit, AfterViewInit {
             '<p>' + dcontent + '</p>' +
             '</div>' +
             '<div id = "phone">' + 'Phone: ' + dphone + '</div>';
-        if (!callCenter) {
+        if (addressType === 'physical') {
             contentString +=
                 '<div id= "street">' + 'Street Address: ' + dstreet + '</div>';
         } else {
             contentString +=
                 '<div id= "street">' + 'Call Center (no physical location)' + '</div>';
         }
-        if (!openAllDay) {
+        if (hourType === 'specific') {
             contentString +=
                 '<div id = "operation">' + 'Hours of Operation' + '</div>' +
                 '<div id = "monday">' + 'Monday: ' + doperationMOpen + '-' + doperationMClose + '</div>' +
@@ -298,7 +299,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                 '</div>';
         }
 
-        await google.maps.event.addListener(marker, 'click', function () {
+        await google.maps.event.addListener(marker, 'click', function() {
             const infowindow = new google.maps.InfoWindow({
                 content: contentString,
                 maxWidth: 300
@@ -341,8 +342,8 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                 this.doperationSatClose = '';
                 this.doperationSunOpen = '';
                 this.doperationSunClose = '';
-                this.callCenter = false;
-                this.openAllDay = false;
+                this.addressType = '';
+                this.hourType = '';
                 this.dphone = '';
                 this.dspecialNote = '';
 
@@ -367,8 +368,8 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                     this.doperationSatClose = doc.get('SatClose');
                     this.doperationSunOpen = doc.get('SunOpen');
                     this.doperationSunClose = doc.get('SunClose');
-                    this.callCenter = doc.get('callCenter');
-                    this.openAllDay = doc.get('openAllDay');
+                    this.addressType = doc.get('addressType');
+                    this.hourType = doc.get('hourType');
                     this.dphone = doc.get('phone');
                     this.dspecialNote = doc.get('special');
 
@@ -392,22 +393,27 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                         satClose: this.doperationMClose,
                         sunOpen: this.doperationMOpen,
                         sunClose: this.doperationMClose,
-                        callCenter: this.callCenter,
-                        openAllDay: this.openAllDay,
+                        addressType: this.addressType,
+                        hourType: this.hourType,
                         specialNote: this.dspecialNote,
                         className: this.dtitle.split(' ').join('-')
                     };
 
-                    this.locationList.push(locationObj);
+                    if (locationObj.addressType === undefined) {
+                        locationObj.addressType = 'physical';
+                    }
+                    if (locationObj.hourType === undefined) {
+                        locationObj.hourType = 'specific';
+                    }
 
-                    console.log(this.locationList);
+                    console.log(locationObj);
+
+                    this.locationList.push(locationObj);
                 });
             });
     }
 
-    showMoreContent(locationTitle: string) {
-        // document.getElementById('moreContent').classList.remove('ion-hide');
-        console.log(locationTitle);
-
+    showMoreContent() {
+        document.getElementById('cardContent').classList.remove('ion-hide');
     }
 }
