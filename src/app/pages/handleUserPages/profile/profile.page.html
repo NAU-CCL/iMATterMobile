@@ -109,6 +109,8 @@
                 <ion-col style="z-index: 2; position: absolute; font-size: 1.2em;">
                     <ion-icon class="ion-float-right ion-padding-horizontal ion-padding-top" name="checkmark-circle"
                               (click)="saveProfile()"></ion-icon>
+                    <ion-icon class="ion-float-left ion-padding-horizontal ion-padding-top" name="close"
+                              (click)="cancelEdit()"></ion-icon>
                 </ion-col>
             </ion-row>
             <ion-row>
@@ -118,7 +120,7 @@
                             <ion-badge
                                     style="z-index: 2; background-color: transparent; position: absolute;">{{ userEmotionIcon }}</ion-badge>
 
-                            <ion-img src="{{ user.profilePic }}" style="position: relative;"
+                            <ion-img src="{{ previewPic }}" style="position: relative;"
                                      (click)="showPics()"></ion-img>
                         </ion-card>
                         <ion-item *ngIf="showImages">

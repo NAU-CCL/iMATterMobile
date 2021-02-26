@@ -47,16 +47,16 @@ export class AppComponent {
     ) {
         this.initializeApp();
         //firebase.initializeApp(firebaseConfig);
-        this.bnIdle.startWatching(300).subscribe((isTimedOut: boolean) => {
-            if (isTimedOut) {
-
-                this.updateLogOut();
-                console.log('session expired');
-
-                this.logOut();
-
-            }
-        });
+        // this.bnIdle.startWatching(300).subscribe((isTimedOut: boolean) => {
+        //     if (isTimedOut) {
+        //
+        //         this.updateLogOut();
+        //         console.log('session expired');
+        //
+        //         this.logOut();
+        //
+        //     }
+        // });
     }
 
     logOut(): void {

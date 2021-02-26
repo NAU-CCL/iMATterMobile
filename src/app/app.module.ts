@@ -8,6 +8,7 @@ import {IonicModule, IonicRouteStrategy} from '@ionic/angular';
 import {SplashScreen} from '@ionic-native/splash-screen/ngx';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {IonicStorageModule} from '@ionic/storage';
+import {AppVersion} from '@ionic-native/app-version/ngx';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -61,6 +62,7 @@ firebase.initializeApp(environment.firebase);
         {provide: FirestoreSettingsToken, useValue: {}},
         InAppBrowser,
         DatePipe,
+        AppVersion,
     ],
     bootstrap: [AppComponent]
 })

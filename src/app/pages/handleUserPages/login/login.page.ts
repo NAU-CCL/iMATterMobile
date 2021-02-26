@@ -101,18 +101,24 @@ export class LoginPage implements OnInit {
     }
 
     ngOnInit() {
-        this.storage.set('authenticated', 'false');
         console.log('STORAGE: ' + this.storage.get('email'));
         this.storage.get('email').then((val) => {
-            if (val > 1) {
+            if (val.toString().length > 1) {
                 this.storageEmail = val;
-                // this.showEmailBox = false;
                 console.log('VAL: ' + val);
+                this.storage.get('authenticated').then((auth) => {
+                    if (auth.toString().length > 1) {
+                        console.log('AUTH: ' + auth);
+                        this.storage.get('password').then((pass) => {
+                            if (pass.toString().length > 1) {
+                                if (auth === 'true') {
+                                    this.validateEmailwithPass(val, pass);
+                                }
+                            }
+                        });
+                    }
+                });
             }
-            // } else {
-            //     this.showEmailBox = true;
-            //     console.log('VAL: ' + val);
-            // }
         });
     }
 
@@ -122,12 +128,19 @@ export class LoginPage implements OnInit {
             if (val.toString().length > 1) {
                 this.storageEmail = val;
                 console.log('VAL: ' + val);
+                this.storage.get('authenticated').then((auth) => {
+                    if (auth.toString().length > 1) {
+                        console.log('AUTH: ' + auth);
+                        this.storage.get('password').then((pass) => {
+                            if (pass.toString().length > 1) {
+                                if (auth === 'true') {
+                                    this.validateEmailwithPass(val, pass);
+                                }
+                            }
+                        });
+                    }
+                });
             }
-            //     this.showEmailBox = false;
-            // } else {
-            //     this.showEmailBox = true;
-            //     console.log('VAL: ' + val);
-            // }
         });
     }
 
@@ -176,7 +189,6 @@ export class LoginPage implements OnInit {
             this.validateEmailwithPass(loginForm.value.email, loginForm.value.password);
             // }
         });
-
     }
 
     validateEmailwithPass(email, pass) {
@@ -201,6 +213,7 @@ export class LoginPage implements OnInit {
                             this.storage.set('userCode', this.userID);
                             this.addSession();
                             this.storage.set('authenticated', 'true');
+                            this.storage.set('password', this.userPassword);
                             this.storage.set('username', doc.get('username'));
                             // this.storage.set('dueDate', doc.get('dueDate'));
                             this.storage.set('endRehabDate', doc.get('endRehabDate'));
@@ -242,6 +255,7 @@ export class LoginPage implements OnInit {
         this.storage.set('authenticated', 'false');
         this.storage.remove('userCode');
         this.storage.remove('email');
+        this.storage.remove('password');
         // this.storage.remove('totalDaysPregnant');
         // this.storage.remove('weeksPregnant');
         // this.storage.remove('daysPregnant');

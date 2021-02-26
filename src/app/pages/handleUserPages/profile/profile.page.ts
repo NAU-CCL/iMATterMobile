@@ -107,6 +107,7 @@ export class ProfilePage implements OnInit {
     public editingMode = false;
     public showImages = false;
     public allPicURLs: any;
+    public previewPic: any;
 
     public emotionIcons = {
         excited: '🤗',
@@ -302,31 +303,31 @@ export class ProfilePage implements OnInit {
         await alert.present();
     }
 
-    async updateBio(): Promise<void> {
-        const alert = await this.alertCtrl.create({
-            header: 'Update Bio',
-            inputs: [
-                {type: 'text', name: 'newBio', placeholder: 'Nothing personal!'},
-            ],
-            buttons: [
-                {text: 'Cancel'},
-                {
-                    text: 'Save',
-                    handler: data => {
-                        this.profileService.updateBio(data.newBio, this.userProfileID)
-                            .then(() => {
-                                    this.showToast('Your bio has been updated!');
-                                    this.refreshPage();
-                                },
-                                err => {
-                                    this.showToast('There was a problem updating your bio');
-                                });
-                    },
-                },
-            ],
-        });
-        await alert.present();
-    }
+    // async updateBio(): Promise<void> {
+    //     const alert = await this.alertCtrl.create({
+    //         header: 'Update Bio',
+    //         inputs: [
+    //             {type: 'text', name: 'newBio', placeholder: 'Nothing personal!'},
+    //         ],
+    //         buttons: [
+    //             {text: 'Cancel'},
+    //             {
+    //                 text: 'Save',
+    //                 handler: data => {
+    //                     this.profileService.updateBio(data.newBio, this.userProfileID)
+    //                         .then(() => {
+    //                                 this.showToast('Your bio has been updated!');
+    //                                 this.refreshPage();
+    //                             },
+    //                             err => {
+    //                                 this.showToast('There was a problem updating your bio');
+    //                             });
+    //                 },
+    //             },
+    //         ],
+    //     });
+    //     await alert.present();
+    // }
 
     /**
      * Grabs the user's necessary info for the profile
@@ -353,8 +354,10 @@ export class ProfilePage implements OnInit {
                         this.recoveryDate = date;
                         console.log(date);
                         this.user.endRehabDate = dateString;
+                        console.log(dateString);
                         this.user.currentEmotion = doc.get('mood');
                         this.user.profilePic = doc.get('profilePic');
+                        this.previewPic = this.user.profilePic;
                         this.user.points = doc.get('points');
                         this.userEmotionIcon = this.getUserEmotionIcon(this.user.currentEmotion);
 
@@ -486,7 +489,7 @@ export class ProfilePage implements OnInit {
     changePic(pic) {
         console.log(pic);
         this.showImages = false;
-        this.user.profilePic = pic;
+        this.previewPic = pic;
     }
 
     editProfile() {
@@ -495,14 +498,24 @@ export class ProfilePage implements OnInit {
 
     saveProfile() {
         let newRehabDate = (document.getElementById('newEndRehabDate') as HTMLInputElement).value;
+        console.log(this.recoveryDate);
         this.recoveryDate = newRehabDate;
+        console.log(newRehabDate);
         newRehabDate = newRehabDate.split('T')[0];
         const newBio = (document.getElementById('newBio') as HTMLInputElement).value;
+        this.user.profilePic = this.previewPic;
+        console.log(this.user.endRehabDate);
         this.user.endRehabDate = this.datePipe.transform(newRehabDate, 'MMMM d, yyyy');
+        console.log(this.user.endRehabDate);
         this.user.bio = newBio;
         this.profileService.updateProfilePic(this.user.profilePic, this.userProfileID);
         this.profileService.updateRecoveryDate(newRehabDate, this.userProfileID);
         this.profileService.updateBio(newBio, this.userProfileID);
+        this.editingMode = false;
+    }
+
+    cancelEdit() {
+        this.previewPic = this.user.profilePic;
         this.editingMode = false;
     }
 }
