@@ -9,7 +9,9 @@ import { Device } from '@ionic-native/device/ngx';
 })
 export class AboutPage implements OnInit {
   public version: any;
-  public android: any;
+  public model: any;
+  public platform: any;
+  public osVersion: any;
 
   constructor(private appVersion: AppVersion, private device: Device) { }
 
@@ -18,7 +20,9 @@ export class AboutPage implements OnInit {
       this.version = version;
       console.log(version);
     });
-    this.android = this.device.uuid;
+    this.model = this.device.model;
+    this.platform = this.device.platform;
+    this.osVersion = this.device.version;
   }
 
 }
