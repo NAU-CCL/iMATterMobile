@@ -16,13 +16,13 @@
         <ion-text class="ion-padding-horizontal"> Currently I am feeling: {{user.currentEmotion}} </ion-text>
 
         <ion-row class="ion-justify-content-center">
-<!--            <ion-col size="2">-->
-<!--                <ion-button [class.highlight]="this.user.currentEmotion == 'excited'"-->
-<!--                            size="small" fill="clear" (click)="saveEmotion('excited')">-->
-<!--                    🤗-->
-<!--                </ion-button>-->
-<!--                <p>EXCITED</p>-->
-<!--            </ion-col>-->
+            <!--            <ion-col size="2">-->
+            <!--                <ion-button [class.highlight]="this.user.currentEmotion == 'excited'"-->
+            <!--                            size="small" fill="clear" (click)="saveEmotion('excited')">-->
+            <!--                    🤗-->
+            <!--                </ion-button>-->
+            <!--                <p>EXCITED</p>-->
+            <!--            </ion-col>-->
             <ion-col size="2">
                 <ion-button [class.highlight]="this.user.currentEmotion == 'happy'" size="small" fill="clear"
                             (click)="saveEmotion('happy')">
@@ -39,10 +39,10 @@
             </ion-col>
             <ion-col size="2">
                 <ion-button [class.highlight]="this.user.currentEmotion == 'indifferent'" size="small" fill="clear"
-                            (click)="saveEmotion('indifferent')">
+                            (click)="saveEmotion('so so')">
                     😐
                 </ion-button>
-                <p>INDIFFERENT</p>
+                <p>SO-SO</p>
             </ion-col>
             <ion-col size="2">
                 <ion-button [class.highlight]="this.user.currentEmotion == 'stressed'" size="small" fill="clear"
@@ -68,79 +68,127 @@
         </ion-row>
     </ion-toolbar>
 </ion-header>
-<ion-content>
-    <!--    <ion-item lines="none">-->
-    <!--        <ion-icon name="information-circle" (click)="displayPointInfo()"> </ion-icon>-->
-    <!--        Points Earned: {{user.points}}-->
-    <!--        <ion-button slot="end" class="fill-button" *ngIf="canRedeemPoints" (click)="displayRedeemOptions = true"> Redeem </ion-button>-->
-    <!--    </ion-item>-->
-
-    <!--    <div *ngIf="displayRedeemOptions == true">-->
-    <!--        <ion-item>-->
-    <!--            <ion-label position="stacked">Which type of gift card?</ion-label>-->
-    <!--            <ion-select interface="action-sheet" placeholder="Pick a Gift Card" [(ngModel)]="chosenGCType">-->
-    <!--                <ion-select-option *ngFor="let type of gcTypes">-->
-    <!--                    {{type}}-->
-    <!--                </ion-select-option>-->
-    <!--            </ion-select>-->
-    <!--        </ion-item>-->
-    <!--        <ion-button slot="end" class="fill-button" (click)="redeemGiftCard(user.points, pointsForRedemption, chosenGCType, user.email, user.username)"> Confirm </ion-button>-->
-    <!--    </div>-->
+<ion-content id="content">
     <ion-grid>
-        <ion-row>
-            <ion-col style="z-index: 2; position: absolute; font-size: 1.2em;">
-                <ion-icon class="ion-float-right ion-padding-horizontal ion-padding-top" name="create" (click)="presentAlert('Edit profile now', '')"></ion-icon>
-            </ion-col>
-        </ion-row>
-        <ion-row>
-            <ion-col size="6">
+        <div *ngIf="!editingMode">
                 <ion-row>
-                    <ion-card>
-                        <ion-badge
-                                style="z-index: 2; background-color: transparent; position: absolute;">{{ userEmotionIcon }}</ion-badge>
-                        <ion-img src="{{ user.profilePic }}" style="position: relative;"></ion-img>
-                    </ion-card>
-                </ion-row>
-            </ion-col>
-            <ion-col size="6">
-                <ion-row>
-                    <ion-col>
-                        <h1 style="margin: 0;">{{ user.username }}</h1>
-                        <p style="font-size: 0.8em; margin: 0;">In recovery since: <br>{{ user.endRehabDate }} </p>
+                    <ion-col style="z-index: 2; position: absolute; font-size: 1.2em;">
+                        <ion-icon class="ion-float-right ion-padding-horizontal ion-padding-top" name="create" (click)="editProfile()"></ion-icon>
                     </ion-col>
                 </ion-row>
-            </ion-col>
-        </ion-row>
+                <ion-row>
+                    <ion-col size="6">
+                        <ion-row>
+                            <ion-card>
+                                <ion-badge
+                                        style="z-index: 2; background-color: transparent; position: absolute;">{{ userEmotionIcon }}</ion-badge>
+                                <ion-img src="{{ user.profilePic }}" style="position: relative;"></ion-img>
+                            </ion-card>
+                        </ion-row>
+                    </ion-col>
+                    <ion-col size="6">
+                        <ion-row>
+                            <ion-col>
+                                <h1 style="margin: 0;">{{ user.username }}</h1>
+                                <p style="font-size: 0.8em; margin: 0;">In recovery since: <br>{{ user.endRehabDate }} </p>
+                            </ion-col>
+                        </ion-row>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col>
+                        <ion-card>
+                            <ion-card-title class="ion-padding-horizontal ion-padding-top">About Me:</ion-card-title>
+                            <ion-card-content>{{ user.bio }}</ion-card-content>
+                        </ion-card>
+                    </ion-col>
+                </ion-row>
+        </div>
+        <div *ngIf="editingMode" id="editProfile">
+            <ion-row>
+                <ion-col style="z-index: 2; position: absolute; font-size: 1.2em;">
+                    <ion-icon class="ion-float-right ion-padding-horizontal ion-padding-top" name="checkmark-circle"
+                              (click)="saveProfile()"></ion-icon>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col size="6">
+                    <ion-row>
+                        <ion-card *ngIf="!showImages">
+                            <ion-badge
+                                    style="z-index: 2; background-color: transparent; position: absolute;">{{ userEmotionIcon }}</ion-badge>
+
+                            <ion-img src="{{ user.profilePic }}" style="position: relative;"
+                                     (click)="showPics()"></ion-img>
+                        </ion-card>
+                        <ion-item *ngIf="showImages">
+                            <ion-row>
+                                <ion-thumbnail class="thumbnail" *ngFor="let pic of allPicURLs" (click)="changePic(pic)">
+                                    <ion-img src="{{pic}}"></ion-img>
+                                </ion-thumbnail>
+                            </ion-row>
+                        </ion-item>
+                    </ion-row>
+                </ion-col>
+                <ion-col size="6">
+                    <ion-row>
+                        <ion-col>
+                            <h1 style="margin: 0;">{{ user.username }}</h1>
+                            <p style="font-size: 0.8em; margin: 0;">In recovery since: <br>
+                                <ion-item>
+                                    <ion-datetime id="newEndRehabDate" value="{{ recoveryDate }}"></ion-datetime>
+                                </ion-item>
+                            </p>
+                        </ion-col>
+                    </ion-row>
+                </ion-col>
+            </ion-row>
+
+            <ion-row>
+                <ion-col>
+                    <ion-card>
+                        <ion-card-title class="ion-padding-horizontal ion-padding-top">About Me:</ion-card-title>
+                        <ion-card-content>
+                            <ion-item>
+                                <ion-input id="newBio" value="{{ user.bio }}"></ion-input>
+                            </ion-item>
+                        </ion-card-content>
+                    </ion-card>
+                </ion-col>
+            </ion-row>
+        </div>
+
         <ion-row>
             <ion-col>
-                <ion-card>
-                    <ion-card-title class="ion-padding-horizontal ion-padding-top">About Me:</ion-card-title>
-                    <ion-card-content>{{ user.bio }}</ion-card-content>
-                </ion-card>
+                <ion-item lines="none">
+                    <ion-icon name="information-circle" (click)="displayPointInfo()"></ion-icon>
+                    Points Earned: {{user.points}}
+                    <ion-button slot="end" class="fill-button" *ngIf="canRedeemPoints"
+                                (click)="displayRedeemOptions = true"> Redeem
+                    </ion-button>
+                </ion-item>
+
+                <div *ngIf="displayRedeemOptions == true">
+                    <ion-item>
+                        <ion-label position="stacked">Which type of gift card?</ion-label>
+                        <ion-select interface="action-sheet" placeholder="Pick a Gift Card" [(ngModel)]="chosenGCType">
+                            <ion-select-option *ngFor="let type of gcTypes">
+                                {{type}}
+                            </ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                    <ion-button slot="end" class="fill-button"
+                                (click)="redeemGiftCard(user.points, pointsForRedemption, chosenGCType, user.email, user.username)">
+                        Confirm
+                    </ion-button>
+                </div>
             </ion-col>
         </ion-row>
-
-
-
-        <!--    &lt;!&ndash; Viewable profile to all users &ndash;&gt;-->
-        <!--    <ion-card>-->
-        <!--        <ion-img src="{{ user.profilePic }}"></ion-img>-->
-
-
-        <!--        <ion-card-subtitle padding-horizontal>-->
-        <!--            Currently feeling: {{ user.currentEmotion }}-->
-        <!--        </ion-card-subtitle>-->
-
-        <!--        <ion-card-content (click)="updateBio()">-->
-        <!--            <b>Bio (Tap to Edit): </b><br>-->
-        <!--            {{ user.bio }}-->
-        <!--        </ion-card-content>-->
-        <!--    </ion-card>-->
 
     </ion-grid>
     <!--    &lt;!&ndash; Personal User info &ndash;&gt;-->
     <ion-list>
-        <ion-list-header> Personal Information </ion-list-header>
+        <ion-list-header> Personal Information</ion-list-header>
         <ion-item>
             <ion-label>
                 <ion-grid>
@@ -150,7 +198,8 @@
                             {{user.email}}
                         </ion-col>
                         <ion-col>
-                            <ion-icon class="ion-float-right ion-padding-horizontal padding-horizontal" color="black" name="create" (click)="updateEmail()"></ion-icon>
+                            <ion-icon class="ion-float-right ion-padding-horizontal padding-horizontal" color="black"
+                                      name="create" (click)="updateEmail()"></ion-icon>
                         </ion-col>
                     </ion-row>
                 </ion-grid>
@@ -164,7 +213,8 @@
                         <ion-col class="text-left" size="4"> Password</ion-col>
                         <ion-col size="4" class="placeholder text-center"> Hidden</ion-col>
                         <ion-col>
-                            <ion-icon class="ion-float-right ion-padding-horizontal padding-horizontal" color="black" name="create" (click)="updatePassword()"></ion-icon>
+                            <ion-icon class="ion-float-right ion-padding-horizontal padding-horizontal" color="black"
+                                      name="create" (click)="updatePassword()"></ion-icon>
                         </ion-col>
                     </ion-row>
                 </ion-grid>
@@ -183,7 +233,8 @@
                             Not Provided
                         </ion-col>
                         <ion-col>
-                            <ion-icon class="ion-float-right ion-padding-horizontal padding-horizontal" color="black" name="create" (click)="updateLocation()"></ion-icon>
+                            <ion-icon class="ion-float-right ion-padding-horizontal padding-horizontal" color="black"
+                                      name="create" (click)="updateLocation()"></ion-icon>
                         </ion-col>
                     </ion-row>
                 </ion-grid>

@@ -103,13 +103,17 @@ export class ProfilePage implements OnInit {
     public chosenGCType: string;
     public gcTypes: Array<string>;
     public userEmotionIcon: string;
+    public recoveryDate: any;
+    public editingMode = false;
+    public showImages = false;
+    public allPicURLs: any;
 
     public emotionIcons = {
         excited: '🤗',
         happy: '😃',
         loved: '🥰',
-        indifferent: '😐',
-        overwhelmed: '😩',
+        soso: '😐',
+        stressed: '😩',
         sad: '😢',
         angry: '😡',
     };
@@ -134,6 +138,7 @@ export class ProfilePage implements OnInit {
         private chatService: ChatService,
         private mpnService: MoodProviderNotifService,
     ) {
+        this.getProfilePictureChoices();
     }
 
     ngOnInit() {
@@ -345,6 +350,8 @@ export class ProfilePage implements OnInit {
                         // this.user.endRehabDate = doc.get('endRehabDate');
                         const date = new Date(doc.get('endRehabDate') + 'T12:00:00');
                         const dateString = this.datePipe.transform(date, 'MMMM d, yyyy');
+                        this.recoveryDate = date;
+                        console.log(date);
                         this.user.endRehabDate = dateString;
                         this.user.currentEmotion = doc.get('mood');
                         this.user.profilePic = doc.get('profilePic');
@@ -412,7 +419,7 @@ export class ProfilePage implements OnInit {
 
         this.updateEmotionBadge(this.user.currentEmotion);
 
-        if (emotion === 'sad' || emotion === 'overwhelmed' || emotion === 'angry') {
+        if (emotion === 'sad' || emotion === 'stressed' || emotion === 'angry') {
             this.presentAlert('Stay Strong!',
                 'Remember you have your cohort to support you and health modules available to you! If you need help,' +
                 'please go to the Resources page to find help near you.');
@@ -438,10 +445,10 @@ export class ProfilePage implements OnInit {
             return this.emotionIcons.happy;
         } else if (emotion === 'loved') {
             return this.emotionIcons.loved;
-        } else if (emotion === 'indifferent') {
-            return this.emotionIcons.indifferent;
-        } else if (emotion === 'overwhelmed') {
-            return this.emotionIcons.overwhelmed;
+        } else if (emotion === 'so so') {
+            return this.emotionIcons.soso;
+        } else if (emotion === 'stressed') {
+            return this.emotionIcons.stressed;
         } else if (emotion === 'sad') {
             return this.emotionIcons.sad;
         } else if (emotion === 'angry') {
@@ -450,7 +457,7 @@ export class ProfilePage implements OnInit {
     }
 
     // present a basic alert -- used for displaying gc info
-    async presentAlert(header: string, message: string) {
+    async presentAlert(header: string, message: any) {
         const alert = await this.alertController.create({
             header,
             message,
@@ -466,6 +473,38 @@ export class ProfilePage implements OnInit {
         }).then(toast => toast.present());
     }
 
+    showPics() {
+        this.showImages = true;
+    }
+
+    getProfilePictureChoices() {
+        firebase.firestore().collection('settings').doc('userSignUpSettings').get().then((result) => {
+            this.allPicURLs = result.get('profilePictures');
+        });
+    }
+
+    changePic(pic) {
+        console.log(pic);
+        this.showImages = false;
+        this.user.profilePic = pic;
+    }
+
+    editProfile() {
+        this.editingMode = true;
+    }
+
+    saveProfile() {
+        let newRehabDate = (document.getElementById('newEndRehabDate') as HTMLInputElement).value;
+        this.recoveryDate = newRehabDate;
+        newRehabDate = newRehabDate.split('T')[0];
+        const newBio = (document.getElementById('newBio') as HTMLInputElement).value;
+        this.user.endRehabDate = this.datePipe.transform(newRehabDate, 'MMMM d, yyyy');
+        this.user.bio = newBio;
+        this.profileService.updateProfilePic(this.user.profilePic, this.userProfileID);
+        this.profileService.updateRecoveryDate(newRehabDate, this.userProfileID);
+        this.profileService.updateBio(newBio, this.userProfileID);
+        this.editingMode = false;
+    }
 }
 
 

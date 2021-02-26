@@ -2,3 +2,12 @@
 {
   height: 80%;
 }
+
+#viewPicker {
+  background-color: var(--secondary-color);
+  color: white;
+
+  .selected {
+    background-color: var(--main-color);
+  }
+}

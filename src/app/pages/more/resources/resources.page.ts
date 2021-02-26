@@ -4,7 +4,9 @@ import {AngularFirestore} from '@angular/fire/firestore';
 import {Storage} from '@ionic/storage';
 import {NativeGeocoder, NativeGeocoderOptions, NativeGeocoderResult} from '@ionic-native/native-geocoder/ngx';
 import * as firebase from 'firebase/app';
+import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
 import {compilerSetStylingMode} from '@angular/compiler/src/render3/view/styling_state';
+import {forEach} from '@angular-devkit/schematics';
 
 
 declare var google;
@@ -45,6 +47,8 @@ export class ResourcesPage implements OnInit, AfterViewInit {
     userLocationHolder: string;
     userProfileID: any;
     specialNote: any;
+    url: any;
+    docId: any;
 
     map: any;
     icon: any;
@@ -55,8 +59,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
 
     dicon: any;
 
-    public mapView = true;
-    public moreContent = false;
+    public mapView = false;
     public locationList = [];
 
     @ViewChild('mapElement', {static: false}) mapNativeElement;
@@ -65,7 +68,8 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                 private geolocation: Geolocation,
                 private nativeGeocoder: NativeGeocoder,
                 public afs: AngularFirestore,
-                private storage: Storage, ) {
+                private storage: Storage,
+                private inAppBrowser: InAppBrowser) {
     }
 
     ngOnInit() {
@@ -104,6 +108,11 @@ export class ResourcesPage implements OnInit, AfterViewInit {
     }
 
     ionViewDidEnter() {
+        this.getListView();
+        //this.initializeLocations();
+    }
+
+    enterMapView() {
         this.initializeLocations();
     }
 
@@ -139,6 +148,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                 this.addressType = '';
                 this.dphone = '';
                 this.dspecialNote = '';
+                this.url = '';
 
                 querySnapshot.docs.forEach(async doc => {
                     this.dtitle = doc.get('title');
@@ -165,12 +175,13 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                     this.addressType = doc.get('addressType');
                     this.dphone = doc.get('phone');
                     this.dspecialNote = doc.get('special');
+                    this.url = doc.get('url');
 
                     this.addMarker(this.dtitle, this.dlongitude, this.dlatitude, this.dcontent, this.dicon,
                         this.doperationMOpen, this.doperationMClose, this.doperationTOpen, this.doperationTClose, this.doperationWOpen,
                         this.doperationWClose, this.doperationThOpen, this.doperationThClose, this.doperationFOpen, this.doperationFClose,
                         this.doperationSatOpen, this.doperationSatClose, this.doperationSunOpen, this.doperationSunClose,
-                        this.addressType, this.hourType, this.dphone, this.dstreet, this.dspecialNote);
+                        this.addressType, this.hourType, this.dphone, this.dstreet, this.dspecialNote, this.url);
 
 
                     console.log(this.dlongitude);
@@ -228,7 +239,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                     doperationMOpen, doperationMClose, doperationTOpen, doperationTClose, doperationWOpen,
                     doperationWClose, doperationThOpen, doperationThClose, doperationFOpen, doperationFClose,
                     doperationSatOpen, doperationSatClose, doperationSunOpen, doperationSunClose, addressType, hourType,
-                    dphone, dstreet, dspecialNote) {
+                    dphone, dstreet, dspecialNote, url) {
         console.log('added pin');
 
         const pos = {
@@ -296,10 +307,11 @@ export class ResourcesPage implements OnInit, AfterViewInit {
         } else {
             contentString +=
                 '<div id = "operation">' + 'Open 24 Hours' + '</div>' +
+                '<div id = "specialNote">' + 'Admin Note: ' + dspecialNote + '</div>' +
                 '</div>';
         }
 
-        await google.maps.event.addListener(marker, 'click', function() {
+        await google.maps.event.addListener(marker, 'click', function () {
             const infowindow = new google.maps.InfoWindow({
                 content: contentString,
                 maxWidth: 300
@@ -310,12 +322,16 @@ export class ResourcesPage implements OnInit, AfterViewInit {
 
     showMapView() {
         this.mapView = true;
-        this.ionViewDidEnter();
+        this.enterMapView();
+        document.getElementById('mapPicker').classList.add('selected');
+        document.getElementById('listPicker').classList.remove('selected');
     }
 
     showListView() {
         this.mapView = true;
         this.getListView();
+        document.getElementById('listPicker').classList.add('selected');
+        document.getElementById('mapPicker').classList.remove('selected');
     }
 
     getListView() {
@@ -346,6 +362,9 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                 this.hourType = '';
                 this.dphone = '';
                 this.dspecialNote = '';
+                this.url = '';
+                this.docId = '';
+
 
                 querySnapshot.docs.forEach(async doc => {
                     this.dtitle = doc.get('title');
@@ -372,6 +391,8 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                     this.hourType = doc.get('hourType');
                     this.dphone = doc.get('phone');
                     this.dspecialNote = doc.get('special');
+                    this.url = doc.get('url');
+                    this.docId = doc.id;
 
                     const locationObj = {
                         title: this.dtitle,
@@ -396,7 +417,8 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                         addressType: this.addressType,
                         hourType: this.hourType,
                         specialNote: this.dspecialNote,
-                        className: this.dtitle.split(' ').join('-')
+                        url: this.url,
+                        id: this.docId
                     };
 
                     if (locationObj.addressType === undefined) {
@@ -405,15 +427,72 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                     if (locationObj.hourType === undefined) {
                         locationObj.hourType = 'specific';
                     }
+                    if (locationObj.url === undefined) {
+                        locationObj.url = '';
+                    }
 
-                    console.log(locationObj);
+                    // console.log(locationObj);
 
                     this.locationList.push(locationObj);
+                });
+                const locationList = document.getElementById('locationList') as HTMLElement;
+                console.log(locationList);
+                this.locationList.forEach(location => {
+                    const card = document.createElement('ion-card');
+                    card.id = location.id;
+                    card.addEventListener('click', this.expandLocationCard);
+                    let htmlText = '<ion-card-title class="ion-padding-top ion-padding-horizontal">' + location.title;
+                    if (location.url !== '') {
+                        htmlText += '<div class="urlLink" id="' + location.url + '"><ion-icon name="link"></ion-icon></div>';
+                    }
+                    if (location.addressType === 'physical') {
+                        htmlText += '</ion-card-title><ion-card-subtitle class="ion-padding">' + location.phone +
+                            '<br>' + location.street + '</ion-card-subtitle>';
+                    } else {
+                        htmlText += '</ion-card-title><ion-card-subtitle class="ion-padding">' + location.phone +
+                            '</ion-card-subtitle>';
+                    }
+                    htmlText += '<ion-card-content class="ion-hide" id="cardContent">' + location.content;
+                    if (location.hourType === '24hr') {
+                        htmlText += '<div><div class="ion-padding-top"><h2>Open All Day</h2></div></div>';
+                    } else {
+                        htmlText += '<h2 class="ion-padding-bottom ion-padding-top"><b>Hours of Operation</b></h2></div>' +
+                            '<div> Monday: ' + location.mOpen + '-' + location.mClose + '</div>' +
+                            '<div> Tuesday: ' + location.tOpen + '-' + location.tClose + '</div>' +
+                            '<div> Wednesday: ' + location.wOpen + '-' + location.wClose + '</div>' +
+                            '<div> Thursday: ' + location.thOpen + '-' + location.thClose + '</div>' +
+                            '<div> Friday: ' + location.fOpen + '-' + location.fClose + '</div>' +
+                            '<div> Saturday: ' + location.satOpen + '-' + location.satClose + '</div>' +
+                            '<div> Sunday: ' + location.sunOpen + '-' + location.sunClose + '</div>';
+                    }
+                    htmlText += '</ion-card-content>';
+                    card.innerHTML = htmlText;
+                    locationList.appendChild(card);
+                });
+                const links = document.getElementsByClassName('urlLink');
+                Array.from(links).forEach(element => {
+                    element.addEventListener('click', e => {
+                        const browser = this.inAppBrowser.create(element.id);
+                        browser.show();
+                    });
                 });
             });
     }
 
-    showMoreContent() {
-        document.getElementById('cardContent').classList.remove('ion-hide');
+    expandLocationCard(this: HTMLElement) {
+        console.log(this.lastChild);
+        console.log(this.id);
+        if (this.lastElementChild.classList.contains('ion-hide')) {
+            this.lastElementChild.classList.remove('ion-hide');
+        } else {
+            this.lastElementChild.classList.add('ion-hide');
+        }
+        const locationList = document.getElementsByTagName('ion-card');
+        Array.from(locationList).forEach(element => {
+            if (!element.lastElementChild.classList.contains('ion-hide') && element.id !== this.id) {
+                element.lastElementChild.classList.add('ion-hide');
+            }
+        });
     }
+
 }
