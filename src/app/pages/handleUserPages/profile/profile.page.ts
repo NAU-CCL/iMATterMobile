@@ -352,9 +352,9 @@ export class ProfilePage implements OnInit {
                         const date = new Date(doc.get('endRehabDate') + 'T12:00:00');
                         const dateString = this.datePipe.transform(date, 'MMMM d, yyyy');
                         this.recoveryDate = date;
-                        console.log(date);
+                        // console.log(date);
                         this.user.endRehabDate = dateString;
-                        console.log(dateString);
+                        // console.log(dateString);
                         this.user.currentEmotion = doc.get('mood');
                         this.user.profilePic = doc.get('profilePic');
                         this.previewPic = this.user.profilePic;
@@ -487,7 +487,6 @@ export class ProfilePage implements OnInit {
     }
 
     changePic(pic) {
-        console.log(pic);
         this.showImages = false;
         this.previewPic = pic;
     }
@@ -497,19 +496,21 @@ export class ProfilePage implements OnInit {
     }
 
     saveProfile() {
-        let newRehabDate = (document.getElementById('newEndRehabDate') as HTMLInputElement).value;
-        console.log(this.recoveryDate);
-        this.recoveryDate = newRehabDate;
-        console.log(newRehabDate);
-        newRehabDate = newRehabDate.split('T')[0];
+        const dateValue = (document.getElementById('newEndRehabDate') as HTMLInputElement).value;
+        console.log(dateValue);
+        console.log(this.user.endRehabDate);
+        if (dateValue !== this.user.endRehabDate) {
+            let newRehabDate = (document.getElementById('newEndRehabDate') as HTMLInputElement).value;
+            this.recoveryDate = newRehabDate;
+            this.user.endRehabDate = this.datePipe.transform(newRehabDate, 'MMMM d, yyyy');
+            newRehabDate = newRehabDate.split('T')[0];
+            this.profileService.updateRecoveryDate(newRehabDate, this.userProfileID);
+        }
+
         const newBio = (document.getElementById('newBio') as HTMLInputElement).value;
         this.user.profilePic = this.previewPic;
-        console.log(this.user.endRehabDate);
-        this.user.endRehabDate = this.datePipe.transform(newRehabDate, 'MMMM d, yyyy');
-        console.log(this.user.endRehabDate);
         this.user.bio = newBio;
         this.profileService.updateProfilePic(this.user.profilePic, this.userProfileID);
-        this.profileService.updateRecoveryDate(newRehabDate, this.userProfileID);
         this.profileService.updateBio(newBio, this.userProfileID);
         this.editingMode = false;
     }
