@@ -41,11 +41,11 @@
                 <p>LOVED</p>
             </ion-col>
             <ion-col size="2">
-                <ion-button [class.highlight]="this.user.currentEmotion == 'indifferent'" size="small" fill="clear"
-                            (click)="saveEmotion('so so')">
+                <ion-button [class.highlight]="this.user.currentEmotion == 'ok'" size="small" fill="clear"
+                            (click)="saveEmotion('ok')">
                     😐
                 </ion-button>
-                <p>SO-SO</p>
+                <p>OK</p>
             </ion-col>
             <ion-col size="2">
                 <ion-button [class.highlight]="this.user.currentEmotion == 'stressed'" size="small" fill="clear"
@@ -81,6 +81,13 @@
             <p> {{pregnancyCard.description}} </p>
         </ion-card-content>
     </ion-card>
+
+    <ng-container *ngFor="let challenge of (challenges|async)">
+       <ion-card *ngIf="challengeJoined(challenge.id)">
+           <ion-card-title class="ion-padding">{{challenge.title}}</ion-card-title>
+       </ion-card>
+    </ng-container>
+
     <ion-card>
         <ion-card-title class="ion-padding-horizontal">
         </ion-card-title>
@@ -107,6 +114,19 @@
                 </div>
             </app-expandable>
         </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+        <ion-card-title class="ion-padding-horizontal">
+            Build Healthy Habits
+        </ion-card-title>
+        <ion-card-content>
+            Join one (or several!) of these challenges that range from 5-30 days to build a new healthy habit.
+        </ion-card-content>
+        <ion-item class="text-button" button [routerLink]="['/tabs/home/habits']">
+            Go to Habits
+            <ion-icon md="md-arrow-forward" slot="end"></ion-icon>
+        </ion-item>
     </ion-card>
 
     <ion-card>

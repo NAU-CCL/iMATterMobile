@@ -22,6 +22,11 @@ const routes: Routes = [
                 import('../pages/forum/forum.module').then(m => m.ForumPageModule)
           },
           {
+            path: 'habits',
+            loadChildren: () =>
+                import('../pages/challenges/challenge.module').then(m => m.ChallengePageModule)
+          },
+          {
             path: 'available',
             children: [
               {

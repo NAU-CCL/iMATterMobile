@@ -124,6 +124,7 @@ export class SignupPage implements OnInit {
     token: '',
     recentNotifications: [],
     answeredSurveys: [],
+    joinedChallenges: [],
     codeEntered: true
   };
 

@@ -32,6 +32,10 @@ const routes: Routes = [
   { path: 'forum', loadChildren: './pages/forum/forum.module#ForumPageModule' },
   { path: 'forum/:id', loadChildren: './pages/forum/forum-deatails/forum-deatails.module#ForumDeatailsPageModule' },
   { path: 'forum-thread/:id', loadChildren: './pages/forum/forum-thread/forum-thread.module#ForumThreadPageModule' },
+  {
+    path: 'habits',
+    loadChildren: () => import('./pages/challenges/challenge.module').then( m => m.ChallengePageModule)
+  },
 
   //this routing is handled in tabs-routing
   /*{
@@ -40,6 +44,7 @@ const routes: Routes = [
   },
   {
     path: 'learning-module-content/:id',
+    // tslint:disable-next-line:max-line-length
     loadChildren: () => import('./pages/learning-center/learning-module-content/learning-module-content.module').then( m => m.LearningModuleContentPageModule)
   },*/
   {

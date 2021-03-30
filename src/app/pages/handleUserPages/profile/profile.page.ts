@@ -47,6 +47,7 @@ export class ProfilePage implements OnInit {
         token: '',
         recentNotifications: [],
         answeredSurveys: [],
+        joinedChallenges: [],
         codeEntered: true
 
     };
@@ -113,7 +114,7 @@ export class ProfilePage implements OnInit {
         excited: '🤗',
         happy: '😃',
         loved: '🥰',
-        soso: '😐',
+        ok: '😐',
         stressed: '😩',
         sad: '😢',
         angry: '😡',
@@ -448,8 +449,8 @@ export class ProfilePage implements OnInit {
             return this.emotionIcons.happy;
         } else if (emotion === 'loved') {
             return this.emotionIcons.loved;
-        } else if (emotion === 'so so') {
-            return this.emotionIcons.soso;
+        } else if (emotion === 'ok') {
+            return this.emotionIcons.ok;
         } else if (emotion === 'stressed') {
             return this.emotionIcons.stressed;
         } else if (emotion === 'sad') {

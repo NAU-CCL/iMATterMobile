@@ -21,32 +21,31 @@ export class LearningCenterPage implements OnInit {
     userID: '',
     timestamp: '',
     sessionID: ''
-  }
+  };
 
-  //user's code
+  // user's code
   userCode;
 
-  //Arrays to keep track of which modules have been viewed
+  // Arrays to keep track of which modules have been viewed
   newModules = [];
   viewedModules = [];
   takenQuizModules = new Map();
   highlightID;
 
-  //used for keeping track of recurring modules
+  // used for keeping track of recurring modules
   lmRecurrenceMap = new Map();
 
   public learningModules: Observable<LearningModule[]>;
 
   constructor(private router: Router,
-     private storage: Storage,
-     private learningModService: LearningModuleService,
-     private afs: AngularFirestore,
-     private analyticsService: AnalyticsService,
-     private activatedRoute: ActivatedRoute) { }
+              private storage: Storage,
+              private learningModService: LearningModuleService,
+              private afs: AngularFirestore,
+              private analyticsService: AnalyticsService,
+              private activatedRoute: ActivatedRoute) { }
 
-  ngOnInit() 
-  {
-    console.log("NG ON INIT");
+  ngOnInit() {
+    console.log('NG ON INIT');
 
     this.storage.get('authenticated').then((val) => {
       if (val === 'false') {
@@ -56,44 +55,41 @@ export class LearningCenterPage implements OnInit {
 
     this.learningModules = this.learningModService.getAllLearningModules();
 
-    //WeeksPregnant
-    this.storage.get("userCode").then(value => {
-      if (value != null)
-      {
+    // WeeksPregnant
+    this.storage.get('userCode').then(value => {
+      if (value != null) {
         this.userCode = value;
-        console.log('userCode: '+ this.userCode);
+        console.log('userCode: ' + this.userCode);
 
-        //IMPORTANT: this line is an error fix for modules not showing up
-        //Need to wait for userCode to be initialized before ionViewWillEnter is executed
+        // IMPORTANT: this line is an error fix for modules not showing up
+        // Need to wait for userCode to be initialized before ionViewWillEnter is executed
         this.ionViewWillEnter();
       }
 
       }).catch(e => {
 
-      console.log('error retrieving userCode: '+ e);
+      console.log('error retrieving userCode: ' + e);
 
       });
 
-      this.highlightID = this.activatedRoute.snapshot.paramMap.get('id');
+    this.highlightID = this.activatedRoute.snapshot.paramMap.get('id');
 
     this.addView();
 
   }
 
-  ionViewWillEnter()
-  {
-    //don't continue until userCode is initialized
-    if (this.userCode === undefined)
-    {
+  ionViewWillEnter() {
+    // don't continue until userCode is initialized
+    if (this.userCode === undefined) {
       return;
     }
-    
-    console.log("ION VIEW WILL ENTER");
 
-    //IMPORTANT: does everything related to checking recurrences
+    console.log('ION VIEW WILL ENTER');
+
+    // IMPORTANT: does everything related to checking recurrences
     this.initStorageCheckRecurrence();
 
-    //reset these every time so duplicates don't show up
+    // reset these every time so duplicates don't show up
     this.newModules = [];
     this.viewedModules = [];
     this.takenQuizModules.clear();
@@ -101,47 +97,39 @@ export class LearningCenterPage implements OnInit {
     this.learningModules.forEach(value => {
       value.forEach(singleMod => {
 
-        //Filter down to only the modules that should be visible to this user
-        if (singleMod.userVisibility.includes(this.userCode) && singleMod.moduleActive)
-        {
-          //check if this module has been viewed
-          this.storage.get(singleMod.id + "beenViewed").then(value => {
+        // Filter down to only the modules that should be visible to this user
+        if (singleMod.userVisibility.includes(this.userCode) && singleMod.moduleActive) {
+          // check if this module has been viewed
+          this.storage.get(singleMod.id + 'beenViewed').then(value => {
 
-            if (value === true) //have viewed this module
-            {
+            if (value === true) {
               this.viewedModules.push(singleMod.id);
-            }
-            else if (value === null) //have not viewed
-            {
+            } else if (value === null) {
               this.newModules.push(singleMod.id);
             }
 
           }).catch(e => {
-              
-            console.log('error retrieving beenViewed: '+ e);
-            
+
+            console.log('error retrieving beenViewed: ' + e);
+
           });
 
-          //If this module has quiz questions
-          if (singleMod.moduleQuiz.length > 0)
-          {
-            //Get this LM's numberTimesQuizTaken from local storage
-            this.storage.get(singleMod.id + "numberTimesQuizTaken").then(value => {
-        
-              if (value != null) //they've taken quiz already
-              {
+          // If this module has quiz questions
+          if (singleMod.moduleQuiz.length > 0) {
+            // Get this LM's numberTimesQuizTaken from local storage
+            this.storage.get(singleMod.id + 'numberTimesQuizTaken').then(value => {
+
+              if (value != null) {
                 this.takenQuizModules.set(singleMod.id, value);
-              }
-              else //they haven't taken quiz, value == null
-              {
-                //since value is null, need to set this one to 0
+              } else {
+                // since value is null, need to set this one to 0
                 this.takenQuizModules.set(singleMod.id, 0);
               }
-    
+
             }).catch(e => {
-              
-              console.log('error retrieving numberTimesQuizTaken: '+ e);
-              
+
+              console.log('error retrieving numberTimesQuizTaken: ' + e);
+
               });
           }
         }
@@ -154,98 +142,86 @@ export class LearningCenterPage implements OnInit {
    * stores the local storage info into lmRecurrenceMap to be accessed later
    * calls checkNewRecurring function to check each module
    */
-  initStorageCheckRecurrence()
-  {
+  initStorageCheckRecurrence() {
     this.learningModules.forEach(value => {
       value.forEach(singleMod => {
 
-        //only check modules that are currently visible to user
-        if (singleMod.userVisibility.includes(this.userCode) && singleMod.moduleActive)
-        {
-          //storedPrevUV = previous user visibility array for this module
-          this.storage.get(singleMod.id + "storedPrevUV").then(value => {
+        // only check modules that are currently visible to user
+        if (singleMod.userVisibility.includes(this.userCode) && singleMod.moduleActive) {
+          // storedPrevUV = previous user visibility array for this module
+          this.storage.get(singleMod.id + 'storedPrevUV').then(value => {
 
-            if (value != null)
-            {
-              this.lmRecurrenceMap.set(singleMod.id + "storedPrevUV", value);
-            }
-            else //module has not ever appeared for this user
-            {
-              this.lmRecurrenceMap.set(singleMod.id + "storedPrevUV", null);
+            if (value != null) {
+              this.lmRecurrenceMap.set(singleMod.id + 'storedPrevUV', value);
+            } else {
+              this.lmRecurrenceMap.set(singleMod.id + 'storedPrevUV', null);
             }
 
           }).catch(e => {
-            
-            console.log('error retrieving storedPrevUV: '+ e);
-            
-            });
-  
-          //storedCurrentUV = current user visibility array for this module
-          this.storage.get(singleMod.id + "storedCurrentUV").then(value => {
 
-  
-            if (value != null)
-            {
-              this.lmRecurrenceMap.set(singleMod.id + "storedCurrentUV", value);
+            console.log('error retrieving storedPrevUV: ' + e);
+
+            });
+
+          // storedCurrentUV = current user visibility array for this module
+          this.storage.get(singleMod.id + 'storedCurrentUV').then(value => {
+
+
+            if (value != null) {
+              this.lmRecurrenceMap.set(singleMod.id + 'storedCurrentUV', value);
+            } else {
+              this.lmRecurrenceMap.set(singleMod.id + 'storedCurrentUV', null);
             }
-            else
-            {
-              this.lmRecurrenceMap.set(singleMod.id + "storedCurrentUV", null);
-            }
-            
+
           }).catch(e => {
-            
-            console.log('error retrieving storedCurrentUV: '+ e);
-            
+
+            console.log('error retrieving storedCurrentUV: ' + e);
+
             });
-  
-          //localUVStoreDate = the date that recurrence was last updated
-          this.storage.get(singleMod.id + "localUVStoreDate").then(value => {
-  
-            
-            if (value != null)
-            {
-              this.lmRecurrenceMap.set(singleMod.id + "storedDate", value);
-            }
-            else
-            {
-              this.lmRecurrenceMap.set(singleMod.id + "storedDate", null);
+
+          // localUVStoreDate = the date that recurrence was last updated
+          this.storage.get(singleMod.id + 'localUVStoreDate').then(value => {
+
+
+            if (value != null) {
+              this.lmRecurrenceMap.set(singleMod.id + 'storedDate', value);
+            } else {
+              this.lmRecurrenceMap.set(singleMod.id + 'storedDate', null);
             }
 
-            //IMPORTANT: check this module for a new recurrence
-            //Note: this call was moved here as a fix for a local storage issue where the values above weren't being initialized in time
-            //This function call used to be in ionViewWillEnter()
+            // IMPORTANT: check this module for a new recurrence
+            // Note: this call was moved here as a fix for a local storage issue where the values above weren't being initialized in time
+            // This function call used to be in ionViewWillEnter()
             this.checkNewRecurring(singleMod);
-            
+
           }).catch(e => {
-            
-            console.log('error retrieving localUVStoreDate: '+ e);
-            
+
+            console.log('error retrieving localUVStoreDate: ' + e);
+
             });
 
         }
-      });      
+      });
     });
   }
 
 
-  addView()
-  {
+  addView() {
 
-    //this.analytic.sessionID = this.session.id;
-    this.storage.get('userCode').then((val) =>{
+    // this.analytic.sessionID = this.session.id;
+    this.storage.get('userCode').then((val) => {
       if (val) {
         const ref = this.afs.firestore.collection('users').where('code', '==', val);
-        ref.get().then((result) =>{
-          result.forEach(doc =>{
+        ref.get().then((result) => {
+          result.forEach(doc => {
             this.analytic.page = 'learningModule';
             this.analytic.userID = val;
             this.analytic.timestamp = firebase.firestore.FieldValue.serverTimestamp();
-            //this.analytic.sessionID = this.idReference;
-            this.analyticsService.addView(this.analytic).then (() =>{
+            // this.analytic.sessionID = this.idReference;
+            this.analyticsService.addView(this.analytic).then (() => {
               console.log('successful added view: learningModules');
 
-            }, err =>{
+            }, err => {
               console.log('unsucessful added view: learningModules');
 
             });
@@ -262,52 +238,44 @@ export class LearningCenterPage implements OnInit {
    * If so, then clear the local storage for that learning module so it appears as a new module
    * @param currentMod the module we're checking
    */
-  checkNewRecurring(currentMod:LearningModule)
-  {
-    var previousUserVisibility = this.lmRecurrenceMap.get(currentMod.id + "storedPrevUV");
-    var currentUserVisibility = this.lmRecurrenceMap.get(currentMod.id + "storedCurrentUV");
-    var storedDate = this.lmRecurrenceMap.get(currentMod.id + "storedDate");
+  checkNewRecurring(currentMod: LearningModule) {
+    let previousUserVisibility = this.lmRecurrenceMap.get(currentMod.id + 'storedPrevUV');
+    let currentUserVisibility = this.lmRecurrenceMap.get(currentMod.id + 'storedCurrentUV');
+    let storedDate = this.lmRecurrenceMap.get(currentMod.id + 'storedDate');
 
-    //Get the current date and put it in MM/DD/YYYY format
-    var getDate = new Date();
-    var currentDate = getDate.getMonth() + "/" + getDate.getDate() + "/"+ getDate.getFullYear();
+    // Get the current date and put it in MM/DD/YYYY format
+    let getDate = new Date();
+    let currentDate = getDate.getMonth() + '/' + getDate.getDate() + '/' + getDate.getFullYear();
 
-    //This module has never appeared before for this user, don't need to check for recurrence
-    if (previousUserVisibility === null && currentUserVisibility === null && storedDate === null)
-    {
-      //set these values to what they currently are in the database and move on
-      this.storage.set(currentMod.id + "storedPrevUV", currentMod.previousUserVisibility);
-      this.storage.set(currentMod.id + "storedCurrentUV", currentMod.userVisibility);
-      this.storage.set(currentMod.id + "localUVStoreDate", currentDate);
+    // This module has never appeared before for this user, don't need to check for recurrence
+    if (previousUserVisibility === null && currentUserVisibility === null && storedDate === null) {
+      // set these values to what they currently are in the database and move on
+      this.storage.set(currentMod.id + 'storedPrevUV', currentMod.previousUserVisibility);
+      this.storage.set(currentMod.id + 'storedCurrentUV', currentMod.userVisibility);
+      this.storage.set(currentMod.id + 'localUVStoreDate', currentDate);
 
       return;
-    }
-    else
-    {
-      //if this module's recurrence has already been checked and local storage was cleared for it
-      if ((JSON.stringify(currentMod.previousUserVisibility) === JSON.stringify(previousUserVisibility)) 
+    } else {
+      // if this module's recurrence has already been checked and local storage was cleared for it
+      if ((JSON.stringify(currentMod.previousUserVisibility) === JSON.stringify(previousUserVisibility))
         && (JSON.stringify(currentMod.userVisibility) === JSON.stringify(currentUserVisibility))
-        && (storedDate === currentDate))
-      {
+        && (storedDate === currentDate)) {
         return;
-      }
-      else //we're checking it for the first time for this recurrence
-      {
-        var newlyVisible;
+      } else {
+        let newlyVisible;
 
-        //get a list of users who weren't in the previousUserVisibility array but are in userVisibility
+        // get a list of users who weren't in the previousUserVisibility array but are in userVisibility
         newlyVisible = currentMod.userVisibility.filter(item => currentMod.previousUserVisibility.indexOf(item) < 0);
-  
-        //if this module is a newly appearing module for a user, clear the local storage
-        if (newlyVisible.includes(this.userCode))
-        {
+
+        // if this module is a newly appearing module for a user, clear the local storage
+        if (newlyVisible.includes(this.userCode)) {
           this.clearLMStorage(currentMod.id);
         }
 
-        //update these values 
-        this.storage.set(currentMod.id + "storedPrevUV", currentMod.previousUserVisibility);
-        this.storage.set(currentMod.id + "storedCurrentUV", currentMod.userVisibility);
-        this.storage.set(currentMod.id + "localUVStoreDate", currentDate);
+        // update these values
+        this.storage.set(currentMod.id + 'storedPrevUV', currentMod.previousUserVisibility);
+        this.storage.set(currentMod.id + 'storedCurrentUV', currentMod.userVisibility);
+        this.storage.set(currentMod.id + 'localUVStoreDate', currentDate);
       }
     }
   }
@@ -316,26 +284,16 @@ export class LearningCenterPage implements OnInit {
    * Takes two arrays, checks if their contents are equal
    * Order matters
    */
-  arraysEqual(arrayOne, arrayTwo): boolean
-  {
-    if (arrayOne === arrayTwo) 
-    {
+  arraysEqual(arrayOne, arrayTwo): boolean {
+    if (arrayOne === arrayTwo) {
       return true;
-    }
-    else if (arrayOne.length === 0 && arrayTwo.length === 0)
-    {
+    } else if (arrayOne.length === 0 && arrayTwo.length === 0) {
       return true;
-    }
-    else if (arrayOne.length != arrayTwo.length)
-    {
+    } else if (arrayOne.length != arrayTwo.length) {
       return false;
-    }
-    else
-    {
-      for (var index = 0; index < arrayOne.length; index++)
-      {
-        if (arrayOne[index] !== arrayTwo[index])
-        {
+    } else {
+      for (let index = 0; index < arrayOne.length; index++) {
+        if (arrayOne[index] !== arrayTwo[index]) {
           return false;
         }
         return true;
@@ -343,24 +301,23 @@ export class LearningCenterPage implements OnInit {
     }
   }
 
-  //used to clear a given LM's local storage
-  clearLMStorage(learningModID:string)
-  {
-    this.storage.remove(learningModID + "videoHasEnded");
-    this.storage.remove(learningModID + "numberTimesQuizTaken");
-    this.storage.remove(learningModID + "numberQuestionsCorrect");
-    this.storage.remove(learningModID + "didSubmit");
-    this.storage.remove(learningModID + "correctQuestions");
-    this.storage.remove(learningModID + "previousQuizAttemptPoints");
-    this.storage.remove(learningModID + "currentQuizPoints");
-    this.storage.remove(learningModID + "beenViewed");
-    this.storage.remove(learningModID + "storedPrevUV");
-    this.storage.remove(learningModID + "storedCurrentUV");
-    this.storage.remove(learningModID + "localUVStoreDate");
+  // used to clear a given LM's local storage
+  clearLMStorage(learningModID: string) {
+    this.storage.remove(learningModID + 'videoHasEnded');
+    this.storage.remove(learningModID + 'numberTimesQuizTaken');
+    this.storage.remove(learningModID + 'numberQuestionsCorrect');
+    this.storage.remove(learningModID + 'didSubmit');
+    this.storage.remove(learningModID + 'correctQuestions');
+    this.storage.remove(learningModID + 'previousQuizAttemptPoints');
+    this.storage.remove(learningModID + 'currentQuizPoints');
+    this.storage.remove(learningModID + 'beenViewed');
+    this.storage.remove(learningModID + 'storedPrevUV');
+    this.storage.remove(learningModID + 'storedCurrentUV');
+    this.storage.remove(learningModID + 'localUVStoreDate');
   }
 
-  isHighlight(learningMod: LearningModule){
-    if(this.highlightID){
+  isHighlight(learningMod: LearningModule) {
+    if (this.highlightID) {
       return this.highlightID == learningMod.id;
     }
   }

@@ -10,6 +10,7 @@ import * as firebase from 'firebase/app';
 import {Observable} from 'rxjs';
 import { FireService } from 'src/app/services/survey/fire.service';
 import { MoodProviderNotifService, EmotionNotif } from '../../services/mood-provider-notif.service';
+import { ChallengeService, Challenge, ChallengeTypes} from '../../services/challenges/challenge-service.service';
 import {delay} from 'rxjs/operators';
 
 
@@ -73,6 +74,7 @@ export class HomePage implements OnInit {
     token: '',
     recentNotifications: [],
     answeredSurveys: [],
+    joinedChallenges: [],
     codeEntered: true
   };
 
@@ -91,8 +93,6 @@ export class HomePage implements OnInit {
     timestamp: '',
     sessionID: ''
   };
-
-
 
   session: Sessions =
       {
@@ -119,6 +119,7 @@ export class HomePage implements OnInit {
   private totalDaysPregnant: any;
   private analyticss: string;
   private sessions: Observable<any>;
+  public challenges: Observable<Challenge[]>;
 
 
   constructor(private activatedRoute: ActivatedRoute, public afs: AngularFirestore,
@@ -129,6 +130,7 @@ export class HomePage implements OnInit {
               private alertController: AlertController,
               private analyticsService: AnalyticsService,
               private fs: FireService,
+              private challengeService: ChallengeService,
               private mpnService: MoodProviderNotifService) {
                 this.dropDown = [{ expanded: false }];
   }
@@ -142,6 +144,7 @@ export class HomePage implements OnInit {
     });
 
     this.getRandomQuote();
+    this.challenges = this.challengeService.getAllChallenges();
 
     this.userProfileID = this.storage.get('userCode');
     this.storage.get('userCode').then((val) => {
@@ -165,6 +168,8 @@ export class HomePage implements OnInit {
             this.user.cohort = doc.get('cohort');
             this.user.currentEmotion = doc.get('mood');
             this.user.code = doc.get('code');
+            this.user.joinedChallenges = doc.get('joinedChallenges');
+
             this.daysInRecovery = this.getDaysInRecovery(this.user.endRehabDate);
 
 
@@ -220,6 +225,7 @@ export class HomePage implements OnInit {
   }
 
   ionViewWillEnter() {
+      this.ngOnInit();
   this.addView();
 
   this.storage.get('userCode').then((val) => {
@@ -235,6 +241,15 @@ export class HomePage implements OnInit {
       }
     });
   }
+
+  challengeJoined(id): boolean {
+    const joined = [];
+    this.user.joinedChallenges.forEach(element => {
+      joined.push(element.challenge);
+    });
+    return joined.includes(id);
+  }
+
 
   async getRandomQuote() {
     const quotes: string[] = [];
