@@ -10,7 +10,7 @@ export interface Challenge {
     description: string;
     type: string;
     length: number;
-    pictures: any[];
+    coverPicture: string;
     contents: any[];
 }
 
@@ -73,7 +73,7 @@ export class ChallengeService {
     }
 
     getChallenge(id: string) {
-        return this.afs.doc<Challenge>(id).valueChanges().pipe(
+        return this.afs.collection('challenges').doc<Challenge>(id).valueChanges().pipe(
             take(1),
             map(challenge => {
                 challenge.id = id;

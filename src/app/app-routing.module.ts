@@ -36,6 +36,10 @@ const routes: Routes = [
     path: 'habits',
     loadChildren: () => import('./pages/challenges/challenge.module').then( m => m.ChallengePageModule)
   },
+  {
+    path: 'habit/:id',
+    loadChildren: () => import('./pages/challenges/view/viewChallenge.module').then( m => m.ViewChallengePageModule)
+  },
 
   //this routing is handled in tabs-routing
   /*{
