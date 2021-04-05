@@ -39,14 +39,17 @@
     <ion-item style="padding-top: 15px"><ion-title class="ion-text-center">Tasks to Complete</ion-title></ion-item>
       <ion-list>
           <ng-container *ngFor="let task of challenge.contents; let i = index">
-            <ion-card>
+            <ion-card (click)="expand($event.target)">
                 <ion-card-title class="ion-padding"
                                 style="background-color: var(--ion-color-tertiary);
                                 color: whitesmoke">
                     Day {{i+1}}: {{task.title}}
+                    <div class="ion-float-right" *ngIf="joined">
+                        <ion-icon *ngIf="i < daysCompleted" name="star" [style.color]="'gold'"></ion-icon>
+                    </div>
                 </ion-card-title>
-                <ion-card-subtitle class="ion-padding">{{task.activity}}</ion-card-subtitle>
-                <ion-card-content>
+                <ion-card-subtitle class="ion-hide ion-padding">{{task.activity}}</ion-card-subtitle>
+                <ion-card-content class="ion-hide">
                     <ion-row>
                         Benefits:
                         <ng-container *ngFor="let benefit of task.benefits">
@@ -56,7 +59,10 @@
                     <ion-row>
                         Tips:
                         <ng-container *ngFor="let tip of task.tips">
-                            <ion-item class="taskItem">{{tip}}</ion-item>
+                            <ion-item *ngIf="!urls.includes(tip)" class="taskItem">{{tip}}</ion-item>
+                            <ion-item *ngIf="urls.includes(tip)" class="taskItem url" (click)="this.inAppBrowser.create(tip).show();">
+                                <u>{{tip}}</u>
+                            </ion-item>
                         </ng-container>
                     </ion-row>
                 </ion-card-content>
@@ -67,6 +73,7 @@
 
 <ion-footer>
     <ion-toolbar>
-        <ion-button color="success" expand="full">Join Challenge</ion-button>
+        <ion-button *ngIf="!joined" color="success" expand="full" (click)="joinChallenge(challenge.id)">Join Challenge</ion-button>
+        <ion-button *ngIf="joined" color="danger" expand="full" (click)="quitChallenge(challenge.id)">Quit Challenge</ion-button>
     </ion-toolbar>
 </ion-footer>

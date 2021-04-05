@@ -19,13 +19,13 @@
         <ion-text class="ion-padding-horizontal"> Currently I am feeling: {{user.currentEmotion}} </ion-text>
 
         <ion-row class="ion-justify-content-center">
-<!--            <ion-col size="2">-->
-<!--                <ion-button [class.highlight]="this.user.currentEmotion == 'excited'"-->
-<!--                            size="small" fill="clear" (click)="saveEmotion('excited')">-->
-<!--                    🤗-->
-<!--                </ion-button>-->
-<!--                <p>EXCITED</p>-->
-<!--            </ion-col>-->
+            <!--            <ion-col size="2">-->
+            <!--                <ion-button [class.highlight]="this.user.currentEmotion == 'excited'"-->
+            <!--                            size="small" fill="clear" (click)="saveEmotion('excited')">-->
+            <!--                    🤗-->
+            <!--                </ion-button>-->
+            <!--                <p>EXCITED</p>-->
+            <!--            </ion-col>-->
             <ion-col size="2">
                 <ion-button [class.highlight]="this.user.currentEmotion == 'happy'" size="small" fill="clear"
                             (click)="saveEmotion('happy')">
@@ -83,9 +83,20 @@
     </ion-card>
 
     <ng-container *ngFor="let challenge of (challenges|async)">
-       <ion-card *ngIf="challengeJoined(challenge.id)">
-           <ion-card-title class="ion-padding">{{challenge.title}}</ion-card-title>
-       </ion-card>
+        <ion-card *ngIf="challengeJoined(challenge.id)">
+            <ion-card-title class="ion-padding"
+                            [routerLink]="['/habit', challenge.id]">{{challenge.title}}</ion-card-title>
+            <ion-card-subtitle class="ion-padding" style="padding-top: 0">
+                {{challenge.contents[challengeProgress[challenge.id]].title}}
+                <div class="ion-float-right">
+                    DONE
+                    <ion-checkbox (click)="completeDay(challenge.id)"
+                                  style="font-size: 0.8em"
+                                  checked="{{daysComplete[challenge.id]}}">
+                    </ion-checkbox>
+                </div>
+            </ion-card-subtitle>
+        </ion-card>
     </ng-container>
 
     <ion-card>

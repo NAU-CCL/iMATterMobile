@@ -48,6 +48,7 @@ export class ProfilePage implements OnInit {
         recentNotifications: [],
         answeredSurveys: [],
         joinedChallenges: [],
+        completedChallenges: [],
         codeEntered: true
 
     };

@@ -96,7 +96,7 @@ export class ChallengePage implements OnInit {
     challengeJoined(id): boolean {
         const joined = [];
         this.joinedChallenges.forEach(element => {
-            joined.push(element.challenge);
+            joined.push(element.challenge.id);
         });
         return joined.includes(id);
     }

@@ -38,17 +38,8 @@
 <ion-content *ngIf="challengeView == 'joined'">
     <ion-list>
         <ng-container *ngFor="let challenge of ( challenges | async )">
-            <ion-card *ngIf="challengeJoined(challenge.id)" [ngClass]="challenge.id" (click)="expandCard(challenge.id)">
+            <ion-card *ngIf="challengeJoined(challenge.id)" button [routerLink]="['/habit', challenge.id]" [ngClass]="challenge.id">
                 <ion-card-title class="ion-padding">{{challenge.title}}</ion-card-title>
-                <ion-card-subtitle class="ion-padding ion-hide">{{challenge.description}}"</ion-card-subtitle>
-                <ion-card-content class="ion-hide" style="padding: 0">
-                    <ion-list>
-                        <ion-item *ngFor="let day of challenge.contents">{{day.title}}</ion-item>
-                    </ion-list>
-                    <ion-row style="background-color: var(--ion-color-danger); font-size: 1.5em; color: white">
-                        <ion-col class="ion-text-center" (click)="quitChallenge(challenge.id)">QUIT</ion-col>
-                    </ion-row>
-                </ion-card-content>
             </ion-card>
         </ng-container>
     </ion-list>

@@ -41,6 +41,7 @@ export class ViewableProfilePage implements OnInit {
         recentNotifications: [],
         answeredSurveys: [],
         joinedChallenges: [],
+        completedChallenges: [],
         codeEntered: true
     };
 
