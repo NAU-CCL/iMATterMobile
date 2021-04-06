@@ -502,10 +502,9 @@ export class ProfilePage implements OnInit {
         console.log(dateValue);
         console.log(this.user.endRehabDate);
         if (dateValue !== this.user.endRehabDate) {
-            let newRehabDate = (document.getElementById('newEndRehabDate') as HTMLInputElement).value;
+            const newRehabDate = (document.getElementById('newEndRehabDate') as HTMLInputElement).value;
             this.recoveryDate = newRehabDate;
-            this.user.endRehabDate = this.datePipe.transform(newRehabDate, 'MMMM d, yyyy');
-            newRehabDate = newRehabDate.split('T')[0];
+            this.user.endRehabDate = dateValue.split('T')[0]
             this.profileService.updateRecoveryDate(newRehabDate, this.userProfileID);
         }
 
