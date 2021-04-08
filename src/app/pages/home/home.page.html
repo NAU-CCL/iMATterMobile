@@ -82,23 +82,6 @@
         </ion-card-content>
     </ion-card>
 
-    <ng-container *ngFor="let challenge of (challenges|async)">
-        <ion-card *ngIf="challengeJoined(challenge.id)">
-            <ion-card-title class="ion-padding"
-                            [routerLink]="['/habit', challenge.id]">{{challenge.title}}</ion-card-title>
-            <ion-card-subtitle class="ion-padding" style="padding-top: 0">
-                {{challenge.contents[challengeProgress[challenge.id]].title}}
-                <div class="ion-float-right">
-                    DONE
-                    <ion-checkbox (click)="completeDay(challenge.id)"
-                                  style="font-size: 0.8em"
-                                  checked="{{daysComplete[challenge.id]}}">
-                    </ion-checkbox>
-                </div>
-            </ion-card-subtitle>
-        </ion-card>
-    </ng-container>
-
     <ion-card>
         <ion-card-title class="ion-padding-horizontal">
         </ion-card-title>
@@ -106,6 +89,26 @@
             <img src="{{quoteCard.picture}}" alt="couldn't load">
         </ion-card-content>
     </ion-card>
+
+    <ng-container *ngFor="let challenge of (challenges|async)">
+        <ion-card *ngIf="challengeJoined(challenge.id)">
+            <ion-card-title class="ion-padding"
+                            [routerLink]="['/habit', challenge.id]">{{challenge.title}}</ion-card-title>
+            <ion-card-subtitle class="ion-padding" style="padding-top: 0">
+                <b>{{challenge.contents[challengeProgress[challenge.id]].title}}</b>: {{challenge.contents[challengeProgress[challenge.id]].activity}}
+
+            </ion-card-subtitle>
+            <ion-card-content>
+                <div class="ion-float-right">
+                    DONE
+                    <ion-checkbox (click)="completeDay(challenge.id)"
+                                  style="font-size: 0.8em"
+                                  checked="{{daysComplete[challenge.id]}}">
+                    </ion-checkbox>
+                </div>
+            </ion-card-content>
+        </ion-card>
+    </ng-container>
 
     <ion-card (click)="expandItem(drop)" *ngFor="let drop of dropDown">
         <ion-card-header>

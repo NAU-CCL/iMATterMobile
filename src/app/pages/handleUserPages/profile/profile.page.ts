@@ -352,10 +352,9 @@ export class ProfilePage implements OnInit {
                         // this.user.endRehabDate = this.datepipe.transform(rehabDate, 'D MM YYYY');
                         // this.user.endRehabDate = doc.get('endRehabDate');
                         const date = new Date(doc.get('endRehabDate') + 'T12:00:00');
-                        const dateString = this.datePipe.transform(date, 'MMMM d, yyyy');
                         this.recoveryDate = date;
                         // console.log(date);
-                        this.user.endRehabDate = dateString;
+                        this.user.endRehabDate = doc.get('endRehabDate');
                         // console.log(dateString);
                         this.user.currentEmotion = doc.get('mood');
                         this.user.profilePic = doc.get('profilePic');
@@ -502,10 +501,11 @@ export class ProfilePage implements OnInit {
         console.log(dateValue);
         console.log(this.user.endRehabDate);
         if (dateValue !== this.user.endRehabDate) {
-            const newRehabDate = (document.getElementById('newEndRehabDate') as HTMLInputElement).value;
-            this.recoveryDate = newRehabDate;
-            this.user.endRehabDate = dateValue.split('T')[0]
-            this.profileService.updateRecoveryDate(newRehabDate, this.userProfileID);
+            // const newRehabDate = (document.getElementById('newEndRehabDate') as HTMLInputElement).value;
+            this.user.endRehabDate = dateValue.split('T')[0];
+            const date = new Date(this.user.endRehabDate + 'T12:00:00');
+            this.recoveryDate = date;
+            this.profileService.updateRecoveryDate(this.user.endRehabDate, this.userProfileID);
         }
 
         const newBio = (document.getElementById('newBio') as HTMLInputElement).value;

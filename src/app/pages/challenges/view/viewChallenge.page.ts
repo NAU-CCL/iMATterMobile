@@ -71,6 +71,7 @@ export class ViewChallengePage implements OnInit {
                        }
                    });
                 });
+                console.log(this.challenge);
             });
         }
 

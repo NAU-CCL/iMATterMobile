@@ -2,7 +2,13 @@
     <ion-toolbar>
         <ion-title>Habits</ion-title>
         <ion-buttons slot="start">
-            <ion-back-button class="text-button" defaultHref="/tabs/home"></ion-back-button>
+            <ion-back-button *ngIf="challengeView == 'all' || challengeView == 'joined'" class="text-button" defaultHref="/tabs/home"></ion-back-button>
+            <ion-button *ngIf="challengeView != 'all' && challengeView != 'joined'"
+                        class="text-button"
+                        (click)="this.challengeView = 'all'"
+                        style="font-size: 0.8em">
+                <ion-icon name="arrow-back" style="font-size: 24px"></ion-icon>
+            </ion-button>
         </ion-buttons>
     </ion-toolbar>
 </ion-header>
@@ -52,9 +58,6 @@
                 <ion-card-title class="ion-padding">{{challenge.title}}</ion-card-title>
             </ion-card>
         </ng-container>
-        <ion-card style="background-color: var(--main-color)" (click)="challengeView = 'all'">
-            <ion-card-title class="ion-padding">View Categories</ion-card-title>
-        </ion-card>
     </ion-list>
 </ion-content>
 

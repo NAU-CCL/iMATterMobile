@@ -90,7 +90,7 @@
                         <ion-row>
                             <ion-col>
                                 <h1 style="margin: 0;">{{ user.username }}</h1>
-                                <p style="font-size: 0.8em; margin: 0;">In recovery since: <br>{{ user.endRehabDate }} </p>
+                                <p style="font-size: 0.8em; margin: 0;">In recovery since: <br>{{ this.datePipe.transform(this.recoveryDate, 'MMMM d, yyyy') }} </p>
                             </ion-col>
                         </ion-row>
                     </ion-col>

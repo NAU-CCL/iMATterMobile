@@ -50,13 +50,13 @@
                 </ion-card-title>
                 <ion-card-subtitle class="ion-hide ion-padding">{{task.activity}}</ion-card-subtitle>
                 <ion-card-content class="ion-hide">
-                    <ion-row>
+                    <ion-row *ngIf="task.benefits[0] != ''">
                         Benefits:
                         <ng-container *ngFor="let benefit of task.benefits">
                             <ion-item class="taskItem">{{benefit}}</ion-item>
                         </ng-container>
                     </ion-row>
-                    <ion-row>
+                    <ion-row *ngIf="task.tips[0] != ''">
                         Tips:
                         <ng-container *ngFor="let tip of task.tips">
                             <ion-item *ngIf="!urls.includes(tip)" class="taskItem">{{tip}}</ion-item>

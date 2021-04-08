@@ -267,6 +267,7 @@ export class HomePage implements OnInit {
                 this.challengeService.updateJoinedChallenges(this.userProfileID, this.user.joinedChallenges).then(r => console.log(r));
             }
         });
+        this.presentAlert('Congratulations!', 'Good work completing today\'s healthy habit. Check back tomorrow!');
     }
 
     async getRandomQuote() {
