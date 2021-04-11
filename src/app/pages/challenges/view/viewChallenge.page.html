@@ -45,7 +45,9 @@
                                 color: whitesmoke">
                     Day {{i+1}}: {{task.title}}
                     <div class="ion-float-right" *ngIf="joined">
-                        <ion-icon *ngIf="i < daysCompleted" name="star" [style.color]="'gold'"></ion-icon>
+                        <ion-icon *ngIf="i == daysCompleted && !dayComplete" name="square-outline" id="{{i}}" style="color: var(--ion-color-success)"
+                                  (click)="completeDay(challenge.id, i)" class="icon"></ion-icon>
+                        <ion-icon *ngIf="i < daysCompleted" name="checkbox" style="color: var(--ion-color-success)"></ion-icon>
                     </div>
                 </ion-card-title>
                 <ion-card-subtitle class="ion-hide ion-padding">{{task.activity}}</ion-card-subtitle>

@@ -148,6 +148,45 @@ export class HomePage implements OnInit {
         });
 
         this.getRandomQuote();
+        /*
+
+        this.storage.get('weeksPregnant').then((val) => {
+          if (val) {
+            this.weeksPregnant = val;
+            console.log(val);
+
+          }
+        });
+
+        this.storage.get('daysPregnant').then((val) => {
+          if (val >= 0 ) {
+            this.daysPregnant = val;
+            console.log(val);
+
+          }
+        });
+
+        this.storage.get('totalDaysPregnant').then((val) => {
+          if (val) {
+            this.totalDaysPregnant = val.toString();
+            console.log(val);
+            const ref = this.afs.firestore.collection('pregnancyUpdates')
+                .where('day', '==', this.totalDaysPregnant);
+            ref.get().then((result) => {
+              result.forEach(doc => {
+                this.pregnancyCard.day = doc.get('day');
+                this.pregnancyCard.picture = doc.get('picture');
+                this.pregnancyCard.description = doc.get('description');
+              });
+            });
+          }
+        });*/
+    }
+
+    ionViewWillEnter() {
+        console.log('ionViewWillEnter()');
+        // this.ngOnInit();
+        this.addView();
         this.challenges = this.challengeService.getAllChallenges();
 
         this.userProfileID = this.storage.get('userCode');
@@ -198,46 +237,6 @@ export class HomePage implements OnInit {
             }
         });
 
-
-        /*
-
-        this.storage.get('weeksPregnant').then((val) => {
-          if (val) {
-            this.weeksPregnant = val;
-            console.log(val);
-
-          }
-        });
-
-        this.storage.get('daysPregnant').then((val) => {
-          if (val >= 0 ) {
-            this.daysPregnant = val;
-            console.log(val);
-
-          }
-        });
-
-        this.storage.get('totalDaysPregnant').then((val) => {
-          if (val) {
-            this.totalDaysPregnant = val.toString();
-            console.log(val);
-            const ref = this.afs.firestore.collection('pregnancyUpdates')
-                .where('day', '==', this.totalDaysPregnant);
-            ref.get().then((result) => {
-              result.forEach(doc => {
-                this.pregnancyCard.day = doc.get('day');
-                this.pregnancyCard.picture = doc.get('picture');
-                this.pregnancyCard.description = doc.get('description');
-              });
-            });
-          }
-        });*/
-    }
-
-    ionViewWillEnter() {
-        this.ngOnInit();
-        this.addView();
-
         this.storage.get('userCode').then((val) => {
             if (val) {
                 this.userProfileID = val;
@@ -252,6 +251,13 @@ export class HomePage implements OnInit {
         });
     }
 
+    doRefresh(event) {
+        setTimeout(() => {
+            this.ionViewWillEnter();
+            event.target.complete();
+        }, 1000);
+    }
+
     challengeJoined(id): boolean {
         const joined = [];
         this.user.joinedChallenges.forEach(item => {
@@ -261,13 +267,17 @@ export class HomePage implements OnInit {
     }
 
     completeDay(id) {
+        const check = document.getElementById(id) as HTMLInputElement;
+        console.log(check.checked);
         this.user.joinedChallenges.forEach(item => {
             if (item.challenge.id === id) {
                 item.dayComplete = !item.dayComplete;
                 this.challengeService.updateJoinedChallenges(this.userProfileID, this.user.joinedChallenges).then(r => console.log(r));
             }
         });
-        this.presentAlert('Congratulations!', 'Good work completing today\'s healthy habit. Check back tomorrow!');
+        if (!check.checked){
+            this.presentAlert('Congratulations!', 'Good work completing today\'s healthy habit. Check back tomorrow!');
+        }
     }
 
     async getRandomQuote() {

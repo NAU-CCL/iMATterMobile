@@ -36,6 +36,7 @@ export class ViewChallengePage implements OnInit {
     };
 
     public daysCompleted;
+    public dayComplete;
 
     constructor(private challengeService: ChallengeService,
                 private storage: Storage,
@@ -88,6 +89,7 @@ export class ViewChallengePage implements OnInit {
                                 if (item.challenge.id === this.challenge.id) {
                                     this.joined = true;
                                     this.daysCompleted = item.currentDay;
+                                    this.dayComplete = item.dayComplete;
                                     if (!item.dayComplete) {
                                         this.daysCompleted--;
                                     }
@@ -101,6 +103,9 @@ export class ViewChallengePage implements OnInit {
     }
 
     expand(element) {
+        if (element.classList.contains('icon')) {
+            return;
+        }
         let item = element.nextSibling;
         while (item !== null) {
             if (item.classList.contains('ion-hide')) {
@@ -139,6 +144,23 @@ export class ViewChallengePage implements OnInit {
         });
 
         this.joined = false;
+    }
+
+    completeDay(challengeId, id) {
+        this.joinedChallenges.forEach(item => {
+            if (item.challenge.id === challengeId) {
+                item.dayComplete = !item.dayComplete;
+                this.challengeService.updateJoinedChallenges(this.userID, this.joinedChallenges).then(r => console.log(r));
+            }
+        });
+        const check = document.getElementById(id) as HTMLInputElement;
+        if (check.name === 'checkbox') {
+            check.name = 'square-outline';
+        } else {
+            check.name = 'checkbox';
+            this.presentAlert('Congratulations!', 'Good work completing today\'s healthy habit. Check back tomorrow!');
+        }
+
     }
 
     async presentAlert(header: string, message: string) {

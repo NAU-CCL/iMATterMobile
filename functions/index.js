@@ -127,7 +127,6 @@ exports.updateDays = functions.https.onRequest((req, res) => {
 
             // update challenge days
             let updateJoinedChallenges = doc.data().joinedChallenges;
-            let updateCompletedChallenges = doc.data().completedChallenges;
 
             for (let challenge of updateJoinedChallenges) {
                 if (challenge.dayComplete) {
@@ -137,7 +136,6 @@ exports.updateDays = functions.https.onRequest((req, res) => {
                     if (challenge.currentDay > challenge.challenge.length) {
                         challenge.dateFinished = new Date();
                         updateJoinedChallenges.splice(updateJoinedChallenges.indexOf(challenge), 1)
-                        updateCompletedChallenges.append(challenge);
                     }
                 }
             }
@@ -155,10 +153,6 @@ exports.updateDays = functions.https.onRequest((req, res) => {
             currentUser.update({
                 joinedChallenges: updateJoinedChallenges
             });
-
-            currentUser.update({
-                completedChallenges: updateCompletedChallenges
-            })
 
             // currentUser.update({
             // 	totalDaysRecovery: recoveryDays
