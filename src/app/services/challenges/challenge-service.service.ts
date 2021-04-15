@@ -72,6 +72,13 @@ export class ChallengeService {
             });
     }
 
+    getCompletedChallenges(userID: string) {
+        return this.afs.firestore.collection('users').doc(userID).get()
+            .then((doc) => {
+                return doc.data().completedChallenges;
+            });
+    }
+
     getChallenge(id: string) {
         return this.afs.collection('challenges').doc<Challenge>(id).valueChanges().pipe(
             take(1),
@@ -87,6 +94,9 @@ export class ChallengeService {
             .doc(userID).update({joinedChallenges: joined});
     }
 
-
+    updateCompletedChallenges(userID: string, completed: any[]) {
+        return this.afs.firestore.collection('users')
+            .doc(userID).update({completedChallenges: completed});
+    }
 }
 

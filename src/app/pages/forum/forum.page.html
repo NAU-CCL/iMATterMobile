@@ -39,20 +39,20 @@
   <ion-list *ngIf="allQuestions == true">
     <ion-item  button [routerLink]="['/forum/forum-thread', question.id]" *ngFor="let question of questionList">
       <ion-col>
-        <ion-row class="timestamp">
-          Posted: {{ question.timestamp.seconds * 1000 | date:'MM-dd-yyyy h:mm:ss a' }}
-        </ion-row>
         <ion-row>
           <div class="padding-top">
             <ion-label class="dots">
-            {{ question.title }}
-            </ion-label>
-            <ion-label class="numOfComments">
-              Answers: {{question.numOfAnswers}}
+            {{ question.description}}
             </ion-label>
           </div>
         <ion-icon md="md-arrow-forward" slot="end"></ion-icon>
         </ion-row>
+        <ion-row class="numOfComments">
+          Answers: {{question.numOfAnswers}}
+        </ion-row>
+        <ion-label class="timestamp">
+          Posted: {{ question.timestamp.seconds * 1000 | date:'MM-dd-yyyy h:mm:ss a' }}
+        </ion-label>
       </ion-col>
     </ion-item>
   </ion-list>

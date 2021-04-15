@@ -95,7 +95,7 @@
     </ion-card>
 
     <ng-container *ngFor="let challenge of (challenges|async)">
-        <ion-card *ngIf="challengeJoined(challenge.id)">
+        <ion-card *ngIf="challengeJoined(challenge.id) && !daysComplete[challenge.id]" id="card{{challenge.id}}">
             <ion-card-title class="ion-padding"
                             [routerLink]="['/habit', challenge.id]">{{challenge.title}}</ion-card-title>
             <ion-card-subtitle class="ion-padding" style="padding-top: 0">
@@ -114,7 +114,7 @@
         </ion-card>
     </ng-container>
 
-    <ion-card (click)="expandItem(drop)" *ngFor="let drop of dropDown">
+    <!--ion-card (click)="expandItem(drop)" *ngFor="let drop of dropDown">
         <ion-card-header>
             <ion-card-title>Recent Notifications</ion-card-title>
         </ion-card-header>
@@ -132,7 +132,7 @@
                 </div>
             </app-expandable>
         </ion-card-content>
-    </ion-card>
+    </ion-card>-->
 
     <ion-card>
         <ion-card-title class="ion-padding-horizontal">

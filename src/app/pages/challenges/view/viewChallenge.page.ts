@@ -26,6 +26,7 @@ export class ViewChallengePage implements OnInit {
     public joined = false;
 
     public joinedChallenges = [];
+    public completedChallenges = [];
     challenge: Challenge = {
         title: '',
         description: '',
@@ -96,6 +97,9 @@ export class ViewChallengePage implements OnInit {
                                 }
                             });
                         });
+                        this.challengeService.getCompletedChallenges(this.userID).then(resp => {
+                            this.completedChallenges = resp;
+                        });
                     });
                 });
             }
@@ -131,6 +135,9 @@ export class ViewChallengePage implements OnInit {
         this.challengeService.updateJoinedChallenges(this.userID, this.joinedChallenges).then(() => {
             this.presentAlert('Congratulations!', 'You\'ve joined this challenge');
         });
+        setTimeout(() => {
+            this.ionViewWillEnter();
+        }, 1000);
     }
 
     quitChallenge(id) {
@@ -147,20 +154,98 @@ export class ViewChallengePage implements OnInit {
     }
 
     completeDay(challengeId, id) {
-        this.joinedChallenges.forEach(item => {
-            if (item.challenge.id === challengeId) {
-                item.dayComplete = !item.dayComplete;
-                this.challengeService.updateJoinedChallenges(this.userID, this.joinedChallenges).then(r => console.log(r));
-            }
-        });
         const check = document.getElementById(id) as HTMLInputElement;
         if (check.name === 'checkbox') {
             check.name = 'square-outline';
+            this.joinedChallenges.forEach(item => {
+                if (item.challenge.id === challengeId) {
+                    item.dayComplete = !item.dayComplete;
+                    this.challengeService.updateJoinedChallenges(this.userID, this.joinedChallenges).then(r => console.log(r));
+                }
+            });
         } else {
-            check.name = 'checkbox';
-            this.presentAlert('Congratulations!', 'Good work completing today\'s healthy habit. Check back tomorrow!');
+            this.areYouSure(challengeId, id);
         }
+    }
 
+    async areYouSure(id, checkbox) {
+        const alert = await this.alertController.create({
+            header: 'Are you sure?',
+            message: '',
+            buttons: [
+                {
+                    text: 'Yes',
+                    handler: () => {
+                        alert.dismiss(true);
+                        if (this.checkForComplete(id)) {
+                            this.joined = false;
+                            this.presentAlert('WOW! You finished the challenge!', 'Way to stick with it.');
+                            // setTimeout(() => {
+                            //     this.ionViewWillEnter();
+                            // }, 1000);
+                        } else {
+                            this.presentAlert('Congratulations!', 'Good work on completing the task for today.' +
+                                'Check back tomorrow for another challenge.');
+                        }
+
+                        this.joinedChallenges.forEach(item => {
+                            if (item.challenge.id === id) {
+                                item.dayComplete = !item.dayComplete;
+                                this.challengeService.updateJoinedChallenges(this.userID,
+                                    this.joinedChallenges).then(r => console.log(r));
+                            }
+                        });
+
+                        if (this.checkForComplete(id)) {
+                            this.joinedChallenges.forEach(item => {
+                                if (item.challenge.id === id) {
+                                    item.dateFinished = new Date();
+                                    this.completedChallenges.push({
+                                        challenge: id,
+                                        dateStarted: item.dateStarted,
+                                        dateFinished: item.dateFinished,
+                                    });
+                                    this.joinedChallenges.splice(
+                                        this.completedChallenges.indexOf(item),
+                                        1
+                                    );
+                                    this.challengeService.updateJoinedChallenges(this.userID,
+                                        this.joinedChallenges).then(r => console.log(r));
+                                    this.challengeService.updateCompletedChallenges(this.userID,
+                                        this.completedChallenges).then(r => console.log(r));
+                                }
+                            });
+                        }
+                        const icon = document.getElementById(checkbox) as HTMLInputElement;
+                        icon.name = 'checkbox';
+                        return true;
+                    }
+                }, {
+                    text: 'No',
+                    handler: () => {
+                        alert.dismiss(false);
+                        const check = document.getElementById(id) as HTMLInputElement;
+                        check.checked = false;
+                        return false;
+                    }
+                }
+            ]
+        });
+
+        await alert.present();
+    }
+
+    async checkForComplete(id) {
+        this.joinedChallenges.forEach(item => {
+            if (item.challenge.id === id) {
+                if (item.currentDay === item.challenge.length) {
+                    console.log('LAST DAY COMPLETED');
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
     }
 
     async presentAlert(header: string, message: string) {

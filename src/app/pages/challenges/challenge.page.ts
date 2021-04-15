@@ -8,6 +8,7 @@ import * as firebase from 'firebase/app';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {AlertController} from '@ionic/angular';
 import {ExpandableComponent} from '../../components/expandable/expandable.component';
+import {element} from "protractor";
 
 
 @Component({
@@ -29,6 +30,7 @@ export class ChallengePage implements OnInit {
     public types: Observable<ChallengeTypes[]>;
     public showChallengeDetails = false;
     public joinedChallenges = [];
+    public completedChallenges = [];
     public userID;
     public challengeView = 'all';
 
@@ -61,6 +63,10 @@ export class ChallengePage implements OnInit {
                         this.challengeService.getJoinedChallenges(this.userID).then(resp => {
                             this.joinedChallenges = resp;
                             console.log(this.joinedChallenges);
+                        });
+                        this.challengeService.getCompletedChallenges(this.userID).then(resp => {
+                            this.completedChallenges = resp;
+                            console.log(this.completedChallenges);
                         });
                     });
                 });
@@ -95,10 +101,18 @@ export class ChallengePage implements OnInit {
 
     challengeJoined(id): boolean {
         const joined = [];
-        this.joinedChallenges.forEach(element => {
-            joined.push(element.challenge.id);
+        this.joinedChallenges.forEach(item => {
+            joined.push(item.challenge.id);
         });
         return joined.includes(id);
+    }
+
+    challengeFinished(id): boolean {
+        const finished = [];
+        this.completedChallenges.forEach(item => {
+            finished.push(item.challenge);
+        });
+        return finished.includes(id);
     }
 
     // present a basic alert -- used for displaying gc info

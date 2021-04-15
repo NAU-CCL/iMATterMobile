@@ -269,14 +269,15 @@ export class HomePage implements OnInit {
     completeDay(id) {
         const check = document.getElementById(id) as HTMLInputElement;
         console.log(check.checked);
-        this.user.joinedChallenges.forEach(item => {
-            if (item.challenge.id === id) {
-                item.dayComplete = !item.dayComplete;
-                this.challengeService.updateJoinedChallenges(this.userProfileID, this.user.joinedChallenges).then(r => console.log(r));
-            }
-        });
-        if (!check.checked){
-            this.presentAlert('Congratulations!', 'Good work completing today\'s healthy habit. Check back tomorrow!');
+        if (!check.checked) {
+            this.areYouSure(id);
+        } else {
+            this.user.joinedChallenges.forEach(item => {
+                if (item.challenge.id === id) {
+                    item.dayComplete = !item.dayComplete;
+                    this.challengeService.updateJoinedChallenges(this.userProfileID, this.user.joinedChallenges).then(r => console.log(r));
+                }
+            });
         }
     }
 
@@ -386,6 +387,82 @@ export class HomePage implements OnInit {
         });
 
         await alert.present();
+    }
+
+    async areYouSure(id) {
+        const alert = await this.alertController.create({
+            header: 'Are you sure?',
+            message: '',
+            buttons: [
+                {
+                    text: 'Yes',
+                    handler: () => {
+                        alert.dismiss(true);
+                        if (this.checkForComplete(id)) {
+                            this.presentAlert('WOW! You finished the challenge!', 'Way to stick with it.');
+                        } else {
+                            this.presentAlert('Congratulations!', 'Good work on completing the task for today.' +
+                                'Check back tomorrow for another challenge.');
+                        }
+                        this.user.joinedChallenges.forEach(item => {
+                            if (item.challenge.id === id) {
+                                item.dayComplete = !item.dayComplete;
+                                this.challengeService.updateJoinedChallenges(this.userProfileID,
+                                    this.user.joinedChallenges).then(r => console.log(r));
+                            }
+                        });
+
+                        if (this.checkForComplete(id)) {
+                            this.user.joinedChallenges.forEach(item => {
+                                if (item.challenge.id === id) {
+                                    item.dateFinished = new Date();
+                                    this.user.completedChallenges.push({
+                                        challenge: id,
+                                        dateStarted: item.dateStarted,
+                                        dateFinished: item.dateFinished,
+                                    });
+                                    this.user.joinedChallenges.splice(
+                                        this.user.completedChallenges.indexOf(item),
+                                        1
+                                    );
+                                    this.challengeService.updateJoinedChallenges(this.userProfileID,
+                                        this.user.joinedChallenges).then(r => console.log(r));
+                                    this.challengeService.updateCompletedChallenges(this.userProfileID,
+                                        this.user.completedChallenges).then(r => console.log(r));
+                                }
+                            });
+                        }
+                        const card = document.getElementById('card' + id);
+                        card.classList.add('ion-hide');
+
+                        return true;
+                    }
+                }, {
+                    text: 'No',
+                    handler: () => {
+                        alert.dismiss(false);
+                        const check = document.getElementById(id) as HTMLInputElement;
+                        check.checked = false;
+                        return false;
+                    }
+                }
+            ]
+        });
+
+        await alert.present();
+    }
+
+    async checkForComplete(id) {
+        this.user.joinedChallenges.forEach(item => {
+            if (item.challenge.id === id) {
+                if (item.currentDay === item.challenge.length) {
+                    console.log('LAST DAY COMPLETED');
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
     }
 
     expandItem(drop): void {

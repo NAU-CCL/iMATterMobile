@@ -13,7 +13,7 @@
     </ion-toolbar>
 </ion-header>
 
-<ion-row id="viewPicker">
+<ion-row id="viewPicker" *ngIf="challengeView == 'all' || challengeView == 'joined'">
     <ion-col style="padding: 0">
         <ion-buttons id="allChallenges" class="text-button selected" style="justify-content: center">
             <ion-button style="text-align: center">
@@ -30,10 +30,21 @@
     </ion-col>
 </ion-row>
 
+<ion-row *ngIf="challengeView != 'all' && challengeView != 'joined'"
+    style="background-color: var(--main-color); color: white">
+    <ion-col style="padding: 0">
+        <ion-buttons style="justify-content: center">
+            <ion-button id="typeTitle" style="text-align: center">
+               {{this.challengeView}}
+            </ion-button>
+        </ion-buttons>
+    </ion-col>
+</ion-row>
+
 <ion-content *ngIf="challengeView == 'all'">
     <ion-list>
         <ng-container *ngFor="let type of ( types | async )">
-            <ion-card (click)="challengeView = type.type">
+            <ion-card (click)="challengeView = type.type" class="ion-margin">
                 <ion-card-title class="ion-padding">{{type.type}}</ion-card-title>
                 <ion-card-content style="padding:0"><img src="{{type.picture}}"></ion-card-content>
             </ion-card>
@@ -42,10 +53,35 @@
 </ion-content>
 
 <ion-content *ngIf="challengeView == 'joined'">
+    <ion-item-divider>
+        <ion-label>
+            Active Challenges
+        </ion-label>
+    </ion-item-divider>
     <ion-list>
         <ng-container *ngFor="let challenge of ( challenges | async )">
             <ion-card *ngIf="challengeJoined(challenge.id)" button [routerLink]="['/habit', challenge.id]" [ngClass]="challenge.id">
+                <ion-card-title class="ion-padding-horizontal ion-padding-top">
+                    {{challenge.title}}
+                </ion-card-title>
+                <ion-card-subtitle>
+                    <div class="ion-float-right" style="padding: 0 5px 5px 0">{{challenge.length}} days</div>
+                </ion-card-subtitle>
+            </ion-card>
+        </ng-container>
+    </ion-list>
+    <ion-item-divider>
+        <ion-label>
+            Completed Challenges
+        </ion-label>
+    </ion-item-divider>
+    <ion-list>
+        <ng-container *ngFor="let challenge of ( challenges | async )">
+            <ion-card *ngIf="challengeFinished(challenge.id)" button [routerLink]="['/habit', challenge.id]" [ngClass]="challenge.id">
                 <ion-card-title class="ion-padding">{{challenge.title}}</ion-card-title>
+                <ion-card-subtitle>
+                    <div class="ion-float-right" style="padding: 0 5px 5px 0">{{challenge.length}} days</div>
+                </ion-card-subtitle>
             </ion-card>
         </ng-container>
     </ion-list>
@@ -55,7 +91,12 @@
     <ion-list>
         <ng-container *ngFor="let challenge of ( challenges | async )">
             <ion-card button [routerLink]="['/habit', challenge.id]" *ngIf="challenge.type == challengeView" [ngClass]="challenge.id">
-                <ion-card-title class="ion-padding">{{challenge.title}}</ion-card-title>
+                <ion-card-title class="ion-padding-horizontal ion-padding-top">
+                    {{challenge.title}}
+                </ion-card-title>
+                <ion-card-subtitle>
+                    <div class="ion-float-right" style="padding: 0 5px 5px 0">{{challenge.length}} days</div>
+                </ion-card-subtitle>
             </ion-card>
         </ng-container>
     </ion-list>
