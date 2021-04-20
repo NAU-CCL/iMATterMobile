@@ -44,7 +44,7 @@
 <ion-content *ngIf="challengeView == 'all'">
     <ion-list>
         <ng-container *ngFor="let type of ( types | async )">
-            <ion-card (click)="challengeView = type.type" class="ion-margin">
+            <ion-card *ngIf="type.active" (click)="challengeView = type.type" class="ion-margin">
                 <ion-card-title class="ion-padding">{{type.type}}</ion-card-title>
                 <ion-card-content style="padding:0"><img src="{{type.picture}}"></ion-card-content>
             </ion-card>

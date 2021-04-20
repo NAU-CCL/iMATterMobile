@@ -18,6 +18,7 @@ export interface ChallengeTypes {
     id?: string;
     type: string;
     picture: string;
+    active: boolean;
 }
 
 @Injectable({
