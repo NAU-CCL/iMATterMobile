@@ -11,7 +11,7 @@
   <ion-grid>
       <ion-row>
           <ion-card>
-              <ion-card-content style="padding:0">
+              <ion-card-content *ngIf="challenge.coverPicture != ''" style="padding:0">
                   <ion-img src="{{challenge.coverPicture}}"></ion-img>
               </ion-card-content>
           </ion-card>

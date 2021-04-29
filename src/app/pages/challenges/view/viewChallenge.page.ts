@@ -24,6 +24,7 @@ export class ViewChallengePage implements OnInit {
     public urls = [];
     public userID;
     public joined = false;
+    public complete: boolean;
 
     public joinedChallenges = [];
     public completedChallenges = [];
@@ -177,7 +178,10 @@ export class ViewChallengePage implements OnInit {
                     text: 'Yes',
                     handler: () => {
                         alert.dismiss(true);
-                        if (this.checkForComplete(id)) {
+                        this.checkForComplete(id);
+                        console.log(this.complete);
+
+                        if (this.complete) {
                             this.joined = false;
                             this.presentAlert('WOW! You finished the challenge!', 'Way to stick with it.');
                             // setTimeout(() => {
@@ -196,7 +200,7 @@ export class ViewChallengePage implements OnInit {
                             }
                         });
 
-                        if (this.checkForComplete(id)) {
+                        if (this.complete) {
                             this.joinedChallenges.forEach(item => {
                                 if (item.challenge.id === id) {
                                     item.dateFinished = new Date();
@@ -240,9 +244,9 @@ export class ViewChallengePage implements OnInit {
             if (item.challenge.id === id) {
                 if (item.currentDay === item.challenge.length) {
                     console.log('LAST DAY COMPLETED');
-                    return true;
+                    this.complete = true;
                 } else {
-                    return false;
+                    this.complete = false;
                 }
             }
         });

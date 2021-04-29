@@ -124,7 +124,7 @@ export class HomePage implements OnInit {
     public challenges: Observable<Challenge[]>;
     public challengeProgress = {};
     public daysComplete = {};
-
+    public challengeDayComplete: boolean;
 
     constructor(private activatedRoute: ActivatedRoute, public afs: AngularFirestore,
                 private toastCtrl: ToastController,
@@ -398,7 +398,9 @@ export class HomePage implements OnInit {
                     text: 'Yes',
                     handler: () => {
                         alert.dismiss(true);
-                        if (this.checkForComplete(id)) {
+                        this.checkForComplete(id);
+
+                        if (this.challengeDayComplete) {
                             this.presentAlert('WOW! You finished the challenge!', 'Way to stick with it.');
                         } else {
                             this.presentAlert('Congratulations!', 'Good work on completing the task for today.' +
@@ -412,7 +414,7 @@ export class HomePage implements OnInit {
                             }
                         });
 
-                        if (this.checkForComplete(id)) {
+                        if (this.challengeDayComplete) {
                             this.user.joinedChallenges.forEach(item => {
                                 if (item.challenge.id === id) {
                                     item.dateFinished = new Date();
@@ -457,9 +459,9 @@ export class HomePage implements OnInit {
             if (item.challenge.id === id) {
                 if (item.currentDay === item.challenge.length) {
                     console.log('LAST DAY COMPLETED');
-                    return true;
+                    this.challengeDayComplete = true;
                 } else {
-                    return false;
+                    this.challengeDayComplete = false;
                 }
             }
         });
