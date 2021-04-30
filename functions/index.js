@@ -111,6 +111,7 @@ exports.updateDays = functions.https.onRequest((req, res) => {
         result.forEach(doc => {
 
             const docID = doc.get('code');
+            const token = doc.get('token');
 
             var currentUser = admin.firestore().collection('users').doc(docID);
 
@@ -125,6 +126,21 @@ exports.updateDays = functions.https.onRequest((req, res) => {
             var new_days = doc.data().daysAUser + 1;
             var sinceLogin = doc.data().daysSinceLogin + 1;
 
+            // update challenge days
+            let updateJoinedChallenges = doc.data().joinedChallenges;
+
+            for (let challenge of updateJoinedChallenges) {
+                if (challenge.dayComplete) {
+                    challenge.currentDay++;
+                    challenge.dayComplete = false;
+
+                    if (challenge.currentDay > challenge.challenge.length) {
+                        challenge.dateFinished = new Date();
+                        updateJoinedChallenges.splice(updateJoinedChallenges.indexOf(challenge), 1)
+                    }
+                }
+            }
+
             // var recoveryDays = doc.data().totalDaysRecovery + 1;
 
             currentUser.update({
@@ -135,53 +151,18 @@ exports.updateDays = functions.https.onRequest((req, res) => {
                 daysSinceLogin: sinceLogin
             });
 
-            // currentUser.update({
-            // 	totalDaysRecovery: recoveryDays
-            // });
-            //
-            // currentUser.update({
-            // 	daysRecovery: recoveryDays % 7
-            // });
-            //
-            // currentUser.update({
-            // 	totalDaysRecovery: Math.floor(recoveryDays / 7)
-            // });
-            // Calculate pregnancy days stuff
-            // var dueDate = doc.data().dueDate;
-            // const currentDateString = new Date().toJSON().split('T')[0];
-            // const currentDate = new Date(currentDateString);
-            // const userDueDate = new Date(dueDate);
-            //
-            // const dateDiff = Math.abs(currentDate.getTime() - userDueDate.getTime());
-            // const diffInDays = Math.ceil(dateDiff / (24 * 3600 * 1000));
-            //
-            // var totalDays;
-            //
-            // //if user is still within 280 days of pregnancy
-            // if (userDueDate >= currentDate)
-            // {
-            // 	totalDays = 280 - diffInDays - 1;
-            // }
-            // else if (userDueDate < currentDate) //past due date
-            // {
-            // 	//start adding onto 280
-            // 	totalDays = 280 + diffInDays;
-            // }
-            //
-            // const weeksPregnant = Math.floor(totalDays / 7);
-            // const daysPregnant = totalDays % 7;
-            //
-            // currentUser.update({
-            // 	totalDaysPregnant: totalDays
-            // });
-            //
-            // currentUser.update({
-            // 	daysPregnant: daysPregnant
-            // });
-            //
-            // currentUser.update({
-            // 	weeksPregnant: weeksPregnant
-            // });
+            currentUser.update({
+                joinedChallenges: updateJoinedChallenges
+            });
+
+            // send out challenge notifications
+            if (updateJoinedChallenges.length > 0)
+            {
+                for (let challenge of updateJoinedChallenges)
+                {
+                    pushChallengeMessage(challenge.challenge.title, token);
+                }
+            }
         });
 
         //if the res.send is the same each time, for some reason it stops working? Added random number so its different each send.
@@ -800,3 +781,22 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
         res.send("finished");
     });
 });
+
+function pushChallengeMessage(title, userNotifToken) {
+    var payload = {
+        notification: {
+            title: title,
+            body: "Visit the app to complete today's task.",
+            sound: "default"
+        }
+    };
+    
+    admin.messaging().sendToDevice(userNotifToken, payload)
+        .then((response) => {
+            console.log("Sent challenge notifications");
+            return response;
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+}

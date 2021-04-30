@@ -35,6 +35,8 @@ export interface User {
   token: any;
   recentNotifications: any[];
   answeredSurveys: any[];
+  joinedChallenges: any[];
+  completedChallenges: any[];
   codeEntered: boolean;
 }
 

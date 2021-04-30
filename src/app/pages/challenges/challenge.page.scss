@@ -1,0 +1,16 @@
+#viewPicker {
+  background-color: var(--secondary-color);
+  color: white;
+
+  .selected {
+    background-color: var(--main-color);
+  }
+}
+
+ion-card {
+  box-shadow: 4px 4px 1px 1px rgba(0, 0, 0, 0.13),0 2px 2px 0 rgba(2, 2, 2, 0.31),0 1px 5px 0 rgba(6, 6, 6, 0.42);
+}
+
+#typeTitle {
+  cursor: default;
+}

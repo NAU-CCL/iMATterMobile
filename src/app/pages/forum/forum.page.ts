@@ -109,7 +109,8 @@ export class ForumPage implements OnInit {
 
     if (searchInput) {
       this.thisUserQuestionList = this.thisUserQuestionList.filter(currentQuestion => {
-        return(currentQuestion.title.toLowerCase().indexOf(searchInput.toLowerCase()) > -1);
+        return(currentQuestion.title.toLowerCase().indexOf(searchInput.toLowerCase()) > -1 &&
+          currentQuestion.description.toLowerCase().indexOf(searchInput.toLowerCase()) > -1);
       });
     }
   }

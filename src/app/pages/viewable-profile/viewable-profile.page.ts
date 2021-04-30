@@ -40,6 +40,8 @@ export class ViewableProfilePage implements OnInit {
         token: '',
         recentNotifications: [],
         answeredSurveys: [],
+        joinedChallenges: [],
+        completedChallenges: [],
         codeEntered: true
     };
 
