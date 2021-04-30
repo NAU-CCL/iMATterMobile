@@ -395,7 +395,7 @@ export class HomePage implements OnInit {
             message: '',
             buttons: [
                 {
-                    text: 'Yes',
+                    text: 'Yes ' + id,
                     handler: () => {
                         alert.dismiss(true);
                         this.checkForComplete(id);
@@ -418,15 +418,19 @@ export class HomePage implements OnInit {
                             this.user.joinedChallenges.forEach(item => {
                                 if (item.challenge.id === id) {
                                     item.dateFinished = new Date();
-                                    this.user.completedChallenges.push({
+                                    const challenge = {
                                         challenge: id,
                                         dateStarted: item.dateStarted,
                                         dateFinished: item.dateFinished,
-                                    });
+                                    };
+
+                                    this.user.completedChallenges.push(challenge);
                                     this.user.joinedChallenges.splice(
-                                        this.user.completedChallenges.indexOf(item),
+                                        this.user.joinedChallenges.indexOf(item),
                                         1
                                     );
+                                    console.log(this.user.joinedChallenges);
+                                    console.log(this.user.completedChallenges);
                                     this.challengeService.updateJoinedChallenges(this.userProfileID,
                                         this.user.joinedChallenges).then(r => console.log(r));
                                     this.challengeService.updateCompletedChallenges(this.userProfileID,

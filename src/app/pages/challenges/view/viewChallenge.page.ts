@@ -204,13 +204,14 @@ export class ViewChallengePage implements OnInit {
                             this.joinedChallenges.forEach(item => {
                                 if (item.challenge.id === id) {
                                     item.dateFinished = new Date();
-                                    this.completedChallenges.push({
+                                    const challenge = {
                                         challenge: id,
                                         dateStarted: item.dateStarted,
                                         dateFinished: item.dateFinished,
-                                    });
+                                    };
+                                    this.completedChallenges.push(challenge);
                                     this.joinedChallenges.splice(
-                                        this.completedChallenges.indexOf(item),
+                                        this.joinedChallenges.indexOf(item),
                                         1
                                     );
                                     this.challengeService.updateJoinedChallenges(this.userID,
