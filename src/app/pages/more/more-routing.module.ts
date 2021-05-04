@@ -23,7 +23,19 @@ const routes: Routes = [
   {
     path: 'resources',
     loadChildren: () => import('./resources/resources.module').then( m => m.ResourcesPageModule)
-  }
+  },
+  {
+    path: 'forum',
+    loadChildren: () => import('../forum/forum.module').then( m => m.ForumPageModule)
+  },
+  {
+    path: 'habits',
+    loadChildren: () => import('../challenges/challenge.module').then( m => m.ChallengePageModule)
+  },
+  {
+    path: 'survey',
+    loadChildren: () => import('../available/available.module').then( m => m.AvailablePageModule)
+  },
 
 ];
 

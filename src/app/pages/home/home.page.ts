@@ -395,7 +395,7 @@ export class HomePage implements OnInit {
             message: '',
             buttons: [
                 {
-                    text: 'Yes ' + id,
+                    text: 'Yes',
                     handler: () => {
                         alert.dismiss(true);
                         this.checkForComplete(id);

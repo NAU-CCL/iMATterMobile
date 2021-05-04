@@ -8,6 +8,11 @@
 </ion-header>
 
 <ion-content>
+    <ion-card *ngIf="joined && dayComplete" color="success tint">
+        <ion-card-title class="ion-padding ion-text-center" style="color: white">
+            CHECK BACK TOMORROW
+        </ion-card-title>
+    </ion-card>
   <ion-grid>
       <ion-row>
           <ion-card>

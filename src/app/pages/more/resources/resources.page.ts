@@ -61,6 +61,8 @@ export class ResourcesPage implements OnInit, AfterViewInit {
 
     public mapView = false;
     public locationList = [];
+    public currentLat;
+    public currentLong;
 
     @ViewChild('mapElement', {static: false}) mapNativeElement;
 
@@ -71,6 +73,12 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                 private storage: Storage,
                 private inAppBrowser: InAppBrowser) {
     }
+
+    options = {
+        timeout: 10000,
+        enableHighAccuracy: true,
+        maximumAge: 3600
+    };
 
     ngOnInit() {
 
@@ -98,7 +106,14 @@ export class ResourcesPage implements OnInit, AfterViewInit {
 
     saveUserLocation(userLocationHolder) {
         this.userLocation = this.userLocationHolder;
-        console.log('inside saveUserLocation' + this.userLocation);
+        this.geolocation.getCurrentPosition().then((resp) => {
+            console.log('RESP: ' + resp);
+            this.currentLat = resp.coords.latitude;
+            this.currentLong = resp.coords.longitude;
+        }).catch((error) => {
+            console.log('Error getting location', error);
+        });
+        console.log('inside saveUserLocation' + this.currentLat + ', ' + this.currentLong);
 
 
     }
@@ -109,7 +124,8 @@ export class ResourcesPage implements OnInit, AfterViewInit {
 
     ionViewDidEnter() {
         this.getListView();
-        //this.initializeLocations();
+        this.enterMapView();
+        // this.initializeLocations();
     }
 
     enterMapView() {
@@ -194,32 +210,32 @@ export class ResourcesPage implements OnInit, AfterViewInit {
 
 
     async geoMaps(userLocation) {
-
-
-        if (this.userLocation !== '') {
-            console.log('enteredt user location thingy ');
-
-            await this.nativeGeocoder.forwardGeocode(this.userLocation)
-                .then((result: NativeGeocoderResult[]) => {
-                    console.log('The coordinates are latitude=' + result[0].latitude + ' and longitude=' + result[0].longitude);
-                    this.latitude = parseFloat(result[0].latitude);
-                    console.log('The coordinates are latitude=' + this.latitude);
-
-                    this.longitude = parseFloat(result[0].longitude);
-
-                    console.log('The coordinates are latitude=' + this.longitude);
-                    this.map = new google.maps.Map(this.mapNativeElement.nativeElement, {
-                        center: {lat: this.latitude, lng: this.longitude},
-                        zoom: 16
-                    });
-                })
-                .catch((error: any) => console.log(error));
-
-
-        } else {
+        // if (this.userLocation !== '') {
+        //     console.log('enteredt user location thingy ');
+        //
+        //     await this.nativeGeocoder.forwardGeocode(this.userLocation)
+        //         .then((result: NativeGeocoderResult[]) => {
+        //             console.log('The coordinates are latitude=' + result[0].latitude + ' and longitude=' + result[0].longitude);
+        //             this.latitude = parseFloat(result[0].latitude);
+        //             console.log('The coordinates are latitude=' + this.latitude);
+        //
+        //             this.longitude = parseFloat(result[0].longitude);
+        //
+        //             console.log('The coordinates are latitude=' + this.longitude);
+        //             this.map = new google.maps.Map(this.mapNativeElement.nativeElement, {
+        //                 center: {lat: this.latitude, lng: this.longitude},
+        //                 zoom: 16
+        //             });
+        //         })
+        //         .catch((error: any) => console.log(error));
+        //
+        //
+        // } else {
             await this.geolocation.getCurrentPosition().then((resp) => {
                 this.latitude = resp.coords.latitude;
                 this.longitude = resp.coords.longitude;
+                console.log(this.latitude);
+                console.log(this.longitude);
                 this.map = new google.maps.Map(this.mapNativeElement.nativeElement, {
                     center: {lat: this.latitude, lng: this.longitude},
                     zoom: 16
@@ -230,7 +246,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
             }).catch((error) => {
                 console.log('Error getting location', error);
             });
-        }
+        // }
 
     }
 
@@ -311,7 +327,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                 '</div>';
         }
 
-        await google.maps.event.addListener(marker, 'click', function () {
+        await google.maps.event.addListener(marker, 'click', function() {
             const infowindow = new google.maps.InfoWindow({
                 content: contentString,
                 maxWidth: 300

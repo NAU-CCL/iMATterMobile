@@ -9,6 +9,7 @@ import {AngularFirestore} from '@angular/fire/firestore';
 import {AlertController} from '@ionic/angular';
 import {ExpandableComponent} from '../../components/expandable/expandable.component';
 import {element} from "protractor";
+import {forEach} from "@angular-devkit/schematics";
 
 
 @Component({
@@ -90,15 +91,6 @@ export class ChallengePage implements OnInit {
         }
     }
 
-    quitChallenge(id) {
-        this.joinedChallenges.forEach((element, index) => {
-            if (element.challenge === id) { this.joinedChallenges.splice(index, 1); }
-        });
-        this.challengeService.updateJoinedChallenges(this.userID, this.joinedChallenges).then(() => {
-            this.presentAlert('You have quit this challenge.', 'Don\'t be afraid to try again!');
-        });
-    }
-
     challengeJoined(id): boolean {
         const joined = [];
         this.joinedChallenges.forEach(item => {
@@ -127,12 +119,12 @@ export class ChallengePage implements OnInit {
 
     expandCard(id) {
         const card = document.getElementsByClassName(id)[0].children;
-        Array.from(card).forEach(element => {
-            if (element.tagName !== 'ION-CARD-TITLE') {
-                if (element.classList.contains('ion-hide')) {
-                    element.classList.remove('ion-hide');
+        Array.from(card).forEach(item => {
+            if (item.tagName !== 'ION-CARD-TITLE') {
+                if (item.classList.contains('ion-hide')) {
+                    item.classList.remove('ion-hide');
                 } else {
-                    element.classList.add('ion-hide');
+                    item.classList.add('ion-hide');
                 }
             }
         });

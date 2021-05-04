@@ -2,7 +2,7 @@
     <ion-toolbar>
         <ion-title>Habits</ion-title>
         <ion-buttons slot="start">
-            <ion-back-button *ngIf="challengeView == 'all' || challengeView == 'joined'" class="text-button" defaultHref="/tabs/home"></ion-back-button>
+            <ion-back-button *ngIf="challengeView == 'all' || challengeView == 'joined'" class="text-button" defaultHref="/tabs/more"></ion-back-button>
             <ion-button *ngIf="challengeView != 'all' && challengeView != 'joined'"
                         class="text-button"
                         (click)="this.challengeView = 'all'"
@@ -45,7 +45,9 @@
     <ion-list>
         <ng-container *ngFor="let type of ( types | async )">
             <ion-card *ngIf="type.active" (click)="challengeView = type.type" class="ion-margin">
-                <ion-card-title class="ion-padding">{{type.type}}</ion-card-title>
+                <ion-card-title class="ion-padding">
+                    {{type.type}}
+                </ion-card-title>
                 <ion-card-content style="padding:0"><img src="{{type.picture}}"></ion-card-content>
             </ion-card>
         </ng-container>
@@ -92,7 +94,12 @@
         <ng-container *ngFor="let challenge of ( challenges | async )">
             <ion-card button [routerLink]="['/habit', challenge.id]" *ngIf="challenge.type == challengeView" [ngClass]="challenge.id">
                 <ion-card-title class="ion-padding-horizontal ion-padding-top">
-                    {{challenge.title}}
+                    <ion-row>
+                        <ion-thumbnail>
+                            <ion-img src="https://firebasestorage.googleapis.com/v0/b/imatter-nau.appspot.com/o/Test%2Fflex-biceps.png?alt=media&token=c0f25f7f-fcf1-439e-a00c-05df35320b9c"></ion-img>
+                        </ion-thumbnail>
+                        {{challenge.title}}
+                    </ion-row>
                 </ion-card-title>
                 <ion-card-subtitle>
                     <div class="ion-float-right" style="padding: 0 5px 5px 0">{{challenge.length}} days</div>
