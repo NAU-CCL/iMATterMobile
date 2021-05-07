@@ -200,8 +200,8 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                         this.addressType, this.hourType, this.dphone, this.dstreet, this.dspecialNote, this.url);
 
 
-                    console.log(this.dlongitude);
-                    console.log(this.dicon);
+                    // console.log(this.dlongitude);
+                    // console.log(this.dicon);
 
 
                 });
@@ -210,7 +210,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
 
 
     async geoMaps(userLocation) {
-        // if (this.userLocation !== '') {
+        // if (this.userLocation !== '' && this.userLocation !== undefined) {
         //     console.log('enteredt user location thingy ');
         //
         //     await this.nativeGeocoder.forwardGeocode(this.userLocation)
@@ -227,9 +227,12 @@ export class ResourcesPage implements OnInit, AfterViewInit {
         //                 zoom: 16
         //             });
         //         })
-        //         .catch((error: any) => console.log(error));
-        //
-        //
+        //         .catch((error: any) => {
+        //             console.log(error);
+        //             console.log('ERROR LOADING MAP');
+        //         });
+
+
         // } else {
             await this.geolocation.getCurrentPosition().then((resp) => {
                 this.latitude = resp.coords.latitude;
@@ -244,7 +247,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                 console.log('displayed the map');
 
             }).catch((error) => {
-                console.log('Error getting location', error);
+                console.log('ERROR LOADING MAP ', error);
             });
         // }
 
@@ -263,9 +266,8 @@ export class ResourcesPage implements OnInit, AfterViewInit {
             lng: this.dlongitude
         };
 
-
         if (this.dicon === 'hospital') {
-            this.icon = {
+           this.icon = {
                 // tslint:disable-next-line:max-line-length
                 url: 'https://firebasestorage.googleapis.com/v0/b/imatter-nau.appspot.com/o/locationIcon%2FhospitalPin.png?alt=media&token=f1c91506-8a91-4021-9e89-2549b257f373', // image url
                 scaledSize: new google.maps.Size(80, 80), // scaled size
@@ -292,40 +294,40 @@ export class ResourcesPage implements OnInit, AfterViewInit {
             icon: this.icon
         });
 
-        let contentString = '<div id="content">' +
-            '<div id= "siteNotice" ' +
+        const contentString = '<div id="content">' +
+            '<div id= "siteNotice">' +
             '</div>' +
-            '<h1 id="firstHeading" class="firstHeading">' + dtitle + '</h1>' +
-            '<div id="bodyContent">' +
-            '<p>' + dcontent + '</p>' +
-            '</div>' +
-            '<div id = "phone">' + 'Phone: ' + dphone + '</div>';
-        if (addressType === 'physical') {
-            contentString +=
-                '<div id= "street">' + 'Street Address: ' + dstreet + '</div>';
-        } else {
-            contentString +=
-                '<div id= "street">' + 'Call Center (no physical location)' + '</div>';
-        }
-        if (hourType === 'specific') {
-            contentString +=
-                '<div id = "operation">' + 'Hours of Operation' + '</div>' +
-                '<div id = "monday">' + 'Monday: ' + doperationMOpen + '-' + doperationMClose + '</div>' +
-                '<div id = "tuesday">' + 'Tuesday: ' + doperationTOpen + '-' + doperationTClose + '</div>' +
-                '<div id = "wednesday">' + 'Wednesday: ' + doperationWOpen + '-' + doperationWClose + '</div>' +
-                '<div id = "thursday">' + 'Thursday: ' + doperationThOpen + '-' + doperationThClose + '</div>' +
-                '<div id = "friday">' + 'Friday: ' + doperationFOpen + '-' + doperationFClose + '</div>' +
-                '<div id = "saturday">' + 'Saturday: ' + doperationSatOpen + '-' + doperationSatClose + '</div>' +
-                '<div id = "sunday">' + 'Sunday: ' + doperationSunOpen + '-' + doperationSunClose + '</div>' +
-                '<div id = "blank">' + '<p>' + '       ' + '</p>' + '</div>' +
-                '<div id = "specialNote">' + 'Admin Note: ' + dspecialNote + '</div>' +
-                '</div>';
-        } else {
-            contentString +=
-                '<div id = "operation">' + 'Open 24 Hours' + '</div>' +
-                '<div id = "specialNote">' + 'Admin Note: ' + dspecialNote + '</div>' +
-                '</div>';
-        }
+            '<h1 id="firstHeading" class="firstHeading">' + dtitle + '</h1></div>';
+        //     '<div id="bodyContent">' +
+        //     '<p>' + dcontent + '</p>' +
+        //     '</div>' +
+        //     '<div id = "phone">' + 'Phone: ' + dphone + '</div>';
+        // if (addressType === 'physical') {
+        //     contentString +=
+        //         '<div id= "street">' + 'Street Address: ' + dstreet + '</div>';
+        // } else {
+        //     contentString +=
+        //         '<div id= "street">' + 'Call Center (no physical location)' + '</div>';
+        // }
+        // if (hourType === 'specific') {
+        //     contentString +=
+        //         '<div id = "operation">' + 'Hours of Operation' + '</div>' +
+        //         '<div id = "monday">' + 'Monday: ' + doperationMOpen + '-' + doperationMClose + '</div>' +
+        //         '<div id = "tuesday">' + 'Tuesday: ' + doperationTOpen + '-' + doperationTClose + '</div>' +
+        //         '<div id = "wednesday">' + 'Wednesday: ' + doperationWOpen + '-' + doperationWClose + '</div>' +
+        //         '<div id = "thursday">' + 'Thursday: ' + doperationThOpen + '-' + doperationThClose + '</div>' +
+        //         '<div id = "friday">' + 'Friday: ' + doperationFOpen + '-' + doperationFClose + '</div>' +
+        //         '<div id = "saturday">' + 'Saturday: ' + doperationSatOpen + '-' + doperationSatClose + '</div>' +
+        //         '<div id = "sunday">' + 'Sunday: ' + doperationSunOpen + '-' + doperationSunClose + '</div>' +
+        //         '<div id = "blank">' + '<p>' + '       ' + '</p>' + '</div>' +
+        //         '<div id = "specialNote">' + 'Admin Note: ' + dspecialNote + '</div>' +
+        //         '</div>';
+        // } else {
+        //     contentString +=
+        //         '<div id = "operation">' + 'Open 24 Hours' + '</div>' +
+        //         '<div id = "specialNote">' + 'Admin Note: ' + dspecialNote + '</div>' +
+        //         '</div>';
+        // }
 
         await google.maps.event.addListener(marker, 'click', function() {
             const infowindow = new google.maps.InfoWindow({
@@ -350,8 +352,15 @@ export class ResourcesPage implements OnInit, AfterViewInit {
         document.getElementById('mapPicker').classList.remove('selected');
     }
 
-    getListView() {
+    async getListView() {
         this.mapView = false;
+        await this.geolocation.getCurrentPosition().then((resp) => {
+            this.latitude = resp.coords.latitude;
+            this.longitude = resp.coords.longitude;
+        });
+        console.log('USER LOCATIONS');
+        console.log(this.latitude);
+        console.log(this.longitude);
         firebase.firestore().collection('resourceLocations').get()
             .then(querySnapshot => {
                 this.dtitle = '';
@@ -412,6 +421,12 @@ export class ResourcesPage implements OnInit, AfterViewInit {
 
                     const locationObj = {
                         title: this.dtitle,
+                        lat: this.dlatitude,
+                        long: this.dlongitude,
+                        dist: google.maps.geometry.spherical.computeDistanceBetween(
+                            new google.maps.LatLng(this.latitude, this.longitude),
+                            new google.maps.LatLng(this.dlatitude, this.dlongitude)
+                        ),
                         content: this.dcontent,
                         type: this.dicon,
                         street: this.dstreet,
@@ -447,25 +462,30 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                         locationObj.url = '';
                     }
 
-                    // console.log(locationObj);
+                    console.log(locationObj);
 
                     this.locationList.push(locationObj);
                 });
+                this.locationList.sort((a, b) => (a.dist > b.dist) ? 1 : -1);
                 const locationList = document.getElementById('locationList') as HTMLElement;
                 console.log(locationList);
                 this.locationList.forEach(location => {
                     const card = document.createElement('ion-card');
                     card.id = location.id;
                     card.addEventListener('click', this.expandLocationCard);
-                    let htmlText = '<ion-card-title class="ion-padding-top ion-padding-horizontal">' + location.title;
+                    card.addEventListener('click', e => {
+                        this.map.setCenter({lat: location.lat, lng: location.long});
+                    });
+
+                    let htmlText = '<ion-card-title class="ion-padding">' + location.title;
                     if (location.url !== '') {
                         htmlText += '<div class="urlLink" id="' + location.url + '"><ion-icon name="link"></ion-icon></div>';
                     }
                     if (location.addressType === 'physical') {
-                        htmlText += '</ion-card-title><ion-card-subtitle class="ion-padding">' + location.phone +
+                        htmlText += '</ion-card-title><ion-card-subtitle class="ion-hide ion-padding">' + location.phone +
                             '<br>' + location.street + '</ion-card-subtitle>';
                     } else {
-                        htmlText += '</ion-card-title><ion-card-subtitle class="ion-padding">' + location.phone +
+                        htmlText += '</ion-card-title><ion-card-subtitle class="ion-hide ion-padding">' + location.phone +
                             '</ion-card-subtitle>';
                     }
                     htmlText += '<ion-card-content class="ion-hide" id="cardContent">' + location.content;
@@ -496,19 +516,43 @@ export class ResourcesPage implements OnInit, AfterViewInit {
     }
 
     expandLocationCard(this: HTMLElement) {
+        console.log(this.childNodes);
+        const children: Element[] = Array.from(this.children);
         console.log(this.lastChild);
         console.log(this.id);
-        if (this.lastElementChild.classList.contains('ion-hide')) {
-            this.lastElementChild.classList.remove('ion-hide');
-        } else {
-            this.lastElementChild.classList.add('ion-hide');
-        }
+
+        children.forEach(child => {
+            if (children.indexOf(child) !== 0) {
+
+                if (child.classList.contains('ion-hide')) {
+                    child.classList.remove('ion-hide');
+                } else {
+                    child.classList.add('ion-hide');
+                }
+            }
+        });
+
         const locationList = document.getElementsByTagName('ion-card');
         Array.from(locationList).forEach(element => {
-            if (!element.lastElementChild.classList.contains('ion-hide') && element.id !== this.id) {
-                element.lastElementChild.classList.add('ion-hide');
-            }
+            const otherChildren: Element[] = Array.from(element.children);
+            otherChildren.forEach(child => {
+                if (otherChildren.indexOf(child) !== 0) {
+                    if (!child.classList.contains('ion-hide') && element.id !== this.id) {
+                        child.classList.add('ion-hide');
+                    }
+                }
+            });
         });
     }
 
+    // getDistance(to: any): number {
+    //     this.geolocation.getCurrentPosition().then((resp) => {
+    //         this.currentLat = resp.coords.latitude;
+    //         this.currentLong = resp.coords.longitude;
+    //         return google.maps.geometry.spherical.computeDistanceBetween(
+    //             new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude),
+    //             to
+    //         );
+    //     });
+    // }
 }

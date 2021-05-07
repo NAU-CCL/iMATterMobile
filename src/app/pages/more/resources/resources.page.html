@@ -3,42 +3,32 @@
         <ion-buttons slot="start">
             <ion-back-button class="text-button" defaultHref="/tabs/more"></ion-back-button>
         </ion-buttons>
-        <ion-title>Resources</ion-title>
+        <ion-title>Resources Test</ion-title>
     </ion-toolbar>
 
 </ion-header>
-<ion-row id="viewPicker">
-    <ion-col style="padding: 0">
-        <ion-buttons id="listPicker" class="text-button selected" style="justify-content: center">
-            <ion-button style="text-align: center">
-                <ion-button class="text-button" [routerLink]="['./suggestions']">
-                    Click to leave a suggestion
-                    <ion-icon name="add-circle-outline" style="text-align: left"></ion-icon>
-                </ion-button>
-            </ion-button>
-        </ion-buttons>
-    </ion-col>
-</ion-row>
+
 
 <ion-content>
-    <ion-grid>
-        <ion-row size="6">
-            <div #mapElement class="map">
-            </div>
-        </ion-row>
-        <ion-row>
-            <div class="list">
-                <ion-list id="locationList">
+    <div class="split pane1">
+        <div #mapElement class="map">
+        </div>
+    </div>
+    <div class="split pane2 list">
 
-                </ion-list>
-            </div>
-
-            <h6 padding-horizontal>National Hot Line:</h6>
-            <p padding-horizontal>
-                <b>SAMHSA's National Helpline:</b><br> 1-800-662-HELP (4357)
-            </p>
+        <ion-row id="viewPicker">
+            <ion-col style="padding: 0">
+                <ion-buttons id="listPicker" class="text-button selected" style="justify-content: center">
+                    <ion-button class="text-button" [routerLink]="['./suggestions']">
+                        Click to leave a suggestion
+                        <ion-icon name="add-circle-outline" style="text-align: left"></ion-icon>
+                    </ion-button>
+                </ion-buttons>
+            </ion-col>
         </ion-row>
-    </ion-grid>
+        <ion-list id="locationList">
+        </ion-list>
+    </div>
 </ion-content>
 
 

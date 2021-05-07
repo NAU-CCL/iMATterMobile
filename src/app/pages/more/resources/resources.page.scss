@@ -1,6 +1,38 @@
-.map
-{
-  height: 80%;
+//.map
+//{
+//  height: 80%;
+//}
+
+ion-content {
+  height: 100%;
+  display: flex;
+  background: transparent;
+}
+
+.split {
+  z-index: 1;
+  top: 0;
+  overflow-x: hidden;
+}
+
+.pane1 {
+  left:0;
+  height: 55%;
+  width: 100%;
+  background-color: transparent;
+}
+
+.pane2 {
+
+  left:0;
+  top: 55%;
+  height: 50%;
+  width: 100%;
+  background-color: transparent;
+}
+
+.map {
+  height: 100%;
 }
 
 #viewPicker {
