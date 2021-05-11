@@ -49,7 +49,8 @@ export class ProfilePage implements OnInit {
         answeredSurveys: [],
         joinedChallenges: [],
         completedChallenges: [],
-        codeEntered: true
+        codeEntered: true,
+        dailyQuote: ''
 
     };
 

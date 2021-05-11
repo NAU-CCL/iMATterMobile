@@ -37,6 +37,10 @@ const routes: Routes = [
     loadChildren: () => import('./pages/challenges/challenge.module').then( m => m.ChallengePageModule)
   },
   {
+    path: 'calendar',
+    loadChildren: () => import('./pages/calendar/calendar.module').then( m => m.CalendarPageModule)
+  },
+  {
     path: 'habit/:id',
     loadChildren: () => import('./pages/challenges/view/viewChallenge.module').then( m => m.ViewChallengePageModule)
   },

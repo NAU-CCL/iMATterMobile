@@ -78,7 +78,8 @@ export class HomePage implements OnInit {
         answeredSurveys: [],
         joinedChallenges: [],
         completedChallenges: [],
-        codeEntered: true
+        codeEntered: true,
+        dailyQuote: ''
     };
 
     emotionNotif: EmotionNotif = {
@@ -120,7 +121,6 @@ export class HomePage implements OnInit {
     private analyticss: string;
     private sessions: Observable<any>;
     public challenges: Observable<Challenge[]>;
-    public quote: Observable<Quote[]>;
     public challengeProgress = {};
     public daysComplete = {};
     public challengeDayComplete: boolean;
@@ -191,15 +191,6 @@ export class HomePage implements OnInit {
         this.addView();
         this.challenges = this.challengeService.getAllChallenges();
 
-        const quotes = this.afs.firestore.collection('homeQuote');
-        quotes.get().then(results => {
-            results.forEach(doc => {
-                this.quote = doc.get('quote');
-                console.log(this.quote);
-                return null;
-            });
-        });
-
         this.userProfileID = this.storage.get('userCode');
         this.storage.get('userCode').then((val) => {
             if (val) {
@@ -222,6 +213,7 @@ export class HomePage implements OnInit {
                         this.user.cohort = doc.get('cohort');
                         this.user.currentEmotion = doc.get('mood');
                         this.user.code = doc.get('code');
+                        this.user.dailyQuote = doc.get('dailyQuote');
                         this.user.joinedChallenges = doc.get('joinedChallenges');
                         console.log(this.user.joinedChallenges);
 

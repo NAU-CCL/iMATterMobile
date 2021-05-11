@@ -38,6 +38,7 @@ export interface User {
   joinedChallenges: any[];
   completedChallenges: any[];
   codeEntered: boolean;
+  dailyQuote: string;
 }
 
 export interface Provider {

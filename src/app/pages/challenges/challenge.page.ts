@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyticsService.service';
+import {DatePipe} from '@angular/common';
 import * as firebase from 'firebase/app';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {AlertController} from '@ionic/angular';
@@ -40,7 +41,8 @@ export class ChallengePage implements OnInit {
                 private router: Router,
                 private afs: AngularFirestore,
                 private analyticsService: AnalyticsService,
-                private alertController: AlertController) {
+                private alertController: AlertController,
+                private datePipe: DatePipe) {
     }
 
     ngOnInit() {
@@ -67,6 +69,12 @@ export class ChallengePage implements OnInit {
                         });
                         this.challengeService.getCompletedChallenges(this.userID).then(resp => {
                             this.completedChallenges = resp;
+                            this.completedChallenges.forEach(challenge => {
+                                console.log(new Date(challenge.dateFinished.seconds * 1000).toLocaleDateString('en-US'));
+                                console.log(challenge.dateFinished);
+                                challenge.dateFinished = new Date(challenge.dateFinished.seconds * 1000).toLocaleDateString('en-US');
+                                challenge.dateFinished = this.datePipe.transform(challenge.dateFinished, 'MMMM d, yyyy')
+                            });
                             console.log(this.completedChallenges);
                         });
                     });

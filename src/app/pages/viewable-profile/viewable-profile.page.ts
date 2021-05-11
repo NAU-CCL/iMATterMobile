@@ -42,7 +42,8 @@ export class ViewableProfilePage implements OnInit {
         answeredSurveys: [],
         joinedChallenges: [],
         completedChallenges: [],
-        codeEntered: true
+        codeEntered: true,
+        dailyQuote: ''
     };
 
     provider: Provider = {

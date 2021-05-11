@@ -43,9 +43,9 @@ position: relative;
 
   .ion-button-background {
     color: #ffffff;
-    --background: var(--main-color);
-    --background-activated: var(--main-color);
-    --background-hover: var(--secondary-color);
+    --background: var(--secondary-color);
+    --background-activated: var(--secondary-color);
+    --background-hover: var(--main-tint);
   }
 
   .text-press {

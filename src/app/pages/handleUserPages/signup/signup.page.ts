@@ -126,7 +126,8 @@ export class SignupPage implements OnInit {
     answeredSurveys: [],
     joinedChallenges: [],
     completedChallenges: [],
-    codeEntered: true
+    codeEntered: true,
+    dailyQuote: ''
   };
 
   static findCohort(month: string) {

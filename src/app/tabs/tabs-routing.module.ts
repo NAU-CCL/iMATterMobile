@@ -78,12 +78,12 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'calendar',
+        path: 'habits',
         children: [
           {
             path: '',
             loadChildren: () =>
-              import('../pages/calendar/calendar.module').then(m => m.CalendarPageModule)
+              import('../pages/challenges/challenge.module').then(m => m.ChallengePageModule)
           }
         ]
       },
@@ -120,7 +120,11 @@ const routes: Routes = [
             loadChildren: () =>
                 import('../pages/more/more.module').then(m => m.MorePageModule)
           },
-
+          {
+            path: 'calender',
+            loadChildren: () =>
+                import('../pages/calendar/calendar.module').then(m => m.CalendarPageModule)
+          }
         ]
       },
       {

@@ -1,17 +1,23 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-button class="text-press" (click)="getAmpm()" (click)="showAddEvent = true" (click)="isTwelveHour">Add Event</ion-button>
-    </ion-buttons>
-    <ion-icon name="information-circle" (click)="displayCalendarInfo()"></ion-icon>
-    <ion-buttons slot="end">
-      <ion-button class="ion-button-background" size="small" (click)="today()">Today</ion-button>
-	  <ion-button class="text-press"  href="/calendar-settings">Settings</ion-button>
-    </ion-buttons>
+      <ion-buttons slot="start">
+        <ion-back-button class="text-button" defaultHref="/tabs/more"></ion-back-button>
+      </ion-buttons>
+        <ion-title>Calendar</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content >
+<ion-content>
+    <ion-toolbar style="--background: var(--main-color)">
+      <ion-buttons slot="start">
+        <ion-button style="color: white" class="text-press" (click)="getAmpm()" (click)="showAddEvent = true" (click)="isTwelveHour">Add Event</ion-button>
+      </ion-buttons>
+      <ion-icon name="information-circle" style="color: white" (click)="displayCalendarInfo()"></ion-icon>
+      <ion-buttons slot="end">
+        <ion-button class="ion-button-background" size="small" (click)="today()">Today</ion-button>
+        <ion-button class="text-press" style="color: white" href="/calendar-settings">Settings</ion-button>
+      </ion-buttons>
+    </ion-toolbar>
 	<div class = "addEvent" *ngIf="showAddEvent">
   <!-- Card for adding a new event -->
   <ion-item *ngIf="!isTwelveHour" lines="none">

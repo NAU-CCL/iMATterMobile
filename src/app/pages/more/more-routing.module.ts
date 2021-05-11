@@ -29,8 +29,8 @@ const routes: Routes = [
     loadChildren: () => import('../forum/forum.module').then( m => m.ForumPageModule)
   },
   {
-    path: 'habits',
-    loadChildren: () => import('../challenges/challenge.module').then( m => m.ChallengePageModule)
+    path: 'calendar',
+    loadChildren: () => import('../calendar/calendar.module').then( m => m.CalendarPageModule)
   },
   {
     path: 'survey',
