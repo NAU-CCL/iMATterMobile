@@ -29,7 +29,7 @@ export class FireService {
   
   constructor(private angularfs: AngularFirestore) {}
 
-   getSurveyCollection(){
+   getSurveyCollection()  {
      // gets the collection of surveys
     this.surveyCollection = this.angularfs.collection<Survey>('surveys');
 
@@ -46,9 +46,9 @@ export class FireService {
    }
 
    // gets all of the surveys in the survey collection
-   getSurveys(): Observable<Survey[]>{
+   getSurveys(): Observable<Survey[]> {
      this.getSurveyCollection();
-    return this.surveys;
+     return this.surveys;
   }
 
   // gets an individual survey with id provided
