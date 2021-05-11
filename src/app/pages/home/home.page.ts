@@ -11,6 +11,7 @@ import {Observable} from 'rxjs';
 import {FireService} from 'src/app/services/survey/fire.service';
 import {MoodProviderNotifService, EmotionNotif} from '../../services/mood-provider-notif.service';
 import {ChallengeService, Challenge, ChallengeTypes} from '../../services/challenges/challenge-service.service';
+import {QuoteService, Quote} from '../../services/homeQuote.service';
 import {delay} from 'rxjs/operators';
 import {element} from 'protractor';
 
@@ -116,12 +117,10 @@ export class HomePage implements OnInit {
     public daysInRecovery;
     private userProfileID: any;
     private id: any;
-    private weeksPregnant: any;
-    private daysPregnant: any;
-    private totalDaysPregnant: any;
     private analyticss: string;
     private sessions: Observable<any>;
     public challenges: Observable<Challenge[]>;
+    public quote: Observable<Quote[]>;
     public challengeProgress = {};
     public daysComplete = {};
     public challengeDayComplete: boolean;
@@ -135,7 +134,8 @@ export class HomePage implements OnInit {
                 private analyticsService: AnalyticsService,
                 private fs: FireService,
                 private challengeService: ChallengeService,
-                private mpnService: MoodProviderNotifService) {
+                private mpnService: MoodProviderNotifService,
+                private quoteService: QuoteService) {
         this.dropDown = [{expanded: false}];
     }
 
@@ -147,7 +147,9 @@ export class HomePage implements OnInit {
             }
         });
 
-        this.getRandomQuote();
+        // this.quote = this.quoteService.getAllQuotes();
+        // console.log(this.quote);
+
         /*
 
         this.storage.get('weeksPregnant').then((val) => {
@@ -188,6 +190,15 @@ export class HomePage implements OnInit {
         // this.ngOnInit();
         this.addView();
         this.challenges = this.challengeService.getAllChallenges();
+
+        const quotes = this.afs.firestore.collection('homeQuote');
+        quotes.get().then(results => {
+            results.forEach(doc => {
+                this.quote = doc.get('quote');
+                console.log(this.quote);
+                return null;
+            });
+        });
 
         this.userProfileID = this.storage.get('userCode');
         this.storage.get('userCode').then((val) => {

@@ -497,17 +497,21 @@ export class ProfilePage implements OnInit {
     }
 
     saveProfile() {
-        const dateValue = (document.getElementById('newEndRehabDate') as HTMLInputElement).value;
-        console.log(dateValue);
-        console.log(this.user.endRehabDate);
+        let dateValue = (document.getElementById('newEndRehabDate') as HTMLInputElement).value;
+        dateValue = this.datePipe.transform(dateValue, 'y-MM-dd');
+
         if (dateValue !== this.user.endRehabDate) {
+            console.log('date value changed');
             // const newRehabDate = (document.getElementById('newEndRehabDate') as HTMLInputElement).value;
             this.user.endRehabDate = dateValue.split('T')[0];
             const date = new Date(this.user.endRehabDate + 'T12:00:00');
             this.recoveryDate = date;
             this.profileService.updateRecoveryDate(this.user.endRehabDate, this.userProfileID);
+        } else {
+            console.log('In the else');
         }
 
+        console.log('Out of if');
         const newBio = (document.getElementById('newBio') as HTMLInputElement).value;
         this.user.profilePic = this.previewPic;
         this.user.bio = newBio;
