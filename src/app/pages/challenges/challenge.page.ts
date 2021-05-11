@@ -8,8 +8,8 @@ import * as firebase from 'firebase/app';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {AlertController} from '@ionic/angular';
 import {ExpandableComponent} from '../../components/expandable/expandable.component';
-import {element} from "protractor";
-import {forEach} from "@angular-devkit/schematics";
+import {element} from 'protractor';
+import {forEach} from '@angular-devkit/schematics';
 
 
 @Component({

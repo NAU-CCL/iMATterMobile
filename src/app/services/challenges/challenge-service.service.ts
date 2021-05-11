@@ -11,6 +11,7 @@ export interface Challenge {
     type: string;
     length: number;
     coverPicture: string;
+    icon: string;
     contents: any[];
 }
 

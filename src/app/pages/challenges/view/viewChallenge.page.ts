@@ -11,7 +11,7 @@ import {ActivatedRoute} from '@angular/router';
 import {ExpandableComponent} from '../../../components/expandable/expandable.component';
 import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
 import {compilerSetStylingMode} from '@angular/compiler/src/render3/view/styling_state';
-import {isNegativeNumberLiteral} from "tslint";
+import {isNegativeNumberLiteral} from 'tslint';
 
 
 @Component({
@@ -34,6 +34,7 @@ export class ViewChallengePage implements OnInit {
         type: '',
         length: 0,
         coverPicture: '',
+        icon: '',
         contents: []
     };
 
@@ -161,7 +162,9 @@ export class ViewChallengePage implements OnInit {
             this.joinedChallenges.forEach(item => {
                 if (item.challenge.id === challengeId) {
                     item.dayComplete = !item.dayComplete;
-                    this.challengeService.updateJoinedChallenges(this.userID, this.joinedChallenges).then(r => console.log(r));
+                    this.challengeService.updateJoinedChallenges(this.userID, this.joinedChallenges).then(r => {
+                        console.log(r);
+                    });
                 }
             });
         } else {

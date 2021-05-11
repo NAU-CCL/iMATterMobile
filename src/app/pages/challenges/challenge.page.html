@@ -95,8 +95,8 @@
             <ion-card button [routerLink]="['/habit', challenge.id]" *ngIf="challenge.type == challengeView" [ngClass]="challenge.id">
                 <ion-card-title class="ion-padding-horizontal ion-padding-top">
                     <ion-row>
-                        <ion-thumbnail>
-                            <ion-img src="https://firebasestorage.googleapis.com/v0/b/imatter-nau.appspot.com/o/Test%2Fflex-biceps.png?alt=media&token=c0f25f7f-fcf1-439e-a00c-05df35320b9c"></ion-img>
+                        <ion-thumbnail *ngIf="challenge.icon != '' && challenge.icon != undefined">
+                            <ion-img src="{{challenge.icon}}"></ion-img>
                         </ion-thumbnail>
                         {{challenge.title}}
                     </ion-row>
