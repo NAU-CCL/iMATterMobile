@@ -20,7 +20,7 @@ export class AvailablePage implements OnInit {
   public emotion = '';
   public daysAUser = '';
   public dueDate = '';
-  public answeredSurveys = '';
+  public answeredSurveys = [];
   public completed = '';
   public userVisibility;
 
@@ -59,6 +59,7 @@ export class AvailablePage implements OnInit {
             this.dueDate = doc.get('dueDate').split('-');
             this.answeredSurveys = doc.get('answeredSurveys');
             this.completed = doc.get('answeredSurveys');
+            console.log(this.answeredSurveys);
           });
         });
       }
@@ -68,8 +69,55 @@ export class AvailablePage implements OnInit {
 
   // isDisplayed determines if the survey shows up for the user or not
   isDisplayed(survey: Survey) {
+    if (survey.userVisibility !== undefined) {
+      const daysArray = survey.daysTillRelease.split(',');
+      console.log(daysArray);
+      if (this.isCompleted(survey)) {
+        let lastComplete;
+        this.answeredSurveys.forEach(id => {
+          if (id.split(':')[0] === survey.id) {
+            lastComplete = id.split(':')[1];
+          }
+        });
+      }
+      return survey.userVisibility.includes(this.userCode);
+    } else {
+      return false;
+    }
+  }
 
-    // array which includes the userId of all of users who can take this survey
+  isCompleted(survey: Survey) {
+    let complete = false;
+    this.answeredSurveys.forEach(id => {
+        if (id.split(':')[0] === survey.id) {
+          complete = true;
+        }
+    });
+    return complete;
+  }
+
+  answerSurvey(survey: Survey) {
+
+    // declare submitData which will contain the necessary information of the survey
+    // when submitting it
+    let submitData;
+
+    // if the survey type is not inactive, take the survey interval for the current
+    // survey and assign it to submit data
+    if (survey.type !== 'Inactive') {
+        submitData = survey.id + ':' + this.daysAUser;
+    }
+
+    // since the inactive surveys are dealt with differently,
+    // just add the survey id with a 0. This is because Inactive surveys
+    // do not have intervals, and only need to be taken once if the user
+    // has been inactive for a certain number of days
+    // if (survey.type === 'Inactive') {
+    //   submitData = survey.id + ':' + '0';
+    // }
+
+    // navigate to the answer page and pass the submitData
+    this.router.navigate(['/tabs/home/available/answer/' + submitData]);
   }
 }
 

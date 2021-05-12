@@ -3,7 +3,7 @@
     <name>iMATter</name>
     <description>A recovery app.</description>
     <author email="hi@ionicframework.com" href="http://ionicframework.com/">Ionic Framework Team</author>
-    <content src="index.html" />
+    <content original-src="index.html" src="http://localhost:8101" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -128,4 +128,5 @@
     <plugin name="cordova-plugin-nativegeocoder" spec="^3.2.2">
         <variable name="LOCATION_WHEN_IN_USE_DESCRIPTION" value="Use geocoder service" />
     </plugin>
+    <allow-navigation href="http://localhost:8101" sessionid="48333455" />
 </widget>

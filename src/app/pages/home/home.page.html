@@ -95,23 +95,31 @@
     </ion-card>
 
     <ng-container *ngFor="let challenge of (challenges|async)">
-        <ion-card *ngIf="challengeJoined(challenge.id) && !daysComplete[challenge.id]" id="card{{challenge.id}}">
-            <ion-card-title class="ion-padding"
-                            [routerLink]="['/habit', challenge.id]">{{challenge.title}}</ion-card-title>
-            <ion-card-subtitle class="ion-padding" style="padding-top: 0">
-                <b>{{challenge.contents[challengeProgress[challenge.id]].title}}</b>: {{challenge.contents[challengeProgress[challenge.id]].activity}}
+        <ion-card id="card{{challenge.id}}" *ngIf="challengeJoined(challenge.id) && !daysComplete[challenge.id]">
+                <ion-card-title class="ion-padding"
+                                [routerLink]="['/habit', challenge.id]">{{challenge.title}}</ion-card-title>
+                <ion-card-subtitle class="ion-padding" style="padding-top: 0">
+                    <b>{{challenge.contents[challengeProgress[challenge.id]].title}}</b>: {{challenge.contents[challengeProgress[challenge.id]].activity}}
 
-            </ion-card-subtitle>
-            <ion-card-content>
-                <div class="ion-float-right">
-                    DONE
-                    <ion-checkbox id="{{challenge.id}}" (click)="completeDay(challenge.id)"
-                                  style="font-size: 0.8em"
-                                  checked="{{daysComplete[challenge.id]}}">
-                    </ion-checkbox>
-                </div>
-            </ion-card-content>
+                </ion-card-subtitle>
+                <ion-card-subtitle>
+                    <div class="ion-float-right" style="font-size: 2em">
+<!--                        DONE-->
+<!--                        <ion-checkbox id="{{challenge.id}}" (click)="completeDay(challenge.id)"-->
+<!--                                      style="font-size: 0.8em"-->
+<!--                                      checked="{{daysComplete[challenge.id]}}">-->
+<!--                        </ion-checkbox>-->
+                        <ion-icon name="arrow-forward" [routerLink]="['/habit', challenge.id]"></ion-icon>
+                    </div>
+                </ion-card-subtitle>
         </ion-card>
+            <ion-card *ngIf="challengeJoined(challenge.id) && daysComplete[challenge.id]">
+                <ion-card-title class="ion-padding"
+                                [routerLink]="['/habit', challenge.id]">{{challenge.title}}</ion-card-title>
+                <ion-card-subtitle class="ion-padding" style="padding-top: 0">
+                    You completed today's task! Come back tomorrow for a new challenge.
+                </ion-card-subtitle>
+            </ion-card>
     </ng-container>
 
     <!--ion-card (click)="expandItem(drop)" *ngFor="let drop of dropDown">
@@ -134,44 +142,44 @@
         </ion-card-content>
     </ion-card>-->
 
-<!--    <ion-card>-->
-<!--        <ion-card-title class="ion-padding-horizontal">-->
-<!--            Build Healthy Habits-->
-<!--        </ion-card-title>-->
-<!--        <ion-card-content>-->
-<!--            Join one (or several!) of these challenges that range from 5-30 days to build a new healthy habit.-->
-<!--        </ion-card-content>-->
-<!--        <ion-item class="text-button" button [routerLink]="['/tabs/home/habits']">-->
-<!--            Go to Habits-->
-<!--            <ion-icon md="md-arrow-forward" slot="end"></ion-icon>-->
-<!--        </ion-item>-->
-<!--    </ion-card>-->
+    <!--    <ion-card>-->
+    <!--        <ion-card-title class="ion-padding-horizontal">-->
+    <!--            Build Healthy Habits-->
+    <!--        </ion-card-title>-->
+    <!--        <ion-card-content>-->
+    <!--            Join one (or several!) of these challenges that range from 5-30 days to build a new healthy habit.-->
+    <!--        </ion-card-content>-->
+    <!--        <ion-item class="text-button" button [routerLink]="['/tabs/home/habits']">-->
+    <!--            Go to Habits-->
+    <!--            <ion-icon md="md-arrow-forward" slot="end"></ion-icon>-->
+    <!--        </ion-item>-->
+    <!--    </ion-card>-->
 
-<!--    <ion-card>-->
-<!--        <ion-card-title class="ion-padding-horizontal">-->
-<!--            Information Desk-->
-<!--        </ion-card-title>-->
-<!--        <ion-card-content>-->
-<!--            The information desk allows you to ask health professional questions. You can also view commonly asked-->
-<!--            questions.-->
-<!--        </ion-card-content>-->
-<!--        <ion-item class="text-button" button [routerLink]="['/tabs/home/forum']" (click)="updateInfoClicks()">-->
-<!--            Go to Information Desk-->
-<!--            <ion-icon md="md-arrow-forward" slot="end"></ion-icon>-->
-<!--        </ion-item>-->
-<!--    </ion-card>-->
+    <!--    <ion-card>-->
+    <!--        <ion-card-title class="ion-padding-horizontal">-->
+    <!--            Information Desk-->
+    <!--        </ion-card-title>-->
+    <!--        <ion-card-content>-->
+    <!--            The information desk allows you to ask health professional questions. You can also view commonly asked-->
+    <!--            questions.-->
+    <!--        </ion-card-content>-->
+    <!--        <ion-item class="text-button" button [routerLink]="['/tabs/home/forum']" (click)="updateInfoClicks()">-->
+    <!--            Go to Information Desk-->
+    <!--            <ion-icon md="md-arrow-forward" slot="end"></ion-icon>-->
+    <!--        </ion-item>-->
+    <!--    </ion-card>-->
 
-<!--    <ion-card>-->
-<!--        <ion-card-title class="ion-padding-horizontal">-->
-<!--            Surveys-->
-<!--        </ion-card-title>-->
-<!--        <ion-card-content>-->
-<!--            Surveys are a way to provide useful information and help earn points-->
-<!--        </ion-card-content>-->
-<!--        <ion-item class="text-button" button [routerLink]="['/tabs/home/available']" (click)="updateSurveyClicks()">-->
-<!--            Go to your surveys-->
-<!--            <ion-icon md="md-arrow-forward" slot="end"></ion-icon>-->
-<!--        </ion-item>-->
-<!--    </ion-card>-->
+    <!--    <ion-card>-->
+    <!--        <ion-card-title class="ion-padding-horizontal">-->
+    <!--            Surveys-->
+    <!--        </ion-card-title>-->
+    <!--        <ion-card-content>-->
+    <!--            Surveys are a way to provide useful information and help earn points-->
+    <!--        </ion-card-content>-->
+    <!--        <ion-item class="text-button" button [routerLink]="['/tabs/home/available']" (click)="updateSurveyClicks()">-->
+    <!--            Go to your surveys-->
+    <!--            <ion-icon md="md-arrow-forward" slot="end"></ion-icon>-->
+    <!--        </ion-item>-->
+    <!--    </ion-card>-->
 
 </ion-content>

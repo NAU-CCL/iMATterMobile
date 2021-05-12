@@ -19,7 +19,7 @@
     <!-- Filters Available Surveys and displays their information in a card,
         card is highlighted if necessary -->
     <ng-container *ngFor="let survey of (surveys | async)">
-        <ion-card *ngIf="isDisplayed(survey)">
+        <ion-card *ngIf="isDisplayed(survey)" (click)="answerSurvey(survey)">
             <ion-card-title>{{survey.title}}</ion-card-title>
             <ion-card-content>{{survey.surveyDescription}}</ion-card-content>
             <ion-card-subtitle>Points: {{survey.pointsWorth}}</ion-card-subtitle>
@@ -59,7 +59,7 @@
       </ion-label>
     </ion-item-divider>
     <ng-container *ngFor="let survey of (surveys|async)">
-        <ion-card>
+        <ion-card *ngIf="isCompleted(survey)">
             <ion-card-title>{{survey.title}}</ion-card-title>
             <ion-card-content>{{survey.surveyDescription}}</ion-card-content>
             <ion-card-subtitle>Points: {{survey.pointsWorth}}</ion-card-subtitle>
