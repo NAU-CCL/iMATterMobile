@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>View All</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button class="text-button" defaultHref="/tabs/more/resources"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+    <h1 class="ion-padding ion-no-margin">{{resource.title}}</h1>
+    <div class="ion-padding-horizontal">Services: {{resource.type}} </div>
+    <div class="ion-padding-horizontal">Contact: {{resource.phone}} </div>
+    <div class="ion-padding-horizontal">Address: {{resource.street}} </div>
+    <ion-card>
+        <ion-card-content>
+            {{resource.content}}
+        </ion-card-content>
+    </ion-card>
+</ion-content>
+<ion-footer *ngIf="resource.url != ''">
+    <ion-toolbar>
+        <ion-button color="success" expand="full" class="urlLink" id={{resource.url}} (click)="visitSite(resource.url)">Go To Website</ion-button>
+    </ion-toolbar>
+</ion-footer>

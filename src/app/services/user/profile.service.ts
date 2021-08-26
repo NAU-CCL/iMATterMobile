@@ -28,7 +28,9 @@ export class ProfileService {
             adminEmail: adminEmail,
             email: email,
             username: username,
-            gcType: gcType
+            gcType: gcType,
+            state: "new",
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
         });
     }
 

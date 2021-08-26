@@ -13,6 +13,10 @@ const routes: Routes = [
   {
     path: 'suggestions',
     loadChildren: () => import('./suggestions/suggestions.module').then( m => m.SuggestionsPageModule)
+  },
+  {
+    path: ':id',
+    loadChildren: () => import('./resource/resource.module').then(m => m.ResourcePageModule)
   }
 
 ];

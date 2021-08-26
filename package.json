@@ -57,7 +57,7 @@
     "firebase-functions": "^3.3.0",
     "ionic2-calendar": "^0.5.7",
     "moment": "^2.24.0",
-    "nodemailer": "^6.4.4",
+    "nodemailer": "^6.6.3",
     "rxjs": "^6.5.0",
     "rxjs-compat": "^6.4.0",
     "tslib": "^1.11.1",
