@@ -14,6 +14,7 @@ import { ChallengeService, Challenge, ChallengeTypes } from '../../services/chal
 import { QuoteService, Quote } from '../../services/homeQuote.service';
 import { delay } from 'rxjs/operators';
 import { element } from 'protractor';
+import { SurveyService, Survey } from 'src/app/services/survey/survey.service';
 
 
 @Component({
@@ -122,6 +123,7 @@ export class HomePage implements OnInit {
     private analyticss: string;
     private sessions: Observable<any>;
     public challenges: Observable<Challenge[]>;
+    public surveys: Observable<Survey[]>;
     public challengeProgress = {};
     public daysComplete = {};
     public challengeDayComplete: boolean;
@@ -136,7 +138,8 @@ export class HomePage implements OnInit {
         private fs: FireService,
         private challengeService: ChallengeService,
         private mpnService: MoodProviderNotifService,
-        private quoteService: QuoteService) {
+        private quoteService: QuoteService,
+        private surveyService: SurveyService) {
         this.dropDown = [{ expanded: false }];
     }
 
@@ -147,6 +150,8 @@ export class HomePage implements OnInit {
                 this.router.navigate(['/login/']);
             }
         });
+
+        this.surveys = this.surveyService.getSurveys();
 
         // this.quote = this.quoteService.getAllQuotes();
         // console.log(this.quote);
@@ -216,6 +221,7 @@ export class HomePage implements OnInit {
                         this.user.code = doc.get('code');
                         this.user.dailyQuote = doc.get('dailyQuote');
                         this.user.joinedChallenges = doc.get('joinedChallenges');
+                        this.user.availableSurveys = doc.get('availableSurveys');
                         console.log(this.user.joinedChallenges);
 
                         this.daysInRecovery = this.getDaysInRecovery(this.user.endRehabDate);
@@ -380,6 +386,18 @@ export class HomePage implements OnInit {
             this.emotionNotif.timestamp = firebase.firestore.FieldValue.serverTimestamp();
             this.mpnService.addEmotionNotif(this.emotionNotif);
         }
+        this.surveys.forEach(item => {
+            item.forEach(survey => {
+                if (survey.type == 'Emotion Triggered') {
+                    if (survey.characteristics['emotion'] == this.user.currentEmotion) {
+                        this.user.availableSurveys.push(survey.id);
+                        this.afs.firestore.collection('users').doc(this.userProfileID)
+                            .update({ availableSurveys: this.user.availableSurveys });
+                        console.log(this.user.availableSurveys);
+                    }
+                }
+            })
+        })
     }
 
 
