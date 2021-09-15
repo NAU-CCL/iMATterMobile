@@ -15,7 +15,6 @@
         </div>
     </div>
     <div class="split pane2 list">
-
         <ion-row id="viewPicker">
             <ion-col style="padding: 0">
                 <ion-buttons id="listPicker" class="text-button selected" style="justify-content: center">
@@ -26,7 +25,21 @@
                 </ion-buttons>
             </ion-col>
         </ion-row>
+        <ion-row>
+            <ion-col style="padding: 0">
+                <ion-select id="filterValue" value="all" okText="Apply" cancelText="Dismiss" (ionChange)="filter()">
+                    <ion-select-option value="all">All</ion-select-option>
+                    <ng-container *ngFor="let type of locationTypes; let i = index">
+                        <ion-select-option [value]=type>{{type}}</ion-select-option>
+                    </ng-container>
+                </ion-select> 
+            </ion-col>
+        </ion-row>
         <ion-list id="locationList">
+            <ion-item *ngFor="let location of filteredList" class="locationItem">
+                <div [routerLink]="['./', location.id]">{{ location.title }}</div>
+                <ion-icon (click)="moveToLocation(location.latitude, location.longitude)" name="pin" slot="end"></ion-icon>
+            </ion-item>      
         </ion-list>
     </div>
 </ion-content>

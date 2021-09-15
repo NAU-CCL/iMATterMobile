@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthServiceProvider, User } from '../../../services/user/auth.service';
 import { FcmService } from '../../../services/pushNotifications/fcm.service';
-import {LoadingController, AlertController, ToastController} from '@ionic/angular';
+import { LoadingController, AlertController, ToastController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import { storage } from 'firebase';
 import 'firebase/storage';
 import * as firebase from 'firebase/app';
-import {AngularFirestore} from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/firestore';
 
 
 @Component({
@@ -20,16 +20,16 @@ import {AngularFirestore} from '@angular/fire/firestore';
 export class SignupPage implements OnInit {
 
   constructor(
-      private authService: AuthServiceProvider,
-      private loadingCtrl: LoadingController,
-      private alertCtrl: AlertController,
-      private formBuilder: FormBuilder,
-      private activatedRoute: ActivatedRoute,
-      private router: Router,
-      private ionicStorage: Storage,
-      private fcm: FcmService,
-      public afs: AngularFirestore,
-      private toastCtrl: ToastController,
+    private authService: AuthServiceProvider,
+    private loadingCtrl: LoadingController,
+    private alertCtrl: AlertController,
+    private formBuilder: FormBuilder,
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+    private ionicStorage: Storage,
+    private fcm: FcmService,
+    public afs: AngularFirestore,
+    private toastCtrl: ToastController,
   ) {
 
     this.getSecurityQs();
@@ -77,7 +77,7 @@ export class SignupPage implements OnInit {
         '',
         Validators.compose([Validators.required, Validators.maxLength(300)]),
       ],
-    }, {validators: this.checkPasswords});
+    }, { validators: this.checkPasswords });
   }
 
   public signupForm: FormGroup;
@@ -100,7 +100,7 @@ export class SignupPage implements OnInit {
   user: User = {
     code: '',
     username: '',
-    email:  '',
+    email: '',
     password: '',
     dueDate: '',
     endRehabDate: '',
@@ -109,7 +109,7 @@ export class SignupPage implements OnInit {
     weeksPregnant: '',
     daysPregnant: '',
     totalDaysPregnant: '',
-    bio:  '',
+    bio: '',
     securityQ: '',
     securityA: '',
     currentEmotion: '',
@@ -127,6 +127,7 @@ export class SignupPage implements OnInit {
     joinedChallenges: [],
     completedChallenges: [],
     codeEntered: true,
+    availableSurveys: [],
     dailyQuote: ''
   };
 
@@ -206,7 +207,7 @@ export class SignupPage implements OnInit {
     return pass === confirmPass ? null : { notSame: true };
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   ionViewWillEnter() {
     this.id = this.activatedRoute.snapshot.paramMap.get('id');
@@ -215,15 +216,15 @@ export class SignupPage implements OnInit {
   async signupUser(signupForm: FormGroup): Promise<void> {
     if (!signupForm.valid) {
       console.log(
-          'Need to complete the form, current value: ', signupForm.value
+        'Need to complete the form, current value: ', signupForm.value
       );
 
-      this.showToast('Please enter: ' +  signupForm.value.toString());
-    }  else {
+      this.showToast('Please enter: ' + signupForm.value.toString());
+    } else {
 
       this.user.code = this.id;
       this.user.username = signupForm.value.username;
-      this.user.email =  signupForm.value.email;
+      this.user.email = signupForm.value.email;
       this.user.password = signupForm.value.password;
       // this.user.dueDate = signupForm.value.dateDue.split('T')[0];
       this.user.dueDate = '';
@@ -245,56 +246,56 @@ export class SignupPage implements OnInit {
       this.user.daysPregnant = 0;
 
       // find user cohort
-        // get user due month
+      // get user due month
       const tempCohort = this.user.dueDate.split('-');
       this.user.cohort = SignupPage.findCohort(tempCohort[1]);
 
       this.afs.firestore.collection('users').where('email', '==', this.user.email)
-          .get().then(snapshot => {
-        if (snapshot.docs.length > 0) {
-          console.log(('taken'));
-          this.emailUsed = true;
-          this.showToast('Email already in use!');
-        } else {
-          this.afs.firestore.collection('users').where('username', '==', this.user.username)
+        .get().then(snapshot => {
+          if (snapshot.docs.length > 0) {
+            console.log(('taken'));
+            this.emailUsed = true;
+            this.showToast('Email already in use!');
+          } else {
+            this.afs.firestore.collection('users').where('username', '==', this.user.username)
               .get().then(snap => {
-            if (snap.docs.length > 0) {
-              console.log(('taken'));
-              this.usernameTaken = true;
-              this.showToast('Username taken!');
-            } else {
-              this.authService.signupUser(this.user).then(
-                  () => {
-                    this.ionicStorage.set('userCode', this.user.code);
+                if (snap.docs.length > 0) {
+                  console.log(('taken'));
+                  this.usernameTaken = true;
+                  this.showToast('Username taken!');
+                } else {
+                  this.authService.signupUser(this.user).then(
+                    () => {
+                      this.ionicStorage.set('userCode', this.user.code);
 
-                    /*
-                    this.loading.dismiss().then(() => {
-
+                      /*
+                      this.loading.dismiss().then(() => {
+  
+                        this.showToast('You have created an account');
+  
+                       */
                       this.showToast('You have created an account');
-
-                     */
-                    this.showToast('You have created an account');
-                    this.router.navigate(['/login']);
-                   // });
-                  },
-                  error => {
-                    /*
-                    this.loading.dismiss().then(async () => {
-                      const alert = await this.alertCtrl.create({
-                        message: error.message,
-                        buttons: [{text: 'Ok', role: 'cancel'}],
-                      });
-                      await alert.present();
-                    });*/
-                    this.showToast('An error occurred while creating your account');
-                  }
-              );
-              // this.loading = await this.loadingCtrl.create();
-              // await this.loading.present();
-            }
-          });
-        }
-      });
+                      this.router.navigate(['/login']);
+                      // });
+                    },
+                    error => {
+                      /*
+                      this.loading.dismiss().then(async () => {
+                        const alert = await this.alertCtrl.create({
+                          message: error.message,
+                          buttons: [{text: 'Ok', role: 'cancel'}],
+                        });
+                        await alert.present();
+                      });*/
+                      this.showToast('An error occurred while creating your account');
+                    }
+                  );
+                  // this.loading = await this.loadingCtrl.create();
+                  // await this.loading.present();
+                }
+              });
+          }
+        });
 
       // populate learning modules upon signup
       this.populateLearningModules();
@@ -323,26 +324,26 @@ export class SignupPage implements OnInit {
   checkEmail(email): any {
 
     this.afs.firestore.collection('users').where('email', '==', email)
-        .get().then(snapshot => {
-          if (snapshot.docs.length > 0) {
-            console.log(('taken'));
-            this.emailUsed = true;
-          } else {
-            this.emailUsed = false;
-          }
-        });
+      .get().then(snapshot => {
+        if (snapshot.docs.length > 0) {
+          console.log(('taken'));
+          this.emailUsed = true;
+        } else {
+          this.emailUsed = false;
+        }
+      });
   }
 
   checkUsername(username): any {
     let taken = false;
     this.afs.firestore.collection('users').where('username', '==', username)
-        .get().then(snapshot => {
-      if (snapshot.docs.length > 0) {
-        console.log(('taken'));
-        taken =  true;
-        return true;
-      }
-    });
+      .get().then(snapshot => {
+        if (snapshot.docs.length > 0) {
+          console.log(('taken'));
+          taken = true;
+          return true;
+        }
+      });
   }
 
 
@@ -434,9 +435,9 @@ export class SignupPage implements OnInit {
             }
           }
         });
-          // IMPORTANT: update the userVisibility array
-        learningModules.doc(learningModule.id).update({previousUserVisibility: storedLMUserVisibility});
-        learningModules.doc(learningModule.id).update({userVisibility: lmUserVisibility});
+        // IMPORTANT: update the userVisibility array
+        learningModules.doc(learningModule.id).update({ previousUserVisibility: storedLMUserVisibility });
+        learningModules.doc(learningModule.id).update({ userVisibility: lmUserVisibility });
       });
     });
   }
@@ -497,10 +498,10 @@ export class SignupPage implements OnInit {
           const dateDue = new Date(userDueDate[1] + '/' + userDueDate[2] + '/' + userDueDate[0]);
 
           // subtract the current day from the dueDate and get the time in ms
-          const timeBeforeDue =  dateDue.getTime() - today.getTime();
+          const timeBeforeDue = dateDue.getTime() - today.getTime();
 
           // convert the time into days
-          const daysBeforeDue = Math.trunc( timeBeforeDue / (1000 * 3600 * 24) );
+          const daysBeforeDue = Math.trunc(timeBeforeDue / (1000 * 3600 * 24));
 
           // for each day in the array check if the user's due date is within the those days, if so
           // add the user code to the userVisibility array to make sure the survey is visible to them
@@ -514,8 +515,8 @@ export class SignupPage implements OnInit {
         // Survey Type Emotion doesn't check userVisibility, so there is no need to handle them here
         // Survey Type Inactive a user cannot be inactive if they just signed up, so there is no need to handle
 
-          // IMPORTANT: update the userVisibility array
-        surveys.doc(survey.id).update({userVisibility: surveyUserVisibility});
+        // IMPORTANT: update the userVisibility array
+        surveys.doc(survey.id).update({ userVisibility: surveyUserVisibility });
       });
     });
   }

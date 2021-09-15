@@ -1,0 +1,121 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>View All</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button class="text-button" defaultHref="/tabs/more/resources"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <h1 class="ion-padding ion-no-margin">{{resource.title}}</h1>
+  <div class="ion-padding">
+    <div>Services: {{resource.type}} </div>
+    <div>Contact: {{resource.phone}} </div>
+    <div>Address: {{resource.street}} </div>
+  </div>
+  <ion-card>
+    <ion-card-content>
+      {{resource.content}}
+    </ion-card-content>
+  </ion-card>
+  <div class="ion-padding" *ngIf="resource.hourType == '24hr'">
+    <h3>Open 24 Hours</h3>
+  </div>
+  <ion-grid class="ion-padding" *ngIf="resource.hourType != '24hr'">
+    <ion-row>
+      <ion-col>
+        <h3>Hours of Operation</h3>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        Monday:
+      </ion-col>
+      <ion-col *ngIf="resource.MOpen != 'CLOSED'">
+        {{resource.MOpen}} - {{resource.MClose}}
+      </ion-col>
+      <ion-col *ngIf="resource.MOpen == 'CLOSED'">
+        CLOSED
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        Tuesdsay:
+      </ion-col>
+      <ion-col *ngIf="resource.TOpen != 'CLOSED'">
+        {{resource.TOpen}} - {{resource.TClose}}
+      </ion-col>
+      <ion-col *ngIf="resource.TOpen == 'CLOSED'">
+        CLOSED
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        Wednesday:
+      </ion-col>
+      <ion-col *ngIf="resource.WOpen != 'CLOSED'">
+        {{resource.WOpen}} - {{resource.WClose}}
+      </ion-col>
+      <ion-col *ngIf="resource.WOpen == 'CLOSED'">
+        CLOSED
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        Thursday:
+      </ion-col>
+      <ion-col *ngIf="resource.ThOpen != 'CLOSED'">
+        {{resource.ThOpen}} - {{resource.ThClose}}
+      </ion-col>
+      <ion-col *ngIf="resource.ThOpen == 'CLOSED'">
+        CLOSED
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        Friday:
+      </ion-col>
+      <ion-col *ngIf="resource.FOpen != 'CLOSED'">
+        {{resource.FOpen}} - {{resource.FClose}}
+      </ion-col>
+      <ion-col *ngIf="resource.FOpen == 'CLOSED'">
+        CLOSED
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        Saturday:
+      </ion-col>
+      <ion-col *ngIf="resource.SatOpen != 'CLOSED'">
+        {{resource.SatOpen}} - {{resource.SatClose}}
+      </ion-col>
+      <ion-col *ngIf="resource.SatOpen == 'CLOSED'">
+        CLOSED
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        Sunday:
+      </ion-col>
+      <ion-col *ngIf="resource.SunOpen != 'CLOSED'">
+        {{resource.SunOpen}} - {{resource.SunClose}}
+      </ion-col>
+      <ion-col *ngIf="resource.SunOpen == 'CLOSED'">
+        CLOSED
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+<ion-footer *ngIf="resource.url != ''">
+  <ion-button class="footer-button" color="primary" id={{resource.url}} (click)="visitSite(resource.url)">Visit Website
+  </ion-button>
+  <ion-button class="footer-button" color="secondary" (click)="copyAddress(resource.street)">Copy Address</ion-button>
+  <!-- <ion-toolbar>
+    <ion-buttons slot='start' style="background-color: green">
+      <ion-button class="urlLink" id={{resource.url}} (click)="visitSite(resource.url)">Go
+        To Website</ion-button>
+      <ion-button class="urlLink" (click)="visitSite(resource.url)">
+        Get Directions</ion-button>
+    </ion-buttons>
+  </ion-toolbar> -->
+</ion-footer>

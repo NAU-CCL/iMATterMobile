@@ -1,12 +1,19 @@
-import {AfterViewInit, Component, OnInit, ViewChild, NgZone} from '@angular/core';
-import {Geolocation} from '@ionic-native/geolocation/ngx';
-import {AngularFirestore} from '@angular/fire/firestore';
-import {Storage} from '@ionic/storage';
-import {NativeGeocoder, NativeGeocoderOptions, NativeGeocoderResult} from '@ionic-native/native-geocoder/ngx';
+import { AfterViewInit, Component, OnInit, ViewChild, NgZone } from '@angular/core';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { Storage } from '@ionic/storage';
+import { NativeGeocoder, NativeGeocoderOptions, NativeGeocoderResult } from '@ionic-native/native-geocoder/ngx';
 import * as firebase from 'firebase/app';
-import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
-import {compilerSetStylingMode} from '@angular/compiler/src/render3/view/styling_state';
-import {forEach} from '@angular-devkit/schematics';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { compilerSetStylingMode } from '@angular/compiler/src/render3/view/styling_state';
+import { forEach } from '@angular-devkit/schematics';
+import { LocationService, Location } from 'src/app/services/resource.service';
+import { Observable } from 'rxjs';
+import * as internal from 'assert';
+import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
+import { SelectMultipleControlValueAccessor } from '@angular/forms';
+import { time } from 'console';
+
 
 
 declare var google;
@@ -18,36 +25,16 @@ declare var google;
 })
 
 export class ResourcesPage implements OnInit, AfterViewInit {
+    public locations: Observable<Location[]>;
+    public locationList: Location[];
+    public filteredList: Location[];
+    public locationTypes = [];
+
     latitude: any;
     longitude: any;
-    dtitle: string;
-    dlongitude: number;
-    dlatitude: number;
-    dcontent: string;
-    dphone: string;
-    dstreet: string;
-    dspecialNote: string;
-    doperationMOpen: string;
-    doperationMClose: string;
-    doperationTOpen: string;
-    doperationTClose: string;
-    doperationWOpen: string;
-    doperationWClose: string;
-    doperationThOpen: string;
-    doperationThClose: string;
-    doperationFOpen: string;
-    doperationFClose: string;
-    doperationSatOpen: string;
-    doperationSatClose: string;
-    doperationSunOpen: string;
-    doperationSunClose: string;
-    hourType: string;
-    addressType: string;
     userLocation: string;
     userLocationHolder: string;
     userProfileID: any;
-    specialNote: any;
-    url: any;
     docId: any;
 
     map: any;
@@ -59,19 +46,18 @@ export class ResourcesPage implements OnInit, AfterViewInit {
 
     dicon: any;
 
-    public mapView = false;
-    public locationList = [];
     public currentLat;
     public currentLong;
 
-    @ViewChild('mapElement', {static: false}) mapNativeElement;
+    @ViewChild('mapElement', { static: false }) mapNativeElement;
 
     constructor(public zone: NgZone,
-                private geolocation: Geolocation,
-                private nativeGeocoder: NativeGeocoder,
-                public afs: AngularFirestore,
-                private storage: Storage,
-                private inAppBrowser: InAppBrowser) {
+        private geolocation: Geolocation,
+        private nativeGeocoder: NativeGeocoder,
+        public afs: AngularFirestore,
+        private storage: Storage,
+        private inAppBrowser: InAppBrowser,
+        public locationService: LocationService) {
     }
 
     options = {
@@ -81,7 +67,6 @@ export class ResourcesPage implements OnInit, AfterViewInit {
     };
 
     ngOnInit() {
-
         this.storage.get('userCode').then((val) => {
             if (val) {
                 this.userProfileID = val;
@@ -89,22 +74,17 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                 ref.get().then((result) => {
                     result.forEach(doc => {
                         this.userLocationHolder = doc.get('location');
-
-
-                        console.log(this.userLocationHolder);
-                        this.saveUserLocation(this.userLocationHolder);
-                        console.log('hheeeeeeeeeeeeeeee');
-
-
+                        this.saveUserLocation(this.userLocationHolder).then(res => this.getLocations());
                     });
                 });
             }
+            
         });
 
     }
 
 
-    saveUserLocation(userLocationHolder) {
+    async saveUserLocation(userLocationHolder) {
         this.userLocation = this.userLocationHolder;
         this.geolocation.getCurrentPosition().then((resp) => {
             console.log('RESP: ' + resp);
@@ -114,8 +94,32 @@ export class ResourcesPage implements OnInit, AfterViewInit {
             console.log('Error getting location', error);
         });
         console.log('inside saveUserLocation' + this.currentLat + ', ' + this.currentLong);
+    }
 
-
+    async getLocations() {
+        this.locations = this.locationService.getLocations();
+        this.locations.forEach((locationList => {
+            locationList.forEach((location => {
+                location.distance = google.maps.geometry.spherical.computeDistanceBetween(
+                    new google.maps.LatLng(this.latitude, this.longitude),
+                    new google.maps.LatLng(location.latitude, location.longitude)
+                )
+                if (typeof location.type === 'object') {
+                    location.type.forEach((type => {
+                        if (!this.locationTypes.includes(type)) {
+                            this.locationTypes.push(type)
+                        }
+                    }));
+                } else {
+                    if (!this.locationTypes.includes(location.type)) {
+                        this.locationTypes.push(location.type)
+                    }
+                }
+            }));
+            locationList.sort((a, b) => (a.distance > b.distance) ? 1 : -1);
+            this.locationList = locationList;
+            this.filteredList = this.locationList;
+        }));
     }
 
     ngAfterViewInit(): void {
@@ -123,151 +127,46 @@ export class ResourcesPage implements OnInit, AfterViewInit {
     }
 
     ionViewDidEnter() {
-        this.getListView();
-        this.enterMapView();
-        // this.initializeLocations();
-    }
-
-    enterMapView() {
+        this.ngOnInit();
         this.initializeLocations();
     }
 
     async initializeLocations() {
         await this.geoMaps(this.userLocation);
-        await this.getLocations();
-    }
-
-    async getLocations() {
-        await firebase.firestore().collection('resourceLocations').get()
-            .then(querySnapshot => {
-                this.dtitle = '';
-                this.dlongitude = 0;
-                this.dlatitude = 0;
-                this.dcontent = '';
-                this.dicon = '';
-                this.dstreet = '';
-                this.doperationMOpen = '';
-                this.doperationMClose = '';
-                this.doperationTOpen = '';
-                this.doperationTClose = '';
-                this.doperationWOpen = '';
-                this.doperationWClose = '';
-                this.doperationThOpen = '';
-                this.doperationThClose = '';
-                this.doperationFOpen = '';
-                this.doperationFClose = '';
-                this.doperationSatOpen = '';
-                this.doperationSatClose = '';
-                this.doperationSunOpen = '';
-                this.doperationSunClose = '';
-                this.hourType = '';
-                this.addressType = '';
-                this.dphone = '';
-                this.dspecialNote = '';
-                this.url = '';
-
-                querySnapshot.docs.forEach(async doc => {
-                    this.dtitle = doc.get('title');
-                    this.dlongitude = Number(doc.get('longitude'));
-                    this.dlatitude = Number(doc.get('latitude'));
-                    this.dcontent = doc.get('content');
-                    this.dicon = doc.get('type');
-                    this.dstreet = doc.get('street');
-                    this.doperationMOpen = doc.get('MOpen');
-                    this.doperationMClose = doc.get('MClose');
-                    this.doperationTOpen = doc.get('TOpen');
-                    this.doperationTClose = doc.get('TClose');
-                    this.doperationWOpen = doc.get('WOpen');
-                    this.doperationWClose = doc.get('WClose');
-                    this.doperationThOpen = doc.get('ThOpen');
-                    this.doperationThClose = doc.get('ThClose');
-                    this.doperationFOpen = doc.get('FOpen');
-                    this.doperationFClose = doc.get('FClose');
-                    this.doperationSatOpen = doc.get('SatOpen');
-                    this.doperationSatClose = doc.get('SatClose');
-                    this.doperationSunOpen = doc.get('SunOpen');
-                    this.doperationSunClose = doc.get('SunClose');
-                    this.hourType = doc.get('hourType');
-                    this.addressType = doc.get('addressType');
-                    this.dphone = doc.get('phone');
-                    this.dspecialNote = doc.get('special');
-                    this.url = doc.get('url');
-
-                    this.addMarker(this.dtitle, this.dlongitude, this.dlatitude, this.dcontent, this.dicon,
-                        this.doperationMOpen, this.doperationMClose, this.doperationTOpen, this.doperationTClose, this.doperationWOpen,
-                        this.doperationWClose, this.doperationThOpen, this.doperationThClose, this.doperationFOpen, this.doperationFClose,
-                        this.doperationSatOpen, this.doperationSatClose, this.doperationSunOpen, this.doperationSunClose,
-                        this.addressType, this.hourType, this.dphone, this.dstreet, this.dspecialNote, this.url);
-
-
-                    // console.log(this.dlongitude);
-                    // console.log(this.dicon);
-
-
-                });
+        this.locations.forEach((array) => {
+            array.forEach((location) => {
+                this.addMarker(location);
             });
+        });
     }
-
 
     async geoMaps(userLocation) {
-        // if (this.userLocation !== '' && this.userLocation !== undefined) {
-        //     console.log('enteredt user location thingy ');
-        //
-        //     await this.nativeGeocoder.forwardGeocode(this.userLocation)
-        //         .then((result: NativeGeocoderResult[]) => {
-        //             console.log('The coordinates are latitude=' + result[0].latitude + ' and longitude=' + result[0].longitude);
-        //             this.latitude = parseFloat(result[0].latitude);
-        //             console.log('The coordinates are latitude=' + this.latitude);
-        //
-        //             this.longitude = parseFloat(result[0].longitude);
-        //
-        //             console.log('The coordinates are latitude=' + this.longitude);
-        //             this.map = new google.maps.Map(this.mapNativeElement.nativeElement, {
-        //                 center: {lat: this.latitude, lng: this.longitude},
-        //                 zoom: 16
-        //             });
-        //         })
-        //         .catch((error: any) => {
-        //             console.log(error);
-        //             console.log('ERROR LOADING MAP');
-        //         });
-
-
-        // } else {
-            await this.geolocation.getCurrentPosition().then((resp) => {
-                this.latitude = resp.coords.latitude;
-                this.longitude = resp.coords.longitude;
-                console.log(this.latitude);
-                console.log(this.longitude);
-                this.map = new google.maps.Map(this.mapNativeElement.nativeElement, {
-                    center: {lat: this.latitude, lng: this.longitude},
-                    zoom: 16
-                });
-
-                console.log('displayed the map');
-
-            }).catch((error) => {
-                console.log('ERROR LOADING MAP ', error);
+        await this.geolocation.getCurrentPosition().then((resp) => {
+            this.latitude = resp.coords.latitude;
+            this.longitude = resp.coords.longitude;
+            console.log(this.latitude);
+            console.log(this.longitude);
+            this.map = new google.maps.Map(this.mapNativeElement.nativeElement, {
+                center: { lat: this.latitude, lng: this.longitude },
+                zoom: 16
             });
-        // }
 
+            console.log('displayed the map');
+
+        }).catch((error) => {
+            console.log('ERROR LOADING MAP ', error);
+        });
     }
 
 
-    async addMarker(dtitle, dlongitude, dlatitude, dcontent, dicon,
-                    doperationMOpen, doperationMClose, doperationTOpen, doperationTClose, doperationWOpen,
-                    doperationWClose, doperationThOpen, doperationThClose, doperationFOpen, doperationFClose,
-                    doperationSatOpen, doperationSatClose, doperationSunOpen, doperationSunClose, addressType, hourType,
-                    dphone, dstreet, dspecialNote, url) {
-        console.log('added pin');
-
+    async addMarker(location) {
         const pos = {
-            lat: this.dlatitude,
-            lng: this.dlongitude
+            lat: location.latitude,
+            lng: location.longitude
         };
 
         if (this.dicon === 'hospital') {
-           this.icon = {
+            this.icon = {
                 // tslint:disable-next-line:max-line-length
                 url: 'https://firebasestorage.googleapis.com/v0/b/imatter-nau.appspot.com/o/locationIcon%2FhospitalPin.png?alt=media&token=f1c91506-8a91-4021-9e89-2549b257f373', // image url
                 scaledSize: new google.maps.Size(80, 80), // scaled size
@@ -290,229 +189,21 @@ export class ResourcesPage implements OnInit, AfterViewInit {
         const marker = await new google.maps.Marker({
             position: pos,
             map: this.map,
-            title: dtitle,
+            title: location.title,
             icon: this.icon
         });
 
         const contentString = '<div id="content">' +
             '<div id= "siteNotice">' +
             '</div>' +
-            '<h1 id="firstHeading" class="firstHeading">' + dtitle + '</h1></div>';
-        //     '<div id="bodyContent">' +
-        //     '<p>' + dcontent + '</p>' +
-        //     '</div>' +
-        //     '<div id = "phone">' + 'Phone: ' + dphone + '</div>';
-        // if (addressType === 'physical') {
-        //     contentString +=
-        //         '<div id= "street">' + 'Street Address: ' + dstreet + '</div>';
-        // } else {
-        //     contentString +=
-        //         '<div id= "street">' + 'Call Center (no physical location)' + '</div>';
-        // }
-        // if (hourType === 'specific') {
-        //     contentString +=
-        //         '<div id = "operation">' + 'Hours of Operation' + '</div>' +
-        //         '<div id = "monday">' + 'Monday: ' + doperationMOpen + '-' + doperationMClose + '</div>' +
-        //         '<div id = "tuesday">' + 'Tuesday: ' + doperationTOpen + '-' + doperationTClose + '</div>' +
-        //         '<div id = "wednesday">' + 'Wednesday: ' + doperationWOpen + '-' + doperationWClose + '</div>' +
-        //         '<div id = "thursday">' + 'Thursday: ' + doperationThOpen + '-' + doperationThClose + '</div>' +
-        //         '<div id = "friday">' + 'Friday: ' + doperationFOpen + '-' + doperationFClose + '</div>' +
-        //         '<div id = "saturday">' + 'Saturday: ' + doperationSatOpen + '-' + doperationSatClose + '</div>' +
-        //         '<div id = "sunday">' + 'Sunday: ' + doperationSunOpen + '-' + doperationSunClose + '</div>' +
-        //         '<div id = "blank">' + '<p>' + '       ' + '</p>' + '</div>' +
-        //         '<div id = "specialNote">' + 'Admin Note: ' + dspecialNote + '</div>' +
-        //         '</div>';
-        // } else {
-        //     contentString +=
-        //         '<div id = "operation">' + 'Open 24 Hours' + '</div>' +
-        //         '<div id = "specialNote">' + 'Admin Note: ' + dspecialNote + '</div>' +
-        //         '</div>';
-        // }
-
-        await google.maps.event.addListener(marker, 'click', function() {
+            '<h1 id="firstHeading" class="firstHeading">' + location.title + '</h1></div>';
+        await google.maps.event.addListener(marker, 'click', function () {
             const infowindow = new google.maps.InfoWindow({
                 content: contentString,
                 maxWidth: 300
             });
             infowindow.open(this.map, marker);
         });
-    }
-
-    showMapView() {
-        this.mapView = true;
-        this.enterMapView();
-        document.getElementById('mapPicker').classList.add('selected');
-        document.getElementById('listPicker').classList.remove('selected');
-    }
-
-    showListView() {
-        this.mapView = true;
-        this.getListView();
-        document.getElementById('listPicker').classList.add('selected');
-        document.getElementById('mapPicker').classList.remove('selected');
-    }
-
-    async getListView() {
-        this.mapView = false;
-        await this.geolocation.getCurrentPosition().then((resp) => {
-            this.latitude = resp.coords.latitude;
-            this.longitude = resp.coords.longitude;
-        });
-        console.log('USER LOCATIONS');
-        console.log(this.latitude);
-        console.log(this.longitude);
-        firebase.firestore().collection('resourceLocations').get()
-            .then(querySnapshot => {
-                this.dtitle = '';
-                this.dlongitude = 0;
-                this.dlatitude = 0;
-                this.dcontent = '';
-                this.dicon = '';
-                this.dstreet = '';
-                this.doperationMOpen = '';
-                this.doperationMClose = '';
-                this.doperationTOpen = '';
-                this.doperationTClose = '';
-                this.doperationWOpen = '';
-                this.doperationWClose = '';
-                this.doperationThOpen = '';
-                this.doperationThClose = '';
-                this.doperationFOpen = '';
-                this.doperationFClose = '';
-                this.doperationSatOpen = '';
-                this.doperationSatClose = '';
-                this.doperationSunOpen = '';
-                this.doperationSunClose = '';
-                this.addressType = '';
-                this.hourType = '';
-                this.dphone = '';
-                this.dspecialNote = '';
-                this.url = '';
-                this.docId = '';
-
-
-                querySnapshot.docs.forEach(async doc => {
-                    this.dtitle = doc.get('title');
-                    this.dlongitude = Number(doc.get('longitude'));
-                    this.dlatitude = Number(doc.get('latitude'));
-                    this.dcontent = doc.get('content');
-                    this.dicon = doc.get('type');
-                    this.dstreet = doc.get('street');
-                    this.doperationMOpen = doc.get('MOpen');
-                    this.doperationMClose = doc.get('MClose');
-                    this.doperationTOpen = doc.get('TOpen');
-                    this.doperationTClose = doc.get('TClose');
-                    this.doperationWOpen = doc.get('WOpen');
-                    this.doperationWClose = doc.get('WClose');
-                    this.doperationThOpen = doc.get('ThOpen');
-                    this.doperationThClose = doc.get('ThClose');
-                    this.doperationFOpen = doc.get('FOpen');
-                    this.doperationFClose = doc.get('FClose');
-                    this.doperationSatOpen = doc.get('SatOpen');
-                    this.doperationSatClose = doc.get('SatClose');
-                    this.doperationSunOpen = doc.get('SunOpen');
-                    this.doperationSunClose = doc.get('SunClose');
-                    this.addressType = doc.get('addressType');
-                    this.hourType = doc.get('hourType');
-                    this.dphone = doc.get('phone');
-                    this.dspecialNote = doc.get('special');
-                    this.url = doc.get('url');
-                    this.docId = doc.id;
-
-                    const locationObj = {
-                        title: this.dtitle,
-                        lat: this.dlatitude,
-                        long: this.dlongitude,
-                        dist: google.maps.geometry.spherical.computeDistanceBetween(
-                            new google.maps.LatLng(this.latitude, this.longitude),
-                            new google.maps.LatLng(this.dlatitude, this.dlongitude)
-                        ),
-                        content: this.dcontent,
-                        type: this.dicon,
-                        street: this.dstreet,
-                        phone: this.dphone,
-                        mOpen: this.doperationMOpen,
-                        mClose: this.doperationMClose,
-                        tOpen: this.doperationMOpen,
-                        tClose: this.doperationMClose,
-                        wOpen: this.doperationMOpen,
-                        wClose: this.doperationMClose,
-                        thOpen: this.doperationMOpen,
-                        thClose: this.doperationMClose,
-                        fOpen: this.doperationMOpen,
-                        fClose: this.doperationMClose,
-                        satOpen: this.doperationMOpen,
-                        satClose: this.doperationMClose,
-                        sunOpen: this.doperationMOpen,
-                        sunClose: this.doperationMClose,
-                        addressType: this.addressType,
-                        hourType: this.hourType,
-                        specialNote: this.dspecialNote,
-                        url: this.url,
-                        id: this.docId
-                    };
-
-                    if (locationObj.addressType === undefined) {
-                        locationObj.addressType = 'physical';
-                    }
-                    if (locationObj.hourType === undefined) {
-                        locationObj.hourType = 'specific';
-                    }
-                    if (locationObj.url === undefined) {
-                        locationObj.url = '';
-                    }
-
-                    console.log(locationObj);
-
-                    this.locationList.push(locationObj);
-                });
-                this.locationList.sort((a, b) => (a.dist > b.dist) ? 1 : -1);
-                const locationList = document.getElementById('locationList') as HTMLElement;
-                console.log(locationList);
-                this.locationList.forEach(location => {
-                    const card = document.createElement('ion-card');
-                    card.id = location.id;
-                    card.addEventListener('click', this.expandLocationCard);
-                    card.addEventListener('click', e => {
-                        this.map.setCenter({lat: location.lat, lng: location.long});
-                    });
-
-                    let htmlText = '<ion-card-title class="ion-padding">' + location.title;
-                    if (location.url !== '') {
-                        htmlText += '<div class="urlLink" id="' + location.url + '"><ion-icon name="link"></ion-icon></div>';
-                    }
-                    if (location.addressType === 'physical') {
-                        htmlText += '</ion-card-title><ion-card-subtitle class="ion-hide ion-padding">' + location.phone +
-                            '<br>' + location.street + '</ion-card-subtitle>';
-                    } else {
-                        htmlText += '</ion-card-title><ion-card-subtitle class="ion-hide ion-padding">' + location.phone +
-                            '</ion-card-subtitle>';
-                    }
-                    htmlText += '<ion-card-content class="ion-hide" id="cardContent">' + location.content;
-                    if (location.hourType === '24hr') {
-                        htmlText += '<div><div class="ion-padding-top"><h2>Open All Day</h2></div></div>';
-                    } else {
-                        htmlText += '<h2 class="ion-padding-bottom ion-padding-top"><b>Hours of Operation</b></h2></div>' +
-                            '<div> Monday: ' + location.mOpen + '-' + location.mClose + '</div>' +
-                            '<div> Tuesday: ' + location.tOpen + '-' + location.tClose + '</div>' +
-                            '<div> Wednesday: ' + location.wOpen + '-' + location.wClose + '</div>' +
-                            '<div> Thursday: ' + location.thOpen + '-' + location.thClose + '</div>' +
-                            '<div> Friday: ' + location.fOpen + '-' + location.fClose + '</div>' +
-                            '<div> Saturday: ' + location.satOpen + '-' + location.satClose + '</div>' +
-                            '<div> Sunday: ' + location.sunOpen + '-' + location.sunClose + '</div>';
-                    }
-                    htmlText += '</ion-card-content>';
-                    card.innerHTML = htmlText;
-                    locationList.appendChild(card);
-                });
-                const links = document.getElementsByClassName('urlLink');
-                Array.from(links).forEach(element => {
-                    element.addEventListener('click', e => {
-                        const browser = this.inAppBrowser.create(element.id);
-                        browser.show();
-                    });
-                });
-            });
     }
 
     expandLocationCard(this: HTMLElement) {
@@ -545,14 +236,16 @@ export class ResourcesPage implements OnInit, AfterViewInit {
         });
     }
 
-    // getDistance(to: any): number {
-    //     this.geolocation.getCurrentPosition().then((resp) => {
-    //         this.currentLat = resp.coords.latitude;
-    //         this.currentLong = resp.coords.longitude;
-    //         return google.maps.geometry.spherical.computeDistanceBetween(
-    //             new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude),
-    //             to
-    //         );
-    //     });
-    // }
+    moveToLocation(locLat, locLong) {
+        this.map.setCenter({ lat: locLat, lng: locLong });
+    }
+
+    filter() {
+        const filter = (document.getElementById("filterValue") as HTMLInputElement)
+        if (filter.value == 'all') {
+            this.filteredList = this.locationList;
+        } else {
+            this.filteredList = this.locationList.filter(e => e.type == filter.value || e.type.includes(filter.value));
+        }
+    }
 }

@@ -1,12 +1,12 @@
-import {Component, OnInit} from '@angular/core';
-import {FireService, Survey} from 'src/app/services/survey/fire.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {InAppBrowser, InAppBrowserOptions} from '@ionic-native/in-app-browser/ngx';
-import {ProfileService} from 'src/app/services/user/profile.service';
-import {Storage} from '@ionic/storage';
-import {AngularFirestore} from '@angular/fire/firestore';
-import {ModalController} from '@ionic/angular';
-import {AlertController} from '@ionic/angular';
+import { Component, OnInit } from '@angular/core';
+import { SurveyService, Survey } from 'src/app/services/survey/survey.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { InAppBrowser, InAppBrowserOptions } from '@ionic-native/in-app-browser/ngx';
+import { ProfileService } from 'src/app/services/user/profile.service';
+import { Storage } from '@ionic/storage';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { ModalController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular';
 
 @Component({
     selector: 'app-answer',
@@ -17,17 +17,13 @@ export class AnswerPage implements OnInit {
 
     // Survey object and its fields
     survey: Survey = {
-        title: '',
-        surveyLink: '',
         type: '',
-        daysTillRelease: '',
-        daysBeforeDueDate: '',
-        daysTillExpire: 0,
-        daysInactive: 0,
-        emotionChosen: '',
-        pointsWorth: 0,
-        userVisibility: [],
-        surveyDescription: '',
+        description: '',
+        title: '',
+        link: '',
+        points: 0,
+        importance: '',
+        characteristics: []
     };
 
     // number of points the user currently has
@@ -43,16 +39,17 @@ export class AnswerPage implements OnInit {
     userSurveysTaken;
 
     id;
+    availableSurveys = [];
 
     constructor(private activatedRoute: ActivatedRoute,
-                private fs: FireService,
-                private browser: InAppBrowser,
-                private router: Router,
-                private profile: ProfileService,
-                private storage: Storage,
-                private afs: AngularFirestore,
-                private modalController: ModalController,
-                public alertController: AlertController,
+        private surveyService: SurveyService,
+        private browser: InAppBrowser,
+        private router: Router,
+        private profile: ProfileService,
+        private storage: Storage,
+        private afs: AngularFirestore,
+        private modalController: ModalController,
+        public alertController: AlertController,
     ) {
     }
 
@@ -68,13 +65,12 @@ export class AnswerPage implements OnInit {
         this.surveyData = this.activatedRoute.snapshot.paramMap.get('id');
 
         // survey id is taken
-        const id = this.surveyData.split(':')[0];
+        this.id = this.surveyData.split(':')[0];
 
         // if the id exists, assign the survey object to the survey for which the id belongs to
-        if (id) {
-            this.fs.getSurvey(id).subscribe(survey => {
+        if (this.id) {
+            this.surveyService.getSurvey(this.id).subscribe(survey => {
                 this.survey = survey;
-                this.id = id;
             });
         }
 
@@ -87,6 +83,7 @@ export class AnswerPage implements OnInit {
                         this.userPoints = doc.get('points');
                         this.userCode = doc.get('code');
                         this.userSurveysTaken = doc.get('answeredSurveys');
+                        this.availableSurveys = doc.get('availableSurveys');
                     });
                 });
             }
@@ -97,12 +94,6 @@ export class AnswerPage implements OnInit {
 
     // opens survey link
     openPage(url: string) {
-        this.survey.userVisibility.forEach(user => {
-            if (user === this.userCode) {
-                this.survey.userVisibility.splice(this.survey.userVisibility.indexOf(user), 1);
-                this.fs.updateUsers(this.survey.id, this.survey.userVisibility);
-            }
-        });
         // option to hide survey url and change toolbar color
         const options: InAppBrowserOptions = {
             hideurlbar: 'yes',
@@ -117,6 +108,7 @@ export class AnswerPage implements OnInit {
 
             // this.showMessage()
             this.presentAlert();
+
         });
     }
 
@@ -126,40 +118,17 @@ export class AnswerPage implements OnInit {
         // boolean to check if current survey is inluded in the userSurveysTaken
         let includes = false;
 
-
-
-        // if the userSurveysTaken is not empty, check if the current survey is included
-        // if the current survey is included, set includes to true and change the
-        // old survey interval to the current one to signfy that the survey has been
-        // taken for the current interval and update the user's userSurveysTaken
-        if (this.userSurveysTaken.length !== 0) {
-            this.userSurveysTaken.forEach(taken => {
-                if (taken.split(':')[0].includes(this.survey.id)) {
-                    includes = true;
-                    this.userSurveysTaken[this.userSurveysTaken.indexOf(taken)] = this.surveyData;
-                    this.fs.updateAnsweredSurveys(this.userCode, this.userSurveysTaken);
-                }
-            });
-        }
-
         // if the userSurveysTaken is not empty or it does not include the current survey
         // then simply add it to the array with the current survey interval
         // and update the user's userSurveysTaken
-        if (this.userSurveysTaken.length === 0 || !includes) {
-            this.userSurveysTaken.push(this.surveyData);
-            console.log(this.userSurveysTaken);
-            this.fs.updateAnsweredSurveys(this.userCode, this.userSurveysTaken);
-        }
-
-        // If the survey type is inactive set the local storage daysSinceLogin to 0,
-        // this is so that the inactive days survey disappears
-        if (this.survey.type === 'Inactive') {
-            this.storage.set('daysSinceLogin', 0);
-        }
+        this.userSurveysTaken.push(this.surveyData);
+        this.availableSurveys.splice(this.availableSurveys.indexOf(this.id), 1);
+        console.log(this.userSurveysTaken);
+        this.surveyService.updateAnsweredSurveys(this.userCode, this.userSurveysTaken, this.availableSurveys);
 
         // then increase the user's current points by the amount that the current
         // survey is worth, then navigate back to the home page
-        const newPointValue = this.userPoints + this.survey.pointsWorth;
+        const newPointValue = this.userPoints + this.survey.points;
         this.profile.editRewardPoints(newPointValue, this.userCode);
         this.router.navigateByUrl('/tabs/home');
     }
