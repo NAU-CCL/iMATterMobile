@@ -1,15 +1,15 @@
-import {Component, OnInit} from '@angular/core';
-import {AlertController, ToastController} from '@ionic/angular';
-import {AuthServiceProvider, User} from '../../../services/user/auth.service';
-import {ProfileService} from '../../../services/user/profile.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Storage} from '@ionic/storage';
-import {AngularFirestore} from '@angular/fire/firestore';
-import {Observable} from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { AlertController, ToastController } from '@ionic/angular';
+import { AuthServiceProvider, User } from '../../../services/user/auth.service';
+import { ProfileService } from '../../../services/user/profile.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Storage } from '@ionic/storage';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
 import * as firebase from 'firebase/app';
-import {AnalyticsService, Analytics, Sessions} from 'src/app/services/analyticsService.service';
-import {HttpClient} from '@angular/common/http';
-import {DatePipe} from '@angular/common';
+import { AnalyticsService, Analytics, Sessions } from 'src/app/services/analyticsService.service';
+import { HttpClient } from '@angular/common/http';
+import { DatePipe } from '@angular/common';
 import { MoodProviderNotifService, EmotionNotif } from '../../../services/mood-provider-notif.service';
 import { ChatService, Cohort, Chat } from '../../../services/chat/chat-service.service';
 import { HomePage } from '../../home/home.page';
@@ -50,7 +50,8 @@ export class ProfilePage implements OnInit {
         joinedChallenges: [],
         completedChallenges: [],
         codeEntered: true,
-        dailyQuote: ''
+        dailyQuote: '',
+        availableSurveys: []
 
     };
 
@@ -209,21 +210,21 @@ export class ProfilePage implements OnInit {
         const alert = await this.alertCtrl.create({
             header: 'Update Email',
             inputs: [
-                {type: 'text', name: 'newEmail', placeholder: 'Your new email'},
-                {name: 'password', placeholder: 'Your password', type: 'password'},
+                { type: 'text', name: 'newEmail', placeholder: 'Your new email' },
+                { name: 'password', placeholder: 'Your password', type: 'password' },
             ],
             buttons: [
-                {text: 'Cancel'},
+                { text: 'Cancel' },
                 {
                     text: 'Save',
                     handler: data => {
                         if (this.validateEmail(data.newEmail)) {
                             this.profileService.updateEmail(data.newEmail, data.password, this.userProfileID)
                                 .then(() => {
-                                        this.showToast('Your email has been updated!');
-                                        this.storage.set('email', data.newEmail);
-                                        this.refreshPage();
-                                    },
+                                    this.showToast('Your email has been updated!');
+                                    this.storage.set('email', data.newEmail);
+                                    this.refreshPage();
+                                },
                                     err => {
                                         this.showToast('There was a problem updating your email');
                                     });
@@ -242,20 +243,20 @@ export class ProfilePage implements OnInit {
         const alert = await this.alertCtrl.create({
             header: 'Update Password',
             inputs: [
-                {name: 'oldPassword', placeholder: 'Old password', type: 'password'},
-                {name: 'newPassword', placeholder: 'New password', type: 'password'},
+                { name: 'oldPassword', placeholder: 'Old password', type: 'password' },
+                { name: 'newPassword', placeholder: 'New password', type: 'password' },
             ],
             buttons: [
-                {text: 'Cancel'},
+                { text: 'Cancel' },
                 {
                     text: 'Save',
                     handler: data => {
                         if (data.newPassword.length >= 8) {
                             this.profileService.updatePassword(data.newPassword, data.oldPassword, this.userProfileID)
                                 .then(() => {
-                                        this.showToast('Your password has been updated!');
-                                        this.refreshPage();
-                                    },
+                                    this.showToast('Your password has been updated!');
+                                    this.refreshPage();
+                                },
                                     err => {
                                         this.showToast('There was a problem updating your password');
                                     });
@@ -278,10 +279,10 @@ export class ProfilePage implements OnInit {
         const alert = await this.alertCtrl.create({
             header: 'Update Location (Zip Code)',
             inputs: [
-                {type: 'text', name: 'newLocation', placeholder: 'Leave empty to remove'},
+                { type: 'text', name: 'newLocation', placeholder: 'Leave empty to remove' },
             ],
             buttons: [
-                {text: 'Cancel'},
+                { text: 'Cancel' },
                 {
                     text: 'Save',
                     handler: data => {
@@ -289,9 +290,9 @@ export class ProfilePage implements OnInit {
                         if (this.validateLocation(data.newLocation)) {
                             this.profileService.updateLocation(data.newLocation, this.userProfileID)
                                 .then(() => {
-                                        this.showToast('Your location has been updated!');
-                                        this.refreshPage();
-                                    },
+                                    this.showToast('Your location has been updated!');
+                                    this.refreshPage();
+                                },
                                     err => {
                                         this.showToast('There was a problem updating your location');
                                     });
@@ -405,7 +406,7 @@ export class ProfilePage implements OnInit {
 
     saveEmotion(emotion: string) {
         this.afs.firestore.collection('users').doc(this.userProfileID)
-            .update({mood: emotion});
+            .update({ mood: emotion });
 
         this.user.currentEmotion = emotion;
 

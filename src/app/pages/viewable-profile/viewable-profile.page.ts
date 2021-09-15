@@ -1,10 +1,10 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Storage} from '@ionic/storage';
-import {AngularFirestore} from '@angular/fire/firestore';
-import {QuestionService} from '../../services/infoDesk/question.service';
-import {DatePipe} from '@angular/common';
-import {User, Provider} from '../../services/user/auth.service';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Storage } from '@ionic/storage';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { QuestionService } from '../../services/infoDesk/question.service';
+import { DatePipe } from '@angular/common';
+import { User, Provider } from '../../services/user/auth.service';
 
 @Component({
     selector: 'app-viewable-profile',
@@ -22,6 +22,7 @@ export class ViewableProfilePage implements OnInit {
         endRehabDate: '',
         location: 0,
         weeksPregnant: '',
+        availableSurveys: [],
         daysPregnant: '',
         totalDaysPregnant: '',
         cohort: '',
@@ -78,7 +79,7 @@ export class ViewableProfilePage implements OnInit {
     };
 
     constructor(private afs: AngularFirestore, private activatedRoute: ActivatedRoute, private questionService: QuestionService,
-                private router: Router, private storage: Storage, private datePipe: DatePipe) {
+        private router: Router, private storage: Storage, private datePipe: DatePipe) {
         this.userProfileID = this.activatedRoute.snapshot.paramMap.get('id');
     }
 
@@ -112,41 +113,41 @@ export class ViewableProfilePage implements OnInit {
         let ref = this.afs.firestore.collection('users');
         ref.where('code', '==', this.userProfileID)
             .get().then(snapshot => {
-            if (snapshot.docs.length > 0) {
-                const userRef = ref.where('code', '==', this.userProfileID);
-                userRef.get().then((result) => {
-                    result.forEach(doc => {
-                        this.userType = 'user';
-                        this.user.username = doc.get('username');
-                        console.log(this.user.username);
-                        this.user.bio = doc.get('bio');
-                        this.user.cohort = doc.get('cohort');
-                        const date = new Date(doc.get('endRehabDate') + 'T12:00:00');
-                        this.user.endRehabDate = this.datePipe.transform(date, 'MMMM d, yyyy');;
-                        this.user.currentEmotion = doc.get('mood');
-                        this.user.profilePic = doc.get('profilePic');
-                        this.userEmotionIcon = this.getUserEmotionIcon(this.user.currentEmotion);
-                    });
-                });
-            } else {
-                ref = this.afs.firestore.collection('providers');
-                ref.where('code', '==', this.userProfileID)
-                    .get().then(snap => {
-                    if (snap.docs.length > 0) {
-                        const userRef = ref.where('code', '==', this.userProfileID);
-                        userRef.get().then((result) => {
-                            result.forEach(doc => {
-                                this.userType = 'provider';
-                                this.provider.username = doc.get('username');
-                                this.provider.bio = doc.get('bio');
-                                this.provider.profilePic = doc.get('profilePic');
-                                this.provider.providerType = doc.get('providerType');
-                            });
+                if (snapshot.docs.length > 0) {
+                    const userRef = ref.where('code', '==', this.userProfileID);
+                    userRef.get().then((result) => {
+                        result.forEach(doc => {
+                            this.userType = 'user';
+                            this.user.username = doc.get('username');
+                            console.log(this.user.username);
+                            this.user.bio = doc.get('bio');
+                            this.user.cohort = doc.get('cohort');
+                            const date = new Date(doc.get('endRehabDate') + 'T12:00:00');
+                            this.user.endRehabDate = this.datePipe.transform(date, 'MMMM d, yyyy');;
+                            this.user.currentEmotion = doc.get('mood');
+                            this.user.profilePic = doc.get('profilePic');
+                            this.userEmotionIcon = this.getUserEmotionIcon(this.user.currentEmotion);
                         });
-                    }
-                });
-            }
-        });
+                    });
+                } else {
+                    ref = this.afs.firestore.collection('providers');
+                    ref.where('code', '==', this.userProfileID)
+                        .get().then(snap => {
+                            if (snap.docs.length > 0) {
+                                const userRef = ref.where('code', '==', this.userProfileID);
+                                userRef.get().then((result) => {
+                                    result.forEach(doc => {
+                                        this.userType = 'provider';
+                                        this.provider.username = doc.get('username');
+                                        this.provider.bio = doc.get('bio');
+                                        this.provider.profilePic = doc.get('profilePic');
+                                        this.provider.providerType = doc.get('providerType');
+                                    });
+                                });
+                            }
+                        });
+                }
+            });
     }
 
     /*

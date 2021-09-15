@@ -39,6 +39,7 @@ export interface User {
   completedChallenges: any[];
   codeEntered: boolean;
   dailyQuote: string;
+  availableSurveys: string[];
 }
 
 export interface Provider {
@@ -73,13 +74,13 @@ export class AuthServiceProvider {
   constructor(private afs: AngularFirestore) {
     this.userCollection = this.afs.collection<User>('users');
     this.users = this.userCollection.snapshotChanges().pipe(
-        map(actions => {
-          return actions.map(a => {
-            const data = a.payload.doc.data();
-            const id = a.payload.doc.id;
-            return {id, ...data};
-          });
-        })
+      map(actions => {
+        return actions.map(a => {
+          const data = a.payload.doc.data();
+          const id = a.payload.doc.id;
+          return { id, ...data };
+        });
+      })
     );
   }
 

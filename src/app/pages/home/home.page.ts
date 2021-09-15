@@ -1,19 +1,19 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Storage} from '@ionic/storage';
-import {AngularFirestore} from '@angular/fire/firestore';
-import {ToastController, AlertController} from '@ionic/angular';
-import {User} from '../../services/user/auth.service';
-import {ChatService, Cohort, Chat} from '../../services/chat/chat-service.service';
-import {AnalyticsService, Analytics, Sessions} from 'src/app/services/analyticsService.service';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Storage } from '@ionic/storage';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { ToastController, AlertController } from '@ionic/angular';
+import { User } from '../../services/user/auth.service';
+import { ChatService, Cohort, Chat } from '../../services/chat/chat-service.service';
+import { AnalyticsService, Analytics, Sessions } from 'src/app/services/analyticsService.service';
 import * as firebase from 'firebase/app';
-import {Observable} from 'rxjs';
-import {FireService} from 'src/app/services/survey/fire.service';
-import {MoodProviderNotifService, EmotionNotif} from '../../services/mood-provider-notif.service';
-import {ChallengeService, Challenge, ChallengeTypes} from '../../services/challenges/challenge-service.service';
-import {QuoteService, Quote} from '../../services/homeQuote.service';
-import {delay} from 'rxjs/operators';
-import {element} from 'protractor';
+import { Observable } from 'rxjs';
+import { FireService } from 'src/app/services/survey/fire.service';
+import { MoodProviderNotifService, EmotionNotif } from '../../services/mood-provider-notif.service';
+import { ChallengeService, Challenge, ChallengeTypes } from '../../services/challenges/challenge-service.service';
+import { QuoteService, Quote } from '../../services/homeQuote.service';
+import { delay } from 'rxjs/operators';
+import { element } from 'protractor';
 
 
 @Component({
@@ -79,6 +79,7 @@ export class HomePage implements OnInit {
         joinedChallenges: [],
         completedChallenges: [],
         codeEntered: true,
+        availableSurveys: [],
         dailyQuote: ''
     };
 
@@ -126,17 +127,17 @@ export class HomePage implements OnInit {
     public challengeDayComplete: boolean;
 
     constructor(private activatedRoute: ActivatedRoute, public afs: AngularFirestore,
-                private toastCtrl: ToastController,
-                private storage: Storage,
-                private  router: Router,
-                private chatService: ChatService,
-                private alertController: AlertController,
-                private analyticsService: AnalyticsService,
-                private fs: FireService,
-                private challengeService: ChallengeService,
-                private mpnService: MoodProviderNotifService,
-                private quoteService: QuoteService) {
-        this.dropDown = [{expanded: false}];
+        private toastCtrl: ToastController,
+        private storage: Storage,
+        private router: Router,
+        private chatService: ChatService,
+        private alertController: AlertController,
+        private analyticsService: AnalyticsService,
+        private fs: FireService,
+        private challengeService: ChallengeService,
+        private mpnService: MoodProviderNotifService,
+        private quoteService: QuoteService) {
+        this.dropDown = [{ expanded: false }];
     }
 
     ngOnInit() {
@@ -351,7 +352,7 @@ export class HomePage implements OnInit {
 
     saveEmotion(emotion: string) {
         this.afs.firestore.collection('users').doc(this.userProfileID)
-            .update({mood: emotion});
+            .update({ mood: emotion });
 
         this.user.currentEmotion = emotion;
 
