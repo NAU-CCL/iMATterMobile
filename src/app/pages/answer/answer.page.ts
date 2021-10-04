@@ -7,6 +7,7 @@ import { Storage } from '@ionic/storage';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { ModalController } from '@ionic/angular';
 import { AlertController } from '@ionic/angular';
+import { DatePipe } from '@angular/common';
 
 @Component({
     selector: 'app-answer',
@@ -38,6 +39,8 @@ export class AnswerPage implements OnInit {
     // current user's taken surveys
     userSurveysTaken;
 
+    daysAUser;
+
     id;
     availableSurveys = [];
 
@@ -50,6 +53,7 @@ export class AnswerPage implements OnInit {
         private afs: AngularFirestore,
         private modalController: ModalController,
         public alertController: AlertController,
+        public datepipe: DatePipe,
     ) {
     }
 
@@ -84,6 +88,7 @@ export class AnswerPage implements OnInit {
                         this.userCode = doc.get('code');
                         this.userSurveysTaken = doc.get('answeredSurveys');
                         this.availableSurveys = doc.get('availableSurveys');
+                        this.daysAUser = doc.get('daysAUser');
                     });
                 });
             }
@@ -117,11 +122,20 @@ export class AnswerPage implements OnInit {
         console.log('SUBMIT');
         // boolean to check if current survey is inluded in the userSurveysTaken
         let includes = false;
+        let today = new Date()
 
         // if the userSurveysTaken is not empty or it does not include the current survey
         // then simply add it to the array with the current survey interval
         // and update the user's userSurveysTaken
-        this.userSurveysTaken.push(this.surveyData);
+        let surveyTaken = {
+            survey: this.id,
+            date: this.datepipe.transform(today, 'y-MM-dd'),
+            time: this.datepipe.transform(today, 'hh:mm a'),
+            days: this.daysAUser
+        };
+        console.log(surveyTaken);
+
+        this.userSurveysTaken.push(surveyTaken);
         this.availableSurveys.splice(this.availableSurveys.indexOf(this.id), 1);
         console.log(this.userSurveysTaken);
         this.surveyService.updateAnsweredSurveys(this.userCode, this.userSurveysTaken, this.availableSurveys);

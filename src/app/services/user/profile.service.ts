@@ -1,5 +1,5 @@
-import {Injectable} from '@angular/core';
-import {AngularFirestore} from '@angular/fire/firestore';
+import { Injectable } from '@angular/core';
+import { AngularFirestore } from '@angular/fire/firestore';
 
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
@@ -41,14 +41,14 @@ export class ProfileService {
     async updateEmail(newEmail: string, password: string, userID: string) {
         this.afs.firestore.collection('users').where('code', '==', userID)
             .get().then(snapshot => {
-            snapshot.forEach(doc => {
-                const userPassword = doc.get('password');
-                if (userPassword === password) {
-                    return this.afs.firestore.collection('users')
-                        .doc(userID).update({email: newEmail});
-                }
+                snapshot.forEach(doc => {
+                    const userPassword = doc.get('password');
+                    if (userPassword === password) {
+                        return this.afs.firestore.collection('users')
+                            .doc(userID).update({ email: newEmail });
+                    }
+                });
             });
-        });
     }
 
     /**
@@ -58,14 +58,14 @@ export class ProfileService {
     async updatePassword(newPassword: string, oldPassword: string, userID: string) {
         this.afs.firestore.collection('users').where('code', '==', userID)
             .get().then(snapshot => {
-            snapshot.forEach(doc => {
-                const userPassword = doc.get('password');
-                if (userPassword === oldPassword) {
-                    return this.afs.firestore.collection('users')
-                        .doc(userID).update({password: newPassword});
-                }
+                snapshot.forEach(doc => {
+                    const userPassword = doc.get('password');
+                    if (userPassword === oldPassword) {
+                        return this.afs.firestore.collection('users')
+                            .doc(userID).update({ password: newPassword });
+                    }
+                });
             });
-        });
     }
 
     /**
@@ -73,7 +73,7 @@ export class ProfileService {
      */
     async updateLocation(newLocation: number, userID: string) {
         return this.afs.firestore.collection('users')
-            .doc(userID).update({location: newLocation});
+            .doc(userID).update({ location: newLocation });
     }
 
     /**
@@ -81,7 +81,7 @@ export class ProfileService {
      */
     async updateBio(newBio: string, userID: string) {
         return this.afs.firestore.collection('users')
-            .doc(userID).update({bio: newBio});
+            .doc(userID).update({ bio: newBio });
     }
 
     /**
@@ -89,7 +89,7 @@ export class ProfileService {
      */
     async updateRecoveryDate(newDate: string, userID: string) {
         return this.afs.firestore.collection('users')
-            .doc(userID).update({endRehabDate: newDate});
+            .doc(userID).update({ endRehabDate: newDate });
     }
 
     /**
@@ -97,7 +97,7 @@ export class ProfileService {
      */
     async updateProfilePic(newPic: string, userID: string) {
         return this.afs.firestore.collection('users')
-            .doc(userID).update({profilePic: newPic});
+            .doc(userID).update({ profilePic: newPic });
     }
 
     /**
@@ -106,7 +106,7 @@ export class ProfileService {
     async updatePoints(currentPointTotal, pointsUsed, userID) {
         const newPointTotal = currentPointTotal - pointsUsed;
         return this.afs.firestore.collection('users')
-            .doc(userID).update({points: newPointTotal});
+            .doc(userID).update({ points: newPointTotal });
     }
 
     /**
@@ -115,7 +115,11 @@ export class ProfileService {
      */
     editRewardPoints(newPointValue: number, userID: string) {
         return this.afs.firestore.collection('users')
-            .doc(userID).update({points: newPointValue});
+            .doc(userID).update({ points: newPointValue });
     }
 
+    updateAvailableSurveys(newAvailableSurveys: any, userID: string) {
+        return this.afs.firestore.collection('users')
+            .doc(userID).update({ availableSurveys: newAvailableSurveys });
+    }
 }
