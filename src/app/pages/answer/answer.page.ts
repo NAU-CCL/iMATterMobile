@@ -44,6 +44,8 @@ export class AnswerPage implements OnInit {
     id;
     availableSurveys = [];
 
+    startTime;
+
     constructor(private activatedRoute: ActivatedRoute,
         private surveyService: SurveyService,
         private browser: InAppBrowser,
@@ -94,11 +96,15 @@ export class AnswerPage implements OnInit {
             }
         });
         console.log('SURVEY ID = ' + this.id);
-
+        this.startTime = new Date();
+        this.startTime = this.datepipe.transform(this.startTime, 'hh:mm a');
     }
 
     // opens survey link
     openPage(url: string) {
+        const today = new Date();
+        this.startTime = this.datepipe.transform(today, 'hh:mm a');
+
         // option to hide survey url and change toolbar color
         const options: InAppBrowserOptions = {
             hideurlbar: 'yes',
@@ -122,7 +128,7 @@ export class AnswerPage implements OnInit {
         console.log('SUBMIT');
         // boolean to check if current survey is inluded in the userSurveysTaken
         let includes = false;
-        let today = new Date()
+        let today = new Date();
 
         // if the userSurveysTaken is not empty or it does not include the current survey
         // then simply add it to the array with the current survey interval
@@ -130,7 +136,8 @@ export class AnswerPage implements OnInit {
         let surveyTaken = {
             survey: this.id,
             date: this.datepipe.transform(today, 'y-MM-dd'),
-            time: this.datepipe.transform(today, 'hh:mm a'),
+            timeStart: this.startTime,
+            timeEnd: this.datepipe.transform(today, 'hh:mm:ss a'),
             days: this.daysAUser
         };
         console.log(surveyTaken);
