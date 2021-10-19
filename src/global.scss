@@ -32,6 +32,10 @@
   --main-tint: #91aeb8;
 }
 
+* {
+  font-family: 'Nunito', sans-serif;
+}
+
 .fill-button {
   --background: var(--main-color);
   --background-activated: var(--secondary-color);
@@ -47,8 +51,8 @@
 }
 
 .custom-divider {
-  --background: var(--main-tint);
-  color: black;
+  --background: var(--tertiary-color);
+  color: white;
 }
 
 .custom-divider-header {

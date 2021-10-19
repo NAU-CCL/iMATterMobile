@@ -12,19 +12,38 @@
   <form [formGroup]="questionForm">
     <ion-item>
       <ion-label position="stacked">Topic:</ion-label>
-      <ion-textarea autoGrow="true" spellcheck="true" autocapitalize="true" formControlName="title" placeholder="What are you asking a question about? (ie: parenting, nutrition...)"
-        [class.invalid]="!questionForm.controls['title'].valid && questionForm.controls['title'].touched"></ion-textarea>
+      <ion-select formControlName="title"
+        [class.invalid]="!questionForm.controls['title'].valid && questionForm.controls['title'].touched">
+        <ion-select-option value="Health">
+          Health
+        </ion-select-option>
+        <ion-select-option value="Food">
+          Food
+        </ion-select-option>
+        <ion-select-option value="Social">
+          Social
+        </ion-select-option>
+        <ion-select-option value="Other">
+          Other
+        </ion-select-option>
+      </ion-select>
+      <!-- <ion-textarea autoGrow="true" spellcheck="true" autocapitalize="true" formControlName="title" placeholder="What are you asking a question about? (ie: parenting, nutrition...)"
+        [class.invalid]="!questionForm.controls['title'].valid && questionForm.controls['title'].touched"></ion-textarea> -->
     </ion-item>
-    <ion-item class="error-message" *ngIf="!questionForm.controls['title'].valid && questionForm.controls['title'].touched">
+    <ion-item class="error-message"
+      *ngIf="!questionForm.controls['title'].valid && questionForm.controls['title'].touched">
       <ion-label>What are you asking a question about? (ie: parenting, nutrition...)</ion-label>
     </ion-item>
 
     <ion-item>
       <ion-label position="stacked">Question:</ion-label>
-      <ion-textarea autoGrow="true" spellcheck="true" autocapitalize="true" formControlName="description" placeholder="What is your question?"
-                    [class.invalid]="!questionForm.controls['description'].valid && questionForm.controls['description'].touched"></ion-textarea>
+      <ion-textarea autoGrow="true" spellcheck="true" autocapitalize="true" formControlName="description"
+        placeholder="What is your question?"
+        [class.invalid]="!questionForm.controls['description'].valid && questionForm.controls['description'].touched">
+      </ion-textarea>
     </ion-item>
-    <ion-item class="error-message" *ngIf="!questionForm.controls['description'].valid && questionForm.controls['description'].touched">
+    <ion-item class="error-message"
+      *ngIf="!questionForm.controls['description'].valid && questionForm.controls['description'].touched">
       <ion-label>What is your question?</ion-label>
     </ion-item>
     <ion-item>
@@ -33,10 +52,12 @@
     </ion-item>
     <ion-footer *ngIf="!question.id">
       <ion-toolbar>
-        <ion-button *ngIf="questionForm.valid" expand="full" class="fill-button" (click)="addQuestion(questionForm)" (click)="sendEmail(questionForm)">
+        <ion-button *ngIf="questionForm.valid" expand="full" class="fill-button" (click)="addQuestion(questionForm)"
+          (click)="sendEmail(questionForm)">
           Post Question
         </ion-button>
-        <ion-button *ngIf="!questionForm.valid" disabled="true" expand="full" class="fill-button" (click)="addQuestion(questionForm)" (click)="sendEmail(questionForm)">
+        <ion-button *ngIf="!questionForm.valid" disabled="true" expand="full" class="fill-button"
+          (click)="addQuestion(questionForm)" (click)="sendEmail(questionForm)">
           Post Question
         </ion-button>
       </ion-toolbar>
@@ -45,4 +66,3 @@
   </form>
 
 </ion-content>
-

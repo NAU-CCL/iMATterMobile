@@ -15,6 +15,9 @@ import { QuoteService, Quote } from '../../services/homeQuote.service';
 import { delay } from 'rxjs/operators';
 import { element } from 'protractor';
 import { SurveyService, Survey } from 'src/app/services/survey/survey.service';
+import { DatePipe } from '@angular/common';
+import { ProfileService } from 'src/app/services/user/profile.service';
+import { consoleTestResultHandler } from 'tslint/lib/test';
 
 
 @Component({
@@ -127,6 +130,13 @@ export class HomePage implements OnInit {
     public challengeProgress = {};
     public daysComplete = {};
     public challengeDayComplete: boolean;
+    public showDailyQuote: boolean;
+    public surveyComplete;
+    public userSurveys = [];
+    public collpaseChallenges = false;
+    public collapseSurveys = false;
+
+    public defaultChallengeCover = "https://firebasestorage.googleapis.com/v0/b/imatter-nau.appspot.com/o/ChallengeImages%2FdefaultChallenge_640x640.png?alt=media&token=f80549df-a0bc-42f2-b487-555fd059f719";
 
     constructor(private activatedRoute: ActivatedRoute, public afs: AngularFirestore,
         private toastCtrl: ToastController,
@@ -139,7 +149,9 @@ export class HomePage implements OnInit {
         private challengeService: ChallengeService,
         private mpnService: MoodProviderNotifService,
         private quoteService: QuoteService,
-        private surveyService: SurveyService) {
+        private surveyService: SurveyService,
+        private userService: ProfileService,
+        private datepipe: DatePipe) {
         this.dropDown = [{ expanded: false }];
     }
 
@@ -153,42 +165,35 @@ export class HomePage implements OnInit {
 
         this.surveys = this.surveyService.getSurveys();
 
-        // this.quote = this.quoteService.getAllQuotes();
-        // console.log(this.quote);
+        // document.cookie = `accessed=${new Date()};`
 
-        /*
+        let lastAccessed: any;
+        let today = new Date();
 
-        this.storage.get('weeksPregnant').then((val) => {
-          if (val) {
-            this.weeksPregnant = val;
-            console.log(val);
+        let cookies = document.cookie.split(';');
+        let cookie: string;
 
-          }
-        });
-
-        this.storage.get('daysPregnant').then((val) => {
-          if (val >= 0 ) {
-            this.daysPregnant = val;
-            console.log(val);
-
-          }
-        });
-
-        this.storage.get('totalDaysPregnant').then((val) => {
-          if (val) {
-            this.totalDaysPregnant = val.toString();
-            console.log(val);
-            const ref = this.afs.firestore.collection('pregnancyUpdates')
-                .where('day', '==', this.totalDaysPregnant);
-            ref.get().then((result) => {
-              result.forEach(doc => {
-                this.pregnancyCard.day = doc.get('day');
-                this.pregnancyCard.picture = doc.get('picture');
-                this.pregnancyCard.description = doc.get('description');
-              });
-            });
-          }
-        });*/
+        for (let i = 0; i < cookies.length; i++) {
+            cookie = cookies[i].replace(/^\s+/g, '');
+            if (cookie.indexOf('accessed') == 0) {
+                lastAccessed = new Date(cookie.substring("accessed".length, cookie.length).replace('=', ''));
+                console.log(new Date(lastAccessed.setDate(lastAccessed.getDate() + 1)));
+            }
+        }
+        if (lastAccessed === undefined) {
+            console.log("the cookie expired");
+            this.showDailyQuote = true;
+            document.cookie = `accessed=${new Date()};`
+        }
+        else if (today > new Date(lastAccessed.setDate(lastAccessed.getDate() + 1))) {
+            this.showDailyQuote = true;
+            console.log("it has been 24 hours, reset the date");
+            document.cookie = `accessed=${new Date()};`
+        } else {
+            this.showDailyQuote = false;
+            console.log("it has not been 24 hours");
+        }
+        console.log(this.showDailyQuote);
     }
 
     ionViewWillEnter() {
@@ -222,7 +227,7 @@ export class HomePage implements OnInit {
                         this.user.dailyQuote = doc.get('dailyQuote');
                         this.user.joinedChallenges = doc.get('joinedChallenges');
                         this.user.availableSurveys = doc.get('availableSurveys');
-                        console.log(this.user.joinedChallenges);
+                        console.log(this.user.availableSurveys);
 
                         this.daysInRecovery = this.getDaysInRecovery(this.user.endRehabDate);
 
@@ -259,6 +264,8 @@ export class HomePage implements OnInit {
                 });
             }
         });
+
+        this.updateSurveys();
     }
 
     doRefresh(event) {
@@ -357,6 +364,15 @@ export class HomePage implements OnInit {
 
 
     saveEmotion(emotion: string) {
+
+        console.log(emotion);
+
+        if (emotion != this.user.currentEmotion) {
+            this.chatService.addChat(this.chat).then(() => {
+                this.chat.message = '';
+            });
+        }
+
         this.afs.firestore.collection('users').doc(this.userProfileID)
             .update({ mood: emotion });
 
@@ -371,11 +387,8 @@ export class HomePage implements OnInit {
         this.chat.type = 'emotion';
         this.chat.visibility = true;
 
-        this.chatService.addChat(this.chat).then(() => {
-            this.chat.message = '';
-        });
 
-        if (emotion === 'sad' || emotion === 'overwhelmed' || emotion === 'angry') {
+        if (emotion === 'sad' || emotion === 'stressed' || emotion === 'angry') {
             this.presentAlert('Stay Strong!',
                 'Remember you have your cohort to support you and health modules available to you! If you need help,' +
                 'please go to the Resources page to find help near you.');
@@ -599,5 +612,80 @@ export class HomePage implements OnInit {
             icon.name = 'moon';
         }
         document.body.classList.toggle('dark');
+    }
+
+    updateSurveys() {
+        const currentSurveys = this.user['availableSurveys'];
+        this.surveys.forEach(surveyArray => {
+            surveyArray.forEach(survey => {
+                this.checkComplete(survey);
+                console.log(this.surveyComplete);
+                if (!this.surveyComplete) {
+                    if (survey['type'] == 'Days After Joining') {
+                        var characteristics = survey['characteristics'];
+                        if (this.user['daysAUser'] >= characteristics['daysAfterJoining']) {
+                            if (!currentSurveys.includes(survey['id'])) {
+                                currentSurveys.push(survey['id']);
+                            }
+                        }
+                    } else if (survey['type'] == 'Repeating') {
+                        // check if repeating survey already complete
+
+                        var weekdays = new Array(
+                            "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"
+                        );
+                        var characteristics = survey['characteristics'];
+                        var date = new Date();
+                        var dayOfWeek = weekdays[date.getDay()];
+                        var dayOfMonth = date.getDate();
+                        if (characteristics['repeatEvery']) {
+                            if (characteristics['repeatEvery'] == 'weekly' && dayOfWeek == characteristics['display']) {
+                                if (!currentSurveys.includes(survey['id'])) {
+                                    currentSurveys.push(survey['id']);
+                                }
+                            } else if (characteristics['repeatEvery'] == 'monthy' && dayOfMonth == characteristics['display']) {
+                                if (!currentSurveys.includes(survey['id'])) {
+                                    currentSurveys.push(survey['id']);
+                                }
+                            } else if (characteristics['repeatEvery'] == 'daily') {
+                                if (!currentSurveys.includes(survey['id'])) {
+                                    currentSurveys.push(survey['id']);
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    this.surveyComplete = false;
+                }
+                this.userSurveys = currentSurveys;
+                console.log(this.userSurveys);
+                this.userService.updateAvailableSurveys(currentSurveys, this.user['code']);
+
+            });
+        });
+    }
+
+    checkComplete(survey) {
+        const surveyID = survey['id'];
+        const today = new Date();
+        const todayString = this.datepipe.transform(today, 'y-MM-dd');
+        this.user['answeredSurveys'].forEach(complete => {
+            if (survey['type'] === 'Repeating') {
+                if (complete['survey'] === surveyID && todayString === complete['date']) {
+                    this.surveyComplete = true;
+                }
+            } else {
+                if (complete['survey'] === surveyID) {
+                    this.surveyComplete = true;
+                }
+            }
+        });
+    }
+
+    answerSurvey(survey: Survey) {
+        let submitData;
+        submitData = survey.id + ':' + this.user['daysAUser'];
+        this.router.navigate(['/tabs/home/available/answer/' + submitData]);
+
     }
 }

@@ -78,7 +78,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                     });
                 });
             }
-            
+
         });
 
     }
@@ -100,6 +100,10 @@ export class ResourcesPage implements OnInit, AfterViewInit {
         this.locations = this.locationService.getLocations();
         this.locations.forEach((locationList => {
             locationList.forEach((location => {
+                var streetArray = location.street.split(" ");
+                streetArray = streetArray.slice(Math.max(streetArray.length - 3, 1));
+                streetArray.pop()
+                location.cityState = streetArray.join(" ");
                 location.distance = google.maps.geometry.spherical.computeDistanceBetween(
                     new google.maps.LatLng(this.latitude, this.longitude),
                     new google.maps.LatLng(location.latitude, location.longitude)

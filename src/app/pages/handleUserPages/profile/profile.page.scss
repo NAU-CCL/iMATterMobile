@@ -7,16 +7,19 @@ ion-list-header {
 }
 
 .emotion-toolbar {
+
   //--background: #f5f6f9;
   //background-color: #f5f6f9;
   ion-text {
     padding-left: 10px;
     font-weight: bolder;
   }
+
   ion-col {
     padding: 5px 0 5px;
     margin: 0;
     text-align: center;
+
     p {
       font-size: 0.6em;
       margin: 0;
@@ -24,13 +27,16 @@ ion-list-header {
   }
 }
 
+ion-toolbar {
+  --min-height: 0px !important;
+}
 
 h1 {
   font-family: 'Bebas Neue', cursive;
   font-size: 3em;
 }
 
-ion-row{
+ion-row {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -45,7 +51,7 @@ ion-row{
   text-align: left;
 }
 
-.placeholder{
+.placeholder {
   color: #cccccc;
 }
 
@@ -57,7 +63,7 @@ ion-row{
   --background: var(--main-color);
   --background-activated: var(--secondary-color);
   --background-hover: var(--secondary-color);
-  }
+}
 
 .logout {
   color: var(--main-color);
@@ -66,4 +72,3 @@ ion-row{
 ion-icon {
   color: var(--main-color);
 }
-

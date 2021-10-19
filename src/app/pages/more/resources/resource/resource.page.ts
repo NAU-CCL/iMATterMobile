@@ -43,6 +43,7 @@ export class ResourcePage implements OnInit {
         type: '',
         hourType: '',
         url: '',
+        cityState: '',
     }
 
     constructor(private resourceService: LocationService,

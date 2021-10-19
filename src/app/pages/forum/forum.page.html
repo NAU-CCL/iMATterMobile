@@ -7,16 +7,18 @@
     <ion-buttons slot="start">
       <ion-back-button class="text-button" defaultHref="/tabs/more"></ion-back-button>
     </ion-buttons>
-    <ion-buttons  slot="end">
-      <ion-button class="create-post-button"  routerLink="/forum/forum-deatails">Ask Question</ion-button>
+    <ion-buttons slot="end">
+      <ion-button class="create-post-button" routerLink="/forum/forum-deatails">Post Question</ion-button>
     </ion-buttons>
   </ion-toolbar>
   <ion-row>
     <ion-col>
-      <ion-button class="fill-button" [class.noHighlight]="allQuestions != true" expand="block"  (click)="allQuestions = true; usersQuestions = false"> All Questions</ion-button>
+      <ion-button class="fill-button" [class.noHighlight]="allQuestions != true" expand="block"
+        (click)="allQuestions = true; usersQuestions = false"> All Questions</ion-button>
     </ion-col>
     <ion-col>
-      <ion-button class="fill-button" [class.noHighlight]="usersQuestions != true" expand="block"  (click)="usersQuestions = true; allQuestions = false"> Your Questions </ion-button>
+      <ion-button class="fill-button" [class.noHighlight]="usersQuestions != true" expand="block"
+        (click)="usersQuestions = true; allQuestions = false"> Your Questions </ion-button>
     </ion-col>
   </ion-row>
 </ion-header>
@@ -37,15 +39,20 @@
 
 <ion-content>
   <ion-list *ngIf="allQuestions == true">
-    <ion-item  button [routerLink]="['/forum/forum-thread', question.id]" *ngFor="let question of questionList">
+    <ion-item button [routerLink]="['/forum/forum-thread', question.id]" *ngFor="let question of questionList">
       <ion-col>
         <ion-row>
           <div class="padding-top">
             <ion-label class="dots">
-            {{ question.description}}
+              <ion-row>
+                Categrory: {{ question.title}}
+              </ion-row>
+              <ion-row>
+                {{ question.description}}
+              </ion-row>
             </ion-label>
           </div>
-        <ion-icon md="md-arrow-forward" slot="end"></ion-icon>
+          <ion-icon md="md-arrow-forward" slot="end"></ion-icon>
         </ion-row>
         <ion-row class="numOfComments">
           Answers: {{question.numOfAnswers}}
@@ -58,7 +65,7 @@
   </ion-list>
 
   <ion-list *ngIf="usersQuestions == true">
-    <ion-item  button [routerLink]="['/forum/forum-thread', question.id]" *ngFor="let question of thisUserQuestionList">
+    <ion-item button [routerLink]="['/forum/forum-thread', question.id]" *ngFor="let question of thisUserQuestionList">
       <ion-col>
         <ion-row class="timestamp">
           Posted: {{ question.timestamp.seconds * 1000 | date:'MM-dd-yyyy h:mm:ss a' }}
@@ -66,7 +73,12 @@
         <ion-row>
           <div class="padding-top">
             <ion-label class="dots">
-              {{ question.title }}
+              <ion-row>
+                Categrory: {{ question.title}}
+              </ion-row>
+              <ion-row>
+                {{ question.description}}
+              </ion-row>
             </ion-label>
             <ion-label class="numOfComments">
               Answers: {{question.numOfAnswers}}

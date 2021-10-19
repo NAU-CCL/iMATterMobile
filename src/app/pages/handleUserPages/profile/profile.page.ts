@@ -112,6 +112,7 @@ export class ProfilePage implements OnInit {
     public showImages = false;
     public allPicURLs: any;
     public previewPic: any;
+    public collapsePersonalInfo: boolean = true;
 
     public emotionIcons = {
         excited: '🤗',

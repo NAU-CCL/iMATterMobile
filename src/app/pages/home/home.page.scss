@@ -16,20 +16,28 @@ ion-title {
 }
 
 .highlight {
-  background-color: var(--secondary-color);
+  background-color: var(--main-tint);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
 }
 
 .emotion-toolbar {
+
   //--background: #f5f6f9;
   //background-color: #f5f6f9;
+  min-height: 0 !important;
+
   ion-text {
     padding-left: 10px;
     font-weight: bolder;
   }
+
   ion-col {
-    padding: 5px 0 5px;
+    padding: 0;
     margin: 0;
     text-align: center;
+
     p {
       font-size: 0.6em;
       margin: 0;
@@ -37,17 +45,21 @@ ion-title {
   }
 }
 
+ion-toolbar {
+  --min-height: 0px !important;
+}
+
 ion-icon {
   color: var(--main-color);
 }
 
-#rec-notif-card{
+#rec-notif-card {
   width: 75%;
   height: 60px;
   font-size: 20px;
 }
 
-#refresh{
+#refresh {
   color: gray;
   height: 40px;
   width: 40px;
@@ -55,3 +67,16 @@ ion-icon {
   padding-right: 30px;
 }
 
+.profilePic {
+  border-collapse: separate;
+  border-radius: 50%;
+  max-width: 30px;
+}
+
+.notifList {
+  background-color: rgba(26, 87, 115, .1);
+}
+
+.notifCard {
+  background-color: white;
+}

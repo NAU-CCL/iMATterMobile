@@ -3,10 +3,10 @@ import { QuestionService, Question } from 'src/app/services/infoDesk/question.se
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
-import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyticsService.service';
+import { AnalyticsService, Analytics, Sessions } from 'src/app/services/analyticsService.service';
 import * as firebase from 'firebase/app';
-import {AngularFirestore} from '@angular/fire/firestore';
-import {AlertController} from '@ionic/angular';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { AlertController } from '@ionic/angular';
 
 
 @Component({
@@ -16,12 +16,12 @@ import {AlertController} from '@ionic/angular';
 })
 export class ForumPage implements OnInit {
   analytic: Analytics =
-{
-  page: '',
-  userID: '',
-  timestamp: '',
-  sessionID: '',
-};
+    {
+      page: '',
+      userID: '',
+      timestamp: '',
+      sessionID: '',
+    };
 
   private questions: Observable<Question[]>;
   private analyticss: string;
@@ -40,11 +40,11 @@ export class ForumPage implements OnInit {
   public iosPlatform: boolean;
 
   constructor(private questionService: QuestionService,
-              private storage: Storage,
-              private router: Router,
-              private afs: AngularFirestore,
-              private analyticsService: AnalyticsService,
-              private alertController: AlertController) {
+    private storage: Storage,
+    private router: Router,
+    private afs: AngularFirestore,
+    private analyticsService: AnalyticsService,
+    private alertController: AlertController) {
   }
 
   ngOnInit() {
@@ -69,28 +69,28 @@ export class ForumPage implements OnInit {
 
   ionViewWillEnter() {
     this.addView();
-   }
+  }
 
-   getUserQuestions() {
-     this.storage.get('userCode').then((val) => {
-       if (val) {
-         this.afs.collection('questions', ref => ref.where('userID', '==', val).orderBy('timestamp', 'desc'))
-             .valueChanges({ idField: 'id' }).subscribe(questionList => {
-           this.thisUserQuestionList = questionList;
-           this.thisUserLoadedQuestionList = questionList;
-         });
-       }
-     });
-   }
+  getUserQuestions() {
+    this.storage.get('userCode').then((val) => {
+      if (val) {
+        this.afs.collection('questions', ref => ref.where('userID', '==', val).orderBy('timestamp', 'desc'))
+          .valueChanges({ idField: 'id' }).subscribe(questionList => {
+            this.thisUserQuestionList = questionList;
+            this.thisUserLoadedQuestionList = questionList;
+          });
+      }
+    });
+  }
 
-   getAllQuestions() {
-     this.afs.collection('questions', ref => ref.orderBy('timestamp', 'desc'))
-         .valueChanges({ idField: 'id' }).subscribe(questionList => {
-       this.questionList = questionList;
+  getAllQuestions() {
+    this.afs.collection('questions', ref => ref.orderBy('timestamp', 'desc'))
+      .valueChanges({ idField: 'id' }).subscribe(questionList => {
+        this.questionList = questionList;
 
-       this.loadedQuestionList = questionList;
-     });
-   }
+        this.loadedQuestionList = questionList;
+      });
+  }
 
 
   initializeQuestions(): void {
@@ -108,8 +108,9 @@ export class ForumPage implements OnInit {
     const searchInput = event.target.value;
 
     if (searchInput) {
+      var results = []
       this.thisUserQuestionList = this.thisUserQuestionList.filter(currentQuestion => {
-        return(currentQuestion.title.toLowerCase().indexOf(searchInput.toLowerCase()) > -1 &&
+        return (currentQuestion.title.toLowerCase().indexOf(searchInput.toLowerCase()) > -1 ||
           currentQuestion.description.toLowerCase().indexOf(searchInput.toLowerCase()) > -1);
       });
     }
@@ -123,44 +124,45 @@ export class ForumPage implements OnInit {
 
     if (searchInput) {
       this.questionList = this.questionList.filter(currentQuestion => {
-        return(currentQuestion.title.toLowerCase().indexOf(searchInput.toLowerCase()) > -1);
+        return (currentQuestion.title.toLowerCase().indexOf(searchInput.toLowerCase()) > -1 ||
+          currentQuestion.description.toLowerCase().indexOf(searchInput.toLowerCase()) > -1);
       });
     }
   }
 
-  addView(){
-  //this.analytic.sessionID = this.session.id;
-  this.storage.get('userCode').then((val) =>{
-    if (val) {
-      const ref = this.afs.firestore.collection('users').where('code', '==', val);
-      ref.get().then((result) =>{
-        result.forEach(doc =>{
-          this.analytic.page = 'infoDesk';
-          this.analytic.userID = val;
-          this.analytic.timestamp = firebase.firestore.FieldValue.serverTimestamp();
-          //this.analytic.sessionID = this.idReference;
-          this.analyticsService.addView(this.analytic).then (() =>{
-            console.log('successful added view: infoDesk');
+  addView() {
+    //this.analytic.sessionID = this.session.id;
+    this.storage.get('userCode').then((val) => {
+      if (val) {
+        const ref = this.afs.firestore.collection('users').where('code', '==', val);
+        ref.get().then((result) => {
+          result.forEach(doc => {
+            this.analytic.page = 'infoDesk';
+            this.analytic.userID = val;
+            this.analytic.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+            //this.analytic.sessionID = this.idReference;
+            this.analyticsService.addView(this.analytic).then(() => {
+              console.log('successful added view: infoDesk');
 
-          }, err =>{
-            console.log('unsucessful added view: infoDesk');
+            }, err => {
+              console.log('unsucessful added view: infoDesk');
 
+            });
           });
         });
-      });
-    }
-  });
-}
+      }
+    });
+  }
 
   // gets admin set point amount and uses that to
   displayForumInfo() {
     this.presentAlert('What is the Information Desk?',
-          'The information desk is a forum where you can ask questions and respond to other ' +
-        'user questions. Here, all users ' +
-        'can see your questions, not just your cohort. You have the option to ask or comment anonymously' +
-        ', allowing you to remain even more secret. Questions can be answered by providers, which ' +
-        'include clinic workers, nurses, and more.');
-    }
+      'The information desk is a forum where you can ask questions and respond to other ' +
+      'user questions. Here, all users ' +
+      'can see your questions, not just your cohort. You have the option to ask or comment anonymously' +
+      ', allowing you to remain even more secret. Questions can be answered by providers, which ' +
+      'include clinic workers, nurses, and more.');
+  }
 
   // present a basic alert -- used for displaying gc info
   async presentAlert(header: string, message: string) {

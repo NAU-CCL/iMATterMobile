@@ -92,7 +92,6 @@ export class AvailablePage implements OnInit {
   }
 
   answerSurvey(survey: Survey) {
-
     let submitData;
     submitData = survey.id + ':' + this.daysAUser;
     this.router.navigate(['/tabs/home/available/answer/' + submitData]);

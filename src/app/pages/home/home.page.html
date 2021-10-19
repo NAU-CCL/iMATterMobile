@@ -1,72 +1,82 @@
 <ion-header>
-    <ion-toolbar>
+    <ion-toolbar style="padding: 10px">
+        <ion-buttons slot="start">
+            <ion-button class="ion-text-right" (click)="toggleDarkTheme()">
+                <img style="max-width: 30px;" src="../../../assets/logo.png">
+            </ion-button>
+        </ion-buttons>
+        <ion-title>
+            <div style="font-size: 80%;">
+                {{user.username.toUpperCase()}}
+            </div>
+            <hr style="background-color: var(--tertiary-color); margin: 0; opacity: 25%;">
+            <div style="font-size: 0.4em;">
+                Recovery Days: {{daysInRecovery}}
+            </div>
+        </ion-title>
+        <ion-buttons style="border-radius: 50%;" slot="end">
+            <ion-button style="border-radius: 50%;" (click)="updateProfileClicks()" [routerLink]="['/profile']">
+                <img class="profilePic" src="{{ user.profilePic }}">
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+    <!-- <ion-toolbar class="ion-justify-content-center" style="min-height: 56px;">
         <ion-buttons slot="start">
             <ion-button class="ion-text-right" (click)="toggleDarkTheme()">
                 <ion-icon name="moon" id="darkMode"></ion-icon>
             </ion-button>
         </ion-buttons>
-        <ion-title> iMATter</ion-title>
+        <ion-title>
+            {{user.username}}
+            <hr style="background-color: var(--main-color); opacity: 25%; margin: 2px">
+            <ion-row class="ion-justify-content-center" style="font-size: 0.4em;">
+                Recovery Day: {{daysInRecovery}}
+            </ion-row> 
+        </ion-title>
         <ion-buttons slot="end">
             <ion-button (click)="updateProfileClicks()" [routerLink]="['/profile']">
-                <ion-icon class="color-icon" slot="icon-only" name="person"></ion-icon>
+                <ion-img class="profilePic" src="{{ user.profilePic }}"></ion-img>
             </ion-button>
         </ion-buttons>
-    </ion-toolbar>
-</ion-header>
+    </ion-toolbar> -->
 
-<ion-header>
     <ion-toolbar class="emotion-toolbar">
-        <ion-text class="ion-padding-horizontal"> Currently I am feeling: {{user.currentEmotion}} </ion-text>
-
         <ion-row class="ion-justify-content-center">
-            <!--            <ion-col size="2">-->
-            <!--                <ion-button [class.highlight]="this.user.currentEmotion == 'excited'"-->
-            <!--                            size="small" fill="clear" (click)="saveEmotion('excited')">-->
-            <!--                    🤗-->
-            <!--                </ion-button>-->
-            <!--                <p>EXCITED</p>-->
-            <!--            </ion-col>-->
-            <ion-col size="2">
+            <ion-col>
                 <ion-button [class.highlight]="this.user.currentEmotion == 'happy'" size="small" fill="clear"
-                            (click)="saveEmotion('happy')">
+                    (click)="saveEmotion('happy')">
                     😃
                 </ion-button>
-                <p>HAPPY</p>
             </ion-col>
-            <ion-col size="2">
+            <ion-col>
                 <ion-button [class.highlight]="this.user.currentEmotion == 'loved'" size="small" fill="clear"
-                            (click)="saveEmotion('loved')">
+                    (click)="saveEmotion('loved')">
                     🥰
                 </ion-button>
-                <p>LOVED</p>
             </ion-col>
-            <ion-col size="2">
+            <ion-col>
                 <ion-button [class.highlight]="this.user.currentEmotion == 'ok'" size="small" fill="clear"
-                            (click)="saveEmotion('ok')">
+                    (click)="saveEmotion('ok')">
                     😐
                 </ion-button>
-                <p>OK</p>
             </ion-col>
-            <ion-col size="2">
+            <ion-col>
                 <ion-button [class.highlight]="this.user.currentEmotion == 'stressed'" size="small" fill="clear"
-                            (click)="saveEmotion('stressed')">
+                    (click)="saveEmotion('stressed')">
                     😩
                 </ion-button>
-                <p>STRESSED</p>
             </ion-col>
-            <ion-col size="2">
+            <ion-col>
                 <ion-button [class.highlight]="this.user.currentEmotion == 'sad'" size="small" fill="clear"
-                            (click)="saveEmotion('sad')">
+                    (click)="saveEmotion('sad')">
                     😢
                 </ion-button>
-                <p>SAD</p>
             </ion-col>
-            <ion-col size="2">
+            <ion-col>
                 <ion-button [class.highlight]="this.user.currentEmotion == 'angry'" size="small" fill="clear"
-                            (click)="saveEmotion('angry')">
+                    (click)="saveEmotion('angry')">
                     😡
                 </ion-button>
-                <p>ANGRY</p>
             </ion-col>
         </ion-row>
     </ion-toolbar>
@@ -77,109 +87,81 @@
         <ion-refresher-content>
         </ion-refresher-content>
     </ion-refresher>
-    <ion-card>
+    <!-- <ion-card>
         <ion-card-header>
-            <ion-card-title> Congratulations! You have been in recovery for: {{daysInRecovery}} Days</ion-card-title>
+            <ion-card-title style="font-size: medium; text-align: center;"> Congrats! You are on recovery day
+                {{daysInRecovery}}!
+            </ion-card-title>
         </ion-card-header>
-        <ion-card-content>
-            <p> {{pregnancyCard.description}} </p>
-        </ion-card-content>
-    </ion-card>
+    </ion-card> -->
 
     <ion-card>
-        <ion-card-title class="ion-padding-horizontal">
-        </ion-card-title>
-        <ion-card-content>
-            <img src="{{user.dailyQuote}}" alt="couldn't load">
+        <ion-card-content style="padding: 0;">
+            <img src="https://firebasestorage.googleapis.com/v0/b/imatter-nau.appspot.com/o/QuoteImages%2Fimatter-resize_640x640.png?alt=media&token=f6041d12-c568-4d6c-ba68-66a25e5e7b0f"
+                alt="couldn't load" style="margin: 0;">
         </ion-card-content>
     </ion-card>
 
-    <ng-container *ngFor="let challenge of (challenges|async)">
-        <ion-card id="card{{challenge.id}}" *ngIf="challengeJoined(challenge.id) && !daysComplete[challenge.id]">
-                <ion-card-title class="ion-padding"
-                                [routerLink]="['/habit', challenge.id]">{{challenge.title}}</ion-card-title>
-                <ion-card-subtitle class="ion-padding" style="padding-top: 0">
-                    <b>{{challenge.contents[challengeProgress[challenge.id]].title}}</b>: {{challenge.contents[challengeProgress[challenge.id]].activity}}
+    <ion-item-divider class="custom-divider" (click)="collpaseChallenges = !collpaseChallenges">
+        <ion-label>
+            ACTIVE CHALLENGES
+        </ion-label>
+        <ion-icon *ngIf="collpaseChallenges" slot="end" color=white name="arrow-dropdown"></ion-icon>
+        <ion-icon *ngIf="!collpaseChallenges" slot="end" color=white name="arrow-dropup"></ion-icon>
+    </ion-item-divider>
 
-                </ion-card-subtitle>
-                <ion-card-subtitle>
+    <ion-list class="notifList" *ngIf="!collpaseChallenges">
+        <ng-container *ngFor="let challenge of (challenges|async)">
+            <ion-card id="card{{challenge.id}}" class="notifCard" *ngIf="challengeJoined(challenge.id)">
+                <ion-card-title class="ion-padding" [routerLink]="['/habit', challenge.id]">{{challenge.title}}
+                    <ion-icon *ngIf="!daysComplete[challenge.id] " name="arrow-forward" size=small
+                        class="ion-float-right" [routerLink]="['/habit', challenge.id]"></ion-icon>
+                    <ion-icon *ngIf="daysComplete[challenge.id] " name="checkmark" size=small class="ion-float-right"
+                        [routerLink]="['/habit', challenge.id]"></ion-icon>
+                </ion-card-title>
+                <!-- <ion-card-subtitle class="ion-padding" style="padding-top: 0">
+                    <b>{{challenge.contents[challengeProgress[challenge.id]].title}}</b>:
+                    {{challenge.contents[challengeProgress[challenge.id]].activity}}
+
+                </ion-card-subtitle> -->
+                <!-- <ion-card-subtitle>
                     <div class="ion-float-right" style="font-size: 2em">
-<!--                        DONE-->
-<!--                        <ion-checkbox id="{{challenge.id}}" (click)="completeDay(challenge.id)"-->
-<!--                                      style="font-size: 0.8em"-->
-<!--                                      checked="{{daysComplete[challenge.id]}}">-->
-<!--                        </ion-checkbox>-->
                         <ion-icon name="arrow-forward" [routerLink]="['/habit', challenge.id]"></ion-icon>
                     </div>
-                </ion-card-subtitle>
-        </ion-card>
-            <ion-card *ngIf="challengeJoined(challenge.id) && daysComplete[challenge.id]">
-                <ion-card-title class="ion-padding"
-                                [routerLink]="['/habit', challenge.id]">{{challenge.title}}</ion-card-title>
-                <ion-card-subtitle class="ion-padding" style="padding-top: 0">
-                    You completed today's task! Come back tomorrow for a new challenge.
-                </ion-card-subtitle>
+                </ion-card-subtitle> -->
             </ion-card>
-    </ng-container>
+            <!-- <ion-card *ngIf="challengeJoined(challenge.id) && daysComplete[challenge.id]">
+                <ion-card-title class="ion-padding" [routerLink]="['/habit', challenge.id]">{{challenge.title}}
+                </ion-card-title>
+                <!-- <ion-card-subtitle class="ion-padding" style="padding-top: 0">
+                    You completed today's task! Come back tomorrow for a new challenge.
+                </ion-card-subtitle> -->
+            <!-- </ion-card> -->
+        </ng-container>
+    </ion-list>
 
-    <!--ion-card (click)="expandItem(drop)" *ngFor="let drop of dropDown">
-        <ion-card-header>
-            <ion-card-title>Recent Notifications</ion-card-title>
-        </ion-card-header>
+    <ion-item-divider class="custom-divider" (click)="collapseSurveys = !collapseSurveys">
+        <ion-label style="color: white;">
+            AVAILABLE SURVYES
+        </ion-label>
+        <ion-icon *ngIf="collapseSurveys" slot="end" color=white name="arrow-dropdown"></ion-icon>
+        <ion-icon *ngIf="!collapseSurveys" slot="end" color=white name="arrow-dropup"></ion-icon>
+    </ion-item-divider>
 
-        <ion-card-content>
-            <app-expandable expandHeight="expandSize" [expanded]="drop.expanded">
-                <div>
-                    <ion-button fill="clear" (click)="clearArray()">clear</ion-button>
-                    <ion-icon (click)="refreshList()" id="refresh" name="md-refresh-circle" slot="end"></ion-icon>
-                </div>
-                <div *ngFor="let notif of user.recentNotifications">
-                    <ion-card id="rec-notif-card" (click)="goToPage(notif)">
-                        {{notif.split(",")[0]}}
-                    </ion-card>
-                </div>
-            </app-expandable>
-        </ion-card-content>
-    </ion-card>-->
-
-    <!--    <ion-card>-->
-    <!--        <ion-card-title class="ion-padding-horizontal">-->
-    <!--            Build Healthy Habits-->
-    <!--        </ion-card-title>-->
-    <!--        <ion-card-content>-->
-    <!--            Join one (or several!) of these challenges that range from 5-30 days to build a new healthy habit.-->
-    <!--        </ion-card-content>-->
-    <!--        <ion-item class="text-button" button [routerLink]="['/tabs/home/habits']">-->
-    <!--            Go to Habits-->
-    <!--            <ion-icon md="md-arrow-forward" slot="end"></ion-icon>-->
-    <!--        </ion-item>-->
-    <!--    </ion-card>-->
-
-    <!--    <ion-card>-->
-    <!--        <ion-card-title class="ion-padding-horizontal">-->
-    <!--            Information Desk-->
-    <!--        </ion-card-title>-->
-    <!--        <ion-card-content>-->
-    <!--            The information desk allows you to ask health professional questions. You can also view commonly asked-->
-    <!--            questions.-->
-    <!--        </ion-card-content>-->
-    <!--        <ion-item class="text-button" button [routerLink]="['/tabs/home/forum']" (click)="updateInfoClicks()">-->
-    <!--            Go to Information Desk-->
-    <!--            <ion-icon md="md-arrow-forward" slot="end"></ion-icon>-->
-    <!--        </ion-item>-->
-    <!--    </ion-card>-->
-
-    <!--    <ion-card>-->
-    <!--        <ion-card-title class="ion-padding-horizontal">-->
-    <!--            Surveys-->
-    <!--        </ion-card-title>-->
-    <!--        <ion-card-content>-->
-    <!--            Surveys are a way to provide useful information and help earn points-->
-    <!--        </ion-card-content>-->
-    <!--        <ion-item class="text-button" button [routerLink]="['/tabs/home/available']" (click)="updateSurveyClicks()">-->
-    <!--            Go to your surveys-->
-    <!--            <ion-icon md="md-arrow-forward" slot="end"></ion-icon>-->
-    <!--        </ion-item>-->
-    <!--    </ion-card>-->
-
+    <ion-list class="notifList" *ngIf="!collapseSurveys">
+        <ng-container *ngFor="let survey of (surveys|async)">
+            <ion-card class="notifCard" *ngIf="userSurveys.includes(survey.id)" (click)="answerSurvey(survey)">
+                <ion-card-title class="ion-padding">
+                    {{survey.title}} <span style="font-size: 0.5em; opacity: 100%;">{{survey.points}} points</span>
+                    <ion-icon class="ion-float-right" size=small name="arrow-forward"></ion-icon>
+                </ion-card-title>
+                <!-- <ion-card-content>{{survey.description}}</ion-card-content> -->
+                <!-- <ion-card-subtitle class="ion-padding-horizontal ion-padding-bottom"><b>Points: {{survey.points}}</b>
+                    <div class="ion-float-right" style="font-size: 2em">
+                        <ion-icon name="arrow-forward"></ion-icon>
+                    </div>
+                </ion-card-subtitle> -->
+            </ion-card>
+        </ng-container>
+    </ion-list>
 </ion-content>
