@@ -135,6 +135,7 @@ export class HomePage implements OnInit {
     public userSurveys = [];
     public collpaseChallenges = false;
     public collapseSurveys = false;
+    public emotionHidden = false;
 
     public defaultChallengeCover = "https://firebasestorage.googleapis.com/v0/b/imatter-nau.appspot.com/o/ChallengeImages%2FdefaultChallenge_640x640.png?alt=media&token=f80549df-a0bc-42f2-b487-555fd059f719";
 
@@ -163,7 +164,6 @@ export class HomePage implements OnInit {
             }
         });
 
-        this.surveys = this.surveyService.getSurveys();
 
         // document.cookie = `accessed=${new Date()};`
 
@@ -182,15 +182,15 @@ export class HomePage implements OnInit {
         }
         if (lastAccessed === undefined) {
             console.log("the cookie expired");
-            this.showDailyQuote = true;
+            this.emotionHidden = false;
             document.cookie = `accessed=${new Date()};`
         }
         else if (today > new Date(lastAccessed.setDate(lastAccessed.getDate() + 1))) {
-            this.showDailyQuote = true;
+            this.emotionHidden = false;
             console.log("it has been 24 hours, reset the date");
             document.cookie = `accessed=${new Date()};`
         } else {
-            this.showDailyQuote = false;
+            this.emotionHidden = true;
             console.log("it has not been 24 hours");
         }
         console.log(this.showDailyQuote);
@@ -198,6 +198,9 @@ export class HomePage implements OnInit {
 
     ionViewWillEnter() {
         console.log('ionViewWillEnter()');
+
+        this.surveys = this.surveyService.getSurveys();
+
         // this.ngOnInit();
         this.addView();
         this.challenges = this.challengeService.getAllChallenges();
@@ -226,7 +229,9 @@ export class HomePage implements OnInit {
                         this.user.code = doc.get('code');
                         this.user.dailyQuote = doc.get('dailyQuote');
                         this.user.joinedChallenges = doc.get('joinedChallenges');
+                        this.user.answeredSurveys = doc.get('answeredSurveys');
                         this.user.availableSurveys = doc.get('availableSurveys');
+                        this.updateSurveys();
                         console.log(this.user.availableSurveys);
 
                         this.daysInRecovery = this.getDaysInRecovery(this.user.endRehabDate);
@@ -265,7 +270,6 @@ export class HomePage implements OnInit {
             }
         });
 
-        this.updateSurveys();
     }
 
     doRefresh(event) {
@@ -298,17 +302,17 @@ export class HomePage implements OnInit {
         }
     }
 
-    async getRandomQuote() {
-        const quotes: string[] = [];
-        const imgs = this.afs.firestore.collection('quotes');
-        imgs.get().then((result) => {
-            result.forEach(doc => {
-                quotes.push(doc.get('picture'));
-            });
-            const randIndex = Math.floor(Math.random() * Math.floor(quotes.length));
-            this.quoteCard.picture = quotes[randIndex];
-        });
-    }
+    // async getRandomQuote() {
+    //     const quotes: string[] = [];
+    //     const imgs = this.afs.firestore.collection('quotes');
+    //     imgs.get().then((result) => {
+    //         result.forEach(doc => {
+    //             quotes.push(doc.get('picture'));
+    //         });
+    //         const randIndex = Math.floor(Math.random() * Math.floor(quotes.length));
+    //         this.quoteCard.picture = quotes[randIndex];
+    //     });
+    // }
 
     getDaysInRecovery(dateString) {
         const currentDateString = new Date().toJSON().split('T')[0];
@@ -409,8 +413,11 @@ export class HomePage implements OnInit {
                         console.log(this.user.availableSurveys);
                     }
                 }
-            })
-        })
+            });
+        });
+        if (!this.emotionHidden) {
+            this.emotionHidden = true;
+        }
     }
 
 
@@ -615,7 +622,7 @@ export class HomePage implements OnInit {
     }
 
     updateSurveys() {
-        const currentSurveys = this.user['availableSurveys'];
+        const currentSurveys = this.user.availableSurveys;
         this.surveys.forEach(surveyArray => {
             surveyArray.forEach(survey => {
                 this.checkComplete(survey);
@@ -658,7 +665,7 @@ export class HomePage implements OnInit {
                     this.surveyComplete = false;
                 }
                 this.userSurveys = currentSurveys;
-                console.log(this.userSurveys);
+                console.log("User surveys: " + this.userSurveys);
                 this.userService.updateAvailableSurveys(currentSurveys, this.user['code']);
 
             });
@@ -669,7 +676,7 @@ export class HomePage implements OnInit {
         const surveyID = survey['id'];
         const today = new Date();
         const todayString = this.datepipe.transform(today, 'y-MM-dd');
-        this.user['answeredSurveys'].forEach(complete => {
+        this.user.answeredSurveys.forEach(complete => {
             if (survey['type'] === 'Repeating') {
                 if (complete['survey'] === surveyID && todayString === complete['date']) {
                     this.surveyComplete = true;
@@ -686,6 +693,6 @@ export class HomePage implements OnInit {
         let submitData;
         submitData = survey.id + ':' + this.user['daysAUser'];
         this.router.navigate(['/tabs/home/available/answer/' + submitData]);
-
     }
+
 }

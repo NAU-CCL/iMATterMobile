@@ -81,15 +81,15 @@ export class AvailablePage implements OnInit {
   isDisplayed(survey: Survey) {
   }
 
-  isCompleted(survey: Survey) {
-    let complete = false;
-    this.answeredSurveys.forEach(id => {
-      if (id.split(':')[0] === survey.id) {
-        complete = true;
-      }
-    });
-    return complete;
-  }
+  // isCompleted(survey: Survey) {
+  //   let complete = false;
+  //   this.answeredSurveys.forEach(id => {
+  //     if (id.split(':')[0] === survey.id) {
+  //       complete = true;
+  //     }
+  //   });
+  //   return complete;
+  // }
 
   answerSurvey(survey: Survey) {
     let submitData;

@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>{{ survey.title }}</ion-title>
+    <ion-title>Complete Survey</ion-title>
     <ion-buttons slot="start">
       <ion-back-button class="text-button" defaultHref="/tabs/home"></ion-back-button>
     </ion-buttons>
@@ -11,10 +11,18 @@
 
   <!-- If the survey is not completed, opens the webpage containing the Survey -->
   <div *ngIf="!isComplete()">
+    <ion-card>
+      <ion-card-title class="ion-padding">
+        {{survey.title}}
+      </ion-card-title>
+      <ion-card-subtitle class="ion-padding">
+        {{survey.description}}
+      </ion-card-subtitle>
+      <ion-card-content>
+        This survey is worth {{survey.points}} points
+      </ion-card-content>
+    </ion-card>
 
-    <ion-button expand="block" class="fill-button" (click)="openPage(survey.link)">
-      Take Survey
-    </ion-button>
 
   </div>
 
@@ -26,3 +34,13 @@
   </div>
 
 </ion-content>
+<ion-footer *ngIf="!isComplete()">
+  <p id="instructions" class="ion-padding-horizontal">
+    Click "Take Survey" to be directed to the survey. This survey cannot be saved and resumed later. Please be
+    prepared to complete the survey once clicking the button. Your input is greatly appreciated so thank you for taking
+    this time to answer all questions thoughtfully.
+  </p>
+  <ion-button expand="block" class="fill-button" (click)="openPage(survey.link)">
+    Take Survey
+  </ion-button>
+</ion-footer>

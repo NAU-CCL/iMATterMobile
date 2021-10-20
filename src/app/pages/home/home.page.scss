@@ -80,3 +80,28 @@ ion-icon {
 .notifCard {
   background-color: white;
 }
+
+.challengeThumbnails {
+  max-width: 25px;
+  border-collapse: separate;
+  border-radius: 50%;
+}
+
+.toDo {
+  border: 1px solid #10dc60;
+}
+
+.emotionOverlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 20;
+  top: 0;
+  left: 0;
+
+  .emotion-toolbar {
+    border-radius: 25px;
+    top: 30%;
+  }
+}

@@ -104,8 +104,17 @@
 
     <ion-item-divider class="custom-divider" (click)="collpaseChallenges = !collpaseChallenges">
         <ion-label>
-            ACTIVE CHALLENGES
+            ACTIVE CHALLENGES&nbsp;
         </ion-label>
+        <ng-container slot=end *ngFor="let challenge of (challenges|async)">
+            <div>
+                <img class="challengeThumbnails" *ngIf="challengeJoined(challenge.id) && daysComplete[challenge.id]"
+                    src="{{challenge.coverPicture}}">
+                <img class="challengeThumbnails toDo"
+                    *ngIf="challengeJoined(challenge.id) && !daysComplete[challenge.id]"
+                    src="{{challenge.coverPicture}}">
+            </div>
+        </ng-container>
         <ion-icon *ngIf="collpaseChallenges" slot="end" color=white name="arrow-dropdown"></ion-icon>
         <ion-icon *ngIf="!collpaseChallenges" slot="end" color=white name="arrow-dropup"></ion-icon>
     </ion-item-divider>
@@ -165,3 +174,50 @@
         </ng-container>
     </ion-list>
 </ion-content>
+
+
+<div class="emotionOverlay" padding [hidden]="emotionHidden" *ngIf="!emotionHidden">
+    <ion-toolbar class="emotion-toolbar">
+        <ion-row>
+            <div padding>How are you feeling today?</div>
+        </ion-row>
+        <ion-row class="ion-justify-content-center">
+            <ion-col>
+                <ion-button [class.highlight]="this.user.currentEmotion == 'happy'" size="small" fill="clear"
+                    (click)="saveEmotion('happy')">
+                    😃
+                </ion-button>
+            </ion-col>
+            <ion-col>
+                <ion-button [class.highlight]="this.user.currentEmotion == 'loved'" size="small" fill="clear"
+                    (click)="saveEmotion('loved')">
+                    🥰
+                </ion-button>
+            </ion-col>
+            <ion-col>
+                <ion-button [class.highlight]="this.user.currentEmotion == 'ok'" size="small" fill="clear"
+                    (click)="saveEmotion('ok')">
+                    😐
+                </ion-button>
+            </ion-col>
+            <ion-col>
+                <ion-button [class.highlight]="this.user.currentEmotion == 'stressed'" size="small" fill="clear"
+                    (click)="saveEmotion('stressed')">
+                    😩
+                </ion-button>
+            </ion-col>
+            <ion-col>
+                <ion-button [class.highlight]="this.user.currentEmotion == 'sad'" size="small" fill="clear"
+                    (click)="saveEmotion('sad')">
+                    😢
+                </ion-button>
+            </ion-col>
+            <ion-col>
+                <ion-button [class.highlight]="this.user.currentEmotion == 'angry'" size="small" fill="clear"
+                    (click)="saveEmotion('angry')">
+                    😡
+                </ion-button>
+            </ion-col>
+        </ion-row>
+    </ion-toolbar>
+</div>
