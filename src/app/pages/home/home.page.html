@@ -67,9 +67,21 @@
                 </ion-button>
             </ion-col>
             <ion-col>
+                <ion-button [class.highlight]="this.user.currentEmotion == 'tired'" size="small" fill="clear"
+                    (click)="saveEmotion('tired')">
+                    😴
+                </ion-button>
+            </ion-col>
+            <ion-col>
                 <ion-button [class.highlight]="this.user.currentEmotion == 'sad'" size="small" fill="clear"
                     (click)="saveEmotion('sad')">
                     😢
+                </ion-button>
+            </ion-col>
+            <ion-col>
+                <ion-button [class.highlight]="this.user.currentEmotion == 'sad'" size="small" fill="clear"
+                    (click)="saveEmotion('lonely')">
+                    😔
                 </ion-button>
             </ion-col>
             <ion-col>
@@ -102,7 +114,11 @@
         </ion-card-content>
     </ion-card>
 
-    <ion-item-divider class="custom-divider" (click)="collpaseChallenges = !collpaseChallenges">
+    <ion-button *ngIf="user.joinedChallenges.length == 0" color="primary" expand="full" [routerLink]="['/habits']">Sign
+        Up for a Challenge<ion-icon style="color: white;" name="arrow-forward"></ion-icon>
+    </ion-button>
+    <ion-item-divider *ngIf="user.joinedChallenges.length > 0" class="custom-divider"
+        (click)="collpaseChallenges = !collpaseChallenges">
         <ion-label>
             ACTIVE CHALLENGES&nbsp;
         </ion-label>
@@ -119,7 +135,7 @@
         <ion-icon *ngIf="!collpaseChallenges" slot="end" color=white name="arrow-dropup"></ion-icon>
     </ion-item-divider>
 
-    <ion-list class="notifList" *ngIf="!collpaseChallenges">
+    <ion-list class="notifList" *ngIf="!collpaseChallenges && user.joinedChallenges.length > 0">
         <ng-container *ngFor="let challenge of (challenges|async)">
             <ion-card id="card{{challenge.id}}" class="notifCard" *ngIf="challengeJoined(challenge.id)">
                 <ion-card-title class="ion-padding" [routerLink]="['/habit', challenge.id]">{{challenge.title}}
@@ -149,7 +165,11 @@
         </ng-container>
     </ion-list>
 
-    <ion-item-divider class="custom-divider" (click)="collapseSurveys = !collapseSurveys">
+
+    <ion-button *ngIf='userSurveys.length == 0' color="success" expand="full">Check back later for new surveys!
+    </ion-button>
+    <ion-item-divider *ngIf='userSurveys.length > 0' class="custom-divider"
+        (click)="collapseSurveys = !collapseSurveys">
         <ion-label style="color: white;">
             AVAILABLE SURVEYS
         </ion-label>
@@ -157,7 +177,7 @@
         <ion-icon *ngIf="!collapseSurveys" slot="end" color=white name="arrow-dropup"></ion-icon>
     </ion-item-divider>
 
-    <ion-list class="notifList" *ngIf="!collapseSurveys">
+    <ion-list class="notifList" *ngIf="!collapseSurveys && userSurveys.length > 0">
         <ng-container *ngFor="let survey of (surveys|async)">
             <ion-card class="notifCard" *ngIf="userSurveys.includes(survey.id)" (click)="answerSurvey(survey)">
                 <ion-card-title class="ion-padding">
@@ -173,14 +193,21 @@
             </ion-card>
         </ng-container>
     </ion-list>
+    <ion-card style="background-color: rgba(26, 87, 115, .1);">
+        <ion-card-content>
+            Tip of the Day: Try journaling. Feeling anxious?
+            Take a trip down memory lane and do some coloring
+            for about 20 minutes to help you clear your mind.
+            Pick a design that's geometric and a little complicated
+            for the best effect. Check out hundreds of free printable
+            coloring pages online.
+        </ion-card-content>
+    </ion-card>
 </ion-content>
 
 
 <div class="emotionOverlay" padding [hidden]="emotionHidden" *ngIf="!emotionHidden">
     <ion-toolbar class="emotion-toolbar">
-        <ion-row>
-            <div padding>How are you feeling today?</div>
-        </ion-row>
         <ion-row class="ion-justify-content-center">
             <ion-col>
                 <ion-button [class.highlight]="this.user.currentEmotion == 'happy'" size="small" fill="clear"
@@ -207,9 +234,21 @@
                 </ion-button>
             </ion-col>
             <ion-col>
+                <ion-button [class.highlight]="this.user.currentEmotion == 'tired'" size="small" fill="clear"
+                    (click)="saveEmotion('tired')">
+                    😴
+                </ion-button>
+            </ion-col>
+            <ion-col>
                 <ion-button [class.highlight]="this.user.currentEmotion == 'sad'" size="small" fill="clear"
                     (click)="saveEmotion('sad')">
                     😢
+                </ion-button>
+            </ion-col>
+            <ion-col>
+                <ion-button [class.highlight]="this.user.currentEmotion == 'sad'" size="small" fill="clear"
+                    (click)="saveEmotion('lonely')">
+                    😔
                 </ion-button>
             </ion-col>
             <ion-col>

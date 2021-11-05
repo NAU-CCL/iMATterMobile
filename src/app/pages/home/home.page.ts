@@ -136,6 +136,7 @@ export class HomePage implements OnInit {
     public collpaseChallenges = false;
     public collapseSurveys = false;
     public emotionHidden = false;
+    public numActiveChallenges = 0;
 
     public defaultChallengeCover = "https://firebasestorage.googleapis.com/v0/b/imatter-nau.appspot.com/o/ChallengeImages%2FdefaultChallenge_640x640.png?alt=media&token=f80549df-a0bc-42f2-b487-555fd059f719";
 
@@ -392,17 +393,35 @@ export class HomePage implements OnInit {
         this.chat.visibility = true;
 
 
-        if (emotion === 'sad' || emotion === 'stressed' || emotion === 'angry') {
+        if (emotion === 'stressed') {
             this.presentAlert('Stay Strong!',
                 'Remember you have your cohort to support you and health modules available to you! If you need help,' +
-                'please go to the Resources page to find help near you.');
-
-            this.emotionNotif.userID = this.userProfileID;
-            this.emotionNotif.username = this.user.username;
-            this.emotionNotif.emotionEntered = emotion;
-            this.emotionNotif.timestamp = firebase.firestore.FieldValue.serverTimestamp();
-            this.mpnService.addEmotionNotif(this.emotionNotif);
+                'please go to the Resources page to find help near youTake a deep breath and ground yourself. Have faith that it’ll work out.  If you are in need of additional support please contact your counselor or a hotline available on the Resource Location page.');
+        } else if (emotion == 'happy') {
+            this.presentAlert('Fantastic!',
+                'Glad to hear you are doing well! Positive emotions can help you sieze the day and find new opportunities.')
+        } else if (emotion == 'loved') {
+            this.presentAlert('Feeling loved is a great feeling!',
+                'Surrounding yourself with those who support and love you will help you during recovery.')
+        } else if (emotion == 'ok') {
+            this.presentAlert('It\'s okay to have off days.',
+                'days. Keep going strong, think of ways to make tomorrow a better day!')
+        } else if (emotion == 'sad') {
+            this.presentAlert('Your feelings are valid.',
+                'You aren’t being too sensitive. You aren’t being too dramatic. You are hurting and that is okay. If you need additional support please reach out to someone who supports you or visit the Resource Locations page.');
+        } else if (emotion == 'angry') {
+            this.presentAlert('Stay strong!', ' Anger is a normal reaction as your body is recovering and healing from substance use. When experiencing anger take a step back and assess the situation. Take some time to reflect and practice calming techniques. It is important to acknowledge when you feel this way and simply talking about it could help you overcome it.  If you need additional support please reach out to someone who supports you or visit the Resource Locations page.  https://www.careaddiction.com/amp/halt-addiction-recovery');
+        } else if (emotion == 'lonely') {
+            this.presentAlert('Stay strong!', 'Feeling lonely can occur even when you\'re not alone. While starting your recovery process it is easy to feel isolated. Creating a strong sober network of like minded people can help discourage loneliness. If you want additional support, there is a chat available in the app for you to reach out and talk to others in similar situations. https://www.careaddiction.com/amp/halt-addiction-recovery');
+        } else if (emotion == 'tired') {
+            this.presentAlert('That\'s okay!', 'Tired: With all of the demands in life it is easy to feel exhausted and difficult to find time to rest. Proper rest is the foundation for clear thoughts, energy, and coping skills. Try participating in ways to relax your mind like meditation, listening to music, or taking a nap to increase your energy. https://www.careaddiction.com/amp/halt-addiction-recovery');
         }
+
+        this.emotionNotif.userID = this.userProfileID;
+        this.emotionNotif.username = this.user.username;
+        this.emotionNotif.emotionEntered = emotion;
+        this.emotionNotif.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+        this.mpnService.addEmotionNotif(this.emotionNotif);
         this.surveys.forEach(item => {
             item.forEach(survey => {
                 if (survey.type == 'Emotion Triggered') {
