@@ -3,9 +3,6 @@ const admin = require('firebase-admin');
 
 var newChat;
 const nodemailer = require('nodemailer');
-const {
-    SSL_OP_EPHEMERAL_RSA
-} = require('constants');
 admin.initializeApp(functions.config().firebase);
 
 
@@ -117,7 +114,6 @@ exports.updateDays = functions.https.onRequest((req, res) => {
         result.forEach(doc => {
 
             const docID = doc.get('code');
-            const token = doc.get('token');
 
             var currentUser = admin.firestore().collection('users').doc(docID);
 
@@ -133,11 +129,12 @@ exports.updateDays = functions.https.onRequest((req, res) => {
             var sinceLogin = doc.data().daysSinceLogin + 1;
 
             // update challenge days
+            // update challenge days
             let updateJoinedChallenges = doc.data().joinedChallenges;
 
             for (let challenge of updateJoinedChallenges) {
-                if (challenge.dayComplete) {
-                    challenge.currentDay++;
+                if (challenge.dayComplete === true) {
+                    challenge.currentDay = challenge.currentDay + 1;
                     challenge.dayComplete = false;
 
                     if (challenge.currentDay > challenge.challenge.length) {
@@ -146,8 +143,6 @@ exports.updateDays = functions.https.onRequest((req, res) => {
                     }
                 }
             }
-
-            // var recoveryDays = doc.data().totalDaysRecovery + 1;
 
             currentUser.update({
                 daysAUser: new_days
@@ -161,12 +156,6 @@ exports.updateDays = functions.https.onRequest((req, res) => {
                 joinedChallenges: updateJoinedChallenges
             });
 
-            // send out challenge notifications
-            if (updateJoinedChallenges.length > 0) {
-                for (let challenge of updateJoinedChallenges) {
-                    pushChallengeMessage(challenge.challenge.title, token);
-                }
-            }
         });
 
         //if the res.send is the same each time, for some reason it stops working? Added random number so its different each send.
@@ -178,141 +167,117 @@ exports.updateDays = functions.https.onRequest((req, res) => {
 
         res.send("failed: " + err)
     });
-});
 
-// exports.sendInfoDeskNotification =
-//     functions.firestore.document('questions/{questionID}').onCreate(async (snap, context) => {
-//         console.log('entered the function');
-//         const newPost = snap.data();
-//         const payload = {
-//             notification: {
-//                 title: 'iMATter Information Desk',
-//                 body: 'There is a new post in the InformationDesk',
-//                 sound: "default"
-//             },
-//         };
+    // get random quote of the day
+    const quotes = [];
+    let homeQuote = '';
+    const imgs = admin.firestore().collection('quotes');
+    imgs.get().then(result => {
+        result.forEach(doc => {
+            quotes.push(doc.get('picture'));
+        });
+        const randIndex = Math.floor(Math.random() * Math.floor(quotes.length));
+        homeQuote = quotes[randIndex];
+        return null;
+    }).catch(err => {
+        console.log("Failed: " + err);
+    });
 
-//         const ref = admin.firestore().collection('users');
-//         ref.get().then((result) => {
-//             result.forEach(doc => {
-//                 if (doc.get('infoDeskNotif') === true) {
-//                     if (newPost.userID !== doc.get('code'))
-//                         token = doc.get('token');
-//                     admin.messaging().sendToDevice(token, payload)
-//                         .then((response) => {
-//                             console.log('sent notification');
-//                             return payload;
-//                         }).catch((err) => {
-//                             console.log('entered doc, but did not send', err);
-//                         });
-//                 }
-//             });
-//             return 'true';
-//         }).catch(error => {
-//             console.log('did not send', error)
-//         });
-//         return 'true';
-//     });
+    const home = admin.firestore().collection('homeQuote');
+    home.get().then(result => {
+        result.forEach(doc => {
+            result.quote = homeQuote;
+        });
+        return null;
+    }).catch(err => {
+        console.log('Failed: ' + err);
+    });
 
-// exports.sendChatNotifications =
-//     functions.firestore.document('chats/{chatID}').onCreate(async (snap, context) => {
-//         console.log("NEW CHAT");
-//         if (newChat.type === 'auto') {
-//             console.log("5 seconds");
-//             await sleep(5000);
-//         }
-//         const newChat = snap.data();
-//         const payload = {
-//             notification: {
-//                 title: 'iMATter Chat Room',
-//                 body: 'There is a new message in the chat room',
-//                 sound: "default"
-//             },
-//         };
+});;
 
-//         console.log(newChat.cohort);
+exports.sendInfoDeskNotification =
+    functions.firestore.document('questions/{questionID}').onCreate(async (snap, context) => {
+        console.log('entered the function');
+        const newPost = snap.data();
+        const payload = {
+            notification: {
+                title: 'iMATter Information Desk',
+                body: 'There is a new post in the InformationDesk',
+                sound: "default"
+            },
+        };
 
-//         if (newChat.type !== 'auto') {
-//             const ref = admin.firestore().collection('users').where('cohort', '==', newChat.cohort);
-//             ref.get().then((result) => {
-//                 result.forEach(doc => {
-//                     {
-//                         //Check to see this value exists/is valid
-//                         if (doc.get('cohort') == null) {
-//                             //return as as "continue" in forEach loop
-//                             return;
-//                         }
+        const ref = admin.firestore().collection('users');
+        ref.get().then((result) => {
+            result.forEach(doc => {
+                if (doc.get('infoDeskNotif') === true) {
+                    if (newPost.userID !== doc.get('code'))
+                        token = doc.get('token');
+                    admin.messaging().sendToDevice(token, payload)
+                        .then((response) => {
+                            console.log('sent notification');
+                            return payload;
+                        }).catch((err) => {
+                            console.log('entered doc, but did not send', err);
+                        });
+                }
+            });
+            return 'true';
+        }).catch(error => {
+            console.log('did not send', error)
+        });
+        return 'true';
+    });
 
-//                         userNotifToken = doc.get('token');
+exports.sendChatNotifications =
+    functions.firestore.document('chats/{chatID}').onCreate(async (snap, context) => {
+        const newChat = snap.data();
+        const payload = {
+            notification: {
+                title: 'iMATter Chat Room',
+                body: 'There is a new message in the chat room',
+                sound: "default"
+            },
+        };
 
-//                         if (userNotifToken === '') {
-//                             return;
-//                         }
-//                         if (doc.get('chatNotif') === true && newChat.userID !== doc.get('code')) {
-//                             token = doc.get('token');
-//                             admin.messaging().sendToDevice(token, payload)
-//                                 .then((response) => {
-//                                     console.log('sent notification');
-//                                     return payload;
-//                                 }).catch((err) => {
-//                                     console.log('entered doc, but did not send', err);
-//                                 });
-//                         }
-//                     }
-//                 });
-//                 return 'true';
-//             }).catch(error => {
-//                 console.log('did not send', error)
-//             });
-//             return 'true';
-//         }
-//     });
+        console.log(newChat.cohort);
 
+        if (newChat.type !== 'auto') {
+            const ref = admin.firestore().collection('users').where('cohort', '==', newChat.cohort);
+            ref.get().then((result) => {
+                result.forEach(doc => {
+                    {
+                        //Check to see this value exists/is valid
+                        if (doc.get('cohort') == null) {
+                            //return as as "continue" in forEach loop
+                            return;
+                        }
 
+                        userNotifToken = doc.get('token');
 
-// exports.sendChatNotification =
-//     functions.firestore.document('chats/{chatID}').onCreate(async (snap, context) => {
-//         console.log("Chat created");
-//         const newChat = snap.data();
-//         const payload = {
-//             notification: {
-//                 title: 'iMATter Chat Room',
-//                 body: 'There is a new message in the chat room',
-//                 sound: "default"
-//             },
-//         };
+                        if (userNotifToken === '') {
+                            return;
+                        }
+                        if (doc.get('chatNotif') === true && newChat.userID !== doc.get('code')) {
+                            token = doc.get('token');
+                            admin.messaging().sendToDevice(token, payload)
+                                .then((response) => {
+                                    console.log('sent notification');
+                                    return payload;
+                                }).catch((err) => {
+                                    console.log('entered doc, but did not send', err);
+                                });
+                        }
+                    }
+                });
+                return 'true';
+            }).catch(error => {
+                console.log('did not send', error)
+            });
+            return 'true';
+        }
+    });
 
-//         if (newChat.type === 'auto') {
-//             console.log("5 seconds");
-//             await sleep(5000);
-//         }
-
-//         //	if(newChat.type !== 'auto'){
-//         const ref = admin.firestore().collection('users').where('cohort', '==', newChat.cohort);
-//         ref.get().then((result) => {
-//             console.log('before iter', err);
-//             //	if(newChat.type !== 'auto'){
-//             result.forEach(doc => {
-//                 if (doc.get('chatNotif') === true && newChat.userID !== doc.get('code')) {
-//                     token = doc.get('token');
-
-//                     admin.messaging().sendToDevice(token, payload)
-//                         .then((response) => {
-//                             console.log('sent notification');
-//                             return payload;
-//                         }).catch((err) => {
-//                             console.log('entered doc, but did not send', err);
-//                         });
-//                 }
-//             });
-//             //	}
-//             return 'true';
-//         }).catch(error => {
-//             console.log('did not send', error)
-//         });
-//         //}
-//         return 'true';
-//     });
 
 //works for BOTH administrators and provideres
 exports.sendProviderRecoveryEmail = functions.firestore.document('provider_recovery_email/{docID}').onCreate((snap, context) => {
@@ -339,77 +304,17 @@ exports.sendProviderRecoveryEmail = functions.firestore.document('provider_recov
     }).then(res => console.log('successfully sent that mail')).catch(err => console.log(err));
 });
 
-//exports.sendChatNotfication =
-/*
-functions.firestore.document('chats/{chatID}').onCreate(async (snap, context) => {
-        const newChat = snap.data();
-        const payload = {
-            notification: {
-                title: 'iMATter Chat Room',
-                body: 'There is a new message in the chat room',
-                sound: "default"
-            },
-        };
-        var recentNotifications = [];
-
-        const ref = admin.firestore().collection('users').where('cohort', '==', newChat.cohort);
-        ref.get().then((result) => {
-            result.forEach(doc => {
-                if(doc.get('chatNotif') === true && newChat.userID !== doc.get('code')) {
-                    token = doc.get('token');
-                    admin.messaging().sendToDevice(token, payload)
-                        .then((response) => {
-                            console.log('sent notification');
-                            return payload;
-                        }).catch((err) => {
-                            console.log('entered doc, but did not send', err);
-                        });
-                    }
-            });
-            return token;
-        }).catch(error => {console.log('did not send', error)});
-
-    });*/
-
-/* OLD
-exports.deleteOldChatMessages=functions.https.onRequest((req, res)=> {
-const now = new Date();
-console.log('now', now);
-
-admin.firestore().collection('mobileSettings').doc('chatHours').get().then(function(doc) {
-let setHours = Number(doc.get('hours'));
-console.log('setHours', setHours);
-setHours = setHours * 60 * 60 * 1000;
-console.log('setHours', setHours);
-
-const ref = admin.firestore().collection('chats');
-ref.get().then((result) => {
-    let batch = admin.firestore().batch();
-    result.forEach(doc => {
-        const timestamp = new Date(doc.get('timestamp').toDate());
-        console.log('timestamp', timestamp);
-        const difference = now.getTime() - timestamp.getTime();
-        console.log('difference', difference);
-        console.log('setHours', setHours);
-
-        if(difference >= setHours) {
-            batch.delete(doc.ref);
-        }
-
-    });
-    batch.commit();
-    return setHours;
-}).catch(error => {console.log('did not check', error)});
-return setHours;
-}).catch(error => {console.log('failed', error)});
-});*/
-
 exports.deleteOldChatMessages = functions.https.onRequest((req, res) => {
+    const today = new Date();
     const ref = admin.firestore().collection('chats');
     ref.get().then((result) => {
         let batch = admin.firestore().batch();
         result.forEach(doc => {
             if (doc.get('visibility') === false) {
+                batch.delete(doc.ref);
+            }
+            const dateSent = toDate(doc.get('timestamp'));
+            if (today > dateSent.addDays(0.5)) {
                 batch.delete(doc.ref);
             }
         });
@@ -804,22 +709,3 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
         res.send("finished");
     });
 });
-
-function pushChallengeMessage(title, userNotifToken) {
-    var payload = {
-        notification: {
-            title: title,
-            body: "Visit the app to complete today's task.",
-            sound: "default"
-        }
-    };
-
-    admin.messaging().sendToDevice(userNotifToken, payload)
-        .then((response) => {
-            console.log("Sent challenge notifications");
-            return response;
-        })
-        .catch((error) => {
-            console.log(error);
-        });
-}
