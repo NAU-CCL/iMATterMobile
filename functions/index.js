@@ -3,13 +3,19 @@ const admin = require('firebase-admin');
 
 var newChat;
 const nodemailer = require('nodemailer');
+const {
+    SSL_OP_EPHEMERAL_RSA
+} = require('constants');
 admin.initializeApp(functions.config().firebase);
 
 
 //admin.initializeApp();
 require('dotenv').config();
 
-const {SENDER_EMAIL, SENDER_PASS} = process.env;
+const {
+    SENDER_EMAIL,
+    SENDER_PASS
+} = process.env;
 
 exports.sendEmailNotification = functions.https.onRequest((req, res) => {
     let authData = nodemailer.createTransport({
@@ -94,8 +100,8 @@ exports.sendGCRequestEmail = functions.firestore.document('usersPointsRedeem/{do
         to: email, // admin set receiver
         subject: "iMATter Gift Card Request", // Subject line
         text: "There is a new request for a gift card.", // plain text body
-        html: "User " + data.username + " with the email: " + data.email + " has redeemed points for a(n) " + data.gcType
-            + "gift card."// html body
+        html: "User " + data.username + " with the email: " + data.email + " has redeemed points for a(n) " + data.gcType +
+            "gift card." // html body
     }).then(res => console.log('successfully sent that mail')).catch(err => console.log(err));
 
 });
@@ -156,10 +162,8 @@ exports.updateDays = functions.https.onRequest((req, res) => {
             });
 
             // send out challenge notifications
-            if (updateJoinedChallenges.length > 0)
-            {
-                for (let challenge of updateJoinedChallenges)
-                {
+            if (updateJoinedChallenges.length > 0) {
+                for (let challenge of updateJoinedChallenges) {
                     pushChallengeMessage(challenge.challenge.title, token);
                 }
             }
@@ -176,131 +180,140 @@ exports.updateDays = functions.https.onRequest((req, res) => {
     });
 });
 
-exports.sendInfoDeskNotification =
-    functions.firestore.document('questions/{questionID}').onCreate(async (snap, context) => {
-        console.log('entered the function');
-        const newPost = snap.data();
-        const payload = {
-            notification: {
-                title: 'iMATter Information Desk',
-                body: 'There is a new post in the InformationDesk',
-                sound: "default"
-            },
-        };
+// exports.sendInfoDeskNotification =
+//     functions.firestore.document('questions/{questionID}').onCreate(async (snap, context) => {
+//         console.log('entered the function');
+//         const newPost = snap.data();
+//         const payload = {
+//             notification: {
+//                 title: 'iMATter Information Desk',
+//                 body: 'There is a new post in the InformationDesk',
+//                 sound: "default"
+//             },
+//         };
 
-        const ref = admin.firestore().collection('users');
-        ref.get().then((result) => {
-            result.forEach(doc => {
-                if (doc.get('infoDeskNotif') === true) {
-                    if (newPost.userID !== doc.get('code'))
-                        token = doc.get('token');
-                    admin.messaging().sendToDevice(token, payload)
-                        .then((response) => {
-                            console.log('sent notification');
-                            return payload;
-                        }).catch((err) => {
-                        console.log('entered doc, but did not send', err);
-                    });
-                }
-            });
-            return 'true';
-        }).catch(error => {
-            console.log('did not send', error)
-        });
-        return 'true';
-    });
+//         const ref = admin.firestore().collection('users');
+//         ref.get().then((result) => {
+//             result.forEach(doc => {
+//                 if (doc.get('infoDeskNotif') === true) {
+//                     if (newPost.userID !== doc.get('code'))
+//                         token = doc.get('token');
+//                     admin.messaging().sendToDevice(token, payload)
+//                         .then((response) => {
+//                             console.log('sent notification');
+//                             return payload;
+//                         }).catch((err) => {
+//                             console.log('entered doc, but did not send', err);
+//                         });
+//                 }
+//             });
+//             return 'true';
+//         }).catch(error => {
+//             console.log('did not send', error)
+//         });
+//         return 'true';
+//     });
 
-exports.sendChatNotifications =
-    functions.firestore.document('chats/{chatID}').onCreate(async (snap, context) => {
-        const newChat = snap.data();
-        const payload = {
-            notification: {
-                title: 'iMATter Chat Room',
-                body: 'There is a new message in the chat room',
-                sound: "default"
-            },
-        };
+// exports.sendChatNotifications =
+//     functions.firestore.document('chats/{chatID}').onCreate(async (snap, context) => {
+//         console.log("NEW CHAT");
+//         if (newChat.type === 'auto') {
+//             console.log("5 seconds");
+//             await sleep(5000);
+//         }
+//         const newChat = snap.data();
+//         const payload = {
+//             notification: {
+//                 title: 'iMATter Chat Room',
+//                 body: 'There is a new message in the chat room',
+//                 sound: "default"
+//             },
+//         };
 
-        console.log(newChat.cohort);
+//         console.log(newChat.cohort);
 
-        if (newChat.type !== 'auto') {
-            const ref = admin.firestore().collection('users').where('cohort', '==', newChat.cohort);
-            ref.get().then((result) => {
-                result.forEach(doc => {
-                    {
-                        //Check to see this value exists/is valid
-                        if (doc.get('cohort') == null) {
-                            //return as as "continue" in forEach loop
-                            return;
-                        }
+//         if (newChat.type !== 'auto') {
+//             const ref = admin.firestore().collection('users').where('cohort', '==', newChat.cohort);
+//             ref.get().then((result) => {
+//                 result.forEach(doc => {
+//                     {
+//                         //Check to see this value exists/is valid
+//                         if (doc.get('cohort') == null) {
+//                             //return as as "continue" in forEach loop
+//                             return;
+//                         }
 
-                        userNotifToken = doc.get('token');
+//                         userNotifToken = doc.get('token');
 
-                        if (userNotifToken === '') {
-                            return;
-                        }
-                        if (doc.get('chatNotif') === true && newChat.userID !== doc.get('code')) {
-                            token = doc.get('token');
-                            admin.messaging().sendToDevice(token, payload)
-                                .then((response) => {
-                                    console.log('sent notification');
-                                    return payload;
-                                }).catch((err) => {
-                                console.log('entered doc, but did not send', err);
-                            });
-                        }
-                    }
-                });
-                return 'true';
-            }).catch(error => {
-                console.log('did not send', error)
-            });
-            return 'true';
-        }
-    });
+//                         if (userNotifToken === '') {
+//                             return;
+//                         }
+//                         if (doc.get('chatNotif') === true && newChat.userID !== doc.get('code')) {
+//                             token = doc.get('token');
+//                             admin.messaging().sendToDevice(token, payload)
+//                                 .then((response) => {
+//                                     console.log('sent notification');
+//                                     return payload;
+//                                 }).catch((err) => {
+//                                     console.log('entered doc, but did not send', err);
+//                                 });
+//                         }
+//                     }
+//                 });
+//                 return 'true';
+//             }).catch(error => {
+//                 console.log('did not send', error)
+//             });
+//             return 'true';
+//         }
+//     });
 
 
-/*
-exports.sendChatNotification =
-	functions.firestore.document('chats/{chatID}').onCreate(async (snap, context) => {
-		const newChat = snap.data();
-		const payload = {
-			notification: {
-				title: 'iMATter Chat Room',
-				body: 'There is a new message in the chat room',
-				sound: "default"
-			},
-		};
 
-		if(newChat.type === 'auto') {
-			return;
-		}
+// exports.sendChatNotification =
+//     functions.firestore.document('chats/{chatID}').onCreate(async (snap, context) => {
+//         console.log("Chat created");
+//         const newChat = snap.data();
+//         const payload = {
+//             notification: {
+//                 title: 'iMATter Chat Room',
+//                 body: 'There is a new message in the chat room',
+//                 sound: "default"
+//             },
+//         };
 
-	//	if(newChat.type !== 'auto'){
-			const ref = admin.firestore().collection('users').where('cohort', '==', newChat.cohort);
-			ref.get().then((result) => {
-				console.log('before iter', err);
-			//	if(newChat.type !== 'auto'){
-				result.forEach(doc => {
-					if(doc.get('chatNotif') === true && newChat.userID !== doc.get('code')) {
-						token = doc.get('token');
+//         if (newChat.type === 'auto') {
+//             console.log("5 seconds");
+//             await sleep(5000);
+//         }
 
-						admin.messaging().sendToDevice(token, payload)
-							.then((response) => {
-								console.log('sent notification');
-								return payload;
-							}).catch((err) => {
-							console.log('entered doc, but did not send', err);
-						});
-					}
-				});
-			//	}
-				return 'true';
-			}).catch(error => {console.log('did not send', error)});
-		//}
-		return 'true';
-	});
-*/
+//         //	if(newChat.type !== 'auto'){
+//         const ref = admin.firestore().collection('users').where('cohort', '==', newChat.cohort);
+//         ref.get().then((result) => {
+//             console.log('before iter', err);
+//             //	if(newChat.type !== 'auto'){
+//             result.forEach(doc => {
+//                 if (doc.get('chatNotif') === true && newChat.userID !== doc.get('code')) {
+//                     token = doc.get('token');
+
+//                     admin.messaging().sendToDevice(token, payload)
+//                         .then((response) => {
+//                             console.log('sent notification');
+//                             return payload;
+//                         }).catch((err) => {
+//                             console.log('entered doc, but did not send', err);
+//                         });
+//                 }
+//             });
+//             //	}
+//             return 'true';
+//         }).catch(error => {
+//             console.log('did not send', error)
+//         });
+//         //}
+//         return 'true';
+//     });
+
 //works for BOTH administrators and provideres
 exports.sendProviderRecoveryEmail = functions.firestore.document('provider_recovery_email/{docID}').onCreate((snap, context) => {
     const data = snap.data();
@@ -486,8 +499,8 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
                                         console.log("New learning module notification sent successfully to " + singleUser.get("username"));
                                         return payload;
                                     }).catch((err) => {
-                                    console.log(err);
-                                });
+                                        console.log(err);
+                                    });
                             }
                         } else {
                             var daysStart = 7 * week; //number of days pregnant this module would start at
@@ -521,16 +534,20 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
                                             console.log("New learning module notification sent successfully to " + singleUser.get("username"));
                                             return payload;
                                         }).catch((err) => {
-                                        console.log(err);
-                                    });
+                                            console.log(err);
+                                        });
                                 }
                             }
                         }
                     });
                 });
                 //IMPORTANT: update the previousUserVisibility and userVisibility array
-                learningModules.doc(learningModule.id).update({previousUserVisibility: storedLMUserVisibility});
-                learningModules.doc(learningModule.id).update({userVisibility: lmUserVisibility});
+                learningModules.doc(learningModule.id).update({
+                    previousUserVisibility: storedLMUserVisibility
+                });
+                learningModules.doc(learningModule.id).update({
+                    userVisibility: lmUserVisibility
+                });
             });
         });
     }).then(() => {
@@ -586,8 +603,8 @@ exports.emotionSurveyNotification = functions.firestore.document('users/{userID}
                                 console.log("New survey notification sent successfully!");
                                 return payload;
                             }).catch((err) => {
-                            console.log(err);
-                        });
+                                console.log(err);
+                            });
 
                     }
                 }
@@ -672,14 +689,16 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
                                             console.log("New survey notification for After Joining sent successfully to " + singleUser.get("username"));
                                             return payload;
                                         }).catch((err) => {
-                                        console.log(err);
-                                    });
+                                            console.log(err);
+                                        });
                                 }
                             }
                         });
                     });
                     //IMPORTANT: Update the userVisibility array for this survey
-                    surveys.doc(singleSurvey.id).update({userVisibility: surveyVisibility});
+                    surveys.doc(singleSurvey.id).update({
+                        userVisibility: surveyVisibility
+                    });
                 });
             } else if (surveyType == "Due Date") {
                 var dueDateDaysArray = singleSurvey.get("daysBeforeDueDate").split(/(?:,| )+/);
@@ -723,14 +742,16 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
                                             console.log("New survey notification for Due Date sent successfully to " + singleUser.get("username"));
                                             return payload;
                                         }).catch((err) => {
-                                        console.log(err);
-                                    });
+                                            console.log(err);
+                                        });
                                 }
                             }
                         }
                     });
                     //IMPORTANT: Update the userVisibility array for this survey
-                    surveys.doc(singleSurvey.id).update({userVisibility: surveyVisibility});
+                    surveys.doc(singleSurvey.id).update({
+                        userVisibility: surveyVisibility
+                    });
                 });
             } else if (surveyType == "Inactive") {
                 var daysSinceLogin;
@@ -767,13 +788,15 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
                                         console.log("New survey notification for Inactivity sent successfully to " + singleUser.get("username"));
                                         return payload;
                                     }).catch((err) => {
-                                    console.log(err);
-                                });
+                                        console.log(err);
+                                    });
                             }
                         }
                     });
                     //IMPORTANT: Update the userVisibility array for this survey
-                    surveys.doc(singleSurvey.id).update({userVisibility: surveyVisibility});
+                    surveys.doc(singleSurvey.id).update({
+                        userVisibility: surveyVisibility
+                    });
                 });
             }
         });
@@ -790,7 +813,7 @@ function pushChallengeMessage(title, userNotifToken) {
             sound: "default"
         }
     };
-    
+
     admin.messaging().sendToDevice(userNotifToken, payload)
         .then((response) => {
             console.log("Sent challenge notifications");

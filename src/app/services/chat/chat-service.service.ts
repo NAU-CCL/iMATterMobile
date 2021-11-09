@@ -40,13 +40,13 @@ export class ChatService {
     this.cohortCollection = this.afs.collection<Cohort>('cohorts');
 
     this.cohorts = this.cohortCollection.snapshotChanges().pipe(
-        map(actions => {
-          return actions.map(a => {
-            const data = a.payload.doc.data();
-            data.id = a.payload.doc.id;
-            return data;
-          });
-        })
+      map(actions => {
+        return actions.map(a => {
+          const data = a.payload.doc.data();
+          data.id = a.payload.doc.id;
+          return data;
+        });
+      })
     );
   }
 
@@ -60,21 +60,21 @@ export class ChatService {
     // this.iterateChats(cohortID);
 
     this.chatCollection = this.afs.collection('chats',
-        reference => reference.where('cohort', '==', cohortID).orderBy('timestamp'));
+      reference => reference.where('cohort', '==', cohortID).orderBy('timestamp'));
 
     this.chats = this.chatCollection.snapshotChanges().pipe(
-        map(actions => {
-          return actions.map(a => {
-            const data = a.payload.doc.data();
-            data.id = a.payload.doc.id;
-            return data;
-          });
-        })
+      map(actions => {
+        return actions.map(a => {
+          const data = a.payload.doc.data();
+          data.id = a.payload.doc.id;
+          return data;
+        });
+      })
     );
   }
 
   async addChat(chat: Chat) {
-    this.afs.collection('chats').add({
+    return this.afs.collection('chats').add({
       username: chat.username,
       message: chat.message,
       userID: chat.userID,
@@ -87,19 +87,23 @@ export class ChatService {
     });
   }
 
+  async deleteChat(id: string): Promise<void> {
+    return this.chatCollection.doc(id).delete();
+  }
+
   async updateChatVisibility(docID, bool) {
     if (bool === false) {
       return this.afs.firestore.collection('chats')
-          .doc(docID).update({visibility: false});
+        .doc(docID).update({ visibility: false });
     } else {
       return this.afs.firestore.collection('chats')
-          .doc(docID).update({visibility: true});
+        .doc(docID).update({ visibility: true });
     }
   }
 
   updateChatNumberCounter(docID, num) {
     return this.afs.firestore.collection('chats')
-          .doc(docID).update({count: num});
+      .doc(docID).update({ count: num });
   }
 
   /* This function iterates through all chats in a cohort to decide if they are visible to the user or not */
@@ -110,7 +114,7 @@ export class ChatService {
       const lifeType = result.get('lifeType');
 
       // if chat visibility is based on number of hours the chat has existed
-      if (lifeType === 'hours' ) {
+      if (lifeType === 'hours') {
         // get admin set time for chats to last
         let setHours = result.get('hours');
         // convert to ms
@@ -154,7 +158,7 @@ export class ChatService {
               // assign a new number to each chat
               this.updateChatNumberCounter(doc.id, numberOfCurrentChats);
 
-              if (timeCalled === 'ngOnInit'  || timeCalled === 'ionViewWillLeave') {
+              if (timeCalled === 'ngOnInit' || timeCalled === 'ionViewWillLeave') {
                 if (doc.get('count') > numChatsVis) {
                   this.updateChatVisibility(doc.id, false);
                 }
@@ -171,7 +175,7 @@ export class ChatService {
                 // assign a new number to each chat
                 this.updateChatNumberCounter(doc.id, numberOfCurrentAutoChats);
 
-                if (timeCalled === 'ngOnInit'  || timeCalled === 'ionViewWillLeave') {
+                if (timeCalled === 'ngOnInit' || timeCalled === 'ionViewWillLeave') {
                   if (doc.get('count') > numChatsVis) {
                     this.updateChatVisibility(doc.id, false);
                   }

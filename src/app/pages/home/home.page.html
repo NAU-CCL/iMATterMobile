@@ -14,79 +14,59 @@
                 Recovery Days: {{daysInRecovery}}
             </div>
         </ion-title>
-        <ion-buttons style="border-radius: 50%;" slot="end">
-            <ion-button style="border-radius: 50%;" (click)="updateProfileClicks()" [routerLink]="['/profile']">
+        <ion-buttons slot="end">
+            <ion-button class="profilePic" (click)="updateProfileClicks()" [routerLink]="['/profile']">
                 <img class="profilePic" src="{{ user.profilePic }}">
             </ion-button>
         </ion-buttons>
     </ion-toolbar>
-    <!-- <ion-toolbar class="ion-justify-content-center" style="min-height: 56px;">
-        <ion-buttons slot="start">
-            <ion-button class="ion-text-right" (click)="toggleDarkTheme()">
-                <ion-icon name="moon" id="darkMode"></ion-icon>
-            </ion-button>
-        </ion-buttons>
-        <ion-title>
-            {{user.username}}
-            <hr style="background-color: var(--main-color); opacity: 25%; margin: 2px">
-            <ion-row class="ion-justify-content-center" style="font-size: 0.4em;">
-                Recovery Day: {{daysInRecovery}}
-            </ion-row> 
-        </ion-title>
-        <ion-buttons slot="end">
-            <ion-button (click)="updateProfileClicks()" [routerLink]="['/profile']">
-                <ion-img class="profilePic" src="{{ user.profilePic }}"></ion-img>
-            </ion-button>
-        </ion-buttons>
-    </ion-toolbar> -->
-
     <ion-toolbar class="emotion-toolbar">
         <ion-row class="ion-justify-content-center">
             <ion-col>
-                <ion-button [class.highlight]="this.user.currentEmotion == 'happy'" size="small" fill="clear"
-                    (click)="saveEmotion('happy')">
+                <ion-button class="ion-no-padding" [class.highlight]="this.user.currentEmotion == 'happy'" size="small"
+                    fill="clear" (click)="saveEmotion('happy')">
                     😃
                 </ion-button>
             </ion-col>
             <ion-col>
-                <ion-button [class.highlight]="this.user.currentEmotion == 'loved'" size="small" fill="clear"
-                    (click)="saveEmotion('loved')">
+                <ion-button class="ion-no-padding" [class.highlight]="this.user.currentEmotion == 'loved'" size="small"
+                    fill="clear" (click)="saveEmotion('loved')">
                     🥰
                 </ion-button>
             </ion-col>
             <ion-col>
-                <ion-button [class.highlight]="this.user.currentEmotion == 'ok'" size="small" fill="clear"
-                    (click)="saveEmotion('ok')">
+                <ion-button class="ion-no-padding" [class.highlight]="this.user.currentEmotion == 'ok'" size="small"
+                    fill="clear" (click)="saveEmotion('ok')">
                     😐
                 </ion-button>
             </ion-col>
             <ion-col>
-                <ion-button [class.highlight]="this.user.currentEmotion == 'stressed'" size="small" fill="clear"
-                    (click)="saveEmotion('stressed')">
+                <ion-button class="ion-no-padding" [class.highlight]="this.user.currentEmotion == 'stressed'"
+                    size="small" fill="clear" (click)="saveEmotion('stressed')">
                     😩
                 </ion-button>
             </ion-col>
             <ion-col>
-                <ion-button [class.highlight]="this.user.currentEmotion == 'tired'" size="small" fill="clear"
-                    (click)="saveEmotion('tired')">
+                <ion-button class="ion-no-padding" [class.highlight]="this.user.currentEmotion == 'tired'" size="small"
+                    fill="clear" (click)="saveEmotion('tired')">
                     😴
                 </ion-button>
             </ion-col>
             <ion-col>
-                <ion-button [class.highlight]="this.user.currentEmotion == 'sad'" size="small" fill="clear"
-                    (click)="saveEmotion('sad')">
+                <ion-button class="ion-no-padding" [class.highlight]="this.user.currentEmotion == 'sad'" size="small"
+                    fill="clear" (click)="saveEmotion('sad')">
                     😢
                 </ion-button>
             </ion-col>
             <ion-col>
-                <ion-button [class.highlight]="this.user.currentEmotion == 'sad'" size="small" fill="clear"
-                    (click)="saveEmotion('lonely')">
+                <ion-button class="ion-no-padding" [class.highlight]="this.user.currentEmotion == 'sad'" size="small"
+                    fill="clear" (click)="saveEmotion('lonely')">
                     😔
                 </ion-button>
             </ion-col>
             <ion-col>
-                <ion-button [class.highlight]="this.user.currentEmotion == 'angry'" size="small" fill="clear"
-                    (click)="saveEmotion('angry')">
+                <ion-button class="ion-no-padding" [class.highlight]="this.user.currentEmotion == 'angry'" size="small"
+                    fill="clear" (click)="saveEmotion('angry')">
                     😡
                 </ion-button>
             </ion-col>
@@ -210,50 +190,50 @@
     <ion-toolbar class="emotion-toolbar">
         <ion-row class="ion-justify-content-center">
             <ion-col>
-                <ion-button [class.highlight]="this.user.currentEmotion == 'happy'" size="small" fill="clear"
-                    (click)="saveEmotion('happy')">
+                <ion-button class="ion-no-padding" [class.highlight]="this.user.currentEmotion == 'happy'" size="small"
+                    fill="clear" (click)="saveEmotion('happy')">
                     😃
                 </ion-button>
             </ion-col>
             <ion-col>
-                <ion-button [class.highlight]="this.user.currentEmotion == 'loved'" size="small" fill="clear"
-                    (click)="saveEmotion('loved')">
+                <ion-button class="ion-no-padding" [class.highlight]="this.user.currentEmotion == 'loved'" size="small"
+                    fill="clear" (click)="saveEmotion('loved')">
                     🥰
                 </ion-button>
             </ion-col>
             <ion-col>
-                <ion-button [class.highlight]="this.user.currentEmotion == 'ok'" size="small" fill="clear"
-                    (click)="saveEmotion('ok')">
+                <ion-button class="ion-no-padding" [class.highlight]="this.user.currentEmotion == 'ok'" size="small"
+                    fill="clear" (click)="saveEmotion('ok')">
                     😐
                 </ion-button>
             </ion-col>
             <ion-col>
-                <ion-button [class.highlight]="this.user.currentEmotion == 'stressed'" size="small" fill="clear"
-                    (click)="saveEmotion('stressed')">
+                <ion-button class="ion-no-padding" [class.highlight]="this.user.currentEmotion == 'stressed'"
+                    size="small" fill="clear" (click)="saveEmotion('stressed')">
                     😩
                 </ion-button>
             </ion-col>
             <ion-col>
-                <ion-button [class.highlight]="this.user.currentEmotion == 'tired'" size="small" fill="clear"
-                    (click)="saveEmotion('tired')">
+                <ion-button class="ion-no-padding" [class.highlight]="this.user.currentEmotion == 'tired'" size="small"
+                    fill="clear" (click)="saveEmotion('tired')">
                     😴
                 </ion-button>
             </ion-col>
             <ion-col>
-                <ion-button [class.highlight]="this.user.currentEmotion == 'sad'" size="small" fill="clear"
-                    (click)="saveEmotion('sad')">
+                <ion-button class="ion-no-padding" [class.highlight]="this.user.currentEmotion == 'sad'" size="small"
+                    fill="clear" (click)="saveEmotion('sad')">
                     😢
                 </ion-button>
             </ion-col>
             <ion-col>
-                <ion-button [class.highlight]="this.user.currentEmotion == 'sad'" size="small" fill="clear"
-                    (click)="saveEmotion('lonely')">
+                <ion-button class="ion-no-padding" [class.highlight]="this.user.currentEmotion == 'sad'" size="small"
+                    fill="clear" (click)="saveEmotion('lonely')">
                     😔
                 </ion-button>
             </ion-col>
             <ion-col>
-                <ion-button [class.highlight]="this.user.currentEmotion == 'angry'" size="small" fill="clear"
-                    (click)="saveEmotion('angry')">
+                <ion-button class="ion-no-padding" [class.highlight]="this.user.currentEmotion == 'angry'" size="small"
+                    fill="clear" (click)="saveEmotion('angry')">
                     😡
                 </ion-button>
             </ion-col>

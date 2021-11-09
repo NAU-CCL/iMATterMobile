@@ -1,19 +1,21 @@
-import {Component, OnInit, ViewChild, NgZone} from '@angular/core';
+import { Component, OnInit, ViewChild, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import { ChatService, Cohort, Chat } from '../../services/chat/chat-service.service';
-import {Observable} from 'rxjs';
+import { Observable } from 'rxjs';
 import * as firebase from 'firebase/app';
-import {AngularFirestore} from '@angular/fire/firestore';
-import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyticsService.service';
-import {IonContent} from '@ionic/angular';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { AnalyticsService, Analytics, Sessions } from 'src/app/services/analyticsService.service';
+import { IonContent } from '@ionic/angular';
 import {
   Plugins,
   PushNotification,
   PushNotificationToken,
-  PushNotificationActionPerformed } from '@capacitor/core';
-import {sendChatNotification} from "../../../../functions/src";
+  PushNotificationActionPerformed
+} from '@capacitor/core';
+import { sendChatNotification } from "../../../../functions/src";
 import 'rxjs-compat/add/observable/timer';
+import { SelectMultipleControlValueAccessor } from '@angular/forms';
 
 const { PushNotifications } = Plugins;
 
@@ -24,31 +26,31 @@ const { PushNotifications } = Plugins;
 })
 export class ChatPage implements OnInit {
 
-  @ViewChild('content', {static: true}) content: IonContent;
+  @ViewChild('content', { static: true }) content: IonContent;
 
   cohort: Cohort = {
     name: ''
   };
 
   chat: Chat = {
-  cohort: '',
-  username: '',
-  userID: '',
-  timestamp: '',
-  message: '',
-  profilePic: '',
-  type: '',
-  visibility: true,
-  count: 0
-};
+    cohort: '',
+    username: '',
+    userID: '',
+    timestamp: '',
+    message: '',
+    profilePic: '',
+    type: '',
+    visibility: true,
+    count: 0
+  };
 
-analytic: Analytics =
-{
-  page: '',
-  userID: '',
-  timestamp: '',
-  sessionID: ''
-};
+  analytic: Analytics =
+    {
+      page: '',
+      userID: '',
+      timestamp: '',
+      sessionID: ''
+    };
 
   public cohortChat: string;
   public chats: Observable<any>;
@@ -60,11 +62,11 @@ analytic: Analytics =
   private numOfChats: number;
 
   constructor(public _zone: NgZone,
-              private router: Router,
-              private storage: Storage,
-              private chatService: ChatService,
-              private afs: AngularFirestore ,
-              private analyticsService: AnalyticsService ) {
+    private router: Router,
+    private storage: Storage,
+    private chatService: ChatService,
+    private afs: AngularFirestore,
+    private analyticsService: AnalyticsService) {
     this.storage.get('cohort').then((val) => {
       if (val) {
         this.cohortChat = val;
@@ -95,7 +97,7 @@ analytic: Analytics =
       }
     });
 
-    this.getCohort();
+    // this.getCohort();
 
     /*
     const timer = Observable.timer(0, 1000);
@@ -169,21 +171,30 @@ analytic: Analytics =
 
             if (chatType === 'autoEnter') {
 
-              this.chat.message = this.chat.username + ' has entered the chat';
+              this.chat.message = this.chat.username + ' has entered the chat test';
               this.chat.type = 'auto';
-              this.chatService.addChat(this.chat);
+              this.chatService.addChat(this.chat).then(async (resp) => {
+                await new Promise(f => setTimeout(f, 5000));
+                console.log("delete chat now " + resp);
+                this.chatService.deleteChat(resp.id);
+              });
 
             } else if (chatType === 'autoLeft') {
               this.chat.message = this.chat.username + ' has left the chat';
               this.chat.type = 'auto';
-              this.chatService.addChat(this.chat);
+              // this.chatService.addChat(this.chat);
+              this.chatService.addChat(this.chat).then(async (resp) => {
+                await new Promise(f => setTimeout(f, 5000));
+                console.log("delete chat now " + resp);
+                this.chatService.deleteChat(resp.id);
+              });
 
             } else {
               this.chat.type = 'user';
-              this.chatService.addChat(this.chat).then(() => {
-                this.chatService.iterateChats(this.chat.cohort, 'addChat');
-              });
-              // this could possibly slow down this function
+              // this.chatService.addChat(this.chat).then(() => {
+              //   this.chatService.iterateChats(this.chat.cohort, 'addChat');
+              // });
+              this.chatService.addChat(this.chat);
             }
             this.chat.message = '';
           });
@@ -212,7 +223,7 @@ analytic: Analytics =
             this.analytic.userID = val;
             this.analytic.timestamp = firebase.firestore.FieldValue.serverTimestamp();
             // this.analytic.sessionID = this.idReference;
-            this.analyticsService.addView(this.analytic).then (() =>{
+            this.analyticsService.addView(this.analytic).then(() => {
               console.log('successful added view: chat');
 
             }, err => {
@@ -232,13 +243,13 @@ analytic: Analytics =
 
   ionViewWillLeave() {
     this.addChat('autoLeft');
-    this.storage.get('cohort').then((val) => {
-      if (val) {
-        this.chatService.iterateChats(val, 'ionViewWillLeave').then(() => {
-            this.chats = this.chatService.getChats(val);
-        });
-      }
-    });
+    // this.storage.get('cohort').then((val) => {
+    //   if (val) {
+    //     this.chatService.iterateChats(val, 'ionViewWillLeave').then(() => {
+    //       this.chats = this.chatService.getChats(val);
+    //     });
+    //   }
+    // });
   }
 
 }
