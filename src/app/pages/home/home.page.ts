@@ -258,6 +258,13 @@ export class HomePage implements OnInit {
             }
         });
 
+        const ref = this.afs.firestore.collection('homeQuote');
+        ref.get().then((result) => {
+            result.forEach(doc => {
+                this.quoteCard.picture = doc.get('quote');
+            })
+        });
+
         this.storage.get('userCode').then((val) => {
             if (val) {
                 this.userProfileID = val;
