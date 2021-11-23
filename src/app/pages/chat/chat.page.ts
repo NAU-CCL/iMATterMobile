@@ -61,6 +61,8 @@ export class ChatPage implements OnInit {
   private numberOfCurrentChats: number;
   private numOfChats: number;
 
+  public userProfileID;
+
   constructor(public _zone: NgZone,
     private router: Router,
     private storage: Storage,
@@ -82,6 +84,13 @@ export class ChatPage implements OnInit {
     this.storage.get('authenticated').then((val) => {
       if (val === 'false') {
         this.router.navigate(['/login/']);
+      }
+    });
+
+    this.userProfileID = this.storage.get('userCode');
+    this.storage.get('userCode').then((val) => {
+      if (val) {
+        this.userProfileID = val;
       }
     });
 
@@ -182,7 +191,6 @@ export class ChatPage implements OnInit {
             } else if (chatType === 'autoLeft') {
               this.chat.message = this.chat.username + ' has left the chat';
               this.chat.type = 'auto';
-              // this.chatService.addChat(this.chat);
               this.chatService.addChat(this.chat).then(async (resp) => {
                 await new Promise(f => setTimeout(f, 5000));
                 console.log("delete chat now " + resp);
@@ -191,9 +199,7 @@ export class ChatPage implements OnInit {
 
             } else {
               this.chat.type = 'user';
-              // this.chatService.addChat(this.chat).then(() => {
-              //   this.chatService.iterateChats(this.chat.cohort, 'addChat');
-              // });
+
               this.chatService.addChat(this.chat);
             }
             this.chat.message = '';

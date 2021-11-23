@@ -36,9 +36,18 @@
     display: block;
   }
 
+  .myTimestamp {
+    padding-top: 10px;
+    color: #383a3e;
+    font-size: 10px;
+    align-content: center;
+    text-align: right;
+    display: block;
+  }
+
   .message {
     position: relative;
-    padding: 10px 0;
+    // padding: 10px 0;
 
     .user-img {
       position: absolute;
@@ -52,6 +61,38 @@
       width: 100%;
       display: inline-block;
       padding-left: 55px;
+
+      p {
+        margin: 0;
+      }
+
+      .username {
+        p {
+          font-size: 10px;
+          color: var(--main-color);
+        }
+      }
+    }
+  }
+
+  .myMessage {
+    position: relative;
+    align-items: right;
+    padding: 0px 37px;
+
+    .user-img {
+      position: absolute;
+      border-radius: 45px;
+      width: 37px;
+      height: 37px;
+      box-shadow: 0 0 2px rgba(0, 0, 0, 0.36);
+    }
+
+    .msg-detail {
+      width: 100%;
+      display: inline-block;
+      text-align: end;
+      padding-right: 10px;
 
       p {
         margin: 0;
