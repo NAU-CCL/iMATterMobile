@@ -93,7 +93,8 @@
         </ion-card-content>
     </ion-card>
 
-    <ion-button *ngIf="user.joinedChallenges.length == 0" color="primary" expand="full" [routerLink]="['/habits']">Sign
+    <ion-button *ngIf="user.joinedChallenges.length == 0" color="primary" expand="full" [routerLink]="['/tabs/habits']">
+        Sign
         Up for a Challenge<ion-icon style="color: white;" name="arrow-forward"></ion-icon>
     </ion-button>
     <ion-item-divider *ngIf="user.joinedChallenges.length > 0" class="custom-divider"

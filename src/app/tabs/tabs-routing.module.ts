@@ -19,12 +19,12 @@ const routes: Routes = [
           {
             path: 'forum',
             loadChildren: () =>
-                import('../pages/forum/forum.module').then(m => m.ForumPageModule)
+              import('../pages/forum/forum.module').then(m => m.ForumPageModule)
           },
           {
             path: 'habits',
             loadChildren: () =>
-                import('../pages/challenges/challenge.module').then(m => m.ChallengePageModule)
+              import('../pages/challenges/challenge.module').then(m => m.ChallengePageModule)
           },
           {
             path: 'available',
@@ -35,11 +35,11 @@ const routes: Routes = [
                   {
                     path: '',
                     loadChildren: () =>
-                    import('../pages/available/available.module').then(m => m.AvailablePageModule)
+                      import('../pages/available/available.module').then(m => m.AvailablePageModule)
                   },
                   {
                     path: 'answer/:id',
-                    loadChildren: () => import('../pages/answer/answer.module').then( m => m.AnswerPageModule)
+                    loadChildren: () => import('../pages/answer/answer.module').then(m => m.AnswerPageModule)
                   }
                 ]
               }
@@ -49,11 +49,11 @@ const routes: Routes = [
           {
             path: 'available/:id',
             loadChildren: () =>
-                import('../pages/available/available.module').then(m => m.AvailablePageModule)
+              import('../pages/available/available.module').then(m => m.AvailablePageModule)
           },
           {
             path: 'available/:id',
-            loadChildren: () => import('../pages/available/available.module').then( m => m.AvailablePageModule)
+            loadChildren: () => import('../pages/available/available.module').then(m => m.AvailablePageModule)
           },
         ]
       },
@@ -73,7 +73,7 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: () =>
-                import('../pages/chat/chat.module').then(m => m.ChatPageModule)
+              import('../pages/chat/chat.module').then(m => m.ChatPageModule)
           }
         ]
       },
@@ -99,12 +99,12 @@ const routes: Routes = [
                   {
                     path: '',
                     loadChildren: () =>
-                        import('../pages/learning-center/learning-center.module').then(m => m.LearningCenterPageModule)
+                      import('../pages/learning-center/learning-center.module').then(m => m.LearningCenterPageModule)
                   },
                   {
                     path: 'learning-module-content/:id',
                     loadChildren: () =>
-                        import('../pages/learning-center/learning-module-content/learning-module-content.module').then( m => m.LearningModuleContentPageModule)
+                      import('../pages/learning-center/learning-module-content/learning-module-content.module').then(m => m.LearningModuleContentPageModule)
                   }
                 ]
               },
@@ -113,17 +113,17 @@ const routes: Routes = [
           {
             path: 'learning-center/:id',
             loadChildren: () =>
-                import('../pages/learning-center/learning-center.module').then(m => m.LearningCenterPageModule)
+              import('../pages/learning-center/learning-center.module').then(m => m.LearningCenterPageModule)
           },
           {
             path: '',
             loadChildren: () =>
-                import('../pages/more/more.module').then(m => m.MorePageModule)
+              import('../pages/more/more.module').then(m => m.MorePageModule)
           },
           {
             path: 'calender',
             loadChildren: () =>
-                import('../pages/calendar/calendar.module').then(m => m.CalendarPageModule)
+              import('../pages/calendar/calendar.module').then(m => m.CalendarPageModule)
           }
         ]
       },
@@ -145,4 +145,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class TabsPageRoutingModule {}
+export class TabsPageRoutingModule { }
