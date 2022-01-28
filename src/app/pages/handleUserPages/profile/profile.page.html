@@ -87,7 +87,7 @@
                     <ion-row>
                         <ion-col>
                             <h1 style="margin: 0; font-size: 2em;">{{ user.username }}</h1>
-                            <p style="font-size: 0.8em; margin: 0;">In recovery since:
+                            <p style="font-size: 0.8em; margin: 0;">Sobriety Start Date
                                 <br>{{ this.datePipe.transform(this.recoveryDate, 'MMMM d, yyyy') }} </p>
                         </ion-col>
                     </ion-row>
@@ -127,7 +127,7 @@
                     <ion-row>
                         <ion-col>
                             <h1 style="margin: 0; font-size: 2em;">{{ user.username }}</h1>
-                            <p style="font-size: 0.8em; margin: 0;">In recovery since: <br>
+                            <p style="font-size: 0.8em; margin: 0;">Sobriety Start Date: <br>
                                 <ion-item>
                                     <ion-datetime id="newEndRehabDate" value="{{ recoveryDate }}"></ion-datetime>
                                 </ion-item>
@@ -178,7 +178,8 @@
             </ion-col>
         </ion-row>
 
-        <ion-button *ngIf="!editingMode" color="success" expand="full" (click)="editProfile()">Edit Profile
+        <ion-button *ngIf="!editingMode" color="success" expand="full" (click)="editProfile()">
+            Edit Profile
         </ion-button>
 
         <ion-row *ngIf="editingMode">
