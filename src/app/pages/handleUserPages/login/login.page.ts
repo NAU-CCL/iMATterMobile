@@ -61,6 +61,13 @@ export class LoginPage implements OnInit {
     public sessions: Observable<any>;
     public showEmailBox: boolean;
     public storageEmail: string;
+    public imageCollectionReference;
+    public loadingGifURL: string = '../../../../assets/loadingIcon.gif';  
+
+    // Assume the user is already logged in when the user opens the app.
+    public isUserAlreadyLoggedIn: boolean = true;
+
+    
 
     constructor(
         public loadingCtrl: LoadingController,
@@ -101,6 +108,21 @@ export class LoginPage implements OnInit {
     }
 
     ngOnInit() {
+        
+        /*
+        // get a reference to the document that has the filename loading-icon.gif
+        this.imageCollectionReference = this.afs.firestore.collection('images').where('filename', '==', 'loading-icon.gif');
+
+        
+        // Get the actual document from the reference and then iterate through the the resulting objects, not sure why we have to call forEach after getting the document, but 
+        // it doesnt matter as the forEach function only runs once with a single document although there were multiple entries in the image collection.
+        this.imageCollectionReference.get().then( (gifs) => { gifs.forEach( aGif => {
+            this.loadingGifURL = aGif.get('pictureAddress');
+            
+        }) } );
+        */
+        
+        /*
         console.log('STORAGE: ' + this.storage.get('email'));
         this.storage.get('email').then((val) => {
             if (val.toString().length > 1) {
@@ -111,8 +133,14 @@ export class LoginPage implements OnInit {
                         console.log('AUTH: ' + auth);
                         this.storage.get('password').then((pass) => {
                             if (pass.toString().length > 1) {
-                                if (auth === 'true') {
+                                if (auth === 'true') 
+                                {
                                     this.validateEmailwithPass(val, pass);
+                                }
+                                // User is not authenticated, load the login screen
+                                else
+                                {
+                                    this.isUserAlreadyLoggedIn = false;
                                 }
                             }
                         });
@@ -120,8 +148,10 @@ export class LoginPage implements OnInit {
                 });
             }
         });
+        */
     }
 
+    
     ionViewDidEnter() {
         console.log('STORAGE: ' + this.storage.get('email'));
         this.storage.get('email').then((val) => {
@@ -136,6 +166,11 @@ export class LoginPage implements OnInit {
                                 if (auth === 'true') {
                                     this.validateEmailwithPass(val, pass);
                                 }
+                                 // User is not authenticated, load the login screen
+                                 else
+                                 {
+                                     this.isUserAlreadyLoggedIn = false;
+                                 }
                             }
                         });
                     }
@@ -143,6 +178,7 @@ export class LoginPage implements OnInit {
             }
         });
     }
+    
 
     private notificationSetup(userID) {
         this.fcm.getToken(userID);
