@@ -512,7 +512,7 @@ export class ProfilePage implements OnInit {
         this.previewPic = pic;
     }
 
-    editProfile() {
+    editProfile( ) {
         this.editingMode = true;
     }
 
