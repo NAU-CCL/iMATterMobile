@@ -10,7 +10,7 @@
   </h4>
 </ion-text>
 
-<ion-content *ngIf="!this.isUserAlreadyLoggedIn" >
+<ion-content *ngIf="this.isUserAlreadyLoggedIn == 2" >
   <form [formGroup]="loginForm">
     <ion-item *ngIf="showEmailBox">
       <ion-label position="stacked">Email</ion-label>
@@ -51,7 +51,7 @@
 </ion-content>
 
 
-<ion-content *ngIf="this.isUserAlreadyLoggedIn" >
+<ion-content *ngIf="this.isUserAlreadyLoggedIn == 1" >
 
   <ion-grid>
     <ion-row>
@@ -65,7 +65,7 @@
 
     <ion-row>
       <ion-col>
-        <div class="ion-text-center" > Loading. . . </div>
+        <div class="ion-text-center" > Logging you in. . . </div>
       </ion-col>
     </ion-row>
   </ion-grid>

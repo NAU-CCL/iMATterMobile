@@ -64,8 +64,9 @@ export class LoginPage implements OnInit {
     public imageCollectionReference;
     public loadingGifURL: string = '../../../../assets/loadingIcon.gif';  
 
-    // Assume the user is already logged in when the user opens the app.
-    public isUserAlreadyLoggedIn: boolean = true;
+    // 3 means we dont know if the user is already logged into the app or not, we must wait for our function
+    // to check if the user has credential in local storage. Show white screen while app checks for previous login.
+    public isUserAlreadyLoggedIn: number = 3;
 
     
 
@@ -164,13 +165,15 @@ export class LoginPage implements OnInit {
                         this.storage.get('password').then((pass) => {
                             if (pass.toString().length > 1) {
                                 if (auth === 'true') {
+                                    // User is already logged in.
+                                    this.isUserAlreadyLoggedIn = 1;
                                     this.validateEmailwithPass(val, pass);
                                 }
-                                 // User is not authenticated, load the login screen
-                                 else
-                                 {
-                                     this.isUserAlreadyLoggedIn = false;
-                                 }
+                                else
+                                {
+                                    // User is not already logged in
+                                    this.isUserAlreadyLoggedIn = 2;
+                                }
                             }
                         });
                     }
