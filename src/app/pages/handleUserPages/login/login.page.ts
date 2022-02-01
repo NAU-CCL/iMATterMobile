@@ -32,6 +32,7 @@ export class LoginPage implements OnInit {
     private userEmail: boolean;
     private userPassword: string;
     private daysSinceLogin: number;
+    private authUserEmailString: string;
 
     analytic: Analytics =
         {
@@ -109,50 +110,11 @@ export class LoginPage implements OnInit {
     }
 
     ngOnInit() {
-        
-        /*
-        // get a reference to the document that has the filename loading-icon.gif
-        this.imageCollectionReference = this.afs.firestore.collection('images').where('filename', '==', 'loading-icon.gif');
 
-        
-        // Get the actual document from the reference and then iterate through the the resulting objects, not sure why we have to call forEach after getting the document, but 
-        // it doesnt matter as the forEach function only runs once with a single document although there were multiple entries in the image collection.
-        this.imageCollectionReference.get().then( (gifs) => { gifs.forEach( aGif => {
-            this.loadingGifURL = aGif.get('pictureAddress');
-            
-        }) } );
-        */
-        
-        /*
-        console.log('STORAGE: ' + this.storage.get('email'));
-        this.storage.get('email').then((val) => {
-            if (val.toString().length > 1) {
-                this.storageEmail = val;
-                console.log('VAL: ' + val);
-                this.storage.get('authenticated').then((auth) => {
-                    if (auth.toString().length > 1) {
-                        console.log('AUTH: ' + auth);
-                        this.storage.get('password').then((pass) => {
-                            if (pass.toString().length > 1) {
-                                if (auth === 'true') 
-                                {
-                                    this.validateEmailwithPass(val, pass);
-                                }
-                                // User is not authenticated, load the login screen
-                                else
-                                {
-                                    this.isUserAlreadyLoggedIn = false;
-                                }
-                            }
-                        });
-                    }
-                });
-            }
-        });
-        */
     }
 
-    
+    // This is an ionic method called after a view loads AUTOMAGICALLY.
+    // Commenting this out to implement user choice to automatically login.
     ionViewDidEnter() {
         console.log('STORAGE: ' + this.storage.get('email'));
         this.storage.get('email').then((val) => {
@@ -181,7 +143,6 @@ export class LoginPage implements OnInit {
             }
         });
     }
-    
 
     private notificationSetup(userID) {
         this.fcm.getToken(userID);
@@ -218,6 +179,7 @@ export class LoginPage implements OnInit {
 
     }
 
+    // Used on the login page and called when the user clicks the log in button.
     validateUser(loginForm: FormGroup) {
         this.storage.get('email').then((val) => {
             // if (val) {
