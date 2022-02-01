@@ -10,7 +10,7 @@
   </h4>
 </ion-text>
 
-<ion-content>
+<ion-content *ngIf="!this.isUserAlreadyLoggedIn" >
   <form [formGroup]="loginForm">
     <ion-item *ngIf="showEmailBox">
       <ion-label position="stacked">Email</ion-label>
@@ -48,4 +48,26 @@
   <ion-button padding-vertical class="text-button" expand="block" fill="clear" routerLink="/reset-password">
     Forgot password
   </ion-button>
+</ion-content>
+
+
+<ion-content *ngIf="this.isUserAlreadyLoggedIn" >
+
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-item lines="none">
+          <!-- Load image from local path defined in login.page.ts -->
+          <ion-img [src]= "loadingGifURL" > </ion-img>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <div class="ion-text-center" > Loading. . . </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
 </ion-content>
