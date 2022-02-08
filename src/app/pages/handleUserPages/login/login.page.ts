@@ -69,7 +69,7 @@ export class LoginPage implements OnInit {
     // to check if the user has credential in local storage. Show white screen while app checks for previous login.
     // 2 means user does not have loging credentials on device or User has autoLogin set to false ins settings.
     // 1 means the user has credentials on the device and we will auto log them in.
-    public isUserAlreadyLoggedIn: number = 3;
+    public userAutoLoginSetting: number = 3;
 
     
 
@@ -112,19 +112,44 @@ export class LoginPage implements OnInit {
     }
 
     ngOnInit() {
+        console.log()
 
     }
 
     // This is an ionic method called after a view loads AUTOMAGICALLY.
-    // Commenting this out to implement user choice to automatically login.
-    ionViewDidEnter() {
-        let autoLoginUser: boolean  = true;
+    // Metho called right after page load.
+    async ionViewDidEnter() {
+        console.log('User ion did enter');
 
-        let userID = this.storage.get('userCode').then( ( userCode ) => {
-                    // Get a document from a collection. .doc() returns a doc reference! This is an offline operation and does not give you access to the actual doc data.
-                    // Call .get().then(function) on the doc reference to actually retrieve the document as a snapshot.
-                    // The retrieved document is returned as a document snapshot, which we can then call .get('fieldname') to get the documents field name.
-                    this.afs.firestore.collection('users').doc( userCode.toString() ).get().then( ( docSnapShot ) => {
+        let autoLoginUser: boolean;
+        let isUserAuthenticated: boolean = false;
+
+        // Before we even think about auto logging in the user we need to see if the user is authenticated. If the user is authenticated, their user email and pass
+        // is stored on the device, if authen is false, there is not user info on the device and we cannot auto log in the user. A user has attribute true assigned to authen when they
+        // log in successfully. A users authenticated property is set to false and all user account data is deleted on logout.
+
+        console.log("Waiting for get('auth') to return");
+
+        // Add await to force the function to synchronously execute before moving onto next lines of code.
+        isUserAuthenticated = ( <string>await this.storage.get('authenticated') ) == "true";
+
+        console.log(`Got value from await func, is is: ${ isUserAuthenticated } typeof autoLoginUser is ${ typeof( isUserAuthenticated ) }`);
+
+
+        // If the user is NOT authenticated we cannot auto log them in as not user data exists on the device.
+        // Show the login page.
+        if( isUserAuthenticated )
+        {
+            console.log(`Inside main if statement, isUserAuthenticated is: ${ typeof(isUserAuthenticated) }`);
+
+            let userID = this.storage.get('userCode').then( ( userCode ) => {
+                console.log("Inside the get user code method gonna be null.")
+    
+                // Get a document from a collection. .doc() returns a doc reference! This is an offline operation and does not give you access to the actual doc data.
+                // Call .get().then(function) on the doc reference to actually retrieve the document as a snapshot.
+                // The retrieved document is returned as a document snapshot, which we can then call .get('fieldname') to get the documents field name.
+                this.afs.firestore.collection('users').doc( userCode.toString() ).get().then( ( docSnapShot ) => {
+                        // See if user selected auto log me in setting in their profile.
                         autoLoginUser = docSnapShot.get('autoLogin');
                         if( autoLoginUser )
                         {
@@ -135,21 +160,26 @@ export class LoginPage implements OnInit {
                         else // because autoLoginUser needs to run to show the login page or the login loading animation, we need to manually set the variable to show the login page.
                         {
                             // This var is used in the html template in order to decide whether or not to show the loading animation or the login screen.
-                            // If user does not have autoLogin selected then we show the login screen. Num 2 means show loging screen. See field declaration for explanation.
-                            this.isUserAlreadyLoggedIn = 2;
+                            // If user does not have autoLogin selected then we show the login screen. Num 2 means show login screen. See field declaration for explanation.
+                            this.userAutoLoginSetting = 2;
                         }
-
+    
                     }
-
-                    )
-                } 
+    
+                )} 
             );
+        }
+        else
+        {
+            // If the user is not authenticated, we cannot automatically log them in to the app.
+            this.userAutoLoginSetting = 2;
+        }
     }
 
     autoLoginUser()
     {
         console.log('STORAGE: ' + this.storage.get('email'));
-        this.storage.get('email').then((val) => {
+        this.storage.get('email').then((val) => { // get the users email from phones local storage.
             if (val.toString().length > 1) {
                 this.storageEmail = val;
                 console.log('VAL: ' + val);
@@ -159,14 +189,14 @@ export class LoginPage implements OnInit {
                         this.storage.get('password').then((pass) => {
                             if (pass.toString().length > 1) {
                                 if (auth === 'true') {
-                                    // User is already logged in.
-                                    this.isUserAlreadyLoggedIn = 1;
+                                    // User is already authenticated, time to validate their saved credentials.
+                                    this.userAutoLoginSetting = 1;
                                     this.validateEmailwithPass(val, pass);
                                 }
                                 else
                                 {
-                                    // User is not already logged in
-                                    this.isUserAlreadyLoggedIn = 2;
+                                    // User is not authenticated, show the user the login screen.
+                                    this.userAutoLoginSetting = 2;
                                 }
                             }
                         });
@@ -230,6 +260,7 @@ export class LoginPage implements OnInit {
             if (snapshot.docs.length > 0) {
                 console.log(('exists'));
                 this.userEmail = true;
+                // Get a reference to the user with the email saved on the device.
                 const userRef = this.afs.firestore.collection('users').where('email', '==', email);
                 userRef.get().then((result) => {
                     result.forEach(doc => {
@@ -241,6 +272,8 @@ export class LoginPage implements OnInit {
                             } else if (this.platform.is('ios')) {
                                 this.storage.set('platform', 'ios');
                             }
+                            
+                            // IF USER EMAIL AND PASS ON DEVICE MATCH DATABASE, load information into the user object and create a session.
 
                             // this.storage.set('version', this.device.version);
                             this.storage.set('userCode', this.userID);
@@ -273,7 +306,7 @@ export class LoginPage implements OnInit {
                             this.showToast('Password is incorrect');
 
                             // Show loging screen in case this func fails to log user in
-                            this.isUserAlreadyLoggedIn = 2;
+                            this.userAutoLoginSetting = 2;
                         }
                     });
                 });
@@ -284,12 +317,13 @@ export class LoginPage implements OnInit {
                 this.userEmail = false;
                 
                 // Show loging screen in case this func fails to log user in
-                this.isUserAlreadyLoggedIn = 2;
+                this.userAutoLoginSetting = 2;
             }
         });
     }
 
 
+    // Delete user information when logging them out.
     logOut(): void {
         this.storage.set('authenticated', 'false');
         this.storage.remove('userCode');
