@@ -51,7 +51,8 @@ export class ProfilePage implements OnInit {
         completedChallenges: [],
         codeEntered: true,
         dailyQuote: '',
-        availableSurveys: []
+        availableSurveys: [],
+        autoLogin: false,
 
     };
 
@@ -156,6 +157,8 @@ export class ProfilePage implements OnInit {
 
         this.displayRedeemOptions = false;
     }
+
+   
 
     // get user info
     ionViewWillEnter() {
@@ -363,6 +366,7 @@ export class ProfilePage implements OnInit {
                         this.user.profilePic = doc.get('profilePic');
                         this.previewPic = this.user.profilePic;
                         this.user.points = doc.get('points');
+                        this.user.autoLogin = doc.get('autoLogin');
                         this.userEmotionIcon = this.getUserEmotionIcon(this.user.currentEmotion);
 
                         const pointRef = firebase.firestore().collection('settings').doc('giftCardSettings').get();
@@ -517,6 +521,7 @@ export class ProfilePage implements OnInit {
     }
 
     saveProfile() {
+        
         let dateValue = (document.getElementById('newEndRehabDate') as HTMLInputElement).value;
         dateValue = this.datePipe.transform(dateValue, 'y-MM-dd');
 
@@ -531,12 +536,20 @@ export class ProfilePage implements OnInit {
             console.log('In the else');
         }
 
+        let autoLogInUser = (document.getElementById('auto-login-cb') as HTMLInputElement).checked;
+
+        console.log(`Value of auto login checkbox is: ${ autoLogInUser }`);
+
         console.log('Out of if');
         const newBio = (document.getElementById('newBio') as HTMLInputElement).value;
         this.user.profilePic = this.previewPic;
         this.user.bio = newBio;
         this.profileService.updateProfilePic(this.user.profilePic, this.userProfileID);
         this.profileService.updateBio(newBio, this.userProfileID);
+
+        this.profileService.updateAutoLogin( autoLogInUser, this.userProfileID );
+        this.user.autoLogin = autoLogInUser;
+        
         this.editingMode = false;
     }
 

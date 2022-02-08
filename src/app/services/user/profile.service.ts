@@ -96,8 +96,17 @@ export class ProfileService {
      * Update the user's bio in db
      */
     async updateProfilePic(newPic: string, userID: string) {
+        console.log(`USER ID IS ${userID}`);
         return this.afs.firestore.collection('users')
             .doc(userID).update({ profilePic: newPic });
+    }
+
+    /** 
+    * Update the users auto login preference.
+    */
+    async updateAutoLogin( autoLogPref: boolean, userID: string )
+    {
+        return this.afs.firestore.collection('users').doc(userID).update({autoLogin: autoLogPref});
     }
 
     /**

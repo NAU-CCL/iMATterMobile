@@ -44,7 +44,8 @@ export class ViewableProfilePage implements OnInit {
         joinedChallenges: [],
         completedChallenges: [],
         codeEntered: true,
-        dailyQuote: ''
+        dailyQuote: '',
+        autoLogin: false,
     };
 
     provider: Provider = {

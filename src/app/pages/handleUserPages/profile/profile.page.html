@@ -111,7 +111,7 @@
                         <ion-card-content>
 
                             <ion-item lines="none">
-                                <ion-checkbox slot="start" disabled="disabled"> </ion-checkbox>
+                                <ion-checkbox id="auto-login-cb" slot="start" disabled="disabled" checked="{{ this.user.autoLogin }}"> </ion-checkbox>
                                 <ion-label class="ion-padding-horizontal" >Automatically Log Me In</ion-label>
                             </ion-item>
 
@@ -175,8 +175,8 @@
                         <ion-card-title class="ion-padding-horizontal ion-padding-top" > Account Settings: </ion-card-title>
                         <ion-card-content>
 
-                            <ion-item>
-                                <ion-checkbox slot="start"></ion-checkbox>
+                            <ion-item lines="none">
+                                <ion-checkbox id="auto-login-cb" slot="start"  checked="{{ this.user.autoLogin }}" ></ion-checkbox>
                                 <ion-label class="ion-padding-horizontal" >Automatically Log Me In</ion-label>
                             </ion-item>
 

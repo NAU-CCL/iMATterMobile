@@ -84,7 +84,8 @@ export class HomePage implements OnInit {
         completedChallenges: [],
         codeEntered: true,
         availableSurveys: [],
-        dailyQuote: ''
+        dailyQuote: '',
+        autoLogin: false,
     };
 
     emotionNotif: EmotionNotif = {

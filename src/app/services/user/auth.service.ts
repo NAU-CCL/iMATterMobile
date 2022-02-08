@@ -40,6 +40,7 @@ export interface User {
   codeEntered: boolean;
   dailyQuote: string;
   availableSurveys: string[];
+  autoLogin: boolean;
 }
 
 export interface Provider {
