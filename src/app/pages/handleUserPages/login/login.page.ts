@@ -32,6 +32,7 @@ export class LoginPage implements OnInit {
     private userEmail: boolean;
     private userPassword: string;
     private daysSinceLogin: number;
+    private authUserEmailString: string;
 
     analytic: Analytics =
         {
@@ -66,6 +67,8 @@ export class LoginPage implements OnInit {
 
     // 3 means we dont know if the user is already logged into the app or not, we must wait for our function
     // to check if the user has credential in local storage. Show white screen while app checks for previous login.
+    // 2 means user does not have loging credentials on device or User has autoLogin set to false ins settings.
+    // 1 means the user has credentials on the device and we will auto log them in.
     public isUserAlreadyLoggedIn: number = 3;
 
     
@@ -109,51 +112,42 @@ export class LoginPage implements OnInit {
     }
 
     ngOnInit() {
-        
-        /*
-        // get a reference to the document that has the filename loading-icon.gif
-        this.imageCollectionReference = this.afs.firestore.collection('images').where('filename', '==', 'loading-icon.gif');
 
-        
-        // Get the actual document from the reference and then iterate through the the resulting objects, not sure why we have to call forEach after getting the document, but 
-        // it doesnt matter as the forEach function only runs once with a single document although there were multiple entries in the image collection.
-        this.imageCollectionReference.get().then( (gifs) => { gifs.forEach( aGif => {
-            this.loadingGifURL = aGif.get('pictureAddress');
-            
-        }) } );
-        */
-        
-        /*
-        console.log('STORAGE: ' + this.storage.get('email'));
-        this.storage.get('email').then((val) => {
-            if (val.toString().length > 1) {
-                this.storageEmail = val;
-                console.log('VAL: ' + val);
-                this.storage.get('authenticated').then((auth) => {
-                    if (auth.toString().length > 1) {
-                        console.log('AUTH: ' + auth);
-                        this.storage.get('password').then((pass) => {
-                            if (pass.toString().length > 1) {
-                                if (auth === 'true') 
-                                {
-                                    this.validateEmailwithPass(val, pass);
-                                }
-                                // User is not authenticated, load the login screen
-                                else
-                                {
-                                    this.isUserAlreadyLoggedIn = false;
-                                }
-                            }
-                        });
-                    }
-                });
-            }
-        });
-        */
     }
 
-    
+    // This is an ionic method called after a view loads AUTOMAGICALLY.
+    // Commenting this out to implement user choice to automatically login.
     ionViewDidEnter() {
+        let autoLoginUser: boolean  = true;
+
+        let userID = this.storage.get('userCode').then( ( userCode ) => {
+                    // Get a document from a collection. .doc() returns a doc reference! This is an offline operation and does not give you access to the actual doc data.
+                    // Call .get().then(function) on the doc reference to actually retrieve the document as a snapshot.
+                    // The retrieved document is returned as a document snapshot, which we can then call .get('fieldname') to get the documents field name.
+                    this.afs.firestore.collection('users').doc( userCode.toString() ).get().then( ( docSnapShot ) => {
+                        autoLoginUser = docSnapShot.get('autoLogin');
+                        if( autoLoginUser )
+                        {
+                            // Log in the user automatically if theyre credentials are stored on the device.
+                            // This function also changes the value of isUserAlreadyLoggIn which is used to show the login loading animation or NOT.
+                            this.autoLoginUser();
+                        }
+                        else // because autoLoginUser needs to run to show the login page or the login loading animation, we need to manually set the variable to show the login page.
+                        {
+                            // This var is used in the html template in order to decide whether or not to show the loading animation or the login screen.
+                            // If user does not have autoLogin selected then we show the login screen. Num 2 means show loging screen. See field declaration for explanation.
+                            this.isUserAlreadyLoggedIn = 2;
+                        }
+
+                    }
+
+                    )
+                } 
+            );
+    }
+
+    autoLoginUser()
+    {
         console.log('STORAGE: ' + this.storage.get('email'));
         this.storage.get('email').then((val) => {
             if (val.toString().length > 1) {
@@ -181,7 +175,6 @@ export class LoginPage implements OnInit {
             }
         });
     }
-    
 
     private notificationSetup(userID) {
         this.fcm.getToken(userID);
@@ -218,6 +211,7 @@ export class LoginPage implements OnInit {
 
     }
 
+    // Used on the login page and called when the user clicks the log in button.
     validateUser(loginForm: FormGroup) {
         this.storage.get('email').then((val) => {
             // if (val) {
@@ -277,6 +271,9 @@ export class LoginPage implements OnInit {
                             this.loginForm.reset();
                         } else {
                             this.showToast('Password is incorrect');
+
+                            // Show loging screen in case this func fails to log user in
+                            this.isUserAlreadyLoggedIn = 2;
                         }
                     });
                 });
@@ -285,6 +282,9 @@ export class LoginPage implements OnInit {
                 console.log('Email does not exist');
                 this.showToast('Email is incorrect');
                 this.userEmail = false;
+                
+                // Show loging screen in case this func fails to log user in
+                this.isUserAlreadyLoggedIn = 2;
             }
         });
     }

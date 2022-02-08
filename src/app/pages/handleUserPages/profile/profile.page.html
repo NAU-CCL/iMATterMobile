@@ -12,6 +12,7 @@
         </ion-buttons>
     </ion-toolbar>
     <ion-toolbar class="emotion-toolbar">
+
         <ion-row class="ion-justify-content-center">
             <ion-col>
                 <ion-button [class.highlight]="this.user.currentEmotion == 'happy'" size="small" fill="clear"
@@ -62,6 +63,7 @@
                 </ion-button>
             </ion-col>
         </ion-row>
+
     </ion-toolbar>
 </ion-header>
 <ion-content id="content">
@@ -101,6 +103,23 @@
                     </ion-card>
                 </ion-col>
             </ion-row>
+
+            <ion-row>
+                <ion-col>
+                    <ion-card>
+                        <ion-card-title class="ion-padding-horizontal ion-padding-top" > Account Settings: </ion-card-title>
+                        <ion-card-content>
+
+                            <ion-item lines="none">
+                                <ion-checkbox id="auto-login-cb" slot="start" disabled="disabled" checked="{{ this.user.autoLogin }}"> </ion-checkbox>
+                                <ion-label class="ion-padding-horizontal" >Automatically Log Me In</ion-label>
+                            </ion-item>
+
+                        </ion-card-content>
+                    </ion-card>
+                </ion-col>
+            </ion-row>
+
         </div>
         <div *ngIf="editingMode" id="editProfile">
 
@@ -145,6 +164,22 @@
                             <ion-item>
                                 <ion-input id="newBio" value="{{ user.bio }}"></ion-input>
                             </ion-item>
+                        </ion-card-content>
+                    </ion-card>
+                </ion-col>
+            </ion-row>
+
+            <ion-row>
+                <ion-col>
+                    <ion-card>
+                        <ion-card-title class="ion-padding-horizontal ion-padding-top" > Account Settings: </ion-card-title>
+                        <ion-card-content>
+
+                            <ion-item lines="none">
+                                <ion-checkbox id="auto-login-cb" slot="start"  checked="{{ this.user.autoLogin }}" ></ion-checkbox>
+                                <ion-label class="ion-padding-horizontal" >Automatically Log Me In</ion-label>
+                            </ion-item>
+
                         </ion-card-content>
                     </ion-card>
                 </ion-col>
