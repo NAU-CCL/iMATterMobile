@@ -78,6 +78,13 @@ export class ChatPage implements OnInit {
       this.scrollToBottom();
     });
 
+    // Event that is suppose to fire when the user leaves to their homescreen.
+    document.addEventListener('pause',  () => { this.userWentHomeChatNotify('autoLeft')  }, false);
+
+    // Event that fires when user opens app after leaving app previously.
+    document.addEventListener('resume', () => { this.userWentHomeChatNotify('autoEnter') }, false);
+
+    console.log( `The active view is: ${this.router.url}` );
   }
 
   ngOnInit() {
@@ -134,6 +141,25 @@ export class ChatPage implements OnInit {
     this.scrollToBottom();
 
     this.addView();
+
+  }
+
+  // Notify the chat when the user goes to home screen ie 'user has left chat, user has rejoined chat.'
+  userWentHomeChatNotify( enteredOrLeft: string )
+  {
+    // Get the current url of the app. If we dont check urls then the chat will be notified every single
+    // time the user enters or leaves the app regardless of if the user was in the chat.
+    let currentURL: string = this.router.url;
+    
+
+    if( currentURL == "/tabs/chat/default")
+    {
+      this.addChat( enteredOrLeft );
+    }
+    else if( currentURL == "/tabs/chat/default")
+    {
+      this.addChat( enteredOrLeft );
+    }
 
   }
 
