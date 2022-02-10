@@ -89,7 +89,7 @@
                     <ion-row>
                         <ion-col>
                             <h1 style="margin: 0; font-size: 2em;">{{ user.username }}</h1>
-                            <p style="font-size: 0.8em; margin: 0;">Sobriety Start Date
+                            <p style="font-size: 0.8em; margin: 0;">Sobriety Date
                                 <br>{{ this.datePipe.transform(this.recoveryDate, 'MMMM d, yyyy') }} </p>
                         </ion-col>
                     </ion-row>
@@ -232,7 +232,7 @@
     <!--    &lt;!&ndash; Personal User info &ndash;&gt;-->
     <ion-item-divider class="custom-divider" (click)="collapsePersonalInfo = !collapsePersonalInfo">
         <ion-label>
-            Personal Information
+            Account Information
         </ion-label>
         <ion-icon *ngIf="collapsePersonalInfo" name="arrow-dropdown" slot="end" color="black">
         </ion-icon>
