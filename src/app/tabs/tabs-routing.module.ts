@@ -22,9 +22,12 @@ const routes: Routes = [
               import('../pages/forum/forum.module').then(m => m.ForumPageModule)
           },
           {
-            path: 'habits',
+          
+            // If user types localhost:8100/tabs/habits/viewChallenge/challenge_id then ViewChallengePageModule component and view is shown.
+            path: 'viewChallenge/:id',
             loadChildren: () =>
-              import('../pages/challenges/challenge.module').then(m => m.ChallengePageModule)
+              import('../pages/challenges/view/viewChallenge.module').then(m => m.ViewChallengePageModule)
+            
           },
           {
             path: 'available',
@@ -44,7 +47,6 @@ const routes: Routes = [
                 ]
               }
             ]
-
           },
           {
             path: 'available/:id',
@@ -81,12 +83,21 @@ const routes: Routes = [
         path: 'habits',
         children: [
           {
+            // If user types localhost:8100/tabs/habits/ then ChallengePageModule component and view is shown.
             path: '',
             loadChildren: () =>
               import('../pages/challenges/challenge.module').then(m => m.ChallengePageModule)
-          }
+          },
+          {
+            // If user types localhost:8100/tabs/habits/viewChallenge/challenge_id then ViewChallengePageModule component and view is shown.
+            path: 'viewChallenge/:id',
+            loadChildren: () =>
+              import('../pages/challenges/view/viewChallenge.module').then(m => m.ViewChallengePageModule)
+            
+          },
         ]
       },
+      
       {
         path: 'more',
         children: [
