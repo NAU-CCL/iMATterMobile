@@ -30,25 +30,40 @@
     </ion-col>
 </ion-row>
 
+
     <!-- 
     This is where challenge types are displayed, such as Parenting, Exercise, Sleep ect. Clicking
     a challenge type changes the view so that types challenges are displayed. This all occurs on this page. The html near the 
     bottom of the page is where the page lists challenges associated with a specific type. 
     -->
+
+<!-- Show all challenges -->
+
 <ion-content *ngIf="challengeView == 'all'">
     <ion-list>
-        <ng-container *ngFor="let type of ( types | async )">
-            <ion-card *ngIf="type.active" (click)="challengeView = type.type" class="ion-margin">
-                <ion-card-title class="ion-padding">
-                    {{type.type}}
-                </ion-card-title>
-                <ion-card-content style="padding:0"><img src="{{type.picture}}"></ion-card-content>
-            </ion-card>
-        </ng-container>
+        
+        <ion-row>
+            <ng-container *ngFor="let type of ( types | async )">
+                
+                <ion-col class="col-50" *ngIf="type.active" >
+                    <ion-card (click)="challengeView = type.type" class="ion-margin">
+                        <ion-card-title class="ion-padding">
+                            {{type.type}}
+                        </ion-card-title>
+                        <ion-card-content style="padding:0"> <img src="{{type.picture}}" ></ion-card-content>
+                    </ion-card>
+                </ion-col>
+                
+            </ng-container>
+        </ion-row>
+
+        
     </ion-list>
 </ion-content>
 
+
 <!-- Active Challenges-->
+<!-- Show my challenges -->
 <ion-content *ngIf="challengeView == 'joined'">
     <ion-item-divider>
         <ion-label>
@@ -92,7 +107,10 @@
     </ion-list>
 </ion-content>
 
+
 <!-- This is where challenges for a specific type are displayed such as Parenting, Exercise, Sleep ect. This html would display all challenges for parenting or exercise depending on what was clicked.-->
+
+<!-- Not sure what this html is for, challengeView is assigned all once and never changed inside challenge.page.ts-->
 <ion-content *ngIf="challengeView != 'all' && challengeView != 'joined'">
     <ion-list>
         <ng-container *ngFor="let challenge of ( challenges | async )">

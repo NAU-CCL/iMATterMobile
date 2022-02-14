@@ -35,6 +35,7 @@ export class ChallengePage implements OnInit {
     public completedChallenges = [];
     public userID;
     public challengeView = 'all';
+    public itemsInChallengeRow = 2;
 
     constructor(private challengeService: ChallengeService,
                 private storage: Storage,
