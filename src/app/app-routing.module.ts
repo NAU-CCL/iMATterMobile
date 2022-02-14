@@ -40,10 +40,12 @@ const routes: Routes = [
     path: 'calendar',
     loadChildren: () => import('./pages/calendar/calendar.module').then( m => m.CalendarPageModule)
   },
+  /* This route is why home page and the tabs/habit page doesnt reload after joining a challenge and using back button to get back to tabs.
   {
     path: 'habit/:id',
     loadChildren: () => import('./pages/challenges/view/viewChallenge.module').then( m => m.ViewChallengePageModule)
   },
+  */
 
   //this routing is handled in tabs-routing
   /*{

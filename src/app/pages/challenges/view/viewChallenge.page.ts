@@ -59,8 +59,10 @@ export class ViewChallengePage implements OnInit {
         });
     }
 
+
     ionViewWillEnter() {
-// gets the id of the survey
+
+        // gets the id of the challenge to show.
         const id = this.activatedRoute.snapshot.paramMap.get('id');
 
         // if the id exists, meaning that this is an already existing survey, get the corresponding
@@ -133,6 +135,7 @@ export class ViewChallengePage implements OnInit {
         };
 
         this.joinedChallenges.push(join);
+
         this.joined = true;
         this.challengeService.updateJoinedChallenges(this.userID, this.joinedChallenges).then(() => {
             this.presentAlert('Congratulations!', 'You\'ve joined this challenge');

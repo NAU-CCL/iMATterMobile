@@ -30,6 +30,11 @@
     </ion-col>
 </ion-row>
 
+    <!-- 
+    This is where challenge types are displayed, such as Parenting, Exercise, Sleep ect. Clicking
+    a challenge type changes the view so that types challenges are displayed. This all occurs on this page. The html near the 
+    bottom of the page is where the page lists challenges associated with a specific type. 
+    -->
 <ion-content *ngIf="challengeView == 'all'">
     <ion-list>
         <ng-container *ngFor="let type of ( types | async )">
@@ -43,6 +48,7 @@
     </ion-list>
 </ion-content>
 
+<!-- Active Challenges-->
 <ion-content *ngIf="challengeView == 'joined'">
     <ion-item-divider>
         <ion-label>
@@ -51,7 +57,7 @@
     </ion-item-divider>
     <ion-list>
         <ng-container *ngFor="let challenge of ( challenges | async )">
-            <ion-card *ngIf="challengeJoined(challenge.id)" button [routerLink]="['/habit', challenge.id]" [ngClass]="challenge.id">
+            <ion-card *ngIf="challengeJoined(challenge.id)" button [routerLink]="['/tabs/habits/viewChallenge', challenge.id]" [ngClass]="challenge.id">
                 <ion-card-title class="ion-padding-horizontal ion-padding-top">
                     {{challenge.title}}
                 </ion-card-title>
@@ -68,7 +74,7 @@
     </ion-item-divider>
     <ion-list>
         <ng-container *ngFor="let challenge of ( challenges | async )">
-            <ion-card *ngIf="challengeFinished(challenge.id)" button [routerLink]="['/habit', challenge.id]"
+            <ion-card *ngIf="challengeFinished(challenge.id)" button [routerLink]="['/tabs/habits/viewChallenge', challenge.id]"
                       [ngClass]="challenge.id">
                 <ion-card-title class="ion-padding">{{challenge.title}}</ion-card-title>
                 <ion-card-subtitle>
@@ -86,10 +92,11 @@
     </ion-list>
 </ion-content>
 
+<!-- This is where challenges for a specific type are displayed such as Parenting, Exercise, Sleep ect. This html would display all challenges for parenting or exercise depending on what was clicked.-->
 <ion-content *ngIf="challengeView != 'all' && challengeView != 'joined'">
     <ion-list>
         <ng-container *ngFor="let challenge of ( challenges | async )">
-            <ion-card button [routerLink]="['/habit', challenge.id]" *ngIf="challenge.type == challengeView" [ngClass]="challenge.id">
+            <ion-card button [routerLink]="['/tabs/habits/viewChallenge', challenge.id]" *ngIf="challenge.type == challengeView" [ngClass]="challenge.id">
                 <ion-card-title class="ion-padding-horizontal ion-padding-top">
                     <ion-row>
                         <ion-thumbnail *ngIf="challenge.icon != '' && challenge.icon != undefined">

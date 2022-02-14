@@ -35,12 +35,14 @@ export class TabsPage implements OnInit {
         };
 
     private sessions: Observable<any>;
+    private activeTab?: HTMLElement;
 
     constructor(public firestore: AngularFirestore, private analyticsService: AnalyticsService) {
     }
 
     ngOnInit() {
     }
+
 
     updateChatClicks() {
         this.analyticsService.updateChatClicks(this.session);

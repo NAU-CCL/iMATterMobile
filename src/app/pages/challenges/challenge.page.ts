@@ -45,7 +45,12 @@ export class ChallengePage implements OnInit {
                 private datePipe: DatePipe) {
     }
 
+
+
+    // Is not guranteed to be called everytime the page is visited.
     ngOnInit() {
+        console.log('In ngoninit');
+
         this.storage.get('authenticated').then((val) => {
             if (val === 'false') {
                 this.router.navigate(['/login/']);
@@ -57,6 +62,9 @@ export class ChallengePage implements OnInit {
     }
 
     ionViewWillEnter() {
+
+        console.log('In ion will enter');
+
         this.storage.get('userCode').then((val) => {
             if (val) {
                 const ref = this.afs.firestore.collection('users').where('code', '==', val);
@@ -83,6 +91,21 @@ export class ChallengePage implements OnInit {
         });
     }
 
+    ionViewDidEnter()
+    {
+        console.log("In ion did enter");
+    }
+
+    ionViewWillLeave() {
+        console.log("In ion will leave");
+    }
+
+    ngOnDestroy()
+    {
+
+    }
+
+
     joinChallenge(id) {
         const join = {
             challenge: id,
@@ -95,6 +118,7 @@ export class ChallengePage implements OnInit {
             this.joinedChallenges.push(join);
             this.challengeService.updateJoinedChallenges(this.userID, this.joinedChallenges).then(() => {
                 this.presentAlert('Congratulations!', 'You\'ve joined this challenge');
+
             });
         }
     }
