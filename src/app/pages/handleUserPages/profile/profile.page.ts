@@ -14,6 +14,7 @@ import { MoodProviderNotifService, EmotionNotif } from '../../../services/mood-p
 import { ChatService, Cohort, Chat } from '../../../services/chat/chat-service.service';
 import { HomePage } from '../../home/home.page';
 import { ActionSheetController } from '@ionic/angular';
+import { EMOJIS } from '../../../services/emojiArray'
 
 @Component({
     selector: 'app-profile',
@@ -117,15 +118,7 @@ export class ProfilePage implements OnInit {
     public collapsePersonalInfo: boolean = true;
     public showSettingsDropDown = false;
 
-    public emotionIcons = {
-        excited: '🤗',
-        happy: '😃',
-        loved: '🥰',
-        ok: '😐',
-        stressed: '😩',
-        sad: '😢',
-        angry: '😡',
-    };
+    public  emotionIcons = EMOJIS;
 
     static checkUserPoints(userPoints, pointsNeeded): boolean {
         return userPoints >= pointsNeeded;
@@ -484,6 +477,10 @@ export class ProfilePage implements OnInit {
             return this.emotionIcons.sad;
         } else if (emotion === 'angry') {
             return this.emotionIcons.angry;
+        } else if (emotion === 'tired') {
+            return this.emotionIcons.tired;
+        } else if (emotion === 'lonely') {
+            return this.emotionIcons.tired;
         }
     }
 
