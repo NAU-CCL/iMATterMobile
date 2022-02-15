@@ -13,6 +13,7 @@ import { DatePipe } from '@angular/common';
 import { MoodProviderNotifService, EmotionNotif } from '../../../services/mood-provider-notif.service';
 import { ChatService, Cohort, Chat } from '../../../services/chat/chat-service.service';
 import { HomePage } from '../../home/home.page';
+import { ActionSheetController } from '@ionic/angular';
 
 @Component({
     selector: 'app-profile',
@@ -114,6 +115,7 @@ export class ProfilePage implements OnInit {
     public allPicURLs: any;
     public previewPic: any;
     public collapsePersonalInfo: boolean = true;
+    public showSettingsDropDown = false;
 
     public emotionIcons = {
         excited: '🤗',
@@ -144,6 +146,7 @@ export class ProfilePage implements OnInit {
         private datePipe: DatePipe,
         private chatService: ChatService,
         private mpnService: MoodProviderNotifService,
+        private actionSheetController: ActionSheetController
     ) {
         this.getProfilePictureChoices();
     }
@@ -557,6 +560,37 @@ export class ProfilePage implements OnInit {
         this.previewPic = this.user.profilePic;
         this.editingMode = false;
     }
+
+    async showSettingsActionSheet() {
+        const actionSheet = await this.actionSheetController.create({
+          buttons: [{
+            text: 'Log Out',
+            role: 'destructive',
+            handler: () => {
+                this.updateLogOut();
+                this.logOut();
+            }
+          }, {
+            text: 'Go to Settings',
+            role: 'destructive',
+            handler: () => {
+                this.router.navigateByUrl('/tabs/more/settings');
+            }
+          },
+          {
+            text: 'Cancel',
+            role: 'cancel',
+            handler: () => {
+              console.log('Share clicked');
+            }
+          }
+        ]
+        });
+        await actionSheet.present();
+    
+        const { role, data } = await actionSheet.onDidDismiss();
+        console.log('onDidDismiss resolved with role and data', role, data);
+      }
 }
 
 

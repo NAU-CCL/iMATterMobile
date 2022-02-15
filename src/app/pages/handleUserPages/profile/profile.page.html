@@ -1,15 +1,14 @@
 <ion-header>
     <ion-toolbar>
         <ion-buttons slot="start">
-            <ion-back-button class="text-button" [routerLink]="['/tabs/home']">
+            <!-- 
+                Without a deafult href, the page wont show a back button if the user navigates to the page from a url rather than the UI. Doesnt matter since this is an app
+                 but if we were making a mobile site/ app hybrid this is needed. 
+            -->
+            <ion-back-button class="text-button" defaultHref="/tabs/home" [routerLink]="['/tabs/home']">
             </ion-back-button>
         </ion-buttons>
         <ion-title>Profile Page</ion-title>
-        <ion-buttons slot="end">
-            <ion-button class="logout" (click)="updateLogOut()" (click)="logOut()">
-                Log Out
-            </ion-button>
-        </ion-buttons>
     </ion-toolbar>
     <ion-toolbar class="emotion-toolbar">
 
@@ -85,7 +84,7 @@
                         </ion-card>
                     </ion-row>
                 </ion-col>
-                <ion-col size="6">
+                <ion-col size="4">
                     <ion-row>
                         <ion-col>
                             <h1 style="margin: 0; font-size: 2em;">{{ user.username }}</h1>
@@ -94,6 +93,13 @@
                         </ion-col>
                     </ion-row>
                 </ion-col>
+
+                <ion-col class="ion-align-self-start" size="2">
+                    <ion-icon class="show-mouse-pointer" (click)="showSettingsActionSheet()" name="settings" size="large"></ion-icon>
+                </ion-col>
+
+                
+
             </ion-row>
             <ion-row>
                 <ion-col>
