@@ -26,13 +26,25 @@
             </ion-col>
         </ion-row>
         <ion-row>
-            <ion-col style="padding: 0">
-                <ion-select id="filterValue" value="all" okText="Apply" cancelText="Dismiss" (ionChange)="filter()">
+            <ion-col size="7">
+
+                <!-- Searchbar for resources -->
+                <ion-searchbar *ngIf="!iosPlatform" (ionInput)="filterResources($event)" class="ion-no-padding rounded-corners"> </ion-searchbar>
+                
+                
+                <!-- Searchbar for all questions -->
+                <ion-searchbar *ngIf="iosPlatform"  mode="ios" (ionInput)="filterResources($event)" class="ion-no-padding rounded-corners"> </ion-searchbar>
+                  
+            </ion-col>
+            <ion-col size="5">
+
+                <ion-select id="filterValue" value="all" okText="Apply" cancelText="Dismiss" (ionChange)="filter()" class="rounded-corners">
                     <ion-select-option value="all">All</ion-select-option>
                     <ng-container *ngFor="let type of locationTypes; let i = index">
                         <ion-select-option [value]=type>{{type}}</ion-select-option>
                     </ng-container>
                 </ion-select>
+
             </ion-col>
         </ion-row>
         <ion-list id="locationList">

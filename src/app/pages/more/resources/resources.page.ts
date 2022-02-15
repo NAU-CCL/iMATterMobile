@@ -13,6 +13,7 @@ import * as internal from 'assert';
 import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
 import { SelectMultipleControlValueAccessor } from '@angular/forms';
 import { time } from 'console';
+import { escapeLeadingUnderscores } from 'typescript';
 
 
 
@@ -48,6 +49,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
 
     public currentLat;
     public currentLong;
+    public iosPlatform: boolean;
 
     @ViewChild('mapElement', { static: false }) mapNativeElement;
 
@@ -80,6 +82,10 @@ export class ResourcesPage implements OnInit, AfterViewInit {
             }
 
         });
+
+        this.storage.get('platform').then( (val) => {
+            this.iosPlatform = val === 'ios';
+        } );
 
     }
 
@@ -125,6 +131,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
             this.filteredList = this.locationList;
         }));
     }
+
 
     ngAfterViewInit(): void {
 
@@ -252,4 +259,29 @@ export class ResourcesPage implements OnInit, AfterViewInit {
             this.filteredList = this.locationList.filter(e => e.type == filter.value || e.type.includes(filter.value));
         }
     }
+
+    filterResources( event )
+    {
+        console.log('called filter ques in resource page. ');
+
+        const searchInput = event.target.value;
+
+        // Dont run search if user cleared their search query.
+        if (searchInput) {
+            // Iterate through array of questions using the filter function which removes an element when we return false.
+            // Allow users to search based on resource NAME or CITY/STATE
+            this.filteredList = this.locationList.filter(currentLoc => {
+                    // indexOf returns the index where the given string starts. For example "eggs are good".indexOf("good") would return 9 since index 9 is where "good" starts in the string.
+                    return (currentLoc.title.toLowerCase().indexOf(searchInput.toLowerCase()) > -1 ||
+                    currentLoc.cityState.toLowerCase().indexOf(searchInput.toLowerCase()) > -1);
+                });
+        }
+        // If user deletes their search query, show all results again.
+        else
+        {
+            this.filteredList = this.locationList;
+        }
+    }
+
+
 }
