@@ -266,6 +266,11 @@ export class ResourcesPage implements OnInit, AfterViewInit {
 
         const searchInput = event.target.value;
 
+        /*
+        let filterDropDown = document.getElementsByClassName('filter-option-all') as HTMLCollectionOf<HTMLOptionElement>;
+        filterDropDown[0].selected = true;
+        */
+       
         // Dont run search if user cleared their search query.
         if (searchInput) {
             // Iterate through array of questions using the filter function which removes an element when we return false.

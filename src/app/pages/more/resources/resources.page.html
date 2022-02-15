@@ -39,7 +39,7 @@
             <ion-col size="5">
 
                 <ion-select id="filterValue" value="all" okText="Apply" cancelText="Dismiss" (ionChange)="filter()" class="rounded-corners">
-                    <ion-select-option value="all">All</ion-select-option>
+                    <ion-select-option class="filter-option-all" value="all">All</ion-select-option>
                     <ng-container *ngFor="let type of locationTypes; let i = index">
                         <ion-select-option [value]=type>{{type}}</ion-select-option>
                     </ng-container>
