@@ -15,14 +15,14 @@
 
 <ion-row id="viewPicker" *ngIf="challengeView == 'all' || challengeView == 'joined'">
     <ion-col style="padding: 0">
-        <ion-buttons id="allChallenges" class="text-button selected" style="justify-content: center">
+        <ion-buttons id="allChallenges" class="text-button" [ngClass] ="{ 'selected' : this.challengeView == 'all' }" style="justify-content: center">
             <ion-button style="text-align: center">
                 <ion-button class="text-button" (click)="this.challengeView = 'all'"> All Challenges</ion-button>
             </ion-button>
         </ion-buttons>
     </ion-col>
     <ion-col style="padding: 0">
-        <ion-buttons id="myChallenges" class="text-button" style="justify-content: center">
+        <ion-buttons id="myChallenges" class="text-button" [ngClass] ="{ 'selected' : this.challengeView == 'joined' }" style="justify-content: center">
             <ion-button style="text-align: center">
                 <ion-button class="text-button" (click)="ionViewWillEnter(); this.challengeView = 'joined';"> My Challenges</ion-button>
             </ion-button>
