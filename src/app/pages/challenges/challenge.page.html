@@ -34,20 +34,20 @@
 <ion-content *ngIf="challengeView == 'all'">
     <ion-list>
         
-        <ion-row>
+        <div class="challenge-grid">
             <ng-container *ngFor="let type of ( types | async )">
                 
-                <ion-col class="col-50" *ngIf="type.active" >
+                <div class="" *ngIf="type.active" >
                     <ion-card (click)="challengeView = type.type" class="ion-margin">
                         <ion-card-title class="ion-padding">
                             {{type.type}}
                         </ion-card-title>
                         <ion-card-content style="padding:0"> <img src="{{type.picture}}" ></ion-card-content>
                     </ion-card>
-                </ion-col>
+                </div>
                 
             </ng-container>
-        </ion-row>
+        </div>
 
         
     </ion-list>
