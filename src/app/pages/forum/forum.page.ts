@@ -125,8 +125,9 @@ export class ForumPage implements OnInit {
 
     // Dont run search if user cleared their search query.
     if (searchInput) {
-      // Iterate through array of questions,;;
+      // Iterate through array of questions using the filter function which removes an element when we return false.
       this.questionList = this.questionList.filter(currentQuestion => {
+
         // indexOf returns the index where the given string starts. For example "eggs are good".indexOf("good") would return 9 since index 9 is where "good" starts in the string.
         return (currentQuestion.title.toLowerCase().indexOf(searchInput.toLowerCase()) > -1 ||
           currentQuestion.description.toLowerCase().indexOf(searchInput.toLowerCase()) > -1);
