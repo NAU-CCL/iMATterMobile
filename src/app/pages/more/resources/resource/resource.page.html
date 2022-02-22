@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>View All</ion-title>
+    <ion-title>View Resource</ion-title>
     <ion-buttons slot="start">
       <ion-back-button class="text-button" defaultHref="/tabs/more/resources"></ion-back-button>
     </ion-buttons>
@@ -8,11 +8,17 @@
 </ion-header>
 <ion-content>
   <h1 class="ion-padding ion-no-margin">{{resource.title}}</h1>
+
+  <div class="dis-flex-center" >
+    <img src="https://firebasestorage.googleapis.com/v0/b/imatter-nau.appspot.com/o/ResourceImages%2FSunshineRescue.png?alt=media&token=e2fc71c2-e095-40d4-893e-b314d3f67af2" alt="The real life building this resource represents" width="250" height="250">
+  </div>
+
   <div class="ion-padding">
     <div>Services: {{resource.type}} </div>
-    <div>Contact: {{resource.phone}} </div>
-    <div>Address: {{resource.street}} </div>
+    <div><span> Contact: {{resource.phone}} </span> <ion-icon (click)="callResourcePhone()" name="call"></ion-icon> </div>
+    <div> <span> Address: {{resource.street}} </span> <ion-icon (click)="openAddress()" name="map"></ion-icon> </div>
   </div>
+
   <ion-card>
     <ion-card-content>
       {{resource.content}}
@@ -105,6 +111,68 @@
       </ion-col>
     </ion-row>
   </ion-grid>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+
+        <ion-header class="ion-no-border">
+          <ion-toolbar>
+
+            <div id="review-card-tool-bar" class="border-top" >
+              <ion-title>Reviews</ion-title>
+              <ion-button [routerLink]="['./new-review']" >
+                New Review
+                <ion-icon name="add" slot="start"></ion-icon>
+              </ion-button>
+            </div>
+
+          </ion-toolbar>
+        </ion-header>
+
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <ion-card>
+          <ion-card-header class="ion-no-padding review-card-header-pad">
+            <ion-card-title> Caring Staff </ion-card-title>
+            <ion-card-subtitle>Tags: </ion-card-subtitle>
+
+            <div class="review-tag dis-flex">
+
+              <ion-chip class="chip-size" color="success">
+                <ion-icon size="small" name="paw" color="primary"></ion-icon>
+                <ion-label>Pet Friendly </ion-label>
+              </ion-chip>
+
+            </div>
+
+          </ion-card-header>
+        
+          <ion-card-content>
+
+            <div id="review-card-star-container" class="dis-flex" >
+              <ion-icon id="star-1" name="star"></ion-icon>
+              <ion-icon id="star-2" name="star"></ion-icon>
+              <ion-icon id="star-3" name="star"></ion-icon>
+              <ion-icon id="star-4" name="star"></ion-icon>
+              <ion-icon id="star-5" name="star"></ion-icon>
+            </div>
+            
+
+            Keep close to Nature's heart... and break clear away, once in awhile,
+            and climb a mountain or spend a week in the woods. Wash your spirit clean.
+
+            <ion-img [src]="" alt="Review Image"></ion-img>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+
+  </ion-grid>
+
 </ion-content>
 <ion-footer *ngIf="resource.url != ''">
   <ion-button class="footer-button" color="primary" id={{resource.url}} (click)="visitSite(resource.url)">Visit Website

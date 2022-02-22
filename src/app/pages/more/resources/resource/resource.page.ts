@@ -7,6 +7,11 @@ import { Storage } from '@ionic/storage';
 import { LocationService, Location } from 'src/app/services/resource.service';
 import * as firebase from 'firebase/app';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { CallNumber } from '@awesome-cordova-plugins/call-number/ngx';
+// Allows us to open apple or google maps from the app when user clicks an address.
+import { LaunchNavigator, LaunchNavigatorOptions } from '@awesome-cordova-plugins/launch-navigator/ngx';
+import {Device} from '@ionic-native/device/ngx';
+import { AlertController } from '@ionic/angular';
 
 @Component({
     selector: 'app-resource',
@@ -52,7 +57,11 @@ export class ResourcePage implements OnInit {
         private afs: AngularFirestore,
         private activatedRoute: ActivatedRoute,
         private inAppBrowser: InAppBrowser,
-        private toastCtl: ToastController) {
+        private toastCtl: ToastController,
+        private callNumber: CallNumber,
+        private launchNavigator: LaunchNavigator,
+        private device: Device,
+        private alertController : AlertController) {
     }
 
     ngOnInit() {
@@ -74,6 +83,72 @@ export class ResourcePage implements OnInit {
         }
     }
 
+    // Use a capictor plugin to open the user phone app with a number 
+    // Called when user clicks on a resoruces phone number.
+    callResourcePhone(){
+        this.callNumber.callNumber(this.resource.phone, true)
+            .then(res => console.log('Launched dialer!', res))
+            .catch(err => console.log('Error launching dialer', err));
+    }
+
+    async openAddress()
+    {
+        
+
+        var platform = this.device.platform.toLowerCase();
+        var map_error;
+        var map_success;
+        if(platform == "android")
+        {
+            this.launchNavigator.navigate("London, UK", {
+                app: this.launchNavigator.APP.GOOGLE_MAPS
+            }).then(
+                success => {
+                    console.log('Launched navigator');
+                    map_success = success;
+                },
+                error => {
+                    console.log('Error launching navigator', error);
+                    map_error = error;
+                }
+
+                
+              );
+
+        }
+        else if(platform == "ios")
+        {
+            this.launchNavigator.navigate("London, UK", {
+                app: this.launchNavigator.APP.APPLE_MAPS
+            }).then(
+                success => {
+                    console.log('Launched navigator');
+                    map_success = success;
+                },
+                error => {
+                    console.log('Error launching navigator', error);
+                    map_error = error;
+                }
+
+                
+              );
+        }
+
+        var error_alert = await this.alertController.create({
+            header: 'You CLicked open address!',
+            subHeader: 'Thank You',
+            message: `Error:  ${map_error} \n Success: ${map_success} Platform: ${platform}`,
+            buttons: [{
+                text: 'OK',
+                role: 'cancel'
+            }
+            ]
+        });
+
+        await error_alert.present();
+
+    }
+
     visitSite(url) {
         console.log(url);
         const browser = this.inAppBrowser.create(url);
@@ -85,6 +160,7 @@ export class ResourcePage implements OnInit {
             e.clipboardData.setData('text/plain', address);
             e.preventDefault();
         });
+
         document.execCommand('copy');
         this.showToast('Copied to Clipboard!')
     }
