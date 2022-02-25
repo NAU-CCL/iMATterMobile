@@ -47,7 +47,9 @@ firebase.initializeApp(environment.firebase);
         }),
         AppRoutingModule,
         AngularFirestoreModule,
-        AngularFireModule.initializeApp(environment)
+        AngularFireModule.initializeApp(environment),
+        ReactiveFormsModule,
+        FormsModule
     ],
     providers: [
         StatusBar,

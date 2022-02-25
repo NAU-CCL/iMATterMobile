@@ -1,7 +1,5 @@
 <ion-header>
   
-  <script src="https://kit.fontawesome.com/6cf6986f3d.js" crossorigin="anonymous"></script>
-  
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button class="text-button" defaultHref="/tabs/more/resources"></ion-back-button>
@@ -9,6 +7,7 @@
     
     <ion-title>Create New Review</ion-title>
   </ion-toolbar>
+
 </ion-header>
 
 <ion-content>
@@ -18,7 +17,7 @@
     <ion-row>
 
       <ion-col>
-        <h2> Create a Review for {{resource.title}} </h2>
+        <h4> Create a Review for {{resource.title}} </h4>
       </ion-col>
 
     </ion-row>
@@ -27,11 +26,11 @@
 
       <ion-col>
           <div id="review-card-star-container" class="dis-flex" >
-            <ion-icon id="star-1" name="star" size="large"></ion-icon>
-            <ion-icon id="star-2" name="star" size="large"></ion-icon>
-            <ion-icon id="star-3" name="star" size="large"></ion-icon>
-            <ion-icon id="star-4" name="star" size="large"></ion-icon>
-            <ion-icon id="star-5" name="star" size="large"></ion-icon>
+            <ion-icon id="star-1" [attr.name]="rating_array[0] ? 'star' : 'star-outline'" size="large" (click)="updateRatingStars(0)"></ion-icon>
+            <ion-icon id="star-2" [attr.name]="rating_array[1] ? 'star' : 'star-outline'" size="large" (click)="updateRatingStars(1)"></ion-icon>
+            <ion-icon id="star-3" [attr.name]="rating_array[2] ? 'star' : 'star-outline'" size="large" (click)="updateRatingStars(2)"></ion-icon>
+            <ion-icon id="star-4" [attr.name]="rating_array[3] ? 'star' : 'star-outline'" size="large" (click)="updateRatingStars(3)"></ion-icon>
+            <ion-icon id="star-5" [attr.name]="rating_array[4] ? 'star' : 'star-outline'" size="large" (click)="updateRatingStars(4)"></ion-icon>
           </div>      
       </ion-col>
 
@@ -45,15 +44,13 @@
 
     <ion-row>
       <ion-col>
-        <i class="fa-solid fa-file-import"></i>
+        <label for="name">Name: </label>
+        <input id="name" type="text" [formControl]="name">
       </ion-col>
     </ion-row>
 
   </ion-grid>
   
-
-
-
 
 
 </ion-content>
