@@ -1,15 +1,59 @@
 <ion-header>
   
-
+  <script src="https://kit.fontawesome.com/6cf6986f3d.js" crossorigin="anonymous"></script>
+  
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button class="text-button" defaultHref="/tabs/more/resources"></ion-back-button>
     </ion-buttons>
     
-    <ion-title>new_review</ion-title>
+    <ion-title>Create New Review</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+
+  <ion-grid>
+
+    <ion-row>
+
+      <ion-col>
+        <h2> Create a Review for {{resource.title}} </h2>
+      </ion-col>
+
+    </ion-row>
+      
+    <ion-row>
+
+      <ion-col>
+          <div id="review-card-star-container" class="dis-flex" >
+            <ion-icon id="star-1" name="star" size="large"></ion-icon>
+            <ion-icon id="star-2" name="star" size="large"></ion-icon>
+            <ion-icon id="star-3" name="star" size="large"></ion-icon>
+            <ion-icon id="star-4" name="star" size="large"></ion-icon>
+            <ion-icon id="star-5" name="star" size="large"></ion-icon>
+          </div>      
+      </ion-col>
+
+    </ion-row>
+
+      <ion-col>
+        <input id="star-rating-input" name="star-rating-input" type="hidden">
+
+        <ion-textarea id="user-review-text-area" name="user-review" placeholder="Type your review here!" class="round-grey-border" ></ion-textarea>
+      </ion-col>
+
+    <ion-row>
+      <ion-col>
+        <i class="fa-solid fa-file-import"></i>
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+  
+
+
+
+
 
 </ion-content>

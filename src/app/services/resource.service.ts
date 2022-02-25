@@ -3,6 +3,8 @@ import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument,
 import { map, take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
+import { AngularFireStorage } from '@angular/fire/storage';
+
 export interface Location {
   id?: string;
   title: string;
@@ -79,4 +81,19 @@ export class LocationService {
       })
     );
   }
+
+  encodeImageUri(imageUri, callback) {
+    var c = document.createElement('canvas');
+    var ctx = c.getContext("2d");
+    var img = new Image();
+    img.onload = function () {
+      var aux:any = this;
+      c.width = aux.width;
+      c.height = aux.height;
+      ctx.drawImage(img, 0, 0);
+      var dataURL = c.toDataURL("image/jpeg");
+      callback(dataURL);
+    };
+    img.src = imageUri;
+  };
 }
