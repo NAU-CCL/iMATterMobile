@@ -18,6 +18,7 @@ import { LocationService } from "src/app/services/resource.service"
 import { Location } from "src/app/services/resource.service"
 import { ResourceTypesService } from 'src/app/services/resource-types.service';
 import {Storage} from '@ionic/storage';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-create-review',
@@ -75,7 +76,8 @@ export class CreateReviewPage implements OnInit {
               private resourceService: LocationService,
               private resourceTypesService: ResourceTypesService,
               private storage: Storage,
-              private router: Router) {
+              private router: Router,
+              public datepipe: DatePipe) {
 
     // Get the reviews collection so we can add new reviews to it.
     this.reviewsCollection =  this.afs.collection<Review>('resourceReviews');
@@ -186,8 +188,12 @@ export class CreateReviewPage implements OnInit {
   {
     console.log(` THIS FORM IS ${JSON.stringify( this.newReviewForm.value ) }`);
     
-     
-     let reviewObj = { resourceID: this.resourceID, userID: this.userID, reviewSubject: this.reviewSubject.value, reviewText: this.reviewText.value, reviewRating: this.selected_rating, survey_answers:  this.reviewSurveyAnswers.value, survey_tags: this.surveyTagsArray }
+     let currentDate = new Date();
+
+     // The date is saved as a string!!!
+     let stringDate = this.datepipe.transform(currentDate, 'yyyy-MM-dd');
+
+     let reviewObj = { resourceID: this.resourceID, reviewDate: stringDate, userID: this.userID, reviewSubject: this.reviewSubject.value, reviewText: this.reviewText.value, reviewRating: this.selected_rating, survey_answers:  this.reviewSurveyAnswers.value, survey_tags: this.surveyTagsArray }
      
      this.reviewsCollection.add( reviewObj );
 

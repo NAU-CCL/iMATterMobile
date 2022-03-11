@@ -1,32 +1,28 @@
-
-<ion-row *ngFor="let review of getReviewsObs | async">
+<ion-row>
   <ion-col>
-    <ion-card>
-      <ion-card-header class="ion-no-padding review-card-header-pad">
-        <ion-card-title> {{resourceTitle}} </ion-card-title>
-        <ion-card-subtitle>Tags: </ion-card-subtitle>
+    
+    
+    <ion-list id="review-list">
+      
+    </ion-list>
+    
+    
+    <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)">
+      <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Loading more data...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+  
+  
+  </ion-col>
+</ion-row>
 
-        <div class="review-tag dis-flex">
-
-          <ion-chip class="chip-size" color="success">
+<!--
+  <ion-row *ngFor="let review of getReviewsObs | async">
+  </ion-row>
+  <ion-chip class="chip-size" color="success">
             <ion-icon size="small" name="paw" color="primary"></ion-icon>
             <ion-label> A Tag </ion-label>
           </ion-chip>
-
-        </div>
-
-      </ion-card-header>
-    
-      <ion-card-content>
-
-        <div id="review-card-star-container" class="dis-flex" >
-          <ion-icon *ngFor="let num of starArray" id="star-1" [attr.name]="num <= review.reviewRating ? 'star' : 'star-outline'" size="small"></ion-icon>
-        </div> 
-        
-
-        <span> {{review.reviewText}}</span>
-
-      </ion-card-content>
-    </ion-card>
-  </ion-col>
-</ion-row>
+-->
