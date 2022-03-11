@@ -64,6 +64,8 @@ export class ResourcePage implements OnInit {
         private alertController : AlertController) {
     }
 
+    public resourceID;
+
     ngOnInit() {
         this.storage.get('authenticated').then((val) => {
             if (val === 'false') {
@@ -73,10 +75,10 @@ export class ResourcePage implements OnInit {
     }
 
     ionViewWillEnter() {
-        const id = this.activatedRoute.snapshot.paramMap.get('id');
+        this.resourceID = this.activatedRoute.snapshot.paramMap.get('id');
 
-        if (id) {
-            this.resourceService.getLocation(id).subscribe(resource => {
+        if (this.resourceID ) {
+            this.resourceService.getLocation(this.resourceID ).subscribe(resource => {
                 this.resource = resource;
                 console.log(this.resource);
             });

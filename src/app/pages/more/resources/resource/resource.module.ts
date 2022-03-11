@@ -8,6 +8,8 @@ import { ResourcePageRoutingModule } from './resource-routing.module';
 
 import { ResourcePage } from './resource.page';
 
+import {DisplayReviewsPage} from '../display-reviews/display-reviews.page'
+
 @NgModule({
   imports: [
     CommonModule,
@@ -15,6 +17,6 @@ import { ResourcePage } from './resource.page';
     IonicModule,
     ResourcePageRoutingModule
   ],
-  declarations: [ResourcePage]
+  declarations: [ResourcePage, DisplayReviewsPage]
 })
 export class ResourcePageModule {}

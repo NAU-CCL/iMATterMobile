@@ -132,46 +132,11 @@
       </ion-col>
     </ion-row>
 
-    <ion-row>
-      <ion-col>
-        <ion-card>
-          <ion-card-header class="ion-no-padding review-card-header-pad">
-            <ion-card-title> Caring Staff </ion-card-title>
-            <ion-card-subtitle>Tags: </ion-card-subtitle>
-
-            <div class="review-tag dis-flex">
-
-              <ion-chip class="chip-size" color="success">
-                <ion-icon size="small" name="paw" color="primary"></ion-icon>
-                <ion-label>Pet Friendly </ion-label>
-              </ion-chip>
-
-            </div>
-
-          </ion-card-header>
-        
-          <ion-card-content>
-
-            <div id="review-card-star-container" class="dis-flex" >
-              <ion-icon id="star-1" name="star"></ion-icon>
-              <ion-icon id="star-2" name="star"></ion-icon>
-              <ion-icon id="star-3" name="star"></ion-icon>
-              <ion-icon id="star-4" name="star"></ion-icon>
-              <ion-icon id="star-5" name="star"></ion-icon>
-            </div>
-            
-
-            Keep close to Nature's heart... and break clear away, once in awhile,
-            and climb a mountain or spend a week in the woods. Wash your spirit clean.
-
-            <ion-img [src]="" alt="Review Image"></ion-img>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
+    <app-display-reviews [resource_name]="resource.title"> </app-display-reviews>
 
 
   </ion-grid>
+
 
 </ion-content>
 <ion-footer *ngIf="resource.url != ''">

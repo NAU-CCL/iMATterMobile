@@ -21,7 +21,11 @@ const routes: Routes = [
   },
   {
     path: ':id/new-review',
-    loadChildren: () => import('./new-review/new-review.module').then( m => m.NewReviewPageModule)
+    loadChildren: () => import('./create-review/create-review.module').then( m => m.CreateReviewPageModule)
+  },
+  {
+    path: 'display-reviews',
+    loadChildren: () => import('./display-reviews/display-reviews.module').then( m => m.DisplayReviewsPageModule)
   }
 
 ];
