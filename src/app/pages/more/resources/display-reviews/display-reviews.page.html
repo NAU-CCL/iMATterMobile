@@ -1,12 +1,44 @@
-<ion-row>
+
+<ion-row *ngFor="let review of reviewDocArray">
+
   <ion-col>
+    <ion-card>
+      <ion-card-header class="ion-no-padding review-card-header-pad">
+  
+        <ion-card-title> 
+          {{review.reviewSubject}}
+        </ion-card-title>
+  
+        <ion-card-subtitle>
+          <div id="review-card-star-container" class="dis-flex" >
+            <ion-icon *ngFor="let num of starArray" id="star-1" [attr.name]="num <= review.reviewRating ? 'star' : 'star-outline'" size="small"></ion-icon>
+            <span>  -  {{review.reviewDate}}</span>
+          </div> 
+  
+          
+  
+         </ion-card-subtitle>
+  
+      </ion-card-header>
     
-    
-    <ion-list id="review-list">
+      <ion-card-content>
+  
       
-    </ion-list>
-    
-    
+  
+  
+        <span> {{review.reviewText}}</span>
+  
+      </ion-card-content>
+    </ion-card>
+  </ion-col>
+
+</ion-row>
+
+
+
+
+<ion-row>
+  <ion-col> 
     <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)">
       <ion-infinite-scroll-content
       loadingSpinner="bubbles"
