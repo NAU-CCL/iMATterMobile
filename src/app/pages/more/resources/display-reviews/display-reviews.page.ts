@@ -21,7 +21,15 @@ export class DisplayReviewsPage implements OnInit {
   public reviewRefArray = [];
   public reviewDocArray = [];
   public currentReviewRefIndex = 0;
-  public showLessReviews = false;
+
+
+  // Variables used to toggle how many reviews to show user.
+  public showLessReviews = 3;
+  public showAllReviews;
+  public showNReviews = this.showLessReviews;
+
+  public showReviewButtonText = "Show Less";
+
 
   @Input('resource_name') resourceTitle; 
   
@@ -68,6 +76,9 @@ export class DisplayReviewsPage implements OnInit {
 
 
   loadData(event) {
+
+    this.showNReviews = this.reviewRefArray.length;
+
     setTimeout( async () => {
 
       let loadFiveReviews = 5;
@@ -109,6 +120,18 @@ export class DisplayReviewsPage implements OnInit {
     this.reviewDocArray.push(review);
   }
   
+  toggleShowNReviews()
+  { 
+    if(this.showNReviews === this.reviewRefArray.length)
+    {
+      this.showNReviews = this.showLessReviews;
+      this.showReviewButtonText = "Show More";
+    }
+    else
+    {
+      this.showNReviews = this.reviewRefArray.length;
+      this.showReviewButtonText = "Show Less";
+    }
+  }
 }
-
 

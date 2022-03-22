@@ -52,4 +52,27 @@ export class GetReviewSurveyService {
   }
 
 
+  // Function used to convert strings into arrays in the Location collection.
+  changeResourceTypesFromStringToArray()
+  {
+    this.afs.collection<ReviewQuestions[]>('resourceLocations').ref.get().then( querySnap =>{
+      querySnap.forEach( ( docSnapShot )=>{
+
+        let resourceObj = docSnapShot.data();
+        
+
+        console.log(`hi`);
+        if( ( typeof resourceObj.type ) === "string")
+        {
+          console.log(`resource type is a string::: ${ JSON.stringify( resourceObj.type.split() ) }`);
+          //docSnapShot.ref.update({type: resourceObj.type.split()})
+        }
+        else{
+          //console.log(`resource type is NOT string::: ${ JSON.stringify(resourceObj.type)  }`);
+        }
+      })
+    })
+  }
+
+
 }

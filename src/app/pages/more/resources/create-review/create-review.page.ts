@@ -85,6 +85,8 @@ export class CreateReviewPage implements OnInit {
       this.userID = userID;
     })
 
+    this.reviewSurveyService.changeResourceTypesFromStringToArray();
+
 
 
   }
@@ -133,7 +135,7 @@ export class CreateReviewPage implements OnInit {
     return this.newReviewForm.get('reviewRating') as FormControl;
   }
 
-
+  //ReviewQuestions { review_questions_id: number, is_current: boolean, review_questions: string[], review_question_types: string[], question_tags: string[] }
   loadSurveyReviewQuestionsIntoForm()
   {
     this.reviewQuestionsQuery = this.reviewSurveyService.getReviewQuestionsForResources();
@@ -169,10 +171,7 @@ export class CreateReviewPage implements OnInit {
 
 
   deleteReview( reviewID: number ) {
-    //let new_rev: Review = {name: "hi"}
-
-    // Pass the collection an interface and it will be saved to the database in the specified collection.
-    //this.reviewsCollection.add( review );
+  
   }
 
   // Deletes all reviews from the review collection.
@@ -209,10 +208,13 @@ export class CreateReviewPage implements OnInit {
 
     resourceTypesQuery.get().then( querySnap =>{
       querySnap.forEach( docSnap => {
+
+        // Get all resource types available to be used by resources. Probably can be removed.
         this.allResourceTypes = docSnap.data()['types'] as string[];
 
         console.log(`ALL RESOURCE TYPES ARRAY: ${this.allResourceTypes }`);
 
+        // Get the types associated with the current resource.
         this.currentResourceTypes =  this.resourceObj['type'] as string[];
 
         console.log(`Current Resource Types ${this.currentResourceTypes}`)
@@ -228,12 +230,13 @@ export class CreateReviewPage implements OnInit {
 
   }
 
+    // A resources types field can be: an array, where each index is a single type, or a string that is a references a single type.
     filterSurveyQuestionArrays(surveyQuestionsArray: string[], surveyQuestionTypes: string[], surveyTagsArray: string[] )
     {
 
        for( let index =0 ; index < surveyQuestionTypes.length; index++ )
        {
-          if( surveyQuestionTypes[index] != 'all')
+          if( surveyQuestionTypes[index] != 'All')
           {
             // If the current survey question types is not included inside the current resource types array, remove the question, and the associated tag and type.
             // In other words, if this question does not apply to this survey, remove it.
