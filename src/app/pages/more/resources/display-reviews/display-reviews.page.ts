@@ -20,7 +20,8 @@ export class DisplayReviewsPage implements OnInit {
 
   public reviewRefArray = [];
   public reviewDocArray = [];
-  public currentReviewRefIndex = -1;
+  public currentReviewRefIndex = 0;
+  public showLessReviews = false;
 
   @Input('resource_name') resourceTitle; 
   
@@ -48,29 +49,53 @@ export class DisplayReviewsPage implements OnInit {
   // Returns a Review object.
   loadReviewForIndex() : Review
   {
-    this.currentReviewRefIndex += 1;
-
     //console.log(`In review load func, about to wait for promise.`)
 
+    // We have an array of review references. We access a reference and call get and then to retrieve the actual document the ref refers to.
+    // We use an array of references to save data, we dont want to load all the reviews as soon as the user visits this page as it is wasteful.
     return this.reviewRefArray[this.currentReviewRefIndex].get().then( ( docSnap ) => { 
       let docData = docSnap.data();
+
       //console.log(`DOC SNAP BEFORE RETURN ${JSON.stringify(docData) }`)
+
+      // Class level count index keeping track of which reviews have been loaded.
+      this.currentReviewRefIndex += 1;
+
       return docData  });
+
+    
   }
 
 
   loadData(event) {
     setTimeout( async () => {
 
-      let currentReview = await this.loadReviewForIndex();
+      let loadFiveReviews = 5;
+      let index = 0;
 
-      this.appendReviewToArray( currentReview );
+      while( index < loadFiveReviews )
+      {
+        // If there are more reviews
+        if( this.currentReviewRefIndex < this.reviewRefArray.length )
+        {
+          // await means WAIT here for the operation to complete. This function retrieves data from the db and needs to load before we can move on.
+          let currentReview = await this.loadReviewForIndex();
+    
+          this.appendReviewToArray( currentReview );
+  
+          index++;
+        }
+        else
+        {
+          index = 5;
+        }
+      }
 
       event.target.complete();
 
       // App logic to determine if all data is loaded
       // and disable the infinite scroll
-      if (this.currentReviewRefIndex >= this.reviewRefArray.length - 1 ) {
+      if (this.currentReviewRefIndex >= this.reviewRefArray.length ) {
         event.target.disabled = true;
         console.log(`Disabling spinner`);
       }
