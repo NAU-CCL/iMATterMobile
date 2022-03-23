@@ -219,7 +219,7 @@ export class CreateReviewPage implements OnInit {
 
         console.log(`Current Resource Types ${this.currentResourceTypes}`)
 
-        //this.filterSurveyQuestionArrays(surveyQuestionsArray, surveyQuestionTypes, surveyTagsArray )
+        this.filterSurveyQuestionArrays(surveyQuestionsArray, surveyQuestionTypes, surveyTagsArray )
 
         this.generateSurveyQuestionInputs(this.surveyQuestionsArray);
   
@@ -233,20 +233,57 @@ export class CreateReviewPage implements OnInit {
     // A resources types field can be: an array, where each index is a single type, or a string that is a references a single type.
     filterSurveyQuestionArrays(surveyQuestionsArray: string[], surveyQuestionTypes: string[], surveyTagsArray: string[] )
     {
-
-       for( let index =0 ; index < surveyQuestionTypes.length; index++ )
+      
+       let removeArrayIndexes = [];
+        // Iterate through each type string for each question. For example, currentQuestionTypeArray will likely look like this ['Housing','Food', 'MAT Provider']
+       for( let index = 0; index < surveyQuestionTypes.length; index++ )
        {
-          if( surveyQuestionTypes[index] != 'All')
+         let currentQuestionTypeArray = surveyQuestionTypes[index].split(',');
+
+         let removeQuestion = true; // keeps track of whether we should remove the question. Remove the question until proven otherwise.
+
+         console.log(`Current Question Type array ${currentQuestionTypeArray}`);
+
+        // Iterate through the current question types so we can compare them to the resource types.
+        for( let currQuesTypeIndex = 0; currQuesTypeIndex < currentQuestionTypeArray.length; currQuesTypeIndex++)
+        { 
+          let currentType = currentQuestionTypeArray[currQuesTypeIndex];
+
+          console.log(`All types for current question = ${JSON.stringify(currentQuestionTypeArray)}. Current Question Type ${currentType}. `)
+
+          if( this.currentResourceTypes.includes( currentType ) || currentType === "All" ) // Detirmine if the current question type is inlcluded in the array of types for this resource.
           {
-            // If the current survey question types is not included inside the current resource types array, remove the question, and the associated tag and type.
-            // In other words, if this question does not apply to this survey, remove it.
-           if( !this.currentResourceTypes.includes(surveyQuestionTypes[index] ) )
-           {
-            
-           }
+            removeQuestion = false;
           }
+
+        }
+
+        // If the question type was not included in the current resource types array, remove it.
+        if( removeQuestion )
+        { 
+          
+          removeArrayIndexes.push(index);
+          
+        }
+          
+       }
+
+       // Remove the elements starting with the greatest index. This is to avoid shrinking the array and making our indexes out of bounds.
+       for( let deleteIndex = removeArrayIndexes.length - 1; deleteIndex > -1; deleteIndex--)
+       {
+        console.log(`Element indexes to remove ${JSON.stringify(removeArrayIndexes)}`);
+         console.log(`Removing question ${surveyQuestionsArray[removeArrayIndexes[deleteIndex]]} with types ${surveyQuestionTypes[removeArrayIndexes[deleteIndex]]} and tags ${surveyTagsArray[removeArrayIndexes[deleteIndex]]}`);
+
+         // Remove the element at index in these three arrays since they all correspond to each other.
+         surveyQuestionsArray.splice( removeArrayIndexes[deleteIndex], 1);
+         surveyQuestionTypes.splice( removeArrayIndexes[deleteIndex], 1);
+         surveyTagsArray.splice( removeArrayIndexes[deleteIndex], 1);
+
+         console.log(`Questions Array after removing: ${JSON.stringify(surveyQuestionsArray)} with types ${JSON.stringify(surveyQuestionTypes)} and tags ${JSON.stringify(surveyTagsArray)}`);
        }
     }
+
+
 
     // Iterates through each survey question retrived from the database and creates a new Form Control for each which are used in our form builder. See angular reactive forms for more information.
     // Specifically we are using a formbuilder plus a form array. Form arrays allow for elements to be added to a form dynamically.
