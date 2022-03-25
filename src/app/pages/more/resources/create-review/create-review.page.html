@@ -42,26 +42,26 @@
         <ng-container *ngIf="questionsLoaded">
 
           <!-- Get the form controls that were created dynamically from the reviewSurveyAnswers form array-->
-          <div *ngFor="let alias of reviewSurveyAnswers.controls; let i=index">
+          <div class="question-container" *ngFor="let alias of reviewSurveyAnswers.controls; let i=index">
             <!-- The repeated alias template -->
             <ion-radio-group [formControlName]="i">
               <ion-list-header>
-                <ion-label class="font-24">
+                <ion-label class="font-18 bold-text">
                   Q{{i + 1}}: {{surveyQuestionsArray[i]}}
                 </ion-label>
               </ion-list-header>
           
-              <ion-item>
+              <ion-item class="font-18 light-text" >
                 <ion-label>Yes</ion-label>
                 <ion-radio value="yes" ></ion-radio>
               </ion-item>
           
-              <ion-item>
+              <ion-item class="font-18 light-text" >
                 <ion-label>No</ion-label>
                 <ion-radio value="no" ></ion-radio>
               </ion-item>
           
-              <ion-item>
+              <ion-item class="font-18 light-text" >
                 <ion-label>Don't Know</ion-label>
                 <ion-radio value="na" ></ion-radio>
               </ion-item>

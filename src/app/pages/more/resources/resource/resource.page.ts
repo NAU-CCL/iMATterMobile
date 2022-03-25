@@ -83,6 +83,8 @@ export class ResourcePage implements OnInit {
                 console.log(this.resource);
             });
         }
+
+        console.log(`Entering resource page.ts`)
     }
 
     // Use a capictor plugin to open the user phone app with a number 

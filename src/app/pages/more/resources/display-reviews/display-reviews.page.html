@@ -30,14 +30,17 @@
             </ion-card-content>
           </ion-card>
         </ion-col>
-
+        
       </ng-container>
-    
+      
+      
     </ion-row>
   </ion-col>
 </ion-row>
 
-<ion-button (click)="toggleShowNReviews()"> {{showReviewButtonText}} </ion-button>
+<ion-item *ngIf="reviewDocArray.length === 0"> No Reviews To Show </ion-item>
+
+<ion-button *ngIf="reviewDocArray.length != 0" (click)="toggleShowNReviews()"> {{showReviewButtonText}} </ion-button>
 
 
 

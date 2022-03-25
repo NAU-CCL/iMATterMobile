@@ -49,7 +49,12 @@ export class DisplayReviewsPage implements OnInit {
       })
     })
 
-    
+    console.log('On NGINIT');
+  }
+
+  ionViewWillEnter()
+  {
+    console.log('Will enter');
   }
 
 
@@ -77,7 +82,9 @@ export class DisplayReviewsPage implements OnInit {
 
   loadData(event) {
 
-    this.showNReviews = this.reviewRefArray.length;
+    console.log(`LENGTH OF REVIEW DOC ARRAY ${this.reviewDocArray.length} len of ref array ${this.reviewRefArray.length}`)
+
+    
 
     setTimeout( async () => {
 
@@ -103,6 +110,8 @@ export class DisplayReviewsPage implements OnInit {
       }
 
       event.target.complete();
+
+      this.showNReviews = this.reviewRefArray.length;
 
       // App logic to determine if all data is loaded
       // and disable the infinite scroll
