@@ -52,9 +52,10 @@ export class CreateReviewPage implements OnInit {
 
 
   // Each index repesents 1 of 5 stars on the reivew page. False means the star is not filled.
-  public rating_array = [true,false,false,false,false]
+  public rating_array = [false,false,false,false,false];
   // The users 1-5 star rating of the rescource, contains an int between 1-5.
   public selected_rating: number = 1;
+  public hasTouchedStars = false;
 
 
 
@@ -165,7 +166,7 @@ export class CreateReviewPage implements OnInit {
   }
 
   addAlias() {
-    this.reviewSurveyAnswers.push(this.fb.control('', Validators.required));
+    this.reviewSurveyAnswers.push(this.fb.control(''));
   }
 
 
@@ -188,7 +189,19 @@ export class CreateReviewPage implements OnInit {
   {
     console.log(` THIS FORM IS ${JSON.stringify( this.newReviewForm.value ) }`);
     
-     let currentDate = new Date(2008, 10, 5);
+     let currentDate = new Date();
+
+     for( let index = 0; index < this.reviewSurveyAnswers.value.length; index++)
+     {
+       console.log(`Survety answers value array ${JSON.stringify(this.reviewSurveyAnswers.value)} INDEX ${JSON.stringify(this.reviewSurveyAnswers.value[index])}`);
+       if( this.reviewSurveyAnswers.value[index] === undefined )
+       {
+        this.reviewSurveyAnswers.value[index] = 'na';
+        console.log(`Converting null to na`);
+       }
+     }
+
+     console.log(` THIS FORM IS AFTER ${JSON.stringify( this.newReviewForm.value ) }`);
 
      let reviewObj = { resourceID: this.resourceID, reviewDate: currentDate, userID: this.userID, reviewSubject: this.reviewSubject.value, reviewText: this.reviewText.value, reviewRating: this.selected_rating, survey_answers:  this.reviewSurveyAnswers.value, survey_tags: this.surveyTagsArray }
      
