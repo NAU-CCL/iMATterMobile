@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { GetReviewSurveyService } from '../../../../services/get-review-survey.service'
 import { Review } from '../review-interfaces/review-interfaces';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-display-reviews',
@@ -19,6 +20,7 @@ export class DisplayReviewsPage implements OnInit {
   public starArray = [1,2,3,4,5];
 
   public reviewRefArray = [];
+  private reviewRefArrayLoaded = false;
   public reviewDocArray = [];
   public currentReviewRefIndex = 0;
 
@@ -34,20 +36,28 @@ export class DisplayReviewsPage implements OnInit {
   @Input('resource_name') resourceTitle; 
   
 
-  constructor( private reviewSurveyService: GetReviewSurveyService, private activatedRoute: ActivatedRoute ) { }
+  constructor( private reviewSurveyService: GetReviewSurveyService, private activatedRoute: ActivatedRoute, public datepipe: DatePipe ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.resourceID = this.activatedRoute.snapshot.paramMap.get('id');
     this.getReviewsObs = this.reviewSurveyService.getReviewsForResource( this.resourceID );
     this.getReviewsQuery = this.reviewSurveyService.getReviewsForResourceQuery( this.resourceID );
 
 
+    console.log(`About to wait for review ref array`);
+
     // Fill an array with refs to each review document in the db, we do this to avoid loading all docs immediately.
-    this.getReviewsQuery.get().then( querySnap =>{
+    // Call await to wait for this line of code to finish.
+    await this.getReviewsQuery.get().then( querySnap =>{
       querySnap.forEach( (queryDocSnap) => {
         this.reviewRefArray.push(queryDocSnap.ref)
+        console.log(`Inside review ref array`);
       })
     })
+
+    this.reviewRefArrayLoaded = true;
+
+    console.log(`Outside review ref array`);
 
     console.log('On NGINIT');
   }
@@ -115,7 +125,7 @@ export class DisplayReviewsPage implements OnInit {
 
       // App logic to determine if all data is loaded
       // and disable the infinite scroll
-      if (this.currentReviewRefIndex >= this.reviewRefArray.length ) {
+      if (this.currentReviewRefIndex >= this.reviewRefArray.length && this.reviewRefArrayLoaded ) {
         event.target.disabled = true;
         console.log(`Disabling spinner`);
       }

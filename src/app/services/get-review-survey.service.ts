@@ -48,7 +48,7 @@ export class GetReviewSurveyService {
   // Get all reviews for a resource but return a query object
   getReviewsForResourceQuery( resource_id: string )
   {
-    return this.afs.collection<Review[]>("resourceReviews").ref.where('resourceID','==', resource_id);
+    return this.afs.collection<Review[]>("resourceReviews").ref.where('resourceID','==', resource_id).orderBy('reviewDate','desc');
   }
 
 

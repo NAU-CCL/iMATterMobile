@@ -188,17 +188,13 @@ export class CreateReviewPage implements OnInit {
   {
     console.log(` THIS FORM IS ${JSON.stringify( this.newReviewForm.value ) }`);
     
-     let currentDate = new Date();
+     let currentDate = new Date(2008, 10, 5);
 
-     // The date is saved as a string!!!
-     let stringDate = this.datepipe.transform(currentDate, 'yyyy-MM-dd');
-
-     let reviewObj = { resourceID: this.resourceID, reviewDate: stringDate, userID: this.userID, reviewSubject: this.reviewSubject.value, reviewText: this.reviewText.value, reviewRating: this.selected_rating, survey_answers:  this.reviewSurveyAnswers.value, survey_tags: this.surveyTagsArray }
+     let reviewObj = { resourceID: this.resourceID, reviewDate: currentDate, userID: this.userID, reviewSubject: this.reviewSubject.value, reviewText: this.reviewText.value, reviewRating: this.selected_rating, survey_answers:  this.reviewSurveyAnswers.value, survey_tags: this.surveyTagsArray }
      
      this.reviewsCollection.add( reviewObj );
 
      this.router.navigate([`/tabs/more/resources/${this.resourceID}/`]);
-     
   }
 
   getAllResourceTypes(surveyQuestionsArray: string[], surveyQuestionTypes: string[], surveyTagsArray: string[] )

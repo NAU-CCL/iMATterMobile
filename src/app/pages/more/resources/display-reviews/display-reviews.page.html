@@ -14,7 +14,7 @@
               <ion-card-subtitle>
                 <div id="review-card-star-container" class="dis-flex" >
                   <ion-icon *ngFor="let num of starArray" id="star-1" [attr.name]="num <= review.reviewRating ? 'star' : 'star-outline'" size="small"></ion-icon>
-                  <span>  -  {{review.reviewDate}}</span>
+                  <span>  -  {{review.reviewDate.toDate() | date: 'yyyy-MM-dd' }}</span> <!-- Timestamps returned from fire store are not dates so we must convert the timestamp to a date with toDate() before giving the date to the date pipe.-->
                 </div> 
         
                 
@@ -49,8 +49,8 @@
   <ion-col> 
     <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)">
       <ion-infinite-scroll-content
-      loadingSpinner="bubbles"
-      loadingText="Loading more data...">
+      loadingSpinner="crescent"
+      loadingText="Loading more reviews...">
     </ion-infinite-scroll-content>
   </ion-infinite-scroll>
   
