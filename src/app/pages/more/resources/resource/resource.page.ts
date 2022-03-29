@@ -12,6 +12,7 @@ import { CallNumber } from '@awesome-cordova-plugins/call-number/ngx';
 import { LaunchNavigator, LaunchNavigatorOptions } from '@awesome-cordova-plugins/launch-navigator/ngx';
 import {Device} from '@ionic-native/device/ngx';
 import { AlertController } from '@ionic/angular';
+import { Output, EventEmitter } from '@angular/core';
 
 @Component({
     selector: 'app-resource',
@@ -51,6 +52,19 @@ export class ResourcePage implements OnInit {
         cityState: '',
     }
 
+    public reviewAvg: number; // average review rating for this resource.
+    public totalReviews: number; // total reviews for this resource.
+    public starArray = [1,2,3,4,5]; // Used to create star rating icons for resource.
+
+    // Stores an object that describes answers to common review quesitons
+    public reviewTagInfoObj: {};
+    public tagAttrs = [];
+
+
+    // Template Variables //
+
+    public tagsCollapsed = false;
+
     constructor(private resourceService: LocationService,
         private storage: Storage,
         private router: Router,
@@ -66,7 +80,7 @@ export class ResourcePage implements OnInit {
 
     public resourceID;
 
-    ngOnInit() {
+    async ngOnInit() {
         this.storage.get('authenticated').then((val) => {
             if (val === 'false') {
                 this.router.navigate(['/login/']);
@@ -174,5 +188,49 @@ export class ResourcePage implements OnInit {
             message: msg,
             duration: 2000
         }).then(toast => toast.present());
+    }
+
+    getReviewAvg( reviewInfoArray )
+    {
+        this.reviewAvg  = reviewInfoArray[0];
+        this.totalReviews = reviewInfoArray[1];
+        
+        console.log(`Review avg IN PARENT is ${reviewInfoArray}`);
+    }
+
+    getReviewTagInfo( reviewTagInfoObj )
+    {
+        this.reviewTagInfoObj = reviewTagInfoObj;
+
+        this.generateTagAttributes(this.reviewTagInfoObj)
+        console.log(`REVIEW TAG IN PARENT OBJ ${JSON.stringify(reviewTagInfoObj) }`);
+    }
+
+    generateTagAttributes( reviewTagInfo )
+    {
+        for( let tagObj in reviewTagInfo )
+        {
+            let tagInfoObj = reviewTagInfo[tagObj];
+
+            if(tagInfoObj.yes != 0 && tagInfoObj.no == 0)
+            {
+                this.tagAttrs.push([tagObj, 'success']);
+            }
+            else if( tagInfoObj.yes == 0 && tagInfoObj.no != 0 )
+            {
+                this.tagAttrs.push([tagObj, 'danger']);
+            }
+            else
+            {
+                this.tagAttrs.push([tagObj, 'warning']);
+            }
+            console.log(`TAG OBJ ${tagObj }`);
+        }
+    }
+
+    toggleTagModal()
+    {
+        let modal: HTMLElement = document.querySelector('#tag-modal');
+        modal.style.display = "block";
     }
 }

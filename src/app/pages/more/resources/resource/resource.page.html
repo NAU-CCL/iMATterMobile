@@ -6,8 +6,26 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
+
 <ion-content>
-  <h1 class="ion-padding ion-no-margin">{{resource.title}}</h1>
+  <ion-grid>
+    <ion-row>
+      <ion-col class="d-flex-justify-center">
+        <h1 class="ion-padding ion-no-margin">{{resource.title}}</h1>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col class="d-flex-justify-center">
+
+        <div id="review-card-star-container-resource-page" class="dis-flex" >
+         <ion-icon *ngFor="let num of starArray" id="star-1" [attr.name]="num <= reviewAvg ? 'star' : 'star-outline'" size="small"></ion-icon>
+       </div>
+       <div class="resource-rating-caption"> - From {{totalReviews}} Reviews </div>
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
   <div class="dis-flex-center" >
     <img src="https://firebasestorage.googleapis.com/v0/b/imatter-nau.appspot.com/o/ResourceImages%2FSunshineRescue.png?alt=media&token=e2fc71c2-e095-40d4-893e-b314d3f67af2" alt="The real life building this resource represents" width="250" height="250">
@@ -18,6 +36,13 @@
     <div><span> Contact: {{resource.phone}} </span> <ion-icon (click)="callResourcePhone()" name="call"></ion-icon> </div>
     <div> <span> Address: {{resource.street}} </span> <ion-icon (click)="openAddress()" name="map"></ion-icon> </div>
   </div>
+
+  <div class="ion-padding tags-header"> Tags: </div>
+  <ion-card [class.collapsed-element]="tagsCollapsed">
+    <ion-card-content>
+         <span><ion-chip *ngFor="let tag of tagAttrs" color="{{ tag[1] }}" (click)="toggleTagModal()" > {{tag[0]}} </ion-chip></span>
+    </ion-card-content>
+  </ion-card>
 
   <ion-card>
     <ion-card-content>
@@ -119,8 +144,8 @@
           <ion-toolbar>
 
             <div id="review-card-tool-bar" class="border-top" >
-              <ion-title>Reviews</ion-title>
-              <ion-button [routerLink]="['./new-review']" >
+             <div> <span class="center-span"> Reviews </span> </div> 
+              <ion-button [routerLink]="['./new-review']"  class="remove-margin">
                 New Review
                 <ion-icon name="add" slot="start"></ion-icon>
               </ion-button>
@@ -134,13 +159,32 @@
 
     
 
-    <app-display-reviews [resource_name]="resource.title"> </app-display-reviews>
+    <app-display-reviews (averageRatingForParentEvent)="getReviewAvg($event)" (tagArrayForParentEvent)="getReviewTagInfo($event)" > </app-display-reviews>
 
 
   </ion-grid>
 
 
+<div id="tag-modal" class="ion-card-modal">
+  <h3> Tag Name: </h3>
+  <ul>
+    <li>
+      Yes:
+    </li>
+    <li>
+      No:
+    </li>
+    <li>
+      Did not know:
+    </li>
+  </ul>
+    
+  
+</div>
+
 </ion-content>
+
+
 <ion-footer *ngIf="resource.url != ''">
   <ion-button class="footer-button" color="primary" id={{resource.url}} (click)="visitSite(resource.url)">Visit Website
   </ion-button>
