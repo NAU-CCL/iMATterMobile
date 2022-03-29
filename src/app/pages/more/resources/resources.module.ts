@@ -9,6 +9,7 @@ import { ResourcesPageRoutingModule } from './resources-routing.module';
 import { ResourcesPage } from './resources.page';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 
+
 @NgModule({
   imports: [
     CommonModule,

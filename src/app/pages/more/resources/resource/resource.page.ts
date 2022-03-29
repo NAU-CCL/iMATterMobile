@@ -13,6 +13,9 @@ import { LaunchNavigator, LaunchNavigatorOptions } from '@awesome-cordova-plugin
 import {Device} from '@ionic-native/device/ngx';
 import { AlertController } from '@ionic/angular';
 import { Output, EventEmitter } from '@angular/core';
+import { PopoverController } from '@ionic/angular';
+import { ReviewTagPopoverComponent } from './review-tag-popover/review-tag-popover.component'
+
 
 @Component({
     selector: 'app-resource',
@@ -75,7 +78,8 @@ export class ResourcePage implements OnInit {
         private callNumber: CallNumber,
         private launchNavigator: LaunchNavigator,
         private device: Device,
-        private alertController : AlertController) {
+        private alertController : AlertController,
+        public popoverController: PopoverController) {
     }
 
     public resourceID;
@@ -232,5 +236,15 @@ export class ResourcePage implements OnInit {
     {
         let modal: HTMLElement = document.querySelector('#tag-modal');
         modal.style.display = "block";
+        modal.classList.add('animate-modal');
     }
+
+    async presentPopover( chipID ) {
+        const popover = await this.popoverController.create({
+          component: ReviewTagPopoverComponent,
+          translucent: true,
+          componentProps: {id: chipID}
+        });
+        return await popover.present();
+      }
 }

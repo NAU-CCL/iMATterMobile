@@ -10,6 +10,8 @@ import { ResourcePage } from './resource.page';
 
 import {DisplayReviewsPage} from '../display-reviews/display-reviews.page'
 
+import { ReviewTagPopoverComponent } from './review-tag-popover/review-tag-popover.component';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -17,6 +19,7 @@ import {DisplayReviewsPage} from '../display-reviews/display-reviews.page'
     IonicModule,
     ResourcePageRoutingModule
   ],
-  declarations: [ResourcePage, DisplayReviewsPage]
+  declarations: [ResourcePage, DisplayReviewsPage, ReviewTagPopoverComponent],
+  entryComponents: [ReviewTagPopoverComponent]
 })
 export class ResourcePageModule {}

@@ -40,7 +40,7 @@
   <div class="ion-padding tags-header"> Tags: </div>
   <ion-card [class.collapsed-element]="tagsCollapsed">
     <ion-card-content>
-         <span><ion-chip *ngFor="let tag of tagAttrs" color="{{ tag[1] }}" (click)="toggleTagModal()" > {{tag[0]}} </ion-chip></span>
+         <span><ion-chip *ngFor="let tag of tagAttrs" color="{{ tag[1] }}" id="tag-chip-{{tag[0]}}" (click)="presentPopover(tag[0])" > {{tag[0]}} </ion-chip></span>
     </ion-card-content>
   </ion-card>
 
@@ -163,24 +163,6 @@
 
 
   </ion-grid>
-
-
-<div id="tag-modal" class="ion-card-modal">
-  <h3> Tag Name: </h3>
-  <ul>
-    <li>
-      Yes:
-    </li>
-    <li>
-      No:
-    </li>
-    <li>
-      Did not know:
-    </li>
-  </ul>
-    
-  
-</div>
 
 </ion-content>
 
