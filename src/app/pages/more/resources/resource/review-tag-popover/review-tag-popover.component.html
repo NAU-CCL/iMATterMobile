@@ -1,14 +1,24 @@
-<ion-card>
-  <ion-card-header>
-    <ion-card-title>Card Title</ion-card-title>
-    <ion-card-subtitle>Tag Name</ion-card-subtitle>
-  </ion-card-header>
+<div class="tag-pop-up">
+  <h4> <strong>Question: "{{tagName}}" </strong> </h4>
+  
+  <div class="margin-left">
+    <h5>Users Answers to This Question:</h5>
 
-  <ion-card-content>
     <ul>
       <li>
-        sadasd
+        <span class="green-text">Yes: </span>{{tagInfo.yes}}
+      </li>
+
+      <li>
+        <span class="red-text">No: </span> {{tagInfo.no}}
+      </li>
+
+      <li>
+        <span class="orange-text">Did Not Know: </span> {{tagInfo.na}}
       </li>
     </ul>
-  </ion-card-content>
-</ion-card>
+
+    <span>{{tagSummary}}</span>
+  </div>
+
+</div>

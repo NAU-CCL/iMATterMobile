@@ -185,6 +185,7 @@ export class CreateReviewPage implements OnInit {
     })
   }
 
+  // Return false to prevent form submission.
   submitNewReview()
   {
     console.log(` THIS FORM IS ${JSON.stringify( this.newReviewForm.value ) }`);
@@ -322,5 +323,4 @@ export class CreateReviewPage implements OnInit {
       this.selected_rating = starIndex + 1;
   
     }
-
 }

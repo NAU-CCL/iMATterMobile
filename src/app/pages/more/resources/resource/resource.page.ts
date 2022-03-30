@@ -202,6 +202,9 @@ export class ResourcePage implements OnInit {
         console.log(`Review avg IN PARENT is ${reviewInfoArray}`);
     }
 
+    // This method is called in response to the child component of resource.page which is
+    // display-reviews.page Outputting a value to the parent. The parent intercepts the event as a call to this
+    // function. The parent receives a javascript object which contains an array of objects whos key names correspond to tag names.
     getReviewTagInfo( reviewTagInfoObj )
     {
         this.reviewTagInfoObj = reviewTagInfoObj;
@@ -239,11 +242,14 @@ export class ResourcePage implements OnInit {
         modal.classList.add('animate-modal');
     }
 
-    async presentPopover( chipID ) {
+    async presentPopover( tagName ) {
         const popover = await this.popoverController.create({
           component: ReviewTagPopoverComponent,
           translucent: true,
-          componentProps: {id: chipID}
+          componentProps: {tagObject:  this.reviewTagInfoObj[tagName], tagName: tagName},
+          cssClass: 'tag-pop-up',
+          
+
         });
         return await popover.present();
       }

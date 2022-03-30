@@ -8,7 +8,6 @@
 </ion-header>
 
 <ion-content>
-  <!--The content below is only a placeholder and can be replaced.-->
   <div  class="pad-entire-page">
 
     <div style="text-align:center">
@@ -21,6 +20,9 @@
         <ion-icon id="star-4" [attr.name]="rating_array[3] ? 'star' : 'star-outline'" size="large" (click)="updateRatingStars(3)"></ion-icon>
         <ion-icon id="star-5" [attr.name]="rating_array[4] ? 'star' : 'star-outline'" size="large" (click)="updateRatingStars(4)"></ion-icon>
       </div> 
+      <span *ngIf="((reviewSubject.touched || reviewText.touched)  && !hasTouchedStars)" style="color: red">
+        *Rating Required
+      </span>
     </div>
 
     
@@ -28,12 +30,22 @@
     <form [formGroup]="newReviewForm"  (ngSubmit)="submitNewReview()">
       <div>
         <ion-label position="fixed" >Review Subject (40 Characters or Less):  </ion-label>
-        <ion-input id="review-subject" name="user-review-subject" placeholder="Enter a few words to describe your review!" maxlength=40 class="round-grey-border" formControlName="reviewSubject" ></ion-input>
+        
+        <ion-badge *ngIf="reviewSubject.touched && reviewSubject.invalid" color="danger">
+          Required
+        </ion-badge>
+
+        <ion-input id="review-subject" name="user-review-subject" placeholder="Enter a few words to describe your review!" maxlength=40 class="round-grey-border" formControlName="reviewSubject"></ion-input>
       </div>
 
       <div>
-          <ion-label position="floating" > <h2>Review Text: </h2> </ion-label>
-          <ion-textarea id="review-text" name="user-review" placeholder="Type your review here!" class="round-grey-border" autoGrow="true" formControlName="reviewText" ></ion-textarea>
+          <ion-label position="fixed" > Review Text:  </ion-label>
+
+          <span *ngIf="reviewText.touched && reviewText.invalid" style="color: red">
+            *Required
+          </span>
+
+          <ion-textarea id="review-text" name="user-review" placeholder="Type your review here!" class="round-grey-border" autoGrow="true" formControlName="reviewText"></ion-textarea>
       </div>
 
 
@@ -73,7 +85,7 @@
 
       </div>
 
-      <ion-button type="submit" [disabled]="!newReviewForm.valid || !hasTouchedStars" color="primary"> Submit Review </ion-button>
+      <ion-button type="submit" color="primary" [disabled]="!newReviewForm.valid || !hasTouchedStars" > Submit Review </ion-button>
     </form>
 
   </div>

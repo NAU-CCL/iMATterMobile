@@ -60,3 +60,9 @@
   color: black;
   font-weight: bold;
 }
+
+// Overrides the width of popover, sadly this affects all popovers.
+// So far popovers are only used on the resource page so if this needs to be changed it should be to hard to fix.
+.popover-content{
+  --width: 80%;
+}
