@@ -207,7 +207,7 @@ export class ResourcePage implements OnInit {
         this.reviewAvg = reviewInfoArray[0];
         this.totalReviews = reviewInfoArray[1];
         
-        console.log(`Review avg IN PARENT is ${reviewInfoArray}`);
+        //console.log(`Review avg IN PARENT is ${reviewInfoArray}`);
     }
 
     // This method is called in response to the child component of resource.page which is
@@ -218,13 +218,13 @@ export class ResourcePage implements OnInit {
         this.reviewTagInfoObj = reviewTagInfoObj;
 
         this.generateTagAttributes(this.reviewTagInfoObj)
-        console.log(`REVIEW TAG IN PARENT OBJ ${JSON.stringify(reviewTagInfoObj) }`);
+        //console.log(`REVIEW TAG IN PARENT OBJ ${JSON.stringify(reviewTagInfoObj) }`);
     }
 
     // Generates an array of 3 element arrays that store a tags name, the color it should be, success for green, red for danger, and orange for warning, and the question name.
     generateTagAttributes( reviewTagInfo )
     {
-        console.log(`REVIEW TAG INFO OBJ IS ${JSON.stringify( reviewTagInfo )}`)
+        //console.log(`REVIEW TAG INFO OBJ IS ${JSON.stringify( reviewTagInfo )}`)
         for( let questionName in reviewTagInfo )
         {   
             let questionInfoObj = reviewTagInfo[questionName];
@@ -244,7 +244,7 @@ export class ResourcePage implements OnInit {
             {
                 this.tagAttrs.push([tagName, 'warning', questionName]);
             }
-            console.log(`TAG OBJ ${tagName }`);
+            //console.log(`TAG OBJ ${tagName }`);
         }
     }
 

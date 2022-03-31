@@ -78,11 +78,19 @@ export class DisplayReviewsPage implements OnInit {
   // This is a semi hacky way to refresh reviews after a user submits a review.
   async initializeReviewPage()
   {
+    // Reset all variables used to display reviews to the user. This is not the best way this could be done. Angular element are not meant be
+    // manually reloaded but we are fighting angular here and you can see how complex and scattered this can get. Avoid this if you can. If you need
+    // A component to reload data when it is viewed again try to use an observable.
     // reset the review doc array when this func is called. This is because we need to reload all reviews after the user submits a review.
     this.reviewDocArray = []
     this.visibleReviewsArray = [];
-
+    this.currentReviewRefIndex = 0;
     this.totalReviewScores = 0;
+
+    // Reenable the infinite scroll element.
+    document.getElementsByTagName('ion-infinite-scroll')[0].disabled = false;
+
+    console.log(`Waiting to load reviews`);
     // Fill an array with refs to each review document in the db, we do this to avoid loading all docs immediately.
     // Call await to wait for this line of code to finish.
     await this.getReviewsQuery.get().then( querySnap =>{
@@ -95,6 +103,8 @@ export class DisplayReviewsPage implements OnInit {
       })
     })
 
+    console.log(`Finished loading reviews`);
+
     let loadFive = 0;
 
     while(loadFive < 5)
@@ -102,6 +112,10 @@ export class DisplayReviewsPage implements OnInit {
       this.loadReviewForIndex();
       loadFive++;
     }
+
+    console.log(`Review doc array ${this.reviewDocArray}`);
+
+    console.log(`Visble reviews ${this.visibleReviewsArray}|||||||||| INDEX IS ${this.currentReviewRefIndex}`);
 
     this.showNReviews = this.reviewDocArray.length;
 
@@ -187,7 +201,7 @@ export class DisplayReviewsPage implements OnInit {
     this.averageRating = this.totalReviewScores/(this.reviewDocArray.length);
     this.averageRating = Math.round(this.averageRating);
 
-    console.log(`Ang Review is ${this.averageRating}`);
+    //console.log(`Ang Review is ${this.averageRating}`);
   }
 
   generateReviewTags( reviewDoc )
@@ -250,7 +264,7 @@ export class DisplayReviewsPage implements OnInit {
       }
     }
 
-    console.log(`QUESTION NAME ARRAY ${JSON.stringify(this.questionNameArray) }`);
+    //console.log(`QUESTION NAME ARRAY ${JSON.stringify(this.questionNameArray) }`);
 
   }
 
