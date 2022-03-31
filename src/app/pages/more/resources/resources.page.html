@@ -3,7 +3,7 @@
         <ion-buttons slot="start">
             <ion-back-button class="text-button" defaultHref="/tabs/more"></ion-back-button>
         </ion-buttons>
-        <ion-title>Resources Test</ion-title>
+        <ion-title>Resources Tests</ion-title>
     </ion-toolbar>
 
 </ion-header>
@@ -32,7 +32,7 @@
                 <ion-searchbar *ngIf="!iosPlatform" (ionInput)="filterResources($event)" class="ion-no-padding rounded-corners"> </ion-searchbar>
                 
                 
-                <!-- Searchbar for all questions -->
+                <!-- Searchbar for resources -->
                 <ion-searchbar *ngIf="iosPlatform"  mode="ios" (ionInput)="filterResources($event)" class="ion-no-padding rounded-corners"> </ion-searchbar>
                   
             </ion-col>

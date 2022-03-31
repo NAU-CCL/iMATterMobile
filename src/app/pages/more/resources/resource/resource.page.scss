@@ -4,3 +4,74 @@
     margin: 0;
     --border-radius: 0%;
 }
+
+.dis-flex-center{
+    display: flex;
+    justify-content: center;
+}
+
+.dis-flex{
+    display: flex;
+}
+
+.review-card-header-pad{
+    padding: 14px;
+}
+
+#review-card-star-container{
+    padding-bottom: 5px;
+}
+
+.chip-size{
+    font-size: 14px;
+}
+
+#review-card-tool-bar{
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0px 8px 0px;
+}
+
+.border-top{
+    border-top: 1.5px solid grey;
+}
+
+.remove-margin{
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.veritcal-align-span{
+    vertical-align: middle;
+    height: 100%;
+    display: inline-block;
+}
+
+.center-span{
+    display: inline-block;
+    font-size: 24px;
+    margin-top: 3px;
+    margin-left: 8px;
+}
+
+
+.d-flex-justify-center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.no-padding{
+    padding: 0px;
+}
+
+
+.collapsed-element{
+    height: 30px;
+}
+
+.tags-header{
+    font-size: 20px;
+    margin-bottom: 5px;
+    padding-bottom:0px;
+}

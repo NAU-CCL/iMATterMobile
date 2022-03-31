@@ -1,0 +1,101 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>View Resource</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button class="text-button" defaultHref="/tabs/more/resources"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div  class="pad-entire-page">
+
+    <div style="text-align:center">
+      <h4> Create a Review for {{resourceName}} </h4>
+  
+      <div id="review-card-star-container" class="dis-flex" (click)="hasTouchedStars=true">
+        <ion-icon id="star-1" [attr.name]="rating_array[0] ? 'star' : 'star-outline'" size="large" (click)="updateRatingStars(0)"></ion-icon>
+        <ion-icon id="star-2" [attr.name]="rating_array[1] ? 'star' : 'star-outline'" size="large" (click)="updateRatingStars(1)"></ion-icon>
+        <ion-icon id="star-3" [attr.name]="rating_array[2] ? 'star' : 'star-outline'" size="large" (click)="updateRatingStars(2)"></ion-icon>
+        <ion-icon id="star-4" [attr.name]="rating_array[3] ? 'star' : 'star-outline'" size="large" (click)="updateRatingStars(3)"></ion-icon>
+        <ion-icon id="star-5" [attr.name]="rating_array[4] ? 'star' : 'star-outline'" size="large" (click)="updateRatingStars(4)"></ion-icon>
+        <span *ngIf="((reviewSubject.touched || reviewText.touched)  && !hasTouchedStars)" style="color: red">
+          *
+        </span>
+      </div> 
+      
+    </div>
+
+    
+
+    <form [formGroup]="newReviewForm"  (ngSubmit)="submitNewReview()">
+      <div>
+        <ion-label position="fixed" >Review Subject (40 Characters or Less):  </ion-label>
+        
+        <span *ngIf="reviewSubject.touched && reviewSubject.invalid" style="color: red">
+          *
+        </span>
+
+        <ion-input id="review-subject" name="user-review-subject" placeholder="Enter a few words to describe your review!" maxlength=40 class="round-grey-border" formControlName="reviewSubject"></ion-input>
+      </div>
+
+      <div>
+          <ion-label position="fixed" > Review Text:  </ion-label>
+
+          <span *ngIf="reviewText.touched && reviewText.invalid" style="color: red">
+            *
+          </span>
+
+          <ion-textarea id="review-text" name="user-review" placeholder="Type your review here!" class="round-grey-border" autoGrow="true" formControlName="reviewText"></ion-textarea>
+      </div>
+
+
+      <div formArrayName="reviewSurveyAnswers">
+
+        <h5>
+          Please take a moment to help others understand this resource better by answering a few questions. (Optional)
+        </h5>
+
+        <ng-container *ngIf="questionsLoaded">
+
+          <!-- Get the form controls that were created dynamically from the reviewSurveyAnswers form array-->
+          <div class="question-container" *ngFor="let alias of reviewSurveyAnswers.controls; let i=index">
+            <!-- The repeated alias template -->
+            <ion-radio-group [formControlName]="i">
+              <ion-list-header>
+                <ion-label class="font-18 bold-text">
+                  Q{{i + 1}}: {{surveyQuestionsArray[i]}}
+                </ion-label>
+              </ion-list-header>
+          
+              <ion-item class="font-18 light-text indent-right" >
+                <ion-label>Yes</ion-label>
+                <ion-radio value="yes" ></ion-radio>
+              </ion-item>
+          
+              <ion-item class="font-18 light-text indent-right" >
+                <ion-label>No</ion-label>
+                <ion-radio value="no" ></ion-radio>
+              </ion-item>
+          
+              <ion-item class="font-18 light-text indent-right" >
+                <ion-label>Don't Know</ion-label>
+                <ion-radio value="na" ></ion-radio>
+              </ion-item>
+            </ion-radio-group>
+
+          </div>
+
+        </ng-container>
+
+      </div>
+
+      <ion-button type="submit" color="primary" [disabled]="!newReviewForm.valid || !hasTouchedStars" > Submit Review </ion-button>
+    </form>
+
+  </div>
+
+
+  <router-outlet></router-outlet>
+
+</ion-content>

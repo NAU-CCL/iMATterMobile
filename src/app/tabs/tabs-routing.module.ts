@@ -127,6 +127,7 @@ const routes: Routes = [
               import('../pages/learning-center/learning-center.module').then(m => m.LearningCenterPageModule)
           },
           {
+            //This module loaded when /more is visited. Routes of the pattern /more/index will be matched by the more-routing.module.ts
             path: '',
             loadChildren: () =>
               import('../pages/more/more.module').then(m => m.MorePageModule)

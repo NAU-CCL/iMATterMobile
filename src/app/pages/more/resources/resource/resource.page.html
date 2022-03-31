@@ -1,18 +1,59 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>View All</ion-title>
+    <ion-title>View Resource</ion-title>
     <ion-buttons slot="start">
       <ion-back-button class="text-button" defaultHref="/tabs/more/resources"></ion-back-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
+
 <ion-content>
-  <h1 class="ion-padding ion-no-margin">{{resource.title}}</h1>
+  <ion-grid>
+    <ion-row>
+      <ion-col class="d-flex-justify-center">
+        <h1 class="ion-padding ion-no-margin">{{resource.title}}</h1>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col class="d-flex-justify-center">
+
+        <div id="review-card-star-container-resource-page" class="dis-flex" >
+         <ion-icon *ngFor="let num of starArray" id="star-1" [attr.name]="num <= reviewAvg ? 'star' : 'star-outline'" size="small"></ion-icon>
+       </div>
+       <div class="resource-rating-caption"> - From {{totalReviews}} Reviews </div>
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <div class="dis-flex-center" >
+    <img src="https://firebasestorage.googleapis.com/v0/b/imatter-nau.appspot.com/o/ResourceImages%2FGenericBuildingPlaceHolderiMatter.png?alt=media&token=7322f386-d6ae-4f20-b760-67a1b80b270b" alt="The real life building this resource represents" width="250" height="187">
+  </div>
+
   <div class="ion-padding">
     <div>Services: {{resource.type}} </div>
-    <div>Contact: {{resource.phone}} </div>
-    <div>Address: {{resource.street}} </div>
+    <div><span> Contact: {{resource.phone}} </span> <ion-icon (click)="callResourcePhone()" name="call"></ion-icon> </div>
+    <div> <span> Address: {{resource.street}} </span> <ion-icon (click)="openAddress()" name="map"></ion-icon> </div>
   </div>
+
+  <div class="ion-padding tags-header"> Answers to User Questions: </div>
+  <ion-card [class.collapsed-element]="tagsCollapsed">
+    <ion-card-content>
+         <span>
+           <!-- index 0 holds the tag name, index 1 holds tag color, index 2 holds the full question associated with the tag. -->
+           <ion-chip *ngFor="let tag of tagAttrs" color="{{ tag[1] }}" id="tag-chip-{{tag[0]}}" (click)="presentPopover(tag[2])" >
+             <ion-icon name="information-circle-outline"></ion-icon>
+             <span>{{tag[0]}}</span>
+            </ion-chip>
+          </span>
+
+          <span *ngIf="tagAttrs.length == 0">
+            No Answers to Show
+          </span>
+    </ion-card-content>
+  </ion-card>
+
   <ion-card>
     <ion-card-content>
       {{resource.content}}
@@ -105,7 +146,39 @@
       </ion-col>
     </ion-row>
   </ion-grid>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+
+        <ion-header class="ion-no-border">
+          <ion-toolbar>
+
+            <div id="review-card-tool-bar" class="border-top" >
+             <div> <span class="center-span"> Reviews </span> </div> 
+              <ion-button [routerLink]="['./new-review']"  class="remove-margin">
+                New Review
+                <ion-icon name="add" slot="start"></ion-icon>
+              </ion-button>
+            </div>
+
+          </ion-toolbar>
+        </ion-header>
+
+      </ion-col>
+    </ion-row>
+
+    
+
+    <!-- averageRatingForParentEvent and tagArrayForParentEvent are properties of the child components app-display-reviews.
+       This component has methods, getReviewTagInfo and getReviewAvg which are executed when the childs emitter properties emit events.-->
+    <app-display-reviews (averageRatingForParentEvent)="getReviewAvg($event)" (tagArrayForParentEvent)="getReviewTagInfo($event)" [reloadReviews]="askChildToReloadReviews" > </app-display-reviews>
+
+
+  </ion-grid>
+
 </ion-content>
+
+
 <ion-footer *ngIf="resource.url != ''">
   <ion-button class="footer-button" color="primary" id={{resource.url}} (click)="visitSite(resource.url)">Visit Website
   </ion-button>

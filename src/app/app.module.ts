@@ -16,6 +16,10 @@ import {environment} from '../environments/environment';
 import {AngularFireModule} from '@angular/fire';
 import {AngularFirestoreModule, FirestoreSettingsToken, AngularFirestore} from '@angular/fire/firestore';
 import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
+// Opens phone app with number entered.
+import { CallNumber } from '@awesome-cordova-plugins/call-number/ngx';
+// Allows us to open apple or google maps from the app when user clicks an address.
+import { LaunchNavigator, LaunchNavigatorOptions } from '@awesome-cordova-plugins/launch-navigator/ngx';
 import {FirebaseX} from '@ionic-native/firebase-x/ngx';
 
 import {HttpClientModule} from '@angular/common/http';
@@ -43,7 +47,9 @@ firebase.initializeApp(environment.firebase);
         }),
         AppRoutingModule,
         AngularFirestoreModule,
-        AngularFireModule.initializeApp(environment)
+        AngularFireModule.initializeApp(environment),
+        ReactiveFormsModule,
+        FormsModule,
     ],
     providers: [
         StatusBar,
@@ -63,6 +69,8 @@ firebase.initializeApp(environment.firebase);
         InAppBrowser,
         DatePipe,
         AppVersion,
+        CallNumber,
+        LaunchNavigator
     ],
     bootstrap: [AppComponent]
 })
