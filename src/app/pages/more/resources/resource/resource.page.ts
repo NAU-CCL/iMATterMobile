@@ -213,25 +213,30 @@ export class ResourcePage implements OnInit {
         console.log(`REVIEW TAG IN PARENT OBJ ${JSON.stringify(reviewTagInfoObj) }`);
     }
 
+    // Generates an array of 2 element array that store a tags name and the color it should be, success for green, red for danger, and orange for warning.
     generateTagAttributes( reviewTagInfo )
     {
-        for( let tagObj in reviewTagInfo )
-        {
-            let tagInfoObj = reviewTagInfo[tagObj];
+        console.log(`REVIEW TAG INFO OBJ IS ${JSON.stringify( reviewTagInfo )}`)
+        for( let questionName in reviewTagInfo )
+        {   
+            let questionInfoObj = reviewTagInfo[questionName];
 
-            if(tagInfoObj.yes != 0 && tagInfoObj.no == 0)
+            // tagInfoObj is a string representing a key inside the reviewTagInfo object.
+            let tagName = questionInfoObj.tagName;
+
+            if(questionInfoObj.yes != 0 && questionInfoObj.no == 0)
             {
-                this.tagAttrs.push([tagObj, 'success']);
+                this.tagAttrs.push([tagName, 'success', questionName]);
             }
-            else if( tagInfoObj.yes == 0 && tagInfoObj.no != 0 )
+            else if( questionInfoObj.yes == 0 && questionInfoObj.no != 0 )
             {
-                this.tagAttrs.push([tagObj, 'danger']);
+                this.tagAttrs.push([tagName, 'danger', questionName]);
             }
             else
             {
-                this.tagAttrs.push([tagObj, 'warning']);
+                this.tagAttrs.push([tagName, 'warning', questionName]);
             }
-            console.log(`TAG OBJ ${tagObj }`);
+            console.log(`TAG OBJ ${tagName }`);
         }
     }
 
@@ -242,11 +247,11 @@ export class ResourcePage implements OnInit {
         modal.classList.add('animate-modal');
     }
 
-    async presentPopover( tagName ) {
+    async presentPopover( questionName ) {
         const popover = await this.popoverController.create({
           component: ReviewTagPopoverComponent,
           translucent: true,
-          componentProps: {tagObject:  this.reviewTagInfoObj[tagName], tagName: tagName},
+          componentProps: {tagObject:  this.reviewTagInfoObj[questionName], questionName: questionName},
           cssClass: 'tag-pop-up',
           
 

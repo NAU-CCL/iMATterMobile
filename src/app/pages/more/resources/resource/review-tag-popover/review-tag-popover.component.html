@@ -1,20 +1,20 @@
 <div class="tag-pop-up">
-  <h4> <strong>Question: "{{tagName}}" </strong> </h4>
+  <h4> <strong>Question: "{{questionName}}" </strong> </h4>
   
   <div class="margin-left">
-    <h5>Users Answers to This Question:</h5>
+    <h5>User Answers to This Question:</h5>
 
     <ul>
       <li>
-        <span class="green-text">Yes: </span>{{tagInfo.yes}}
+        <span class="green-text">Yes: </span>{{questionInfoObj.yes}}
       </li>
 
       <li>
-        <span class="red-text">No: </span> {{tagInfo.no}}
+        <span class="red-text">No: </span> {{questionInfoObj.no}}
       </li>
 
       <li>
-        <span class="orange-text">Did Not Know: </span> {{tagInfo.na}}
+        <span class="orange-text">Did Not Know: </span> {{questionInfoObj.na}}
       </li>
     </ul>
 

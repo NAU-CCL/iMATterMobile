@@ -86,8 +86,6 @@ export class CreateReviewPage implements OnInit {
       this.userID = userID;
     })
 
-    this.reviewSurveyService.changeResourceTypesFromStringToArray();
-
 
 
   }

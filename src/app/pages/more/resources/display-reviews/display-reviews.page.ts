@@ -36,7 +36,7 @@ export class DisplayReviewsPage implements OnInit {
   // Array containing the name and response to each question answered in the review.
   // For example a question may ask, "Are pets allowed" and the response could be "yes, no, or dont know". We need to
   // tally the responses so we can display them to the user.
-  public tagNameArray = {};
+  public questionNameArray = {};
 
 
 
@@ -77,7 +77,7 @@ export class DisplayReviewsPage implements OnInit {
     // Emitt an event when the review doc array is initialized and we have gotten the review average and the review tag array.
     this.sendAvgToParent(this.averageRating, this.reviewDocArray.length );
 
-    this.sendTagNameArrayToParent( this.tagNameArray );
+    this.sendQuestionNameArrayToParent( this.questionNameArray );
 
     this.reviewDocArrayLoaded = true;
 
@@ -173,6 +173,7 @@ export class DisplayReviewsPage implements OnInit {
 
   generateReviewTags( reviewDoc )
   {
+    let surveyQuestions: string[] = reviewDoc.survey_questions;
     // Get the survey tag name array from the reivew doc.
     // Tags correspond to questions. They are shortened questions.
     let surveyTagsArray: string[] = reviewDoc.survey_tags;
@@ -186,13 +187,14 @@ export class DisplayReviewsPage implements OnInit {
       // Store the name of the tag and the response to the tag.
       let tagName = surveyTagsArray[index];
       let tagAnswer = surveyTagAnswers[index];
+      let questionName = surveyQuestions[index];
 
-      // check if key name tagName is in the tagNameArray object already using the in operator.
-      if( tagName in this.tagNameArray )
+      // check if key name tagName is in the questionNameArray object already using the in operator.
+      if( questionName in this.questionNameArray )
       {
         // { 'Can Have Dog': {yes: , no: , na: }}
         // Get the object correpsonding to the tag name key. This object stores the 'score' for the current tag. Keeps track of the yes's, no's, and i dont knows
-        let tagInfoObj = this.tagNameArray[ tagName ];
+        let tagInfoObj = this.questionNameArray[ questionName ];
 
         switch(tagAnswer){
           case "yes":
@@ -205,12 +207,12 @@ export class DisplayReviewsPage implements OnInit {
             tagInfoObj.na += 1;
             break;
         }
-        // might need to re assign the info object to the tagNameArray.
+        // might need to re assign the info object to the questionNameArray.
       }
       else // Create new tag array object if none exist for the tag
       {
         // Create tag info obj
-        let tagInfoObj = {yes: 0, no: 0, na: 0};
+        let tagInfoObj = {tagName: tagName, yes: 0, no: 0, na: 0};
 
         // properly increment the correct answer to the tag/question.
         switch(tagAnswer){
@@ -225,11 +227,11 @@ export class DisplayReviewsPage implements OnInit {
             break;
         }
 
-        this.tagNameArray[ tagName ] = tagInfoObj;
+        this.questionNameArray[ questionName ] = tagInfoObj;
       }
     }
 
-    console.log(`TAG NAME ${JSON.stringify(this.tagNameArray) }`);
+    console.log(`TAG NAME ${JSON.stringify(this.questionNameArray) }`);
 
   }
 
@@ -238,7 +240,7 @@ export class DisplayReviewsPage implements OnInit {
     this.averageRatingForParentEvent.emit( [avg, numOfReviews] );
   }
 
-  sendTagNameArrayToParent( reviewTagArray )
+  sendQuestionNameArrayToParent( reviewTagArray )
   {
     this.tagArrayForParentEvent.emit( reviewTagArray );
   }

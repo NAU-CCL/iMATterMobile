@@ -74,5 +74,27 @@ export class GetReviewSurveyService {
     })
   }
 
+  /*
+  getQuestionArray()
+  {
+    console.log('Getting questions.')
+    
+    this.afs.collection('resourceReviewQuestions').ref.where('is_current', '==', true).get().then( querySnap => {
+      querySnap.forEach( docSnap => {
+        let reviewSurveyData = docSnap.data();
+        //docSnap.ref.update({survey_questions: ["Couples Allowed?","Is co-ed?","Can I bring my child?","Can I have/use my car?"]});
+        console.log(`PRINTING QUESTIONS ${JSON.stringify(reviewSurveyData.review_questions)}`);
+      })
+    });
+
+    this.afs.collection('resourceReviews').ref.get().then( querySnap => {
+      querySnap.forEach( docSnap => {
+        let review = docSnap.data();
+        docSnap.ref.update({survey_questions: ["Couples Allowed?","Is co-ed?","Can I bring my child?","Can I have/use my car?"]});
+      })
+    });
+  }
+  */
+
 
 }
