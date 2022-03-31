@@ -164,7 +164,9 @@
 
     
 
-    <app-display-reviews (averageRatingForParentEvent)="getReviewAvg($event)" (tagArrayForParentEvent)="getReviewTagInfo($event)" > </app-display-reviews>
+    <!-- averageRatingForParentEvent and tagArrayForParentEvent are properties of the child components app-display-reviews.
+       This component has methods, getReviewTagInfo and getReviewAvg which are executed when the childs emitter properties emit events.-->
+    <app-display-reviews (averageRatingForParentEvent)="getReviewAvg($event)" (tagArrayForParentEvent)="getReviewTagInfo($event)" [reloadReviews]="askChildToReloadReviews" > </app-display-reviews>
 
 
   </ion-grid>

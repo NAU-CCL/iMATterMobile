@@ -63,6 +63,8 @@ export class ResourcePage implements OnInit {
     public reviewTagInfoObj: {};
     public tagAttrs = [];
 
+    public askChildToReloadReviews: boolean = true;
+
 
     // Template Variables //
 
@@ -94,6 +96,12 @@ export class ResourcePage implements OnInit {
 
     ionViewWillEnter() {
         this.resourceID = this.activatedRoute.snapshot.paramMap.get('id');
+        // Variable that indicates whether the child element display-reviews should reload reviews.
+
+        // Triggers a change event in the child to reload reviews!
+        this.askChildToReloadReviews = !this.askChildToReloadReviews;
+
+        this.tagAttrs = [];
 
         if (this.resourceID ) {
             this.resourceService.getLocation(this.resourceID ).subscribe(resource => {
@@ -102,7 +110,7 @@ export class ResourcePage implements OnInit {
             });
         }
 
-        console.log(`Entering resource page.ts`)
+        console.log(`Entering resource page.ts`);
     }
 
     // Use a capictor plugin to open the user phone app with a number 
@@ -196,7 +204,7 @@ export class ResourcePage implements OnInit {
 
     getReviewAvg( reviewInfoArray )
     {
-        this.reviewAvg  = reviewInfoArray[0];
+        this.reviewAvg = reviewInfoArray[0];
         this.totalReviews = reviewInfoArray[1];
         
         console.log(`Review avg IN PARENT is ${reviewInfoArray}`);

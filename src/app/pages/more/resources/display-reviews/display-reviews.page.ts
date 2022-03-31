@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { DocumentReference } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -44,24 +44,41 @@ export class DisplayReviewsPage implements OnInit {
 
 
   @Input('resource_name') resourceTitle; 
-  @Input() reviewDocsFromParent;
+  @Input() reloadReviews;
 
   // Create output deorater to send the review avg and tag names to the parent
   @Output() averageRatingForParentEvent = new EventEmitter<number[]>();
   @Output() tagArrayForParentEvent = new EventEmitter<{}>();
   
 
-  constructor( private reviewSurveyService: GetReviewSurveyService, private activatedRoute: ActivatedRoute, public datepipe: DatePipe ) {  console.log(`Review doc array from parent ${JSON.stringify(this.reviewDocsFromParent)}`); }
+  constructor( private reviewSurveyService: GetReviewSurveyService,
+               private activatedRoute: ActivatedRoute,
+               public datepipe: DatePipe )
+  {  
+    
+  }
 
-  async ngOnInit() {
+  ngOnInit() {
     // Get id of the resource we are displaying reviews for.
     this.resourceID = this.activatedRoute.snapshot.paramMap.get('id');
     this.getReviewsQuery = this.reviewSurveyService.getReviewsForResourceQuery( this.resourceID );
 
-    console.log(`Review doc array from parent ${JSON.stringify(this.reviewDocsFromParent)}`);
+    console.log('On NGINIT');
+  }
 
-    console.log(`About to wait for review ref array`);
+  ionViewWillEnter()
+  {
+    console.log('Will enter display reviews');
+  }
 
+  // Called when the parent component emits a change event to the value bound to this childs @Input property reloadReviews. 
+  // This is a semi hacky way to refresh reviews after a user submits a review.
+  async initializeReviewPage()
+  {
+    // reset the review doc array when this func is called. This is because we need to reload all reviews after the user submits a review.
+    this.reviewDocArray = []
+
+    this.totalReviewScores = 0;
     // Fill an array with refs to each review document in the db, we do this to avoid loading all docs immediately.
     // Call await to wait for this line of code to finish.
     await this.getReviewsQuery.get().then( querySnap =>{
@@ -80,15 +97,6 @@ export class DisplayReviewsPage implements OnInit {
     this.sendQuestionNameArrayToParent( this.questionNameArray );
 
     this.reviewDocArrayLoaded = true;
-
-    console.log(`Outside review ref array`);
-
-    console.log('On NGINIT');
-  }
-
-  ionViewWillEnter()
-  {
-    console.log('Will enter');
   }
 
 
@@ -231,7 +239,7 @@ export class DisplayReviewsPage implements OnInit {
       }
     }
 
-    console.log(`TAG NAME ${JSON.stringify(this.questionNameArray) }`);
+    console.log(`QUESTION NAME ARRAY ${JSON.stringify(this.questionNameArray) }`);
 
   }
 
@@ -243,6 +251,15 @@ export class DisplayReviewsPage implements OnInit {
   sendQuestionNameArrayToParent( reviewTagArray )
   {
     this.tagArrayForParentEvent.emit( reviewTagArray );
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    // changes.prop contains the old and the new value...
+    console.log(`CHANGES ARRAY ${JSON.stringify(changes.reloadReviews)}`);
+
+    // Reload reviews when the child receives a change event from the parent. This method ngOnChanges is an angular lifescycle hook that runs
+    // everytime the parent updates a property passed to the child via @Input.
+    this.initializeReviewPage(); // Reload reviews when a resource page is visited.
   }
 }
 
