@@ -1,6 +1,6 @@
 <ion-row>
   <ion-col>
-    <ion-row *ngFor="let review of reviewDocArray; let i=index">
+    <ion-row *ngFor="let review of visibleReviewsArray; let i=index">
 
       <ng-container *ngIf="i < showNReviews">
         <ion-col>
@@ -49,7 +49,7 @@
 
 <ion-row>
   <ion-col> 
-    <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)">
+    <ion-infinite-scroll threshold="2px" (ionInfinite)="loadData($event)">
       <ion-infinite-scroll-content
       loadingSpinner="crescent"
       loadingText="Loading more reviews...">

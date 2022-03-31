@@ -6,6 +6,7 @@ import { GetReviewSurveyService } from '../../../../services/get-review-survey.s
 import { Review } from '../review-interfaces/review-interfaces';
 import { DatePipe } from '@angular/common';
 import { stringify } from 'querystring';
+import { ComponentsModule } from 'src/app/components/components.module';
 
 @Component({
   selector: 'app-display-reviews',
@@ -18,6 +19,8 @@ export class DisplayReviewsPage implements OnInit {
   public resourceID;
   public starArray = [1,2,3,4,5];
 
+  // Array that holds reviews that are visble to provide the allusion that reviews are being loaded as a user scrolls.
+  public visibleReviewsArray = [];
   public reviewDocArray = [];
   private reviewDocArrayLoaded = false;
   public currentReviewRefIndex = 0;
@@ -77,6 +80,7 @@ export class DisplayReviewsPage implements OnInit {
   {
     // reset the review doc array when this func is called. This is because we need to reload all reviews after the user submits a review.
     this.reviewDocArray = []
+    this.visibleReviewsArray = [];
 
     this.totalReviewScores = 0;
     // Fill an array with refs to each review document in the db, we do this to avoid loading all docs immediately.
@@ -91,6 +95,16 @@ export class DisplayReviewsPage implements OnInit {
       })
     })
 
+    let loadFive = 0;
+
+    while(loadFive < 5)
+    {
+      this.loadReviewForIndex();
+      loadFive++;
+    }
+
+    this.showNReviews = this.reviewDocArray.length;
+
     // Emitt an event when the review doc array is initialized and we have gotten the review average and the review tag array.
     this.sendAvgToParent(this.averageRating, this.reviewDocArray.length );
 
@@ -102,14 +116,12 @@ export class DisplayReviewsPage implements OnInit {
 
 
   // Returns a Review object.
-  loadReviewForIndex() : Review
+  loadReviewForIndex()
   {
-    let reviewDoc = this.reviewDocArray[this.currentReviewRefIndex];
+    this.visibleReviewsArray.push( this.reviewDocArray[this.currentReviewRefIndex] );
 
     // Class level count index keeping track of which reviews have been loaded.
     this.currentReviewRefIndex += 1;
-
-    return reviewDoc;
   }
 
 
@@ -126,11 +138,11 @@ export class DisplayReviewsPage implements OnInit {
 
       while( index < loadFiveReviews )
       {
-        // If there are more reviews
+        // If there are more reviews load more.
         if( this.currentReviewRefIndex < this.reviewDocArray.length )
         {
-          // await means WAIT here for the operation to complete. This function retrieves data from the db and needs to load before we can move on.
-          let currentReview = this.loadReviewForIndex();
+          /// Loads a new review into the visibleReviewsArray  object 
+          this.loadReviewForIndex();
   
           index++;
         }
@@ -142,15 +154,14 @@ export class DisplayReviewsPage implements OnInit {
 
       event.target.complete();
 
-      this.showNReviews = this.reviewDocArray.length;
-
+      console.log(`Review ref index ${this.currentReviewRefIndex}:: Review doc array len ${this.reviewDocArray.length} :: Array loaded ${this.reviewDocArrayLoaded }`);
       // App logic to determine if all data is loaded
       // and disable the infinite scroll
-      if (this.currentReviewRefIndex >= this.reviewDocArray.length && this.reviewDocArrayLoaded ) {
+      if (this.currentReviewRefIndex == (this.reviewDocArray.length) && this.reviewDocArrayLoaded ) {
         event.target.disabled = true;
         console.log(`Disabling spinner`);
       }
-    }, 100);
+    }, 200);
   }
   
   toggleShowNReviews()

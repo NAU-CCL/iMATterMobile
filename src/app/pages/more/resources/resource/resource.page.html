@@ -45,7 +45,12 @@
            <ion-chip *ngFor="let tag of tagAttrs" color="{{ tag[1] }}" id="tag-chip-{{tag[0]}}" (click)="presentPopover(tag[2])" >
              <ion-icon name="information-circle-outline"></ion-icon>
              <span>{{tag[0]}}</span>
-            </ion-chip></span>
+            </ion-chip>
+          </span>
+
+          <span *ngIf="tagAttrs.length == 0">
+            No Answers to Show
+          </span>
     </ion-card-content>
   </ion-card>
 
