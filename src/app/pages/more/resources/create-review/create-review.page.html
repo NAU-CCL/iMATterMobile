@@ -19,10 +19,11 @@
         <ion-icon id="star-3" [attr.name]="rating_array[2] ? 'star' : 'star-outline'" size="large" (click)="updateRatingStars(2)"></ion-icon>
         <ion-icon id="star-4" [attr.name]="rating_array[3] ? 'star' : 'star-outline'" size="large" (click)="updateRatingStars(3)"></ion-icon>
         <ion-icon id="star-5" [attr.name]="rating_array[4] ? 'star' : 'star-outline'" size="large" (click)="updateRatingStars(4)"></ion-icon>
+        <span *ngIf="((reviewSubject.touched || reviewText.touched)  && !hasTouchedStars)" style="color: red">
+          *
+        </span>
       </div> 
-      <span *ngIf="((reviewSubject.touched || reviewText.touched)  && !hasTouchedStars)" style="color: red">
-        *Rating Required
-      </span>
+      
     </div>
 
     
@@ -31,9 +32,9 @@
       <div>
         <ion-label position="fixed" >Review Subject (40 Characters or Less):  </ion-label>
         
-        <ion-badge *ngIf="reviewSubject.touched && reviewSubject.invalid" color="danger">
-          Required
-        </ion-badge>
+        <span *ngIf="reviewSubject.touched && reviewSubject.invalid" style="color: red">
+          *
+        </span>
 
         <ion-input id="review-subject" name="user-review-subject" placeholder="Enter a few words to describe your review!" maxlength=40 class="round-grey-border" formControlName="reviewSubject"></ion-input>
       </div>
@@ -42,7 +43,7 @@
           <ion-label position="fixed" > Review Text:  </ion-label>
 
           <span *ngIf="reviewText.touched && reviewText.invalid" style="color: red">
-            *Required
+            *
           </span>
 
           <ion-textarea id="review-text" name="user-review" placeholder="Type your review here!" class="round-grey-border" autoGrow="true" formControlName="reviewText"></ion-textarea>
@@ -52,7 +53,7 @@
       <div formArrayName="reviewSurveyAnswers">
 
         <h5>
-          Please take a moment to help us understand this resource better by answering a few questions. (Optional)
+          Please take a moment to help others understand this resource better by answering a few questions. (Optional)
         </h5>
 
         <ng-container *ngIf="questionsLoaded">

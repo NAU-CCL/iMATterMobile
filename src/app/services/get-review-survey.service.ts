@@ -61,11 +61,11 @@ export class GetReviewSurveyService {
         let resourceObj = docSnapShot.data();
         
 
-        console.log(`hi`);
+        console.log(`Changing resource types from string to array!`);
         if( ( typeof resourceObj.type ) === "string")
         {
           console.log(`resource type is a string::: ${ JSON.stringify( resourceObj.type.split() ) }`);
-          //docSnapShot.ref.update({type: resourceObj.type.split()})
+          docSnapShot.ref.update({type: resourceObj.type.split()})
         }
         else{
           //console.log(`resource type is NOT string::: ${ JSON.stringify(resourceObj.type)  }`);
@@ -73,28 +73,6 @@ export class GetReviewSurveyService {
       })
     })
   }
-
-  /*
-  getQuestionArray()
-  {
-    console.log('Getting questions.')
-    
-    this.afs.collection('resourceReviewQuestions').ref.where('is_current', '==', true).get().then( querySnap => {
-      querySnap.forEach( docSnap => {
-        let reviewSurveyData = docSnap.data();
-        //docSnap.ref.update({survey_questions: ["Couples Allowed?","Is co-ed?","Can I bring my child?","Can I have/use my car?"]});
-        console.log(`PRINTING QUESTIONS ${JSON.stringify(reviewSurveyData.review_questions)}`);
-      })
-    });
-
-    this.afs.collection('resourceReviews').ref.get().then( querySnap => {
-      querySnap.forEach( docSnap => {
-        let review = docSnap.data();
-        docSnap.ref.update({survey_questions: ["Couples Allowed?","Is co-ed?","Can I bring my child?","Can I have/use my car?"]});
-      })
-    });
-  }
-  */
 
 
 }

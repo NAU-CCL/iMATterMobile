@@ -213,7 +213,7 @@ export class ResourcePage implements OnInit {
         console.log(`REVIEW TAG IN PARENT OBJ ${JSON.stringify(reviewTagInfoObj) }`);
     }
 
-    // Generates an array of 2 element array that store a tags name and the color it should be, success for green, red for danger, and orange for warning.
+    // Generates an array of 3 element arrays that store a tags name, the color it should be, success for green, red for danger, and orange for warning, and the question name.
     generateTagAttributes( reviewTagInfo )
     {
         console.log(`REVIEW TAG INFO OBJ IS ${JSON.stringify( reviewTagInfo )}`)

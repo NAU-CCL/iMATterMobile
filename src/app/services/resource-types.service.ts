@@ -18,8 +18,6 @@ export class ResourceTypesService {
      // Query snapshot contains zero or more DocumentSnapshots. Use forEach on the querySnapshot to iterate through the DocumentSnapshots
      // Call .data on a Document snapshot to get that docs data.
      return this.afs.collection<[]>('resourceTypes').ref.limit(1)
- 
-     
    }
    
 }

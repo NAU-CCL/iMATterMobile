@@ -151,11 +151,21 @@ export class CreateReviewPage implements OnInit {
 
         this.surveyTagsArray = this.reviewQuestionsJSON['question_tags'];
 
-        console.log(`SURVEYS ${ JSON.stringify( this.reviewQuestionsJSON ) } `);
+        //console.log(`SURVEYS ${ JSON.stringify( this.reviewQuestionsJSON ) } `);
+
+        this.currentResourceTypes =  this.resourceObj['type'] as string[];
+
+        //console.log(`Current Resource Types ${this.currentResourceTypes}`);
 
         // Filter the questions array, types array, and tags array to only questions that apply to this resource are shown!
         // For example, Some questions are only for couseling resources or something similar.
-        this.getAllResourceTypes( this.surveyQuestionsArray, this.surveyQuestionTypes, this.surveyTagsArray);
+        // Get the types associated with the current resource.
+        this.filterSurveyQuestionArrays(this.surveyQuestionsArray, this.surveyQuestionTypes, this.surveyTagsArray );
+
+        // Add an alias aka anonymous form control to the form array. Each alias represents an input for each question asked of the user.
+        this.generateSurveyQuestionInputs(this.surveyQuestionsArray);
+  
+        this.questionsLoaded = true;
 
 
       })
@@ -193,6 +203,7 @@ export class CreateReviewPage implements OnInit {
      for( let index = 0; index < this.reviewSurveyAnswers.value.length; index++)
      {
        console.log(`Survety answers value array ${JSON.stringify(this.reviewSurveyAnswers.value)} INDEX ${JSON.stringify(this.reviewSurveyAnswers.value[index])}`);
+       // If the question was not answered, default to na for the answer to this question.
        if( this.reviewSurveyAnswers.value[index] === undefined )
        {
         this.reviewSurveyAnswers.value[index] = 'na';
@@ -202,7 +213,15 @@ export class CreateReviewPage implements OnInit {
 
      console.log(` THIS FORM IS AFTER ${JSON.stringify( this.newReviewForm.value ) }`);
 
-     let reviewObj = { resourceID: this.resourceID, reviewDate: currentDate, userID: this.userID, reviewSubject: this.reviewSubject.value, reviewText: this.reviewText.value, reviewRating: this.selected_rating, survey_answers:  this.reviewSurveyAnswers.value, survey_tags: this.surveyTagsArray }
+     let reviewObj = { resourceID: this.resourceID,
+                       reviewDate: currentDate,
+                       userID: this.userID, 
+                       reviewSubject: this.reviewSubject.value, 
+                       reviewText: this.reviewText.value, 
+                       reviewRating: this.selected_rating, 
+                       survey_questions: this.surveyQuestionsArray, 
+                       survey_answers:  this.reviewSurveyAnswers.value, 
+                       survey_tags: this.surveyTagsArray }
      
      this.reviewsCollection.add( reviewObj );
 
@@ -211,8 +230,8 @@ export class CreateReviewPage implements OnInit {
 
   getAllResourceTypes(surveyQuestionsArray: string[], surveyQuestionTypes: string[], surveyTagsArray: string[] )
   {
-    //this.allResourceTypes 
 
+    // This query retrieves an array of all available resource types in our db.
     let resourceTypesQuery: Query = this.resourceTypesService.getResourceTypes();
 
     resourceTypesQuery.get().then( querySnap =>{
@@ -223,16 +242,7 @@ export class CreateReviewPage implements OnInit {
 
         console.log(`ALL RESOURCE TYPES ARRAY: ${this.allResourceTypes }`);
 
-        // Get the types associated with the current resource.
-        this.currentResourceTypes =  this.resourceObj['type'] as string[];
-
-        console.log(`Current Resource Types ${this.currentResourceTypes}`)
-
-        this.filterSurveyQuestionArrays(surveyQuestionsArray, surveyQuestionTypes, surveyTagsArray )
-
-        this.generateSurveyQuestionInputs(this.surveyQuestionsArray);
-  
-        this.questionsLoaded = true;
+        
       })
     })
 
