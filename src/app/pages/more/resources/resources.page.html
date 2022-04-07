@@ -12,6 +12,14 @@
 <ion-content>
     <div class="split pane1">
         <div #mapElement class="map">
+
+            <div *ngIf="!this.mapLoaded" class="flex-center-one-item">
+                <div class="flex-column-container">
+                    <div> Loading Map and Resources... </div> 
+                    <img src="../../../../assets/sqaureLoadingIcon.gif" width="80" height="80"> 
+                </div>
+            </div>
+
         </div>
     </div>
     <div class="split pane2 list">
@@ -58,6 +66,7 @@
                 </div>
                 <ion-icon [routerLink]="['./', location.id]" name="arrow-forward" slot="end"></ion-icon>
             </ion-item>
+
         </ion-list>
     </div>
 </ion-content>
