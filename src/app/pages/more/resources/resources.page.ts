@@ -27,9 +27,10 @@ declare var google;
 
 export class ResourcesPage implements OnInit, AfterViewInit {
     public locations: Observable<Location[]>;
-    public locationList: Location[];
+    public locationList: Location[] = [];
     public filteredList: Location[];
     public locationTypes = [];
+    public mapLoaded: boolean = false;
 
     latitude: any;
     longitude: any;
@@ -76,7 +77,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                 ref.get().then((result) => {
                     result.forEach(doc => {
                         this.userLocationHolder = doc.get('location');
-                        this.saveUserLocation(this.userLocationHolder).then(res => this.getLocations());
+                        this.saveUserLocation(this.userLocationHolder).then(res => { this.initializeLocations();} );
                     });
                 });
             }
@@ -92,7 +93,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
 
     async saveUserLocation(userLocationHolder) {
         this.userLocation = this.userLocationHolder;
-        this.geolocation.getCurrentPosition().then((resp) => {
+        await this.geolocation.getCurrentPosition().then((resp) => {
             console.log('RESP: ' + resp);
             this.currentLat = resp.coords.latitude;
             this.currentLong = resp.coords.longitude;
@@ -102,25 +103,34 @@ export class ResourcesPage implements OnInit, AfterViewInit {
         console.log('inside saveUserLocation' + this.currentLat + ', ' + this.currentLong);
     }
 
+    // Get resource locations from db and save them into a local array of objects.
     async getLocations() {
         this.locations = this.locationService.getLocations();
         this.locations.forEach((locationList => {
             locationList.forEach((location => {
-                var streetArray = location.street.split(" ");
-                streetArray = streetArray.slice(Math.max(streetArray.length - 3, 1));
+                var streetArray = location.street.split(" "); // Stree is actually location address. Split by space to seperate address components.
+                streetArray = streetArray.slice(Math.max(streetArray.length - 3, 1)); 
                 streetArray.pop()
                 location.cityState = streetArray.join(" ");
+
+                console.log(`User lat ${this.latitude} long ${this.longitude}`);
+
+                console.log(`Location lat ${location.latitude} long ${location.longitude}`);
                 location.distance = google.maps.geometry.spherical.computeDistanceBetween(
-                    new google.maps.LatLng(this.latitude, this.longitude),
-                    new google.maps.LatLng(location.latitude, location.longitude)
+                    new google.maps.LatLng(this.latitude, this.longitude), // USer coordinates
+                    new google.maps.LatLng(location.latitude, location.longitude) // Resource Coordinates
                 )
+
+                // Handle type arrays
                 if (typeof location.type === 'object') {
                     location.type.forEach((type => {
                         if (!this.locationTypes.includes(type)) {
                             this.locationTypes.push(type)
                         }
                     }));
-                } else {
+                }
+                // handle types as strings 
+                else { 
                     if (!this.locationTypes.includes(location.type)) {
                         this.locationTypes.push(location.type)
                     }
@@ -137,18 +147,24 @@ export class ResourcesPage implements OnInit, AfterViewInit {
 
     }
 
+    /*
     ionViewDidEnter() {
         this.ngOnInit();
         this.initializeLocations();
     }
+    */
 
     async initializeLocations() {
-        await this.geoMaps(this.userLocation);
+        await this.geoMaps(this.userLocation); // Set the user location variables and load the map.
+
+        await this.getLocations(); // Fill the locations array. Requires the map to be loaded first.
+
         this.locations.forEach((array) => {
             array.forEach((location) => {
                 this.addMarker(location);
             });
         });
+
     }
 
     async geoMaps(userLocation) {
@@ -163,6 +179,8 @@ export class ResourcesPage implements OnInit, AfterViewInit {
             });
 
             console.log('displayed the map');
+
+            this.mapLoaded = true; 
 
         }).catch((error) => {
             console.log('ERROR LOADING MAP ', error);

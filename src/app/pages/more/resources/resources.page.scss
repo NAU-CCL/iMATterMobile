@@ -48,3 +48,17 @@ ion-select {
 .rounded-corners{
   border-radius: 5px;
 }
+
+
+.flex-column-container{
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-center-one-item{
+  display:flex;
+  justify-content: center;
+  height: 100%;
+}

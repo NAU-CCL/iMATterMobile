@@ -277,6 +277,8 @@ export class LoginPage implements OnInit {
 
                             // this.storage.set('version', this.device.version);
                             this.storage.set('userCode', this.userID);
+
+                            //console.log(`Adding Session!!!`);
                             this.addSession();
                             this.storage.set('authenticated', 'true');
                             this.storage.set('password', this.userPassword);
