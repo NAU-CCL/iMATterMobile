@@ -157,7 +157,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
     async initializeLocations() {
         await this.geoMaps(this.userLocation); // Set the user location variables and load the map.
 
-        await this.getLocations(); // Fill the locations array.
+        await this.getLocations(); // Fill the locations array. Requires the map to be loaded first.
 
         this.locations.forEach((array) => {
             array.forEach((location) => {
@@ -179,7 +179,8 @@ export class ResourcesPage implements OnInit, AfterViewInit {
             });
 
             console.log('displayed the map');
-            this.mapLoaded = true;
+
+            this.mapLoaded = true; 
 
         }).catch((error) => {
             console.log('ERROR LOADING MAP ', error);
