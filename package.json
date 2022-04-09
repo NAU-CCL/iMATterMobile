@@ -64,7 +64,7 @@
     "firebase-admin": "^8.9.2",
     "firebase-functions": "^3.3.0",
     "ionic2-calendar": "^0.5.7",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "nodemailer": "^6.6.3",
     "rxjs": "^6.5.0",
     "rxjs-compat": "^6.4.0",
