@@ -93,7 +93,7 @@
         </ion-card-content>
     </ion-card>
 
-    <ion-button *ngIf="user.joinedChallenges.length == 0" color="primary" expand="full" [routerLink]="['/tabs/habits']">
+    <ion-button *ngIf="user.joinedChallenges.length == 0" color="primary" expand="full" [routerLink]="['/tabs/habits/show_all_challenges', true]">
         Sign
         Up for a Challenge<ion-icon style="color: white;" name="arrow-forward"></ion-icon>
     </ion-button>
@@ -137,7 +137,7 @@
             </ion-card>
             <!-- <ion-card *ngIf="challengeJoined(challenge.id) && daysComplete[challenge.id]">
                 <ion-card-title class="ion-padding" [routerLink]="['/habit', challenge.id]">{{challenge.title}}
-                </ion-card-title>
+                </ion-card-title> -->
                 <!-- <ion-card-subtitle class="ion-padding" style="padding-top: 0">
                     You completed today's task! Come back tomorrow for a new challenge.
                 </ion-card-subtitle> -->

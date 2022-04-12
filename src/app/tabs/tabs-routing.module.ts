@@ -95,6 +95,12 @@ const routes: Routes = [
               import('../pages/challenges/challenge.module').then(m => m.ChallengePageModule)
           },
           {
+            // If user types localhost:8100/tabs/habits/ then ChallengePageModule component and view is shown.
+            path: 'show_all_challenges/:default-challenge-page',
+            loadChildren: () =>
+              import('../pages/challenges/challenge.module').then(m => m.ChallengePageModule)
+          },
+          {
             // If user types localhost:8100/tabs/habits/viewChallenge/challenge_id then ViewChallengePageModule component and view is shown.
             path: 'viewChallenge/:id',
             loadChildren: () =>

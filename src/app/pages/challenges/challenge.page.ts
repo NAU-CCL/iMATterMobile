@@ -66,20 +66,7 @@ export class ChallengePage implements OnInit {
 
     ionViewWillEnter() {
         
-        // Did user just finish a challenge and get redirected here?
-        this.activeRoute.params.subscribe( params => {
-             // Params always returned as strings
-             console.log(`Params are ${JSON.stringify(params)}`);
-             // Boolean. Did the user just complete a challenge?
-             this.justCompletedChallenge = params['id'] === "1";
-
-             if( this.justCompletedChallenge )
-             {
-                this.router.navigate(['tabs/habits/']);
-                // Change this variabled to joined to show the my challenges tab.
-                this.challengeView = 'joined';
-             }
-            });
+        this.processRouteParams();
 
         console.log('In ion will enter');
 
@@ -121,6 +108,40 @@ export class ChallengePage implements OnInit {
     ngOnDestroy()
     {
 
+    }
+
+    // Sometimes we redirect users to the challenge page but need to show 
+    // specific data, process the params and change member variables to their proper values.
+    processRouteParams()
+    {
+        // Did user just finish a challenge and get redirected here?
+        this.activeRoute.params.subscribe( params => {
+            // Params always returned as strings
+            console.log(`Params are ${JSON.stringify(params)}`);
+
+            if( params['id'] === "1" )
+            {
+                // Boolean. Did the user just complete a challenge?
+                this.justCompletedChallenge = true;
+
+                // hacky way to clear params so when user leaves challenge page and comes 
+                // back they see the page they were on last and are not force shown the my challenges page.
+                this.router.navigate(['tabs/habits/']);
+
+                // Change this variabled to joined to show the my challenges tab.
+                this.challengeView = 'joined';
+            }
+
+            console.log(`DEFAULT CHALLEN VALUE ${ params['default-challenge-page']}`);
+
+            if( params['default-challenge-page'] )
+            {
+                this.router.navigate(['tabs/habits/']);
+
+                this.challengeView = 'all' ;
+                console.log(`Show default chall page true`);
+            }
+        });
     }
 
 
