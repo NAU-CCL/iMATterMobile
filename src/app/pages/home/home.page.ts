@@ -134,8 +134,9 @@ export class HomePage implements OnInit {
     public showDailyQuote: boolean;
     public surveyComplete;
     public userSurveys = [];
+    public totalSurveys: number = 0;
     public collpaseChallenges = false;
-    public collapseSurveys = false;
+    public collapseSurveys = true;
     public emotionHidden = false;
     public numActiveChallenges = 0;
 
@@ -651,10 +652,19 @@ export class HomePage implements OnInit {
     updateSurveys() {
         const currentSurveys = this.user.availableSurveys;
         this.surveys.forEach(surveyArray => {
+            
             surveyArray.forEach(survey => {
+
+                // For some reason there are nine surveys avaialble but we only show the user about 6. 
+                if(currentSurveys.includes(survey['id']))
+                {
+                    this.totalSurveys++;
+                }
+
                 this.checkComplete(survey);
                 console.log(this.surveyComplete);
                 if (!this.surveyComplete) {
+                    
                     if (survey['type'] == 'Days After Joining') {
                         var characteristics = survey['characteristics'];
                         if (this.user['daysAUser'] >= characteristics['daysAfterJoining']) {
@@ -696,7 +706,9 @@ export class HomePage implements OnInit {
                 this.userService.updateAvailableSurveys(currentSurveys, this.user['code']);
 
             });
+            
         });
+
     }
 
     checkComplete(survey) {

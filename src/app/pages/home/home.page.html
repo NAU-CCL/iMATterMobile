@@ -151,7 +151,7 @@
     <ion-item-divider *ngIf='userSurveys.length > 0' class="custom-divider"
         (click)="collapseSurveys = !collapseSurveys">
         <ion-label style="color: white;">
-            AVAILABLE SURVEYS
+            Available Surveys: {{totalSurveys}}
         </ion-label>
         <ion-icon *ngIf="collapseSurveys" slot="end" color=white name="arrow-dropdown"></ion-icon>
         <ion-icon *ngIf="!collapseSurveys" slot="end" color=white name="arrow-dropup"></ion-icon>
