@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {ChallengeService, Challenge, ChallengeTypes} from '../../services/challenges/challenge-service.service';
 import { Observable } from 'rxjs';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyticsService.service';
 import {DatePipe} from '@angular/common';
@@ -36,10 +36,12 @@ export class ChallengePage implements OnInit {
     public userID;
     public challengeView = 'all';
     public itemsInChallengeRow = 2;
+    public justCompletedChallenge = false;
 
     constructor(private challengeService: ChallengeService,
                 private storage: Storage,
                 private router: Router,
+                private activeRoute: ActivatedRoute,
                 private afs: AngularFirestore,
                 private analyticsService: AnalyticsService,
                 private alertController: AlertController,
@@ -63,6 +65,20 @@ export class ChallengePage implements OnInit {
     }
 
     ionViewWillEnter() {
+        // Did user just finish a challenge and get redirected here?
+        this.activeRoute.params.subscribe( params => {
+             // Params always returned as strings
+             console.log(`Params are ${JSON.stringify(params)}`);
+             // Boolean. Did the user just complete a challenge?
+             this.justCompletedChallenge = params['id'] === "1";
+
+             if( this.justCompletedChallenge )
+             {
+                this.router.navigate(['tabs/habits/']);
+                // Change this variabled to joined to show the my challenges tab.
+                this.challengeView = 'joined';
+             }
+            });
 
         console.log('In ion will enter');
 
