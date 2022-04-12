@@ -536,10 +536,6 @@ export class ProfilePage implements OnInit {
             console.log('In the else');
         }
 
-        let autoLogInUser = (document.getElementById('auto-login-cb') as HTMLInputElement).checked;
-
-        console.log(`Value of auto login checkbox is: ${ autoLogInUser }`);
-
         console.log('Out of if');
         const newBio = (document.getElementById('newBio') as HTMLInputElement).value;
         this.user.profilePic = this.previewPic;
@@ -547,8 +543,6 @@ export class ProfilePage implements OnInit {
         this.profileService.updateProfilePic(this.user.profilePic, this.userProfileID);
         this.profileService.updateBio(newBio, this.userProfileID);
 
-        this.profileService.updateAutoLogin( autoLogInUser, this.userProfileID );
-        this.user.autoLogin = autoLogInUser;
         
         this.editingMode = false;
     }

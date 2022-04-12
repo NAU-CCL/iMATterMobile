@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Storage } from '@ionic/storage';
 import { FcmService } from "../../../services/pushNotifications/fcm.service";
+import { ProfileService } from "../../../services/user/profile.service";
 
 @Component({
   selector: 'app-settings',
@@ -17,7 +18,14 @@ export class SettingsPage implements OnInit {
   public notificationTime: number;
   public clock;
   public eventNotificationTime;
-  constructor(public afs: AngularFirestore, private storage: Storage, private fcm: FcmService) {
+  public autoLogin;
+
+  constructor(public afs: AngularFirestore,
+              private storage: Storage,
+              private fcm: FcmService,
+              private profileService: ProfileService) {
+
+                //this.profileService.updateAutoLogin( autoLogInUser, this.userProfileID );
 
 
     this.storage.get('userCode').then((val) => {
@@ -49,6 +57,13 @@ export class SettingsPage implements OnInit {
               this.infoDeskNotif = false;
             } else {
               this.infoDeskNotif = true;
+            }
+
+            // Auto log in setting
+            if (doc.get('autoLogin') === false) {
+              this.autoLogin = false;
+            } else {
+              this.autoLogin = true;
             }
           });
         });
@@ -175,6 +190,16 @@ setClockType(clock){
         });
       }
     });
+}
+
+// Update the users auto login preference
+setAutoLogin()
+{
+  //console.log(`USER AUTO LOG PREFERNCE WAS CHANGED TO ${this.autoLogin}`);
+
+  this.storage.get('userCode').then((userID) => {
+    this.profileService.updateAutoLogin( this.autoLogin, userID );
+  })
 }
 
 }

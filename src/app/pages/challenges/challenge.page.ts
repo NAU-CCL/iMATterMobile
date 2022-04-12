@@ -65,6 +65,7 @@ export class ChallengePage implements OnInit {
     }
 
     ionViewWillEnter() {
+        
         // Did user just finish a challenge and get redirected here?
         this.activeRoute.params.subscribe( params => {
              // Params always returned as strings
