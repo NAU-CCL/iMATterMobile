@@ -304,6 +304,7 @@ exports.sendProviderRecoveryEmail = functions.firestore.document('provider_recov
     }).then(res => console.log('successfully sent that mail')).catch(err => console.log(err));
 });
 
+// Does not seem to be used
 exports.deleteOldChatMessages = functions.https.onRequest((req, res) => {
     const today = new Date();
     const ref = admin.firestore().collection('chats');

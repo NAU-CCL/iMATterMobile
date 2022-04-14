@@ -201,7 +201,7 @@ export class ChatPage implements OnInit {
             this.chat.userID = val;
             this.chat.username = doc.get('username');
             this.chat.profilePic = doc.get('profilePic');
-            this.chat.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+            this.chat.timestamp = new Date();
             this.chat.visibility = true;
 
             if (chatType === 'autoEnter') {
