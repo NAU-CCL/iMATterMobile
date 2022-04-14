@@ -8,6 +8,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { ModalController } from '@ionic/angular';
 import { AlertController } from '@ionic/angular';
 import { DatePipe } from '@angular/common';
+import { user } from 'firebase-functions/lib/providers/auth';
 
 @Component({
     selector: 'app-answer',
@@ -110,6 +111,8 @@ export class AnswerPage implements OnInit {
             hideurlbar: 'yes',
             toolbarcolor: '#ffffff',
         };
+
+        url += '?UserID=' + this.userCode.toString();
 
         // open the browser inside of the app, using the url, and the options
         const page = this.browser.create(url, `_blank`, options);
