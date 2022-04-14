@@ -48,6 +48,7 @@ export class ChatService {
         });
       })
     );
+
   }
 
   getChats(cohortID): Observable<Chat[]> {
@@ -59,6 +60,7 @@ export class ChatService {
   getChatCollection(cohortID) {
     // this.iterateChats(cohortID);
 
+    console.log(`getting chats, cohort id is ${cohortID}`)
     this.chatCollection = this.afs.collection('chats',
       reference => reference.where('cohort', '==', cohortID).orderBy('timestamp'));
 
@@ -191,5 +193,15 @@ export class ChatService {
         });
       }
     });
+  }
+
+  // Deletes all chats from db.
+  deleteAllChats()
+  {
+    this.afs.collection('chats').ref.get().then( ( querySnap ) => {
+      querySnap.forEach( (queryDocSnap) => {
+        queryDocSnap.ref.delete();
+      })
+    })
   }
 }

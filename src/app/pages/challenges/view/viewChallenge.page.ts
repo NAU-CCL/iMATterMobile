@@ -186,10 +186,12 @@ export class ViewChallengePage implements OnInit {
                         alert.dismiss(true);
                         this.checkForComplete(id);
                         console.log(this.complete);
-
+                        
+                        // Display correct msg to user. If they finshed the challenge let em know.
                         if (this.complete) {
                             this.joined = false;
                             this.presentAlert('WOW! You finished the challenge!', 'Way to stick with it.');
+                            this.router.navigate(['tabs/habits/completed_challenge/1']);
                             // setTimeout(() => {
                             //     this.ionViewWillEnter();
                             // }, 1000);

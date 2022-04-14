@@ -93,7 +93,7 @@
         </ion-card-content>
     </ion-card>
 
-    <ion-button *ngIf="user.joinedChallenges.length == 0" color="primary" expand="full" [routerLink]="['/tabs/habits']">
+    <ion-button *ngIf="user.joinedChallenges.length == 0" color="primary" expand="full" [routerLink]="['/tabs/habits/show_all_challenges', true]">
         Sign
         Up for a Challenge<ion-icon style="color: white;" name="arrow-forward"></ion-icon>
     </ion-button>
@@ -118,11 +118,11 @@
     <ion-list class="notifList" *ngIf="!collpaseChallenges && user.joinedChallenges.length > 0">
         <ng-container *ngFor="let challenge of (challenges|async)">
             <ion-card id="card{{challenge.id}}" class="notifCard" *ngIf="challengeJoined(challenge.id)">
-                <ion-card-title class="ion-padding" [routerLink]="['/tabs/home/viewChallenge', challenge.id]">{{challenge.title}}
+                <ion-card-title class="ion-padding" [routerLink]="['/tabs/habits/viewChallenge', challenge.id]">{{challenge.title}}
                     <ion-icon *ngIf="!daysComplete[challenge.id] " name="arrow-forward" size=small
-                        class="ion-float-right" [routerLink]="['/tabs/home/viewChallenge', challenge.id]"></ion-icon>
+                        class="ion-float-right" [routerLink]="['/tabs/habits/viewChallenge', challenge.id]"></ion-icon>
                     <ion-icon *ngIf="daysComplete[challenge.id] " name="checkmark" size=small class="ion-float-right"
-                    [routerLink]="['/tabs/home/viewChallenge', challenge.id]"></ion-icon>
+                    [routerLink]="['/tabs/habits/viewChallenge', challenge.id]"></ion-icon>
                 </ion-card-title>
                 <!-- <ion-card-subtitle class="ion-padding" style="padding-top: 0">
                     <b>{{challenge.contents[challengeProgress[challenge.id]].title}}</b>:
@@ -137,7 +137,7 @@
             </ion-card>
             <!-- <ion-card *ngIf="challengeJoined(challenge.id) && daysComplete[challenge.id]">
                 <ion-card-title class="ion-padding" [routerLink]="['/habit', challenge.id]">{{challenge.title}}
-                </ion-card-title>
+                </ion-card-title> -->
                 <!-- <ion-card-subtitle class="ion-padding" style="padding-top: 0">
                     You completed today's task! Come back tomorrow for a new challenge.
                 </ion-card-subtitle> -->
@@ -151,7 +151,7 @@
     <ion-item-divider *ngIf='userSurveys.length > 0' class="custom-divider"
         (click)="collapseSurveys = !collapseSurveys">
         <ion-label style="color: white;">
-            AVAILABLE SURVEYS
+            Available Surveys: {{totalSurveys}}
         </ion-label>
         <ion-icon *ngIf="collapseSurveys" slot="end" color=white name="arrow-dropdown"></ion-icon>
         <ion-icon *ngIf="!collapseSurveys" slot="end" color=white name="arrow-dropup"></ion-icon>

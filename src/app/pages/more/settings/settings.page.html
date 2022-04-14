@@ -26,6 +26,10 @@
       <ion-label> Information Desk Notifications </ion-label>
       <ion-toggle [(ngModel)]="infoDeskNotif" color="dark" (ionChange)= setInfoDeskNotification(infoDeskNotif) ></ion-toggle>
     </ion-item>
+    <ion-item>
+      <ion-label> Automatic Login </ion-label>
+      <ion-toggle [(ngModel)]="autoLogin" color="dark" (ionChange)= setAutoLogin() ></ion-toggle>
+    </ion-item>
       <ion-list-header> Calendar Settings </ion-list-header>
 	<ion-item>
 		<ion-label>Notifications Should Send: </ion-label>

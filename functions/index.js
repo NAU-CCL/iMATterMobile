@@ -304,6 +304,10 @@ exports.sendProviderRecoveryEmail = functions.firestore.document('provider_recov
     }).then(res => console.log('successfully sent that mail')).catch(err => console.log(err));
 });
 
+// Does not seem to be used
+// The webapp has a similar function that is actually used and is scheduled to run at certain times.
+// At time of writing, this funciton is disabled, but to adjust scheduled functions go to
+// https://console.cloud.google.com/cloudscheduler?project=imatter-nau
 exports.deleteOldChatMessages = functions.https.onRequest((req, res) => {
     const today = new Date();
     const ref = admin.firestore().collection('chats');
