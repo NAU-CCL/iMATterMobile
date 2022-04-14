@@ -15,14 +15,18 @@ export class AboutPage implements OnInit {
 
   constructor(private appVersion: AppVersion, private device: Device) { }
 
+  /*
+  * Updating App version. The app version uses a plugin that fetches the version number form the config.xml file. After relasing a new version, update the config.xml with the new version number and it will automaticall sync with this page.
+  */
   ngOnInit() {
-    this.appVersion.getVersionNumber().then((version) => {
-      this.version = version;
-      console.log(version);
-    });
     this.model = this.device.model;
     this.platform = this.device.platform;
     this.osVersion = this.device.version;
+    this.appVersion.getVersionNumber().then(value => {
+      this.version = value;
+    }).catch(err => {
+      alert(err);
+    });
   }
 
 }
