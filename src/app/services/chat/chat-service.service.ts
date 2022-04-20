@@ -60,7 +60,8 @@ export class ChatService {
   getChatCollection(cohortID) {
     // this.iterateChats(cohortID);
 
-    console.log(`getting chats, cohort id is ${cohortID}`)
+    console.log(`getting chats, cohort id is ${cohortID}`);
+    
     this.chatCollection = this.afs.collection('chats',
       reference => reference.where('cohort', '==', cohortID).orderBy('timestamp'));
 

@@ -14,6 +14,7 @@ export class GetReviewSurveyService {
 
   constructor( private afs: AngularFirestore ) {
 
+    // This func used for testing
     //this.generateReviewQuestionsCollec();
 
    }
@@ -52,7 +53,7 @@ export class GetReviewSurveyService {
   }
 
 
-  // Function used to convert strings into arrays in the Location collection.
+  // Function used to convert the type field from strings to arrays in the Location collection.
   changeResourceTypesFromStringToArray()
   {
     this.afs.collection<ReviewQuestions[]>('resourceLocations').ref.get().then( querySnap =>{
