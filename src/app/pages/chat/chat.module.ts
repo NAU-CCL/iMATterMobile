@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ChatPage } from './chat.page';
+import { ScrollableDirective } from './scrollable.directive';
 
 @NgModule({
   imports: [
@@ -13,6 +14,6 @@ import { ChatPage } from './chat.page';
     RouterModule.forChild([{ path: '', component: ChatPage }]),
     ReactiveFormsModule
   ],
-  declarations: [ChatPage]
+  declarations: [ChatPage, ScrollableDirective]
 })
 export class ChatPageModule {}

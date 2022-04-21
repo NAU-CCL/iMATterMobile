@@ -9,64 +9,76 @@
 <!-- UNDER CONSTRUCTION -->
 
 
-<ion-content #content>
+<ion-content #content [scrollEvents]="true" chatScrollable (scrollPosition)="scrollHandler($event)">
 
-  <div *ngFor="let chat of (chats | async)" class="message-wrap">
-
-    <!-- Automatic message -->
-    <div *ngIf="chat.type == 'auto' || chat.type == 'emotion'">
-
-      <div *ngIf="chat.type == 'auto'" class="msg-content">
-        <p class="auto">{{chat.message}}</p>
-      </div>
-      <div *ngIf="chat.type == 'emotion'" class="msg-content">
-        <p class="emotion">{{chat.message}}</p>
-      </div>
+    <!-- Here we are subscribing the the loadingChats observable to see if we are done loading the current chats. -->
+    <div *ngIf="chatService.loadingChatsObs | async as doneLoading">
+      <img src="../../../../assets/sqaureLoadingIcon.gif" width="80" height="80"> 
     </div>
 
+    <div *ngIf="chatService.doneLoadingChatsObs | async as allChatsLoaded">
+      No more chats to load.
+    </div>
 
-    <!-- User message -->
-    <div *ngIf="chat.type == 'user' && chat.userID != userProfileID">
-      <div class="timestamp  ion-align-self-center" >
-        {{ toDate(chat.timestamp) | date:'h:mm a' }}
+    <div *ngFor="let chat of (chatService.currentChatDataBatchObs | async)" class="message-wrap">
+  
+      <!-- Automatic message -->
+      <div *ngIf="chat.type == 'auto' || chat.type == 'emotion'">
+  
+        <div *ngIf="chat.type == 'auto'" class="msg-content">
+          <p class="auto">{{chat.message}}</p>
+        </div>
+        <div *ngIf="chat.type == 'emotion'" class="msg-content">
+          <p class="emotion">{{chat.message}}</p>
+        </div>
       </div>
-      <div class="message">
-        <ion-button class="user-img" fill="clear" (click)="goToProfile(chat.userID, chat.cohort)">
-          <img class="user-img" src="{{ chat.profilePic }}" alt="">
-        </ion-button>
-        <div class="msg-detail">
-          <div class="username">
-            <p> {{ chat.username }}&nbsp;&nbsp;&nbsp;</p>
-          </div>
-          <div class="msg-content">
-            <span class="triangle"></span>
-            <p class="line-breaker ">{{chat.message}}</p>
+  
+  
+      <!-- User message -->
+      <div *ngIf="chat.type == 'user' && chat.userID != userProfileID">
+        <div class="timestamp  ion-align-self-center" >
+          {{ toDate(chat.timestamp) | date:'h:mm a' }}
+        </div>
+        <div class="message">
+          <ion-button class="user-img" fill="clear" (click)="goToProfile(chat.userID, chat.cohort)">
+            <img class="user-img" src="{{ chat.profilePic }}" alt="">
+          </ion-button>
+          <div class="msg-detail">
+            <div class="username">
+              <p> {{ chat.username }}&nbsp;&nbsp;&nbsp;</p>
+            </div>
+            <div class="msg-content">
+              <span class="triangle"></span>
+              <p class="line-breaker ">{{chat.message}}</p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-
-    <div *ngIf="chat.type == 'user' && chat.userID == userProfileID">
-      <div class="myTimestamp ion-align-self-center">
-        {{ toDate(chat.timestamp) | date:'h:mm a' }}
-      </div>
-      <div class="myMessage">
-        <div class="msg-detail">
-          <div class="username">
-            <p>{{ chat.username }}</p>
-          </div>
-          <div class="msg-content">
-            <span class="triangle"></span>
-            <p class="line-breaker ">{{chat.message}}</p>
-          </div>
+  
+      <div *ngIf="chat.type == 'user' && chat.userID == userProfileID">
+        <div class="myTimestamp ion-align-self-center">
+          {{ toDate(chat.timestamp) | date:'h:mm a' }}
         </div>
-        <ion-button class="user-img" fill="clear" (click)="goToProfile(chat.userID, chat.cohort)">
-          <img class="user-img" src="{{ chat.profilePic }}" alt="">
-        </ion-button>
+        <div class="myMessage">
+          <div class="msg-detail">
+            <div class="username">
+              <p>{{ chat.username }}</p>
+            </div>
+            <div class="msg-content">
+              <span class="triangle"></span>
+              <p class="line-breaker ">{{chat.message}}</p>
+            </div>
+          </div>
+          <ion-button class="user-img" fill="clear" (click)="goToProfile(chat.userID, chat.cohort)">
+            <img class="user-img" src="{{ chat.profilePic }}" alt="">
+          </ion-button>
+        </div>
       </div>
+  
     </div>
 
-  </div>
+  
+    
 </ion-content>
 
 <ion-footer>

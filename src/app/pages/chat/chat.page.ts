@@ -17,6 +17,8 @@ import { sendChatNotification } from "../../../../functions/src";
 import 'rxjs-compat/add/observable/timer';
 import { SelectMultipleControlValueAccessor } from '@angular/forms';
 
+import {ScrollableDirective} from './scrollable.directive'
+
 const { PushNotifications } = Plugins;
 
 @Component({
@@ -66,7 +68,7 @@ export class ChatPage implements OnInit {
   constructor(public _zone: NgZone,
     private router: Router,
     private storage: Storage,
-    private chatService: ChatService,
+    public chatService: ChatService,
     private afs: AngularFirestore,
     private analyticsService: AnalyticsService) {
     this.storage.get('cohort').then((val) => {
@@ -88,6 +90,8 @@ export class ChatPage implements OnInit {
   }
 
   ngOnInit() {
+    this.chatService.initChatServce('chats', 'timestamp');
+
     this.storage.get('authenticated').then((val) => {
       if (val === 'false') {
         this.router.navigate(['/login/']);
@@ -142,6 +146,17 @@ export class ChatPage implements OnInit {
 
     this.addView();
 
+  }
+
+  // Handle scroll events to detirmine when to load new chats
+  scrollHandler( event )
+  {
+    console.log(event);
+
+    if( event === 'top')
+    {
+      this.chatService.more();
+    }
   }
 
   // Notify the chat when the user goes to home screen ie 'user has left chat, user has rejoined chat.'
