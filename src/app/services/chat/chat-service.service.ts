@@ -266,7 +266,7 @@ export class ChatService {
 
 
 
-  private mapAndUpdate( chatCollection: AngularFirestoreCollection<any>)
+  private async mapAndUpdate( chatCollection: AngularFirestoreCollection<any>)
   {
     // Dont run this function if weve loaded all chats in the db, or if were already loading chats.
     if( this.loadingChats.value || this.doneLoadingChats.value ) 
@@ -290,6 +290,8 @@ export class ChatService {
               this.loadingChats.next(false);
 
 
+              // If length is 0, execute if statement. Means we have loaded all chats
+              // because the values array has a length of 0.
               if( !values.length)
               {
                 // Found all chats. No more chats to load.
@@ -307,7 +309,7 @@ export class ChatService {
     return null;
   }
 
-  more()
+  async more()
   {
     const cursor = this.getCursor();
 
@@ -315,7 +317,7 @@ export class ChatService {
       return ref.orderBy(this.query.field, this.query.reverse ? 'desc' : 'asc').limit(this.query.limit).startAfter(cursor)
     })
 
-    this.mapAndUpdate(more);
+    await this.mapAndUpdate(more);
   }
 
   // Gets all chats from the db that are added after the user joins the chatroom.

@@ -9,20 +9,19 @@
 <!-- UNDER CONSTRUCTION -->
 
 
-<ion-content #content [scrollEvents]="true" chatScrollable (scrollPosition)="scrollHandler($event)" (dragstart)="startDragRefresh($event)">
+<ion-content #content [scrollEvents]="true">
 
-    <!-- Here we are subscribing the the loadingChats observable to see if we are done loading the current chats. -->
-    <div *ngIf="chatService.loadingChatsObs | async as doneLoading" class="center-chat-loading-animation">
-      <div class="flex-column">
-        <img src="../../../../assets/sqaureLoadingIcon.gif" width="80" height="80">
-        <div> Loading Chats... </div>  
-      </div>
-    </div>
+   
+    <!-- Allows us to use pull down to refresh.-->
+    <ion-refresher slot="fixed" pullFactor="0.5" pullMin="100" pullMax="200" (ionRefresh)="loadOlderChats($event)">
+      <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
 
     <div class="no-more-chats-bubble" *ngIf="chatService.doneLoadingChatsObs | async as allChatsLoaded">
       No more chats to load.
     </div>
 
+    <!-- Load chats that were created before the user entered the room.-->
     <div *ngFor="let chat of (chatService.currentChatDataBatchObs | async)" class="message-wrap">
   
       <!-- Automatic message -->
@@ -80,6 +79,7 @@
   
     </div>
 
+    <!-- Load chats that are new relative to when the user joined the chat room-->
     <div *ngFor="let chat of (chats | async)" class="message-wrap">
       <!-- Automatic message -->
       <div *ngIf="chat.type == 'auto' || chat.type == 'emotion'">
@@ -135,10 +135,6 @@
       </div>
     </div>
 
-
-    <div style="height: 500px;">
-      HEIGHT 500PX
-    </div>
 
   
     

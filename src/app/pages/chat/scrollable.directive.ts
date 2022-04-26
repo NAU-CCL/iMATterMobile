@@ -4,6 +4,11 @@ import { Directive, Output, EventEmitter, ElementRef, HostListener } from '@angu
   selector: '[chatScrollable]'
 })
 
+/*
+* this directive was built to detect when a user scrolls to the top of a container.
+* It is not being used anymore because we switched to using the ionic pull down to refresh element.
+* ion-refresher
+*/
 export class ScrollableDirective {
 
   // Assign our output property an EventEmitter

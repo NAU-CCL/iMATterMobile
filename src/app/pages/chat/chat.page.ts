@@ -151,15 +151,20 @@ export class ChatPage implements OnInit {
 
   }
 
-  // Handle scroll events to detirmine when to load new chats
-  scrollHandler( event )
+  // Loads chats from before the user joined this chat.
+  loadOlderChats( event )
   {
-    console.log(event);
+    this.chatService.more();
 
-    if( event === 'top')
-    {
-      this.chatService.more();
-    }
+    // Chats load very fast so the loading animation is hardly visible on pull down.
+    this.chatService.loadingChatsObs.subscribe((loadingChats) =>{
+      console.log(`Returning done loading ${loadingChats}`);
+
+      if( !loadingChats )
+      {
+        event.target.complete();
+      }
+    })
   }
 
   // Notify the chat when the user goes to home screen ie 'user has left chat, user has rejoined chat.'
@@ -295,9 +300,6 @@ export class ChatPage implements OnInit {
     this.addChat('autoLeft');
   }
 
-  startDragRefresh( event )
-  {
 
-  }
 
 }
