@@ -278,6 +278,23 @@ export class DisplayReviewsPage implements OnInit {
     this.tagArrayForParentEvent.emit( reviewTagArray );
   }
 
+  // Checks if the current element is going to overflow.
+  checkForReviewOverflow( element )
+  {
+    let minimizedReviewHeight = 20;
+    let height = element.offsetHeight;
+
+    // If element height is greater than the minimized review height return true.
+    // We want to minimize reviews greater than our set minimum, but we need to know which
+    // element actually need to be minimized to appropriately add an expand button to them.
+    if(minimizedReviewHeight < height)
+    {
+      return true;
+    }
+    return false;
+
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     // changes.prop contains the old and the new value...
     console.log(`CHANGES ARRAY ${JSON.stringify(changes.reloadReviews)}`);
@@ -286,5 +303,6 @@ export class DisplayReviewsPage implements OnInit {
     // everytime the parent updates a property passed to the child via @Input.
     this.initializeReviewPage(); // Reload reviews when a resource page is visited.
   }
+
 }
 

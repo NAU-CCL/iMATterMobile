@@ -25,7 +25,14 @@
           
             <ion-card-content>
 
-              <span> {{review.reviewText}}</span>
+             
+              <div #reviewTextContainer [class.minimized-review-text]="checkForReviewOverflow(reviewTextContainer)"> {{review.reviewText}}</div>
+             
+              
+
+              <div class="flex-row-end">
+                Show More...
+              </div>
         
             </ion-card-content>
           </ion-card>

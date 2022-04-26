@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { DisplayReviewsPageRoutingModule } from './display-reviews-routing.module';
 
 import { DisplayReviewsPage } from './display-reviews.page';
+import { CheckForOverflowDirective } from './check-for-overflow.directive';
 
 @NgModule({
   imports: [
@@ -15,6 +16,6 @@ import { DisplayReviewsPage } from './display-reviews.page';
     IonicModule,
     DisplayReviewsPageRoutingModule
   ],
-  declarations: [DisplayReviewsPage]
+  declarations: [DisplayReviewsPage, CheckForOverflowDirective]
 })
 export class DisplayReviewsPageModule {}

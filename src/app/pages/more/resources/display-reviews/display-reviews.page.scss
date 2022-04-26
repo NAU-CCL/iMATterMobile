@@ -42,3 +42,14 @@
 .review-sub-line{
     font-size: 16px;
 }
+
+.minimized-review-text{
+    max-height: 20px;
+    overflow-y: hidden;
+}
+
+.flex-row-end{
+    display: flex;
+    justify-content: end;
+    color: rgb(0, 19, 80)
+}
