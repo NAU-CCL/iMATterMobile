@@ -74,9 +74,11 @@ export class ChatPage implements OnInit {
     this.storage.get('cohort').then((val) => {
       if (val) {
         this.cohortChat = val;
-        this.chats = this.chatService.getChats(val);
+        //this.chats = this.chatService.getChats(val);
       }
-      // this.chats = this.chatService.getChats(this.cohortChat);
+
+      // Get new chats. Get chats that were added to the firestore db after the user entered the chat.
+      this.chats = this.chatService.getNewChats(this.cohortChat);
       this.scrollToBottom();
     });
 
@@ -105,6 +107,7 @@ export class ChatPage implements OnInit {
       }
     });
 
+    /*
     this.storage.get('cohort').then((val) => {
       if (val) {
         this.chats = this.chatService.getChats(val);
@@ -116,7 +119,7 @@ export class ChatPage implements OnInit {
         });
       }
     });
-
+    */
     // this.getCohort();
 
     /*
@@ -223,9 +226,11 @@ export class ChatPage implements OnInit {
 
               this.chat.message = this.chat.username + ' has entered the chat test';
               this.chat.type = 'auto';
+              // Add the auto chat, once the chat is added to the db, then the addChat function 
+              // returns a promise that resolves to the new document id of the auto chat.
               this.chatService.addChat(this.chat).then(async (resp) => {
                 await new Promise(f => setTimeout(f, 5000));
-                console.log("delete chat now " + resp);
+                console.log("delete autoenter chat now " + resp);
                 this.chatService.deleteChat(resp.id);
               });
 
@@ -284,19 +289,15 @@ export class ChatPage implements OnInit {
   }
 
 
-  checkForNewChat() {
-
-  }
+ 
 
   ionViewWillLeave() {
     this.addChat('autoLeft');
-    // this.storage.get('cohort').then((val) => {
-    //   if (val) {
-    //     this.chatService.iterateChats(val, 'ionViewWillLeave').then(() => {
-    //       this.chats = this.chatService.getChats(val);
-    //     });
-    //   }
-    // });
+  }
+
+  startDragRefresh( event )
+  {
+
   }
 
 }

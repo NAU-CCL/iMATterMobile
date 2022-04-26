@@ -235,6 +235,9 @@ export class ChatService {
 
 
 
+  // Initialize the chat service that fetches old chat messgaes. Likely over complicated, and 
+  // I can not explain how everything works but note the startAt function. This is used to access
+  // documents from some index in a collection, could proably use this to create a much simpler function.
   initChatServce(path, field, opts?)
   {
     this.query = {
@@ -265,6 +268,7 @@ export class ChatService {
 
   private mapAndUpdate( chatCollection: AngularFirestoreCollection<any>)
   {
+    // Dont run this function if weve loaded all chats in the db, or if were already loading chats.
     if( this.loadingChats.value || this.doneLoadingChats.value ) 
     {
       return
@@ -314,6 +318,25 @@ export class ChatService {
     this.mapAndUpdate(more);
   }
 
+  // Gets all chats from the db that are added after the user joins the chatroom.
+  // Snapshots changes so the returned observable fetches any new messages to the db.
+  getNewChats(cohortID): Observable<Chat[]>  {
+    // this.iterateChats(cohortID);
+    let currentDateAndTime  = new Date();
+    console.log(`Getting current chats, current date is ${currentDateAndTime}`);
+    
+    this.chatCollection = this.afs.collection('chats', reference => reference.where('timestamp', '>', currentDateAndTime) );
+
+    return this.chats = this.chatCollection.snapshotChanges().pipe(
+      map(actions => {
+        return actions.map(a => {
+          const data = a.payload.doc.data();
+          data.id = a.payload.doc.id;
+          return data;
+        });
+      })
+    );
+  }
 
 
 
