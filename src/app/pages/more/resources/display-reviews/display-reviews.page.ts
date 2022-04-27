@@ -46,6 +46,7 @@ export class DisplayReviewsPage implements OnInit {
   public showReviewButtonText = "Show Less";
 
 
+  // Use input elements to receive values for these variables from parent.
   @Input('resource_name') resourceTitle; 
   @Input() reloadReviews;
 
@@ -281,20 +282,21 @@ export class DisplayReviewsPage implements OnInit {
   // Checks if the current element is going to overflow.
   checkForReviewOverflow( reviewText )
   {
-    // If element height is greater than the minimized review height return true.
-    // We want to minimize reviews greater than our set minimum, but we need to know which
-    // element actually need to be minimized to appropriately add an expand button to them.
+    // If review text is greater than 80, collapse the review.
     if( reviewText.length > 80 )
     {
+      // Signal that the review should be collapsed.
       return true;
     }
     return false;
 
   }
 
+  // Toggles a review between expanded and minimzed.
   expandReview( expandButtonEl: HTMLElement, reviewTextEl: HTMLElement)
   {
     let currentInnerHTML = expandButtonEl.innerHTML;
+    // If review is currently expanded, show less.
     if( currentInnerHTML === 'Show Less...')
     {
       reviewTextEl.classList.add('minimized-review-text');
@@ -302,6 +304,7 @@ export class DisplayReviewsPage implements OnInit {
     }
     else
     {
+      // If review is currently minimized, show more.
       reviewTextEl.classList.remove('minimized-review-text');
       expandButtonEl.innerHTML = 'Show Less...';
     }
