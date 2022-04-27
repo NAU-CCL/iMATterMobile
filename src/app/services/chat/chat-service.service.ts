@@ -1,9 +1,22 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument, DocumentReference } from '@angular/fire/firestore';
 import { map, take } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Storage } from '@ionic/storage';
 import * as firebase from 'firebase/app';
+import 'rxjs/add/operator/do'
+import 'rxjs/add/operator/scan'
+import 'rxjs/add/operator/take'
+import { StringMap } from '@angular/compiler/src/compiler_facade_interface';
+
+
+interface chatsQueryConfig{
+  path: string,
+  field: string,
+  limit?: number,
+  reverse?: boolean,
+  prepend?: boolean
+}
 
 export interface Cohort {
   id?: string;
@@ -36,6 +49,18 @@ export class ChatService {
   private chatCollection: AngularFirestoreCollection<Chat>;
 
 
+  private doneLoadingChats = new BehaviorSubject(false); // Done loading chats.
+  private loadingChats = new BehaviorSubject(false); // are we currently waiting on chats to load?
+  private currentChatDataBatch = new BehaviorSubject([]); // last batch of chats returned from firestore.
+
+  private query: chatsQueryConfig;
+
+  //Observable Data
+  doneLoadingChatsObs: Observable<boolean> = this.doneLoadingChats.asObservable(); // loaded all chats
+  loadingChatsObs: Observable<boolean> = this.loadingChats.asObservable(); // currently loading chats.
+  currentChatDataBatchObs: Observable<any>; // data
+
+
   constructor(private afs: AngularFirestore, private storage: Storage) {
     this.cohortCollection = this.afs.collection<Cohort>('cohorts');
 
@@ -51,6 +76,7 @@ export class ChatService {
 
   }
 
+
   getChats(cohortID): Observable<Chat[]> {
     this.getChatCollection(cohortID);
     // this.iterateChats(cohortID);
@@ -60,7 +86,8 @@ export class ChatService {
   getChatCollection(cohortID) {
     // this.iterateChats(cohortID);
 
-    console.log(`getting chats, cohort id is ${cohortID}`)
+    console.log(`getting chats, cohort id is ${cohortID}`);
+    
     this.chatCollection = this.afs.collection('chats',
       reference => reference.where('cohort', '==', cohortID).orderBy('timestamp'));
 
@@ -204,4 +231,122 @@ export class ChatService {
       })
     })
   }
+
+
+
+
+  // Initialize the chat service that fetches old chat messgaes. Likely over complicated, and 
+  // I can not explain how everything works but note the startAt function. This is used to access
+  // documents from some index in a collection, could proably use this to create a much simpler function.
+  initChatServce(path, field, opts?)
+  {
+    this.query = {
+      path,
+      field,
+      limit: 10,
+      reverse: true,
+      prepend: true,
+      ...opts
+    }
+
+    // order by desc if reverse is true.
+    const first = this.afs.collection(this.query.path, ref => {
+      return ref.orderBy(this.query.field, this.query.reverse ? 'desc' : 'asc').limit(this.query.limit)
+     })
+
+     this.mapAndUpdate(first);
+
+
+     // SCan allows us to build a larger array over time.
+     // Convert our chat batch subject to an observable and save it into the current batch obs variable.
+     this.currentChatDataBatchObs = this.currentChatDataBatch.asObservable().scan( (acc, val) =>{
+      return this.query.prepend ? val.concat(acc) : acc.concat(val) 
+     } )
+  }
+
+
+
+  private async mapAndUpdate( chatCollection: AngularFirestoreCollection<any>)
+  {
+    // Dont run this function if weve loaded all chats in the db, or if were already loading chats.
+    if( this.loadingChats.value || this.doneLoadingChats.value ) 
+    {
+      return
+    };
+
+    this.loadingChats.next(true);
+
+    return chatCollection.snapshotChanges()
+            .do( array => {
+              let values = array.map( snapShot => {
+                const data = snapShot.payload.doc.data();
+                const doc = snapShot.payload.doc
+                return { ...data, doc};
+              })
+
+              values = this.query.prepend ? values.reverse() : values;
+
+              this.currentChatDataBatch.next(values);
+              this.loadingChats.next(false);
+
+
+              // If length is 0, execute if statement. Means we have loaded all chats
+              // because the values array has a length of 0.
+              if( !values.length)
+              {
+                // Found all chats. No more chats to load.
+                this.doneLoadingChats.next(true)
+              }
+            }).take(1).subscribe();
+  }
+
+  private getCursor(){
+    const current = this.currentChatDataBatch.value;
+    if(current.length)
+    {
+      return this.query.prepend ? current[0].doc : current[current.length - 1].doc // add to end or beginning of the observable.
+    }
+    return null;
+  }
+
+  async more()
+  {
+    const cursor = this.getCursor();
+
+    const more = this.afs.collection(this.query.path, ref => {
+      return ref.orderBy(this.query.field, this.query.reverse ? 'desc' : 'asc').limit(this.query.limit).startAfter(cursor)
+    })
+
+    await this.mapAndUpdate(more);
+  }
+
+  // Gets all chats from the db that are added after the user joins the chatroom.
+  // Snapshots changes so the returned observable fetches any new messages to the db.
+  getNewChats(cohortID): Observable<Chat[]>  {
+    // this.iterateChats(cohortID);
+    let currentDateAndTime  = new Date();
+    console.log(`Getting current chats, current date is ${currentDateAndTime}`);
+    
+    this.chatCollection = this.afs.collection('chats', reference => reference.where('timestamp', '>', currentDateAndTime) );
+
+    return this.chats = this.chatCollection.snapshotChanges().pipe(
+      map(actions => {
+        return actions.map(a => {
+          const data = a.payload.doc.data();
+          data.id = a.payload.doc.id;
+          return data;
+        });
+      })
+    );
+  }
+
+
+
+
+
+
+
+
+
+
 }

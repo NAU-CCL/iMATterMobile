@@ -17,6 +17,8 @@ import { sendChatNotification } from "../../../../functions/src";
 import 'rxjs-compat/add/observable/timer';
 import { SelectMultipleControlValueAccessor } from '@angular/forms';
 
+import {ScrollableDirective} from './scrollable.directive'
+
 const { PushNotifications } = Plugins;
 
 @Component({
@@ -66,15 +68,17 @@ export class ChatPage implements OnInit {
   constructor(public _zone: NgZone,
     private router: Router,
     private storage: Storage,
-    private chatService: ChatService,
+    public chatService: ChatService,
     private afs: AngularFirestore,
     private analyticsService: AnalyticsService) {
     this.storage.get('cohort').then((val) => {
       if (val) {
         this.cohortChat = val;
-        this.chats = this.chatService.getChats(val);
+        //this.chats = this.chatService.getChats(val);
       }
-      // this.chats = this.chatService.getChats(this.cohortChat);
+
+      // Get new chats. Get chats that were added to the firestore db after the user entered the chat.
+      this.chats = this.chatService.getNewChats(this.cohortChat);
       this.scrollToBottom();
     });
 
@@ -88,6 +92,8 @@ export class ChatPage implements OnInit {
   }
 
   ngOnInit() {
+    this.chatService.initChatServce('chats', 'timestamp');
+
     this.storage.get('authenticated').then((val) => {
       if (val === 'false') {
         this.router.navigate(['/login/']);
@@ -101,6 +107,7 @@ export class ChatPage implements OnInit {
       }
     });
 
+    /*
     this.storage.get('cohort').then((val) => {
       if (val) {
         this.chats = this.chatService.getChats(val);
@@ -112,7 +119,7 @@ export class ChatPage implements OnInit {
         });
       }
     });
-
+    */
     // this.getCohort();
 
     /*
@@ -142,6 +149,22 @@ export class ChatPage implements OnInit {
 
     this.addView();
 
+  }
+
+  // Loads chats from before the user joined this chat.
+  loadOlderChats( event )
+  {
+    this.chatService.more();
+
+    // Chats load very fast so the loading animation is hardly visible on pull down.
+    this.chatService.loadingChatsObs.subscribe((loadingChats) =>{
+      console.log(`Returning done loading ${loadingChats}`);
+
+      if( !loadingChats )
+      {
+        event.target.complete();
+      }
+    })
   }
 
   // Notify the chat when the user goes to home screen ie 'user has left chat, user has rejoined chat.'
@@ -208,9 +231,11 @@ export class ChatPage implements OnInit {
 
               this.chat.message = this.chat.username + ' has entered the chat test';
               this.chat.type = 'auto';
+              // Add the auto chat, once the chat is added to the db, then the addChat function 
+              // returns a promise that resolves to the new document id of the auto chat.
               this.chatService.addChat(this.chat).then(async (resp) => {
                 await new Promise(f => setTimeout(f, 5000));
-                console.log("delete chat now " + resp);
+                console.log("delete autoenter chat now " + resp);
                 this.chatService.deleteChat(resp.id);
               });
 
@@ -269,19 +294,12 @@ export class ChatPage implements OnInit {
   }
 
 
-  checkForNewChat() {
-
-  }
+ 
 
   ionViewWillLeave() {
     this.addChat('autoLeft');
-    // this.storage.get('cohort').then((val) => {
-    //   if (val) {
-    //     this.chatService.iterateChats(val, 'ionViewWillLeave').then(() => {
-    //       this.chats = this.chatService.getChats(val);
-    //     });
-    //   }
-    // });
   }
+
+
 
 }
