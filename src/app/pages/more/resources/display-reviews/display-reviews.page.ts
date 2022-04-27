@@ -279,20 +279,32 @@ export class DisplayReviewsPage implements OnInit {
   }
 
   // Checks if the current element is going to overflow.
-  checkForReviewOverflow( element )
+  checkForReviewOverflow( reviewText )
   {
-    let minimizedReviewHeight = 20;
-    let height = element.offsetHeight;
-
     // If element height is greater than the minimized review height return true.
     // We want to minimize reviews greater than our set minimum, but we need to know which
     // element actually need to be minimized to appropriately add an expand button to them.
-    if(minimizedReviewHeight < height)
+    if( reviewText.length > 80 )
     {
       return true;
     }
     return false;
 
+  }
+
+  expandReview( expandButtonEl: HTMLElement, reviewTextEl: HTMLElement)
+  {
+    let currentInnerHTML = expandButtonEl.innerHTML;
+    if( currentInnerHTML === 'Show Less...')
+    {
+      reviewTextEl.classList.add('minimized-review-text');
+      expandButtonEl.innerHTML = 'Show More...';
+    }
+    else
+    {
+      reviewTextEl.classList.remove('minimized-review-text');
+      expandButtonEl.innerHTML = 'Show Less...';
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {

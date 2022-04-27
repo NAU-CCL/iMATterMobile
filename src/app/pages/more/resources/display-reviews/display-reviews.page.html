@@ -26,11 +26,9 @@
             <ion-card-content>
 
              
-              <div #reviewTextContainer [class.minimized-review-text]="checkForReviewOverflow(reviewTextContainer)"> {{review.reviewText}}</div>
+              <div #reviewTextContainer [class.minimized-review-text]="checkForReviewOverflow(review.reviewText)"> {{review.reviewText}}</div>
              
-              
-
-              <div class="flex-row-end">
+              <div #showMoreDiv *ngIf="checkForReviewOverflow(review.reviewText)" class="flex-row-end" (click)="expandReview(showMoreDiv, reviewTextContainer)">
                 Show More...
               </div>
         
