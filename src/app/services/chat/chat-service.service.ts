@@ -241,11 +241,11 @@ export class ChatService {
   initChatServce(path, field, opts?)
   {
     this.query = {
-      path,
-      field,
-      limit: 10,
-      reverse: true,
-      prepend: true,
+      path, // The name of the collection to fetch data from.
+      field, // Field to order the chats by, this is timestamp for our use.
+      limit: 30, // Load 30 chat messages on each db query.
+      reverse: true, // Whether to load the data in reverse order.
+      prepend: true, // Whether to add data to beginning or end of our observable array.
       ...opts
     }
 
@@ -281,6 +281,7 @@ export class ChatService {
               let values = array.map( snapShot => {
                 const data = snapShot.payload.doc.data();
                 const doc = snapShot.payload.doc
+                console.log(`Chat Message Loaded ${JSON.stringify(data)}`);
                 return { ...data, doc};
               })
 

@@ -65,16 +65,6 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: () =>
-              import('../pages/chat/chat-init/chat-init.module').then(m => m.ChatInitPageModule)
-          }
-        ]
-      },
-      {
-        path: 'chat/:id',
-        children: [
-          {
-            path: '',
-            loadChildren: () =>
               import('../pages/chat/chat.module').then(m => m.ChatPageModule)
           }
         ]
