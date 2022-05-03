@@ -21,7 +21,7 @@ export class ProfileService {
     /**
      * The redeem table holds the information required for a user to redeem their points
      * This function adds a new doc to this collection - which calls a cloud function
-     * that sends an email to the currently listed email
+     * that sends an email to the currently listed email. The function: sendGCRequestEmail located in index.js in the functions folder.
      */
     addToRedeemTable(adminEmail, email, username, gcType) {
         this.afs.firestore.collection('usersPointsRedeem').add({

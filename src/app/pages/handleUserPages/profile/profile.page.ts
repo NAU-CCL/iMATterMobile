@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit  } from '@angular/core';
 import { AlertController, ToastController } from '@ionic/angular';
 import { AuthServiceProvider, User } from '../../../services/user/auth.service';
 import { ProfileService } from '../../../services/user/profile.service';
@@ -15,6 +15,15 @@ import { ChatService, Cohort, Chat } from '../../../services/chat/chat-service.s
 import { HomePage } from '../../home/home.page';
 import { ActionSheetController } from '@ionic/angular';
 import { EMOJIS } from '../../../services/emojiArray'
+
+import { HostBinding } from '@angular/core';
+import {
+  trigger,
+  state,
+  style,
+  animate,
+  transition
+} from '@angular/animations';
 
 @Component({
     selector: 'app-profile',
@@ -154,6 +163,27 @@ export class ProfilePage implements OnInit {
         this.displayRedeemOptions = false;
     }
 
+    ngAfterViewInit(){
+        
+    }
+
+    setProgressBarBackground()
+    {
+        console.log(`Points required ${this.pointsForRedemption} User points ${this.user.points}`);
+        let pointsRequiredToRedeem = this.pointsForRedemption;
+        // Get the percent the user is at for receiving a giftcard.
+        let progressPercent = (this.user.points/pointsRequiredToRedeem)*100;
+        //let progressPercent = (10/pointsRequiredToRedeem)*100;
+        // What percent of points does the user need to get a giftcard?
+        let unfinishedPercent = 100 - progressPercent;
+
+        let progressBarEl: HTMLElement = document.querySelector('#gc-points-prog-bar');
+
+        console.log(`the bar ${JSON.stringify(progressBarEl) } Percent ${progressPercent} unfinished ${unfinishedPercent}`)
+
+        progressBarEl.style.background =`linear-gradient(90deg, #00FFFF ${progressPercent}%, #FFFFFF 0%)`;
+        console.log(`Setting background`);
+    }
    
 
     // get user info
@@ -370,9 +400,13 @@ export class ProfilePage implements OnInit {
                             this.pointsForRedemption = res.get('points');
                             this.gcTypes = res.get('types');
                             this.canRedeemPoints = ProfilePage.checkUserPoints(this.user.points, this.pointsForRedemption);
+                            // Set the progress bar styling once we have got the user points and points to redeem values.
+                            this.setProgressBarBackground();
                         });
                     });
                 });
+
+                
             }
         });
     }

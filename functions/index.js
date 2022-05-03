@@ -76,7 +76,7 @@ exports.sendRecoveryEmail = functions.firestore.document('recoveryEmail/{docID}'
     }).then(res => console.log('successfully sent that mail')).catch(err => console.log(err));
 });
 
-
+// This function invoked when the userPointsRedeem table receives a new document.
 exports.sendGCRequestEmail = functions.firestore.document('usersPointsRedeem/{docID}').onCreate((snap, context) => {
     const data = snap.data();
 
