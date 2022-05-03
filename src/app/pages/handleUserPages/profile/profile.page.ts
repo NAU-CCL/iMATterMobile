@@ -14,16 +14,7 @@ import { MoodProviderNotifService, EmotionNotif } from '../../../services/mood-p
 import { ChatService, Cohort, Chat } from '../../../services/chat/chat-service.service';
 import { HomePage } from '../../home/home.page';
 import { ActionSheetController } from '@ionic/angular';
-import { EMOJIS } from '../../../services/emojiArray'
-
-import { HostBinding } from '@angular/core';
-import {
-  trigger,
-  state,
-  style,
-  animate,
-  transition
-} from '@angular/animations';
+import { EMOJIS } from '../../../services/emojiArray';
 
 @Component({
     selector: 'app-profile',
@@ -127,6 +118,8 @@ export class ProfilePage implements OnInit {
     public collapsePersonalInfo: boolean = true;
     public showSettingsDropDown = false;
 
+    public pointsLeftForGC;
+
     public  emotionIcons = EMOJIS;
 
     static checkUserPoints(userPoints, pointsNeeded): boolean {
@@ -173,15 +166,21 @@ export class ProfilePage implements OnInit {
         let pointsRequiredToRedeem = this.pointsForRedemption;
         // Get the percent the user is at for receiving a giftcard.
         let progressPercent = (this.user.points/pointsRequiredToRedeem)*100;
-        //let progressPercent = (10/pointsRequiredToRedeem)*100;
+        //let progressPercent = (29/pointsRequiredToRedeem)*100;
         // What percent of points does the user need to get a giftcard?
         let unfinishedPercent = 100 - progressPercent;
+
+        if( unfinishedPercent > 0 )
+        {
+            this.pointsLeftForGC = pointsRequiredToRedeem - this.user.points;
+        }
 
         let progressBarEl: HTMLElement = document.querySelector('#gc-points-prog-bar');
 
         console.log(`the bar ${JSON.stringify(progressBarEl) } Percent ${progressPercent} unfinished ${unfinishedPercent}`)
 
-        progressBarEl.style.background =`linear-gradient(90deg, #00FFFF ${progressPercent}%, #FFFFFF 0%)`;
+        progressBarEl.style.backgroundImage =`linear-gradient(90deg, #00FFFF00 ${progressPercent}%, #FFFFFFFF 0%), url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23236240' fill-opacity='0.4' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E")`; 
+
         console.log(`Setting background`);
     }
    

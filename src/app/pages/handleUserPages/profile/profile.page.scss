@@ -84,21 +84,69 @@ ion-icon {
 
 #gc-points-prog-bar{
   border-radius: 50px;
-  border: 1px solid #000000;
+  border: 1px solid #0b5f02;
   
-  width: 100%;
+  width: 90%;
   height: 18px;
+  margin-top: 30px;
+
+  margin-left:auto;
+  margin-right:auto;
   
   display: flex;
   justify-content: space-between;
-  overflow: hidden;
+  //overflow: hidden;
+
+  background-color: #6bff7b;
+
 }
 
 .progress-milestone{
-  border-right: 1px solid #000000;
+  border-right: 1px solid #0b5f02;
   width:100%;
+}
+
+
+.milestone-label{
+  position: relative;
+  left: 82%;
+  top: 20px;
+  font-size: 10px;
 }
 
 .final-milestone{
   width:100%;
+}
+
+.progress-bar-container-height{
+  height: 160px;
+}
+
+.flex-column-center{
+  display:inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.no-margin{
+  margin:0px;
+}
+
+.final-milestone-image{
+  position: relative;
+  left: 100%;
+  bottom: 12px;
+  width: 45px;
+}
+
+.final-milestone-label{
+  position: relative;
+  left: 82%;
+  bottom: 10px;
+  font-size: 10px;
+}
+
+.font-size-18{
+  font-size: 18px;
 }
