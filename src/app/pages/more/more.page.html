@@ -12,33 +12,54 @@
 <!--    </ion-item>-->
 <!--  </ion-card>-->
 
-  <ion-card>
-    <ion-item button [routerLink]="['./resources/']" lines="none">
-      Resources
-      <ion-icon md="md-arrow-forward" slot="end"></ion-icon>
-    </ion-item>
-  </ion-card>
+  <div class="more-grid">
+    <ion-card button [routerLink]="['./resources/']" lines="none" >
+      <!-- 
+      <ion-item button [routerLink]="['./resources/']" lines="none">
+        Resources
+        <ion-icon md="md-arrow-forward" slot="end"></ion-icon>
+      </ion-item>
+      -->
+      <ion-card-title class="ion-padding tile-font-flex">
+        <div class="tile-font-size">
+          Resources
+        </div>
+     </ion-card-title>
 
-  <ion-card>
-    <ion-item button [routerLink]="['./forum/']" lines="none">
-      Information Desk
-      <ion-icon md="md-arrow-forward" slot="end"></ion-icon>
-    </ion-item>
-  </ion-card>
+      <ion-card-content style="padding:0"> <img src="https://firebasestorage.googleapis.com/v0/b/imatter-nau.appspot.com/o/MorePage%2Fimatter_map_image.png?alt=media&token=179abe25-5c14-452e-9bde-4cdfa9f00cb3" ></ion-card-content>
+    </ion-card>
+  
+    <ion-card button [routerLink]="['./forum/']" lines="none">
+      <ion-card-title class="ion-padding tile-font-flex">
+        <div class="info-desk-tile">
+          Information Desk
+        </div>
+     </ion-card-title>
 
-  <ion-card>
-    <ion-item button [routerLink]="['./calendar/']" lines="none">
-      Calendar
-      <ion-icon md="md-arrow-forward" slot="end"></ion-icon>
-    </ion-item>
-  </ion-card>
+      <ion-card-content style="padding:0"> <img src="https://firebasestorage.googleapis.com/v0/b/imatter-nau.appspot.com/o/MorePage%2Fimatter_info_desk.png?alt=media&token=4aff669b-ed90-4211-8227-fb19c4379c3a" ></ion-card-content>
+    </ion-card>
+  
+    <ion-card button [routerLink]="['./calendar/']" lines="none">
+      <ion-card-title class="ion-padding tile-font-flex">
+        <div class="tile-font-size">
+          Calendar
+        </div>
+     </ion-card-title>
 
-  <ion-card>
-    <ion-item button [routerLink]="['./survey/']" lines="none">
-      Surveys
-      <ion-icon md="md-arrow-forward" slot="end"></ion-icon>
-    </ion-item>
-  </ion-card>
+      <ion-card-content style="padding:0"> <img src="https://firebasestorage.googleapis.com/v0/b/imatter-nau.appspot.com/o/MorePage%2Fimatter_calendar_image.png?alt=media&token=3127b036-a911-4d3e-a6ec-66c4007967a2" ></ion-card-content>
+    </ion-card>
+  
+    <ion-card button [routerLink]="['./survey/']" lines="none">
+      <ion-card-title class="ion-padding tile-font-flex">
+        <div class="tile-font-size">
+          Surveys
+        </div>
+      </ion-card-title>
+
+      <ion-card-content style="padding:0"> <img src="https://firebasestorage.googleapis.com/v0/b/imatter-nau.appspot.com/o/MorePage%2Fimatter_surveys_image.png?alt=media&token=cc973287-e64e-4292-8506-58fa94099446" ></ion-card-content>
+    </ion-card>
+
+  </div>
 
   <ion-card>
     <ion-item button [routerLink]="['./settings/']" lines="none">

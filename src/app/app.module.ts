@@ -33,6 +33,8 @@ import {BnNgIdleService} from 'bn-ng-idle';
 import {Device} from '@ionic-native/device/ngx';
 import * as firebase from 'firebase/app';
 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 firebase.initializeApp(environment.firebase);
 
 @NgModule({
@@ -50,6 +52,7 @@ firebase.initializeApp(environment.firebase);
         AngularFireModule.initializeApp(environment),
         ReactiveFormsModule,
         FormsModule,
+        BrowserAnimationsModule
     ],
     providers: [
         StatusBar,

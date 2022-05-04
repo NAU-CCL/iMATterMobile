@@ -1,0 +1,21 @@
+.more-grid{
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: auto;
+  }
+
+
+
+  .tile-font-size{
+      font-size: 100%;
+  }
+
+  .info-desk-tile{
+      font-size: 76%;
+  }
+
+  .tile-font-flex{
+      display:flex;
+      flex-wrap: nowrap;
+      justify-content: center;
+  }

@@ -174,12 +174,79 @@
             </ion-row>
 
         </div>
+        <ion-row>
+            <ion-col class="progress-bar-container-height">
+                <div>
+                    <h3 class="no-margin"> Points Progress </h3>
+                </div>
+
+                <ion-item lines="none">
+                    <ion-icon slot="end" name="information-circle" (click)="displayPointInfo()"></ion-icon>
+                    Total Points Earned: {{user.points}}
+                </ion-item>
+
+                <div id="gc-points-prog-bar">
+                    
+                    <div class="progress-milestone">
+                        <div class="milestone-label">
+                            <div class="flex-column-center">
+                                <div>
+                                    10
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress-milestone">
+                        <div class="milestone-label">
+                            <div class="flex-column-center">
+                                <div>
+                                    20
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress-milestone">
+                        <div class="milestone-label">
+                            <div class="flex-column-center">
+                                <div>
+                                    30
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="progress-milestone">
+                        <div class="milestone-label">
+                            <div class="flex-column-center">
+                                <div>
+                                    40
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="final-milestone">
+                        <div class="flex-column-center">
+                            <img class="final-milestone-image" src="../../../../assets/giftcard_icon_rotated.png"/>
+                           
+                        </div>
+                    </div>
+                </div>
+
+            </ion-col>
+        </ion-row>
 
         <ion-row>
             <ion-col>
                 <ion-item lines="none">
-                    <ion-icon name="information-circle" (click)="displayPointInfo()"></ion-icon>
-                    Points Earned: {{user.points}}
+                    <ng-container *ngIf="canRedeemPoints">
+                        Congrats you earned 50 points! Click redeem to get your giftcard!
+                    </ng-container>
+
+                    <ng-container *ngIf="!canRedeemPoints">
+                        Almost there! Only {{pointsLeftForGC}} more points until you can redeem a giftcard!
+                    </ng-container>
+                    
                     <ion-button slot="end" class="fill-button" *ngIf="canRedeemPoints"
                         (click)="displayRedeemOptions = true"> Redeem
                     </ion-button>
