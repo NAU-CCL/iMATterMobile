@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument, DocumentReference } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument, DocumentChangeAction, DocumentReference } from '@angular/fire/firestore';
 import { map, take } from 'rxjs/operators';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Storage } from '@ionic/storage';
@@ -8,7 +8,7 @@ import 'rxjs/add/operator/do'
 import 'rxjs/add/operator/scan'
 import 'rxjs/add/operator/take'
 import { StringMap } from '@angular/compiler/src/compiler_facade_interface';
-
+import {autoChat} from '../../pages/chat/chatInterface'
 
 interface chatsQueryConfig{
   path: string,
@@ -281,7 +281,6 @@ export class ChatService {
               let values = array.map( snapShot => {
                 const data = snapShot.payload.doc.data();
                 const doc = snapShot.payload.doc
-                console.log(`Chat Message Loaded ${JSON.stringify(data)}`);
                 return { ...data, doc};
               })
 
@@ -339,6 +338,67 @@ export class ChatService {
         });
       })
     );
+  }
+
+
+  
+  deleteAllAutoChats()
+  {
+    this.afs.collection('chats', ref => ref.where('type','==','auto')).ref.get().then( ( querySnap ) => {
+      querySnap.forEach( (queryDocSnap) => {
+        queryDocSnap.ref.delete();
+      })
+    })
+  }
+
+  createTestChats()
+  {
+
+    let index = 0;
+    while( index < 30){
+      this.afs.collection('chats').add(
+        {
+          cohort: 'default',
+          userID:'NTw38h',
+          message: 'test',
+          username: 'calvin',
+          profilePic: 'https://firebasestorage.googleapis.com/v0/b/imatter-nau.appspot.com/o/ProfileImages%2Fpeacock.png?alt=media&token=ba0dd515-3350-4258-a615-5d76ec48e9ef',
+          timestamp: new Date(),
+          visibility: true,
+          type: 'user',
+          count: 0
+        }
+      );
+      index++;
+    }
+  }
+
+
+  // Adds a new auto chat to the autoChats collection
+  addAutoChat( newChat )
+  {
+    this.afs.collection('autoChats').add(newChat);
+  }
+
+  getAutoChats(): Observable<DocumentChangeAction<autoChat>[]>
+  {
+    let currentDate = new Date();
+    // Return all new or edited documents. In this case, should only return new docs as they are never edited.
+    return this.afs.collection<autoChat>('autoChats', ref=> ref.where('timestamp','>', currentDate )).snapshotChanges();
+  }
+
+  getAutoChatsTest()
+  {
+    let currentDate = new Date();
+    // Return all new or edited documents. In this case, should only return new docs as they are never edited.
+    return this.afs.collection<autoChat>('autoChats', ref=> ref.where('timestamp','>', currentDate )).ref.get().then(
+      (querySnap) => {
+        querySnap.forEach( (queryDocSnap) => {
+          console.log(`Auto chats: ${JSON.stringify(queryDocSnap.data())}`);
+        } )
+        
+      }
+    )
   }
 
 

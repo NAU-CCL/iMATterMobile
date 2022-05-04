@@ -79,6 +79,8 @@ export class ChatPage implements OnInit {
 
       // Get new chats. Get chats that were added to the firestore db after the user entered the chat.
       this.chats = this.chatService.getNewChats(this.cohortChat);
+
+      //this.chatService.createTestChats();
       this.scrollToBottom();
     });
 
@@ -144,10 +146,13 @@ export class ChatPage implements OnInit {
 
   ionViewDidEnter() {
 
-    this.addChat('autoEnter');
+    
     this.scrollToBottom();
 
     this.addView();
+
+    // Add an auto chat to signify that a user entered the chat room
+    this.addAutoChat( 'entered' );
 
   }
 
@@ -177,12 +182,9 @@ export class ChatPage implements OnInit {
 
     if( currentURL == "/tabs/chat/default")
     {
-      this.addChat( enteredOrLeft );
+      // Add code to create auto chat here.
     }
-    else if( currentURL == "/tabs/chat/default")
-    {
-      this.addChat( enteredOrLeft );
-    }
+    
 
   }
 
@@ -226,39 +228,11 @@ export class ChatPage implements OnInit {
             this.chat.profilePic = doc.get('profilePic');
             this.chat.timestamp = new Date();
             this.chat.visibility = true;
-
-            if (chatType === 'autoEnter') {
-
-              this.chat.message = this.chat.username + ' has entered the chat test';
-              this.chat.type = 'auto';
-              // Add the auto chat, once the chat is added to the db, then the addChat function 
-              // returns a promise that resolves to the new document id of the auto chat.
-              this.chatService.addChat(this.chat);
-              /*
-              .then(async (resp) => {
-                await new Promise(f => setTimeout(f, 5000));
-                console.log("delete autoenter chat now " + resp);
-                this.chatService.deleteChat(resp.id);
-              }); */
-
-            } else if (chatType === 'autoLeft') {
-              this.chat.message = this.chat.username + ' has left the chat';
-              this.chat.type = 'auto';
-              this.chatService.addChat(this.chat)
-              
-              /*
-              .then(async (resp) => {
-                await new Promise(f => setTimeout(f, 5000));
-                console.log("delete chat now " + resp);
-                this.chatService.deleteChat(resp.id);
-              });
-              */
-             
-            } else {
-              this.chat.type = 'user';
-
-              this.chatService.addChat(this.chat);
-            }
+            this.chat.type = 'user';
+            this.chatService.addChat(this.chat);
+            
+            // Chat.message is changed everytime someone enters the new message field on the chat room page. 
+            // This line resets the new chat box to empty to after the message is sent the old message is removed.
             this.chat.message = '';
           });
         });
@@ -305,10 +279,38 @@ export class ChatPage implements OnInit {
   }
 
 
+  // Create a new chat object to add to the autoChat collection. Called each time user 
+  // enters or leaves the chatroom.
+  addAutoChat( enteredChat )
+  {
+    let newChat = {
+      cohort: 'default',
+      userID:'NTw38h',
+      message: 'test',
+      username: 'calvin',
+      timestamp: new Date(),
+      visibility: true,
+      type: '',
+      count: 0 
+    }
+
+    if(enteredChat)
+    {
+      newChat.type = "entered";
+      this.chatService.addAutoChat(newChat);
+    }
+    else
+    {
+      newChat.type = "left";
+      this.chatService.addAutoChat(newChat);
+    }
+  }
+
+
  
 
   ionViewWillLeave() {
-    this.addChat('autoLeft');
+    this.addAutoChat( 'left' );
   }
 
 

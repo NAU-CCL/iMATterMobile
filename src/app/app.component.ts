@@ -11,6 +11,7 @@ import {BnNgIdleService} from 'bn-ng-idle';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {Observable} from 'rxjs';
+import {GlobalChatNotificationsComponent} from './global-chat-notifications/global-chat-notifications.component';
 
 @Component({
     selector: 'app-root',
