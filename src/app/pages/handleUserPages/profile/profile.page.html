@@ -238,7 +238,7 @@
 
         <ion-row>
             <ion-col>
-                <ion-item lines="none">
+                <ion-item lines="none" class="font-size-16">
                     <ng-container *ngIf="canRedeemPoints">
                         Congrats you earned 50 points! Click redeem to get your giftcard!
                     </ng-container>
@@ -247,7 +247,7 @@
                         Almost there! Only {{pointsLeftForGC}} more points until you can redeem a giftcard!
                     </ng-container>
                     
-                    <ion-button slot="end" class="fill-button" *ngIf="canRedeemPoints"
+                    <ion-button slot="end" class="fill-button redeem-btn" *ngIf="canRedeemPoints"
                         (click)="displayRedeemOptions = true"> Redeem
                     </ion-button>
                 </ion-item>

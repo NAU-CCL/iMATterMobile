@@ -88,7 +88,7 @@ ion-icon {
   
   width: 90%;
   height: 18px;
-  margin-top: 30px;
+  margin-top: 12px;
 
   margin-left:auto;
   margin-right:auto;
@@ -98,7 +98,12 @@ ion-icon {
   //overflow: hidden;
 
   background-color: #6bff7b;
+}
 
+.can-redeem-gc-animation{
+  animation-name: glowing-border;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
 }
 
 .progress-milestone{
@@ -109,7 +114,7 @@ ion-icon {
 
 .milestone-label{
   position: relative;
-  left: 82%;
+  left: 92%;
   top: 20px;
   font-size: 10px;
 }
@@ -119,7 +124,7 @@ ion-icon {
 }
 
 .progress-bar-container-height{
-  height: 160px;
+  height: 130px;
 }
 
 .flex-column-center{
@@ -140,13 +145,27 @@ ion-icon {
   width: 45px;
 }
 
-.final-milestone-label{
-  position: relative;
-  left: 82%;
-  bottom: 10px;
-  font-size: 10px;
-}
-
 .font-size-18{
   font-size: 18px;
+}
+
+
+.font-size-16{
+  font-size: 16px;
+}
+
+.redeem-btn{
+  margin-left: 15px;
+}
+
+
+@keyframes glowing-border {
+  0%   {box-shadow: 0px 0px 0px 0px rgba(29, 252, 0, .7);
+        transform: scale(.95);}
+  70%   {box-shadow: 0px 0px 0px 15px rgb(0, 0, 0, 0);
+         transform: scale(1);}
+  100%   {box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
+          transform: scale(.95);}
+  
+
 }

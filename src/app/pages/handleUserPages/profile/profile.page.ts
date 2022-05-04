@@ -179,7 +179,13 @@ export class ProfilePage implements OnInit {
 
         console.log(`the bar ${JSON.stringify(progressBarEl) } Percent ${progressPercent} unfinished ${unfinishedPercent}`)
 
+        // Use the gradient to cover a portion of the background image. Gradient must come first for this to work.
         progressBarEl.style.backgroundImage =`linear-gradient(90deg, #00FFFF00 ${progressPercent}%, #FFFFFFFF 0%), url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23236240' fill-opacity='0.4' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E")`; 
+
+        if(progressPercent >= 100)
+        {
+            progressBarEl.classList.add('can-redeem-gc-animation');
+        }
 
         console.log(`Setting background`);
     }
