@@ -233,21 +233,27 @@ export class ChatPage implements OnInit {
               this.chat.type = 'auto';
               // Add the auto chat, once the chat is added to the db, then the addChat function 
               // returns a promise that resolves to the new document id of the auto chat.
-              this.chatService.addChat(this.chat).then(async (resp) => {
+              this.chatService.addChat(this.chat);
+              /*
+              .then(async (resp) => {
                 await new Promise(f => setTimeout(f, 5000));
                 console.log("delete autoenter chat now " + resp);
                 this.chatService.deleteChat(resp.id);
-              });
+              }); */
 
             } else if (chatType === 'autoLeft') {
               this.chat.message = this.chat.username + ' has left the chat';
               this.chat.type = 'auto';
-              this.chatService.addChat(this.chat).then(async (resp) => {
+              this.chatService.addChat(this.chat)
+              
+              /*
+              .then(async (resp) => {
                 await new Promise(f => setTimeout(f, 5000));
                 console.log("delete chat now " + resp);
                 this.chatService.deleteChat(resp.id);
               });
-
+              */
+             
             } else {
               this.chat.type = 'user';
 
@@ -291,6 +297,11 @@ export class ChatPage implements OnInit {
         });
       }
     });
+  }
+
+  removeJoinedChatNotif( autoNotifEl )
+  {
+    autoNotifEl.remove();
   }
 
 

@@ -258,6 +258,8 @@ exports.sendChatNotifications =
                         if (userNotifToken === '') {
                             return;
                         }
+                        // Only send the message if the current user has notifications on, and the user id of 
+                        // the chat is not the userid of the current user( dont notify the person who sent the message )
                         if (doc.get('chatNotif') === true && newChat.userID !== doc.get('code')) {
                             token = doc.get('token');
                             admin.messaging().sendToDevice(token, payload)
