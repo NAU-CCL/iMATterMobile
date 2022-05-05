@@ -1,6 +1,6 @@
 
-  <ng-container *ngFor="let chat of currentAutoChats">
-    <div #autoNotif class="chat-notif-style" (click)="removeJoinedChatNotif(autoNotif)">
+  <ng-container *ngFor="let chat of currentAutoChats; let i = index">
+    <div #autoNotif [attr.id]="'chat-'+ i" class="chat-notif-style" [style.margin-top]="i*2+'px'" (click)="removeJoinedChatNotif(autoNotif)">
       <div>
         {{chat.message}}
       </div>

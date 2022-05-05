@@ -380,11 +380,13 @@ export class ChatService {
     this.afs.collection('autoChats').add(newChat);
   }
 
-  getAutoChats(): Observable<DocumentChangeAction<autoChat>[]>
+  getAutoChats( ): Observable<DocumentChangeAction<autoChat>[]>
   {
     let currentDate = new Date();
     // Return all new or edited documents. In this case, should only return new docs as they are never edited.
-    return this.afs.collection<autoChat>('autoChats', ref=> ref.where('timestamp','>', currentDate )).snapshotChanges();
+    // stateChanges vs snapshotChanges. snapshotChanges reexecutes the query each time a document in the database changes. This would be good
+    // for refreshing a list of data that the user can see, but we only want a single autochat document so we use stateChanges. Statechanges only returns a single document from the database on change.
+    return this.afs.collection<autoChat>('autoChats', ref=> ref.where('timestamp','>', currentDate )).stateChanges();
   }
 
   deleteAllAutoChats()

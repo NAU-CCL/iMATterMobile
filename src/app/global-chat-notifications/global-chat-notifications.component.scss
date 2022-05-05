@@ -11,20 +11,19 @@
     width: 80%;
     color: white;
    
-    animation-name: fade-auto-msg;
-    animation-duration: 8s;
-    animation-timing-function: ease-out;
-    animation-fill-mode: forwards;
+    animation: fade-auto-msg 6s ease-out  forwards;
   
   }
   
   @keyframes fade-auto-msg {
       0% { opacity: 1; top:-5%;}
-      10% { opacity: 1; top:2%;}
-      100% { opacity: 0; top:2%;}
+      10% { opacity: 1; top:5%;}
+      80% { opacity: 1;top:5%;}
+      100% { opacity: 0;top:-5%;}
   }
   
   
   .sub-text{
     font-size: 10px;
   }
+
