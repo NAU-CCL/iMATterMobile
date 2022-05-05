@@ -6,6 +6,8 @@ import { TabsPageRoutingModule } from './tabs-routing.module';
 
 import { TabsPage } from './tabs.page';
 
+import {GlobalChatNotificationsComponent} from '../global-chat-notifications/global-chat-notifications.component'
+
 
 @NgModule({
   imports: [
@@ -13,6 +15,6 @@ import { TabsPage } from './tabs.page';
     CommonModule,
     TabsPageRoutingModule
   ],
-  declarations: [TabsPage]
+  declarations: [TabsPage, GlobalChatNotificationsComponent]
 })
 export class TabsPageModule {}

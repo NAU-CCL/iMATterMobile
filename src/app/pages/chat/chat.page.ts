@@ -7,6 +7,8 @@ import * as firebase from 'firebase/app';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AnalyticsService, Analytics, Sessions } from 'src/app/services/analyticsService.service';
 import { IonContent } from '@ionic/angular';
+
+
 import {
   Plugins,
   PushNotification,
@@ -89,6 +91,8 @@ export class ChatPage implements OnInit {
 
     // Event that fires when user opens app after leaving app previously.
     document.addEventListener('resume', () => { this.userWentHomeChatNotify('autoEnter') }, false);
+
+    //this.chatService.deleteAllAutoChats();
 
     console.log( `The active view is: ${this.router.url}` );
   }
@@ -283,27 +287,34 @@ export class ChatPage implements OnInit {
   // enters or leaves the chatroom.
   addAutoChat( enteredChat )
   {
-    let newChat = {
-      cohort: 'default',
-      userID:'NTw38h',
-      message: 'test',
-      username: 'calvin',
-      timestamp: new Date(),
-      visibility: true,
-      type: '',
-      count: 0 
-    }
 
-    if(enteredChat)
-    {
-      newChat.type = "entered";
-      this.chatService.addAutoChat(newChat);
-    }
-    else
-    {
-      newChat.type = "left";
-      this.chatService.addAutoChat(newChat);
-    }
+    // Get the user code from storage and then query the datbase for the correct user document.
+    this.storage.get('userCode').then((currentUserCode) => {
+      if (currentUserCode) {
+        const ref = this.afs.firestore.collection('users').where('code', '==', currentUserCode);
+        ref.get().then((querySnap) => {
+          querySnap.forEach(docSnap => {
+
+            // get a js object representing the user document.
+            let userDocObject = docSnap.data();
+            let newChat = {
+              cohort: 'default',
+              userID: userDocObject.code,
+              message: `${userDocObject.username} has ${enteredChat} the chatroom.`,
+              username: 'calvin',
+              timestamp: new Date(),
+              visibility: true,
+              type: enteredChat,
+              count: 0 
+            }
+          
+            this.chatService.addAutoChat(newChat);
+          
+
+          })
+        })
+        }
+      })
   }
 
 

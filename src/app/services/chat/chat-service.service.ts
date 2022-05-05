@@ -342,7 +342,7 @@ export class ChatService {
 
 
   
-  deleteAllAutoChats()
+  deleteAllAutoChatsOld()
   {
     this.afs.collection('chats', ref => ref.where('type','==','auto')).ref.get().then( ( querySnap ) => {
       querySnap.forEach( (queryDocSnap) => {
@@ -387,19 +387,15 @@ export class ChatService {
     return this.afs.collection<autoChat>('autoChats', ref=> ref.where('timestamp','>', currentDate )).snapshotChanges();
   }
 
-  getAutoChatsTest()
+  deleteAllAutoChats()
   {
-    let currentDate = new Date();
-    // Return all new or edited documents. In this case, should only return new docs as they are never edited.
-    return this.afs.collection<autoChat>('autoChats', ref=> ref.where('timestamp','>', currentDate )).ref.get().then(
-      (querySnap) => {
-        querySnap.forEach( (queryDocSnap) => {
-          console.log(`Auto chats: ${JSON.stringify(queryDocSnap.data())}`);
-        } )
-        
-      }
-    )
+    this.afs.collection('autoChats').ref.get().then( ( querySnap ) => {
+      querySnap.forEach( (queryDocSnap) => {
+        queryDocSnap.ref.delete();
+      })
+    })
   }
+
 
 
 

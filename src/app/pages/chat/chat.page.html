@@ -1,3 +1,4 @@
+
 <ion-header>
   <ion-toolbar>
     <ion-title>
@@ -6,11 +7,11 @@
   </ion-toolbar>
 </ion-header>
 
-<!-- UNDER CONSTRUCTION -->
 
 
 <ion-content #content [scrollEvents]="true">
-
+  
+  <!-- Import the global chat notif component to display chat notifications when users enter or leave the chat room.-->
    
     <!-- Allows us to use pull down to refresh.-->
     <ion-refresher slot="fixed" pullFactor="0.5" pullMin="100" pullMax="200" (ionRefresh)="loadOlderChats($event)">

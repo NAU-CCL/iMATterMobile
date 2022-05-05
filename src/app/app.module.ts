@@ -33,14 +33,12 @@ import {BnNgIdleService} from 'bn-ng-idle';
 import {Device} from '@ionic-native/device/ngx';
 import * as firebase from 'firebase/app';
 
-import {GlobalChatNotificationsComponent} from './global-chat-notifications/global-chat-notifications.component';
-
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 firebase.initializeApp(environment.firebase);
 
 @NgModule({
-    declarations: [AppComponent, GlobalChatNotificationsComponent],
+    declarations: [AppComponent],
     entryComponents: [],
     imports: [BrowserModule,
         IonicModule.forRoot(),

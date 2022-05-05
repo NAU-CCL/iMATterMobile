@@ -29,13 +29,14 @@ export class GlobalChatNotificationsComponent implements OnInit {
       } );
     } );
 
-    //this.chatService.getAutoChatsTest();
+    
   }
 
 
   // Take an auto chat document and add it to an array of auto chats to display as notifications.
   displayAutoChat( newAutoChat:autoChat )
   {
+    console.log(`Pushing new auto chat ${JSON.stringify(newAutoChat)}`);
     this.currentAutoChats.push(newAutoChat);
   }
 

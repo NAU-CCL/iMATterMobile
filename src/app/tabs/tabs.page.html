@@ -1,5 +1,8 @@
 <ion-tabs>
-
+  <!-- We use this component to globally display notifications throughout the app. Putting this 
+       component inside the app.component.html file wont work because the ionic router 
+      greedily takes up all visible screen space -->
+  <app-global-chat-notifications></app-global-chat-notifications>
   <ion-tab-bar slot="bottom">
     <ion-tab-button tab="home" (click)="updateHomeClicks()">
       <ion-icon name="home"></ion-icon>
