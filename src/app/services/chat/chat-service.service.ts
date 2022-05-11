@@ -341,7 +341,8 @@ export class ChatService {
   }
 
 
-  
+  // Used to delete chats with type auto when they were stored in the same collection as user chats. Auto chats now have their own collection, so this
+  // can probably be removed.
   deleteAllAutoChatsOld()
   {
     this.afs.collection('chats', ref => ref.where('type','==','auto')).ref.get().then( ( querySnap ) => {

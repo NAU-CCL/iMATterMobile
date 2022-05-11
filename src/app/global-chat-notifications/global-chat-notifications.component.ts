@@ -18,6 +18,9 @@ export class GlobalChatNotificationsComponent implements OnInit {
   private autoChatArrayLen: number = 0;
   private autoChatAnimationTime = 6; // autochats disapeer after 6 seconds
   private userCode;
+  private autoChatLifeSpan: number; // How long to show an auto chat before it auto disappears.
+  private maxOnScreenAutoChats: number; // Max number of auto chats to show to the user.
+  
   constructor( private chatService: ChatService,
                private storage: Storage) { }
 
@@ -68,12 +71,16 @@ export class GlobalChatNotificationsComponent implements OnInit {
   async initializeChatNotifs()
   {
     console.log(`Getting user code and waiting`);
+
     await this.storage.get('userCode').then((userCode) => {
       this.userCode = userCode;
     });
+    
     console.log(`User code got`);
 
     console.log(`subscribing to auto chats.`);
+
+    // Get an observable of auto chats from the chat service.
     this.autoChatsObs = this.chatService.getAutoChats();
     this.autoChatsObs.subscribe((autoChatDocChangeActionArray)=> {
       autoChatDocChangeActionArray.forEach( (autoChatDocChangeAction) => {
