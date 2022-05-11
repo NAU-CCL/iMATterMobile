@@ -11,7 +11,10 @@
     width: 80%;
     color: white;
    
-    animation: fade-auto-msg 6s ease-out  forwards;
+    animation-name: fade-auto-msg;
+    animation-timing-function:  ease-out;
+    animation-fill-mode: forwards;
+    animation-duration: 6s;
   
   }
   

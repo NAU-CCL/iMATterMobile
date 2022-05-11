@@ -87,10 +87,10 @@ export class ChatPage implements OnInit {
     });
 
     // Event that is suppose to fire when the user leaves to their homescreen.
-    document.addEventListener('pause',  () => { this.userWentHomeChatNotify('autoLeft')  }, false);
+    document.addEventListener('pause',  () => { this.addAutoChat( 'left' );  }, false);
 
     // Event that fires when user opens app after leaving app previously.
-    document.addEventListener('resume', () => { this.userWentHomeChatNotify('autoEnter') }, false);
+    document.addEventListener('resume', () => { this.addAutoChat( 'entered' ); }, false);
 
     //this.chatService.deleteAllAutoChats();
 

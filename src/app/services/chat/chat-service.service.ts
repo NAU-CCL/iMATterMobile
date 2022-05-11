@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument, DocumentChangeAction, DocumentReference } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument, DocumentChangeAction, DocumentReference, Query } from '@angular/fire/firestore';
 import { map, take } from 'rxjs/operators';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Storage } from '@ionic/storage';
@@ -34,6 +34,14 @@ export interface Chat {
   type: any;
   visibility: boolean;
   count: number;
+}
+
+export interface chatSettings {
+  autoChatLifeSpanInSeconds: number,
+  hours: number,
+  lifeType:string,
+  maxAutoChatsOnScreen: number,
+  numberOfChats:number
 }
 
 @Injectable({
@@ -73,6 +81,8 @@ export class ChatService {
         });
       })
     );
+
+    //this.addIsInChatFieldToUsers();
 
   }
 
@@ -222,7 +232,7 @@ export class ChatService {
     });
   }
 
-  // Deletes all chats from db.
+  // Deletes all chats from 'chats' collection in the db.
   deleteAllChats()
   {
     this.afs.collection('chats').ref.get().then( ( querySnap ) => {
@@ -237,7 +247,9 @@ export class ChatService {
 
   // Initialize the chat service that fetches old chat messgaes. Likely over complicated, and 
   // I can not explain how everything works but note the startAt function. This is used to access
-  // documents from some index in a collection, could proably use this to create a much simpler function.
+  // documents from some index in a collection, can use this to only fetch all document after index n in a collection for example,
+  // works great for fetching chats because we need to keep track of what index we have fetched messages from last.
+  // Can probably be used to create a much simpler function.
   initChatServce(path, field, opts?)
   {
     this.query = {
@@ -321,7 +333,7 @@ export class ChatService {
   }
 
   // Gets all chats from the db that are added after the user joins the chatroom.
-  // Snapshots changes so the returned observable fetches any new messages to the db.
+  // Snapshots any changes so the returned observable can fetch new messages from the db.
   getNewChats(cohortID): Observable<Chat[]>  {
     // this.iterateChats(cohortID);
     let currentDateAndTime  = new Date();
@@ -341,16 +353,7 @@ export class ChatService {
   }
 
 
-  // Used to delete chats with type auto when they were stored in the same collection as user chats. Auto chats now have their own collection, so this
-  // can probably be removed.
-  deleteAllAutoChatsOld()
-  {
-    this.afs.collection('chats', ref => ref.where('type','==','auto')).ref.get().then( ( querySnap ) => {
-      querySnap.forEach( (queryDocSnap) => {
-        queryDocSnap.ref.delete();
-      })
-    })
-  }
+ 
 
   createTestChats()
   {
@@ -398,6 +401,28 @@ export class ChatService {
       })
     })
   }
+
+
+  async getAutoChatSettings()
+  {
+    return this.afs.collection<chatSettings>('settings').ref.doc('chatroomSettings');
+  }
+
+
+  // Example function for adding a field to each document in a collection.
+  /*
+  addIsInChatFieldToUsers()
+  {
+    this.afs.collection('users').ref.get().then( (querySnap) => {
+      querySnap.forEach( (docSnap) =>{
+        docSnap.ref.update({isInChat: false});
+      })
+    })
+  }
+  */
+
+    
+
 
 
 

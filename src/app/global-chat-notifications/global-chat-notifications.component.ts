@@ -16,11 +16,10 @@ export class GlobalChatNotificationsComponent implements OnInit {
   private autoChatsObs: Observable<DocumentChangeAction<autoChat>[]>;
   public currentAutoChats: autoChat[]= [];
   private autoChatArrayLen: number = 0;
-  private autoChatAnimationTime = 6; // autochats disapeer after 6 seconds
   private userCode;
-  private autoChatLifeSpan: number; // How long to show an auto chat before it auto disappears.
+  public autoChatLifeSpan: number; // How long to show an auto chat before it auto disappears.
   private maxOnScreenAutoChats: number; // Max number of auto chats to show to the user.
-  
+
   constructor( private chatService: ChatService,
                private storage: Storage) { }
 
@@ -38,7 +37,7 @@ export class GlobalChatNotificationsComponent implements OnInit {
   /// User code is loaded before this is ever called.
   displayAutoChat( newAutoChat:autoChat )
   {
-    if( this.userCode != newAutoChat.userID)
+    if( this.userCode != newAutoChat.userID && this.currentAutoChats.length <= this.maxOnScreenAutoChats)
     {
       this.currentAutoChats.push(newAutoChat);
     
@@ -47,7 +46,7 @@ export class GlobalChatNotificationsComponent implements OnInit {
       setTimeout( ()=>{
             // Remove the first item in the array after about 6 seconds.
             this.currentAutoChats.shift();
-          }, 6100 );
+          },  (this.autoChatLifeSpan * 1000) + 200 );
     }
 
   }
@@ -75,6 +74,25 @@ export class GlobalChatNotificationsComponent implements OnInit {
     await this.storage.get('userCode').then((userCode) => {
       this.userCode = userCode;
     });
+
+    let chatSettingsDoc = await this.chatService.getAutoChatSettings();
+
+
+    console.log(`Getting auto chat settings and waiting`);
+
+   
+    await chatSettingsDoc.get().then( (docSnap) =>{
+      let chatSettingsObject = docSnap.data();
+      console.log(`SETTINGS OBJECT ${JSON.stringify(chatSettingsObject)}`);
+      // How long to show an auto chat before it auto disappears. Convert to milliseconds by multiplying by 1000
+      // Add extra 200 milliseconds to ensure that animation finished running before chat is removed.
+      this.autoChatLifeSpan = chatSettingsObject.autoChatLifeSpanInSeconds; 
+      this.maxOnScreenAutoChats = chatSettingsObject.maxAutoChatsOnScreen;
+    })
+    
+    
+
+    console.log(`Finished getting auto chat settings. Time out${this.autoChatLifeSpan} max onsc ${this.maxOnScreenAutoChats}`);
     
     console.log(`User code got`);
 
