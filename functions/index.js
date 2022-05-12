@@ -242,14 +242,17 @@ exports.sendChatNotifications =
 
         console.log(newChat.cohort);
 
+        // Auto chats not stored in the regular chat collection anymore, can probably remove this check.
         if (newChat.type !== 'auto') {
             const ref = admin.firestore().collection('users').where('cohort', '==', newChat.cohort);
             ref.get().then((result) => {
+                // iterate through the list of entire list of users.
                 result.forEach(doc => {
                     {
-                        //Check to see this value exists/is valid
-                        if (doc.get('cohort') == null) {
-                            //return as as "continue" in forEach loop
+                        // If the user is already in the chat, do not send them a push notification.
+                        if ( !doc.get('isInChat')) {
+                            console.log(`Not sending chat to user ${doc.get('username')} they are already in chat.`);
+                            // return nothing to skip sending a notification to this user.
                             return;
                         }
 

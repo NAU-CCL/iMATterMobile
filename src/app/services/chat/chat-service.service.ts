@@ -354,7 +354,7 @@ export class ChatService {
 
 
  
-
+  // One off function to create a bunch of test chats in the chat room as I accidentally deleted them all.
   createTestChats()
   {
 
