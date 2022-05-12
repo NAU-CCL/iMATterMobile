@@ -308,7 +308,7 @@ export class ChatPage implements OnInit {
               count: 0 
             }
           
-            this.chatService.addAutoChat(newChat);
+            this.chatService.addAutoChat(newChat, currentUserCode);
           
 
           })

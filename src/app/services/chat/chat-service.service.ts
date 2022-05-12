@@ -379,9 +379,28 @@ export class ChatService {
 
 
   // Adds a new auto chat to the autoChats collection
-  addAutoChat( newChat )
+  addAutoChat( newChat, userCode )
   {
     this.afs.collection('autoChats').add(newChat);
+
+    // Query database for the user document and change the users chat status to active or non active 
+    // depending on whether the user is actively in the chat.
+    this.afs.collection('users').ref.where('code','==',userCode).get().then( (querySnapshot) => {
+      querySnapshot.forEach( (docSnap) =>{
+        // Get doc reference so we can call update on it.
+        let userDocRef = docSnap.ref;
+
+        if(newChat.type == 'entered')
+        {
+          userDocRef.update({isInChat: true});  
+        }
+        else
+        {
+          userDocRef.update({isInChat: false});  
+        }
+        
+      } )
+    });
   }
 
   getAutoChats( ): Observable<DocumentChangeAction<autoChat>[]>
