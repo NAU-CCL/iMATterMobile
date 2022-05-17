@@ -8,10 +8,25 @@
 </ion-header>
 
 <ion-content>
+
+
+  <p class="ion-left-padding">
+    Please help us out! No matter how much you test an app, there are always 
+    bugs that slip through the cracks, and this is where everyday users can 
+    really help.  Let us know if you find a problem with iMatter, if something 
+    just seems weird, or even if there’s a feature missing that you’d really like to see.
+  </p>
+
+  <p class="ion-left-padding">
+    If you’re reporting a bug, please make sure you give enough detail about exactly 
+    what you are doing when happens so that we can re-create the issue, so we can fix it ASAP! 
+  </p>  
+  
+
 <form [formGroup]="reportForm">
   <ion-item>
     <ion-label position="stacked">Subject:</ion-label>
-    <ion-textarea autoGrow="true" spellcheck="true" autocapitalize="true" formControlName="subject" placeholder="Subject"
+    <ion-textarea autoGrow="true" spellcheck="true" autocapitalize="true" formControlName="subject" placeholder="One-sentence summary"
                   [class.invalid]="!reportForm.controls['subject'].valid && reportForm.controls['subject'].touched"></ion-textarea>
   </ion-item>
   <ion-item class="error-message" *ngIf="!reportForm.controls['subject'].valid && reportForm.controls['subject'].touched">
@@ -19,8 +34,8 @@
   </ion-item>
 
   <ion-item>
-    <ion-label position="stacked">What is the problem?:</ion-label>
-    <ion-textarea autoGrow="true" spellcheck="true" autocapitalize="true" formControlName="description" placeholder="What is the problem you are experiencing?"
+    <ion-label position="stacked">Feedback details:</ion-label>
+    <ion-textarea autoGrow="true" spellcheck="true" autocapitalize="true" formControlName="description" placeholder="Details regarding the bug you found, or other feedback/commentary you have."
                   [class.invalid]="!reportForm.controls['description'].valid && reportForm.controls['description'].touched"></ion-textarea>
   </ion-item>
   <ion-item class="error-message" *ngIf="!reportForm.controls['description'].valid && reportForm.controls['description'].touched">
@@ -36,6 +51,12 @@
         Submit
       </ion-button>
     </ion-toolbar>
+
+    <div class="problem-report-footer-text ion-left-padding">
+      If you have questions or comments about the iMATter app or project, you may also directly 
+      contact Dr. Emery Eaves, iMATter project principle investigator, Northern Arizona University, 
+      emery.eaves@nau.edu.
+    </div>
   </ion-footer>
 </form>
 </ion-content>
