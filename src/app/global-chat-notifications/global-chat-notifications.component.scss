@@ -1,0 +1,32 @@
+.chat-notif-style{
+    position:absolute;
+    left: 10%;
+    
+    background-color: #1A5773;
+    border: 1px solid #888a91;
+    border-radius: 8px;
+    opacity: .8;
+  
+    text-align: center;
+    width: 80%;
+    color: white;
+   
+    animation-name: fade-auto-msg;
+    animation-timing-function:  ease-out;
+    animation-fill-mode: forwards;
+    animation-duration: 6s;
+  
+  }
+  
+  @keyframes fade-auto-msg {
+      0% { opacity: 1; top:-5%;}
+      10% { opacity: 1; top:5%;}
+      80% { opacity: 1;top:5%;}
+      100% { opacity: 0;top:-5%;}
+  }
+  
+  
+  .sub-text{
+    font-size: 10px;
+  }
+

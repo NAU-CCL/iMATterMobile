@@ -1,3 +1,4 @@
+
 <ion-header>
   <ion-toolbar>
     <ion-title>
@@ -6,11 +7,11 @@
   </ion-toolbar>
 </ion-header>
 
-<!-- UNDER CONSTRUCTION -->
 
 
 <ion-content #content [scrollEvents]="true">
-
+  
+  <!-- Import the global chat notif component to display chat notifications when users enter or leave the chat room.-->
    
     <!-- Allows us to use pull down to refresh.-->
     <ion-refresher slot="fixed" pullFactor="0.5" pullMin="100" pullMax="200" (ionRefresh)="loadOlderChats($event)">
@@ -23,14 +24,12 @@
 
     <!-- Load chats that were created before the user entered the room.-->
     <div *ngFor="let chat of (chatService.currentChatDataBatchObs | async)" class="message-wrap">
-  
+      
+      <!-- Auto chats ignored when loading more chats, need to adjust service to reflect this behavior-->
+      
       <!-- Automatic message -->
-      <div *ngIf="chat.type == 'auto' || chat.type == 'emotion'">
-  
-        <div *ngIf="chat.type == 'auto'" class="msg-content">
-          <p class="auto">{{chat.message}}</p>
-        </div>
-        <div *ngIf="chat.type == 'emotion'" class="msg-content">
+      <div *ngIf="chat.type == 'emotion'">
+        <div class="msg-content">
           <p class="emotion">{{chat.message}}</p>
         </div>
       </div>
@@ -81,19 +80,21 @@
 
     <!-- Load chats that are new relative to when the user joined the chat room-->
     <div *ngFor="let chat of (chats | async)" class="message-wrap">
+
+      <div #autoNotif *ngIf="chat.type == 'auto'" class="chat-notif-style" (click)="removeJoinedChatNotif(autoNotif)">
+        <div>{{chat.message}}</div>
+        <div class="sub-text">*Tap to dismiss</div>
+      </div>
+
       <!-- Automatic message -->
-      <div *ngIf="chat.type == 'auto' || chat.type == 'emotion'">
-  
-        <div *ngIf="chat.type == 'auto'" class="msg-content">
-          <p class="auto">{{chat.message}}</p>
-        </div>
-        <div *ngIf="chat.type == 'emotion'" class="msg-content">
+      <div *ngIf="chat.type == 'emotion'">
+        <div class="msg-content">
           <p class="emotion">{{chat.message}}</p>
         </div>
       </div>
   
   
-      <!-- User message -->
+      <!-- User message from a different user -->
       <div *ngIf="chat.type == 'user' && chat.userID != userProfileID">
         <div class="timestamp  ion-align-self-center" >
           {{ toDate(chat.timestamp) | date:'h:mm a' }}
@@ -114,6 +115,7 @@
         </div>
       </div>
   
+      <!-- User message from current user -->
       <div *ngIf="chat.type == 'user' && chat.userID == userProfileID">
         <div class="myTimestamp ion-align-self-center">
           {{ toDate(chat.timestamp) | date:'h:mm a' }}
@@ -145,7 +147,7 @@
     <ion-textarea spellcheck="true" autocapitalize="true" [(ngModel)]="chat.message" placeholder="Enter message">
     </ion-textarea>
     <div *ngIf="chat.message == ''">
-      <ion-button disabled="true" class="ion-text-button" slot="end" fill="clear" (click)="addChat('user')">
+      <ion-button disabled="true" class="ion-text-button" slot="end" fill="clear">
         <ion-icon ios="ios-arrow-forward" md="md-arrow-forward"></ion-icon>
       </ion-button>
     </div>

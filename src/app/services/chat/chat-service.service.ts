@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument, DocumentReference } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument, DocumentChangeAction, DocumentReference, Query } from '@angular/fire/firestore';
 import { map, take } from 'rxjs/operators';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Storage } from '@ionic/storage';
@@ -8,7 +8,7 @@ import 'rxjs/add/operator/do'
 import 'rxjs/add/operator/scan'
 import 'rxjs/add/operator/take'
 import { StringMap } from '@angular/compiler/src/compiler_facade_interface';
-
+import {autoChat} from '../../pages/chat/chatInterface'
 
 interface chatsQueryConfig{
   path: string,
@@ -34,6 +34,14 @@ export interface Chat {
   type: any;
   visibility: boolean;
   count: number;
+}
+
+export interface chatSettings {
+  autoChatLifeSpanInSeconds: number,
+  hours: number,
+  lifeType:string,
+  maxAutoChatsOnScreen: number,
+  numberOfChats:number
 }
 
 @Injectable({
@@ -73,6 +81,8 @@ export class ChatService {
         });
       })
     );
+
+    //this.addIsInChatFieldToUsers();
 
   }
 
@@ -222,7 +232,7 @@ export class ChatService {
     });
   }
 
-  // Deletes all chats from db.
+  // Deletes all chats from 'chats' collection in the db.
   deleteAllChats()
   {
     this.afs.collection('chats').ref.get().then( ( querySnap ) => {
@@ -237,7 +247,9 @@ export class ChatService {
 
   // Initialize the chat service that fetches old chat messgaes. Likely over complicated, and 
   // I can not explain how everything works but note the startAt function. This is used to access
-  // documents from some index in a collection, could proably use this to create a much simpler function.
+  // documents from some index in a collection, can use this to only fetch all document after index n in a collection for example,
+  // works great for fetching chats because we need to keep track of what index we have fetched messages from last.
+  // Can probably be used to create a much simpler function.
   initChatServce(path, field, opts?)
   {
     this.query = {
@@ -281,7 +293,6 @@ export class ChatService {
               let values = array.map( snapShot => {
                 const data = snapShot.payload.doc.data();
                 const doc = snapShot.payload.doc
-                console.log(`Chat Message Loaded ${JSON.stringify(data)}`);
                 return { ...data, doc};
               })
 
@@ -322,7 +333,7 @@ export class ChatService {
   }
 
   // Gets all chats from the db that are added after the user joins the chatroom.
-  // Snapshots changes so the returned observable fetches any new messages to the db.
+  // Snapshots any changes so the returned observable can fetch new messages from the db.
   getNewChats(cohortID): Observable<Chat[]>  {
     // this.iterateChats(cohortID);
     let currentDateAndTime  = new Date();
@@ -340,6 +351,98 @@ export class ChatService {
       })
     );
   }
+
+
+ 
+  // One off function to create a bunch of test chats in the chat room as I accidentally deleted them all.
+  createTestChats()
+  {
+
+    let index = 0;
+    while( index < 30){
+      this.afs.collection('chats').add(
+        {
+          cohort: 'default',
+          userID:'NTw38h',
+          message: 'test',
+          username: 'calvin',
+          profilePic: 'https://firebasestorage.googleapis.com/v0/b/imatter-nau.appspot.com/o/ProfileImages%2Fpeacock.png?alt=media&token=ba0dd515-3350-4258-a615-5d76ec48e9ef',
+          timestamp: new Date(),
+          visibility: true,
+          type: 'user',
+          count: 0
+        }
+      );
+      index++;
+    }
+  }
+
+
+  // Adds a new auto chat to the autoChats collection
+  addAutoChat( newChat, userCode )
+  {
+    this.afs.collection('autoChats').add(newChat);
+
+    // Query database for the user document and change the users chat status to active or non active 
+    // depending on whether the user is actively in the chat.
+    this.afs.collection('users').ref.where('code','==',userCode).get().then( (querySnapshot) => {
+      querySnapshot.forEach( (docSnap) =>{
+        // Get doc reference so we can call update on it.
+        let userDocRef = docSnap.ref;
+
+        if(newChat.type == 'entered')
+        {
+          userDocRef.update({isInChat: true});  
+        }
+        else
+        {
+          userDocRef.update({isInChat: false});  
+        }
+        
+      } )
+    });
+  }
+
+  getAutoChats( ): Observable<DocumentChangeAction<autoChat>[]>
+  {
+    let currentDate = new Date();
+    // Return all new or edited documents. In this case, should only return new docs as they are never edited.
+    // stateChanges vs snapshotChanges. snapshotChanges reexecutes the query each time a document in the database changes. This would be good
+    // for refreshing a list of data that the user can see, but we only want a single autochat document so we use stateChanges. Statechanges only returns a single document from the database on change.
+    return this.afs.collection<autoChat>('autoChats', ref=> ref.where('timestamp','>', currentDate )).stateChanges();
+  }
+
+  deleteAllAutoChats()
+  {
+    this.afs.collection('autoChats').ref.get().then( ( querySnap ) => {
+      querySnap.forEach( (queryDocSnap) => {
+        queryDocSnap.ref.delete();
+      })
+    })
+  }
+
+
+  async getAutoChatSettings()
+  {
+    return this.afs.collection<chatSettings>('settings').ref.doc('chatroomSettings');
+  }
+
+
+  // Example function for adding a field to each document in a collection.
+  /*
+  addIsInChatFieldToUsers()
+  {
+    this.afs.collection('users').ref.get().then( (querySnap) => {
+      querySnap.forEach( (docSnap) =>{
+        docSnap.ref.update({isInChat: false});
+      })
+    })
+  }
+  */
+
+    
+
+
 
 
 

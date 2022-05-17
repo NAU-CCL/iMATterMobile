@@ -5,7 +5,7 @@ var newChat;
 const nodemailer = require('nodemailer');
 admin.initializeApp(functions.config().firebase);
 
-
+// Tried uncommenting this line to get firebase push notif authentication error to go away.
 //admin.initializeApp();
 require('dotenv').config();
 
@@ -242,40 +242,50 @@ exports.sendChatNotifications =
 
         console.log(newChat.cohort);
 
-        if (newChat.type !== 'auto') {
-            const ref = admin.firestore().collection('users').where('cohort', '==', newChat.cohort);
-            ref.get().then((result) => {
-                result.forEach(doc => {
-                    {
-                        //Check to see this value exists/is valid
-                        if (doc.get('cohort') == null) {
-                            //return as as "continue" in forEach loop
-                            return;
-                        }
 
-                        userNotifToken = doc.get('token');
+        const ref = admin.firestore().collection('users');
+        return ref.get().then(async (result) => {
+            // iterate through the list of entire list of users.
+            result.forEach(async (doc) => {
+                {
+                    // Avoid getting entire document as object and printing it as this uses up quite a bit of processing power for no good reason.
+                    //let userDocument = doc.data();
+                    //console.log(`Sending Chat notif: User doc object is ${JSON.stringify(userDocument)}`)
 
-                        if (userNotifToken === '') {
-                            return;
-                        }
-                        if (doc.get('chatNotif') === true && newChat.userID !== doc.get('code')) {
-                            token = doc.get('token');
-                            admin.messaging().sendToDevice(token, payload)
-                                .then((response) => {
-                                    console.log('sent notification');
-                                    return payload;
-                                }).catch((err) => {
-                                    console.log('entered doc, but did not send', err);
-                                });
-                        }
+                    // If the user is already in the chat, do not send them a push notification.
+                    if ( doc.get('isInChat')) {
+                        console.log(`Not sending chat to user ${doc.get('username')} they are already in chat.`);
+                        // return nothing to skip sending a notification to this user.
+                        return;
                     }
-                });
-                return 'true';
-            }).catch(error => {
-                console.log('did not send', error)
+
+                    userNotifToken = doc.get('token');
+
+                    if (userNotifToken === '') {
+                        console.log(`User notification token is ''`);
+                        return;
+                    }
+                    // Only send the message if the current user has notifications on, and the user id of 
+                    // the chat is not the userid of the current user( dont notify the person who sent the message )
+                    if (doc.get('chatNotif') === true && newChat.userID !== doc.get('code')) {
+                        token = doc.get('token');
+                        await admin.messaging().sendToDevice(token, payload)
+                            .then(async (response) => {
+                                // In firebase console this will usually print undefined as this is an async operation, add await to this line to ensure firebase logs
+                                // the users name correctly, not needed though.
+                                console.log(`sent notification to user with name: ${doc.get('name')} and code ${doc.get('code')}`);
+                                return payload;
+                            }).catch((err) => {
+                                console.log('entered doc, but did not send', err);
+                            });
+                    }
+                }
             });
-            return 'true';
-        }
+        }).catch(error => {
+            console.log('DID NOT send', error)
+        });
+        
+    
     });
 
 

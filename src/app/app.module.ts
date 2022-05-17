@@ -53,6 +53,7 @@ firebase.initializeApp(environment.firebase);
         ReactiveFormsModule,
         FormsModule,
         BrowserAnimationsModule
+
     ],
     providers: [
         StatusBar,

@@ -7,6 +7,8 @@ import * as firebase from 'firebase/app';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AnalyticsService, Analytics, Sessions } from 'src/app/services/analyticsService.service';
 import { IonContent } from '@ionic/angular';
+
+
 import {
   Plugins,
   PushNotification,
@@ -79,14 +81,18 @@ export class ChatPage implements OnInit {
 
       // Get new chats. Get chats that were added to the firestore db after the user entered the chat.
       this.chats = this.chatService.getNewChats(this.cohortChat);
+
+      //this.chatService.createTestChats();
       this.scrollToBottom();
     });
 
     // Event that is suppose to fire when the user leaves to their homescreen.
-    document.addEventListener('pause',  () => { this.userWentHomeChatNotify('autoLeft')  }, false);
+    document.addEventListener('pause',  () => { this.addAutoChat( 'left' );  }, false);
 
     // Event that fires when user opens app after leaving app previously.
-    document.addEventListener('resume', () => { this.userWentHomeChatNotify('autoEnter') }, false);
+    document.addEventListener('resume', () => { this.addAutoChat( 'entered' ); }, false);
+
+    //this.chatService.deleteAllAutoChats();
 
     console.log( `The active view is: ${this.router.url}` );
   }
@@ -144,10 +150,13 @@ export class ChatPage implements OnInit {
 
   ionViewDidEnter() {
 
-    this.addChat('autoEnter');
+    
     this.scrollToBottom();
 
     this.addView();
+
+    // Add an auto chat to signify that a user entered the chat room
+    this.addAutoChat( 'entered' );
 
   }
 
@@ -177,12 +186,9 @@ export class ChatPage implements OnInit {
 
     if( currentURL == "/tabs/chat/default")
     {
-      this.addChat( enteredOrLeft );
+      // Add code to create auto chat here.
     }
-    else if( currentURL == "/tabs/chat/default")
-    {
-      this.addChat( enteredOrLeft );
-    }
+    
 
   }
 
@@ -226,33 +232,11 @@ export class ChatPage implements OnInit {
             this.chat.profilePic = doc.get('profilePic');
             this.chat.timestamp = new Date();
             this.chat.visibility = true;
-
-            if (chatType === 'autoEnter') {
-
-              this.chat.message = this.chat.username + ' has entered the chat test';
-              this.chat.type = 'auto';
-              // Add the auto chat, once the chat is added to the db, then the addChat function 
-              // returns a promise that resolves to the new document id of the auto chat.
-              this.chatService.addChat(this.chat).then(async (resp) => {
-                await new Promise(f => setTimeout(f, 5000));
-                console.log("delete autoenter chat now " + resp);
-                this.chatService.deleteChat(resp.id);
-              });
-
-            } else if (chatType === 'autoLeft') {
-              this.chat.message = this.chat.username + ' has left the chat';
-              this.chat.type = 'auto';
-              this.chatService.addChat(this.chat).then(async (resp) => {
-                await new Promise(f => setTimeout(f, 5000));
-                console.log("delete chat now " + resp);
-                this.chatService.deleteChat(resp.id);
-              });
-
-            } else {
-              this.chat.type = 'user';
-
-              this.chatService.addChat(this.chat);
-            }
+            this.chat.type = 'user';
+            this.chatService.addChat(this.chat);
+            
+            // Chat.message is changed everytime someone enters the new message field on the chat room page. 
+            // This line resets the new chat box to empty to after the message is sent the old message is removed.
             this.chat.message = '';
           });
         });
@@ -293,11 +277,51 @@ export class ChatPage implements OnInit {
     });
   }
 
+  removeJoinedChatNotif( autoNotifEl )
+  {
+    autoNotifEl.remove();
+  }
+
+
+  // Create a new chat object to add to the autoChat collection. Called each time user 
+  // enters or leaves the chatroom.
+  addAutoChat( enteredChat )
+  {
+
+    // Get the user code from storage and then query the datbase for the correct user document.
+    this.storage.get('userCode').then((currentUserCode) => {
+      if (currentUserCode) {
+        const ref = this.afs.firestore.collection('users').where('code', '==', currentUserCode);
+        ref.get().then((querySnap) => {
+          querySnap.forEach(docSnap => {
+
+            // get a js object representing the user document.
+            let userDocObject = docSnap.data();
+            let newChat = {
+              cohort: 'default',
+              userID: userDocObject.code,
+              message: `${userDocObject.username} has ${enteredChat} the chatroom.`,
+              username: 'calvin',
+              timestamp: new Date(),
+              visibility: true,
+              type: enteredChat,
+              count: 0 
+            }
+          
+            this.chatService.addAutoChat(newChat, currentUserCode);
+          
+
+          })
+        })
+        }
+      })
+  }
+
 
  
 
   ionViewWillLeave() {
-    this.addChat('autoLeft');
+    this.addAutoChat( 'left' );
   }
 
 
