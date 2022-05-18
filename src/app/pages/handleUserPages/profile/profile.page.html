@@ -185,7 +185,7 @@
                     Total Points Earned: {{user.points}}
                 </ion-item>
 
-                <div id="gc-points-prog-bar">
+                <div id="gc-points-prog-bar" [class.can-redeem-gc-animation]="user.points >= 50">
                     
                     <div class="progress-milestone">
                         <div class="milestone-label">
