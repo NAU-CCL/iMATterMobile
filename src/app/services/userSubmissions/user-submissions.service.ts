@@ -65,6 +65,7 @@ export class UserSubmissionsService {
     );
   }
 
+  // Cloud function is invoked when a new document is added to the report collection.
   addReport(report: Report): Promise<DocumentReference> {
     return this.reportCollection.add(report);
   }
