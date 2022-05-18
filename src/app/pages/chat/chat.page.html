@@ -22,11 +22,18 @@
       No more chats to load.
     </div>
 
-    <!-- Load chats that were created before the user entered the room.-->
+    <!-- Load chats that were created before the user entered the room. ie load older chats.-->
     <div *ngFor="let chat of (chatService.currentChatDataBatchObs | async)" class="message-wrap">
       
       <!-- Auto chats ignored when loading more chats, need to adjust service to reflect this behavior-->
       
+      <div *ngIf="chatSentOnDiffDate( chat.timestamp )">
+        <div class="msg-content">
+          <!-- 'shortDate' param formats the date as MM/DD/YYYY-->
+          <p class="">{{toDate(chat.timestamp) | date: 'shortDate'}}</p>
+        </div>
+      </div>
+
       <!-- Automatic message -->
       <div *ngIf="chat.type == 'emotion'">
         <div class="msg-content">
@@ -38,7 +45,8 @@
       <!-- User message -->
       <div *ngIf="chat.type == 'user' && chat.userID != userProfileID">
         <div class="timestamp  ion-align-self-center" >
-          {{ toDate(chat.timestamp) | date:'h:mm a' }}
+          <!-- Passing 'short' as a paramter to the date pipe formats the date as m/d/y hm timezone. You can see this on angular webpage about the datepipe.-->
+          {{ toDate(chat.timestamp) | date:'short' }}
         </div>
         <div class="message">
           <ion-button class="user-img" fill="clear" (click)="goToProfile(chat.userID, chat.cohort)">
@@ -58,7 +66,7 @@
   
       <div *ngIf="chat.type == 'user' && chat.userID == userProfileID">
         <div class="myTimestamp ion-align-self-center">
-          {{ toDate(chat.timestamp) | date:'h:mm a' }}
+          {{ toDate(chat.timestamp) | date:'short' }}
         </div>
         <div class="myMessage">
           <div class="msg-detail">
