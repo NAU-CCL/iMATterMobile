@@ -106,7 +106,7 @@
       <!-- User message from a different user -->
       <div *ngIf="chat.type == 'user' && chat.userID != userProfileID">
         <div class="timestamp  ion-align-self-center" >
-          {{ toDate(chat.timestamp) | date:'h:mm a' }}
+          {{ toDate(chat.timestamp) | date:'short' }}
         </div>
         <div class="message">
           <ion-button class="user-img" fill="clear" (click)="goToProfile(chat.userID, chat.cohort)">
@@ -118,7 +118,7 @@
             </div>
             <div class="msg-content">
               <span class="triangle"></span>
-              <p class="line-breaker ">{{chat.message}}</p>
+              <p class="line-breaker ">{{chat.message}} New relative</p>
             </div>
           </div>
         </div>
@@ -127,7 +127,7 @@
       <!-- User message from current user -->
       <div *ngIf="chat.type == 'user' && chat.userID == userProfileID">
         <div class="myTimestamp ion-align-self-center">
-          {{ toDate(chat.timestamp) | date:'h:mm a' }}
+          {{ toDate(chat.timestamp) | date:'short' }}
         </div>
         <div class="myMessage">
           <div class="msg-detail">
@@ -136,7 +136,7 @@
             </div>
             <div class="msg-content">
               <span class="triangle"></span>
-              <p class="line-breaker ">{{chat.message}}</p>
+              <p class="line-breaker ">{{chat.message}} New relative</p>
             </div>
           </div>
           <ion-button class="user-img" fill="clear" (click)="goToProfile(chat.userID, chat.cohort)">

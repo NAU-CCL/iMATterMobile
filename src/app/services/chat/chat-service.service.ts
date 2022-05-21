@@ -116,18 +116,48 @@ export class ChatService {
     );
   }
 
-  async addChat(chat: Chat) {
-    return this.afs.collection('chats').add({
-      username: chat.username,
-      message: chat.message,
-      userID: chat.userID,
-      cohort: chat.cohort,
-      timestamp: chat.timestamp,
-      profilePic: chat.profilePic,
-      type: chat.type,
-      visibility: chat.visibility,
-      count: chat.count
-    });
+  async addChat( newChat: Chat) {
+
+    // If the newChat is a day older than the most recent chat in the database then add a date divider chat message to the db. 
+    // First query the collection for chats ordered from newest first to oldest, limit query to 1, then check the returned chat to see if
+    // the chat was sent the day before the new chat being added to the db. If this is the case add a timestamp divider with a date equal to the new chat date.
+    await this.afs.collection('chats').ref.orderBy('timestamp', 'desc').limit(1).get().then( (querySnap) => {
+      querySnap.forEach((docSnap) =>{
+        let mostRecentChatMessage = docSnap.data();
+        // Get date but without time stamp. toDateString returns a string of the date without timestamp and then we recreate date object using this stirng which returns
+        // a date object that includes a time stamp of 12:00am so datedividers are always the most recent timestamped chat messages in the db.
+        let mostRecentChatDate = new Date( mostRecentChatMessage.timestamp.toDate().toDateString());
+        let newChatDate = new Date( newChat.timestamp.toDateString() );
+
+        console.log(`Adding new message: Most recent chat date is ${mostRecentChatDate.toDateString()} New chat msg date is ${newChatDate.toDateString()}`);
+
+        // If the new chat date is newer than  the most recent chat mesage by 1 day or more, then add a datedivider to the db with the new chats datestamp.
+        if(newChatDate > mostRecentChatDate)
+        {
+          this.afs.collection('chats').ref.add({
+            cohort: 'default',
+            username: 'datedivider',
+            userID: 'system',
+            timestamp: newChatDate,
+            message: 'datedivider',
+            profilePic: 'NA',
+            type: 'datedivider',
+            visibility: 'true',
+            count: '0',
+          });
+          console.log(`added new date divider message.`)
+        }
+        else
+        {
+          console.log(`new chat date was NOT greater than most recent chat date`);
+        }
+
+      }
+    )})
+
+    // Add the new chat to the database.
+    this.afs.collection('chats').add(newChat);
+
   }
 
   async deleteChat(id: string): Promise<void> {
@@ -534,17 +564,6 @@ export class ChatService {
   }
 
 
-    
-
-
-
-
-
-
-
-
-
-
-
+  
 
 }

@@ -116,7 +116,7 @@ export class ChatPage implements OnInit {
         this.userProfileID = val;
       }
     });
-
+    
   }
 
   // Runs after the component has been rendered. Safe to manipulate DOM inside 
