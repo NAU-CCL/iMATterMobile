@@ -197,37 +197,6 @@ export class ChatPage implements OnInit {
     return timestamp.toDate();
   }
 
-  // Timestamp is a timestamp object that represents dates stored in google firebase docs.
-  chatSentOnDiffDate( timestamp )
-  {
-
-    console.log(`Current Newest Date is ${this.currentNewestDate}`);
-
-    let chatDate: Date;
-
-    try
-    {
-      chatDate = new Date( timestamp.toDate().toDateString() ); // toDate is a Timestamp object method
-    }
-    catch(error)
-    {
-      console.log(`Could not convert the given timestamp to date. Timestamp ${JSON.stringify(timestamp)}. Error ${error}`);
-      return false;
-    }
-
-
-    if( chatDate < this.currentNewestDate) // // older messages. If date is less than another date then the lesser date is older.
-    {
-      console.log(`Timestamp ${chatDate} is older than current ${this.currentNewestDate}`);
-
-      // Now compare other chat dates to this chats send date.
-      this.currentNewestDate = chatDate;
-      return true;
-    }
-
-    return false;
-  }
-
   async addChat(chatType) {
     this.chat.cohort = this.cohortChat;
     this.storage.get('userCode').then((val) => {
