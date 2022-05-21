@@ -119,18 +119,10 @@ export class ChatPage implements OnInit {
 
   }
 
+  // Runs after the component has been rendered. Safe to manipulate DOM inside 
+  // this method although you should avoid direct DOM access if possible.
   ngAfterViewInit()
   {
-    const allChatMessages = document.querySelectorAll('.user-chat-message') as NodeListOf<HTMLDivElement>;
-
-    console.log(`Running ngafterviewinit length of chat message divs ${allChatMessages.length}`)
-    for(let index = 0; index < allChatMessages.length; index++)
-    {
-      let currentMessage: HTMLDivElement = allChatMessages[index];
-      let currentMessageDate = currentMessage.dataset.chatDate;
-
-      console.log(`Curent msg date before conversion, ${currentMessageDate}`);
-    }
   }
 
   ionViewDidEnter() {
@@ -266,7 +258,6 @@ export class ChatPage implements OnInit {
 
 
   addView() {
-
     // this.analytic.sessionID = this.session.id;
     this.storage.get('userCode').then((val) => {
       if (val) {
