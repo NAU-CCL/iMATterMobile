@@ -58,6 +58,10 @@ export class ChatPage implements OnInit {
 
   public cohortChat: string;
   public chats: Observable<any>;
+  // contains the date of the most recent message sent. Updates as messages load and gets older and older to detirmine where
+  // message date line dividers should go. Initialize this value to the current date.
+  public currentNewestDate: Date = new Date( (new Date()).toDateString() ); 
+
   private hasEntered: boolean;
 
   private analyticss: string;
@@ -112,40 +116,13 @@ export class ChatPage implements OnInit {
         this.userProfileID = val;
       }
     });
+    
+  }
 
-    /*
-    this.storage.get('cohort').then((val) => {
-      if (val) {
-        this.chats = this.chatService.getChats(val);
-        const ref = firebase.firestore().collection('chats').where('cohort', '==', this.cohort.name).orderBy('timestamp');
-        ref.get().then((res) => {
-          res.forEach(doc => {
-            this.numberOfCurrentChats += 1;
-          });
-        });
-      }
-    });
-    */
-    // this.getCohort();
-
-    /*
-    const timer = Observable.timer(0, 1000);
-    timer.subscribe(tick => {
-      console.log('tic');
-      const ref = firebase.firestore().collection('chats').where('cohort', '==', this.cohort.name).orderBy('timestamp');
-      ref.get().then((res) => {
-        this.numOfChats = this.numberOfCurrentChats;
-        this.numberOfCurrentChats = 0;
-        res.forEach(doc => {
-          this.numberOfCurrentChats += 1;
-        });
-      });
-
-      if (this.numberOfCurrentChats > this.numOfChats) {
-        console.log('tick');
-        this.scrollToBottom();
-      }
-    });*/
+  // Runs after the component has been rendered. Safe to manipulate DOM inside 
+  // this method although you should avoid direct DOM access if possible.
+  ngAfterViewInit()
+  {
   }
 
   ionViewDidEnter() {
@@ -216,6 +193,7 @@ export class ChatPage implements OnInit {
   }
 
   toDate(timestamp) {
+    // .toDate is a method of the Timestamp class. Firebase timestamps are returned as Timestamp objects.
     return timestamp.toDate();
   }
 
@@ -253,7 +231,6 @@ export class ChatPage implements OnInit {
 
 
   addView() {
-
     // this.analytic.sessionID = this.session.id;
     this.storage.get('userCode').then((val) => {
       if (val) {

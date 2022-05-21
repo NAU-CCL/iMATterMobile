@@ -22,11 +22,18 @@
       No more chats to load.
     </div>
 
-    <!-- Load chats that were created before the user entered the room.-->
+    <!-- Load chats that were created before the user entered the room. ie load older chats.-->
     <div *ngFor="let chat of (chatService.currentChatDataBatchObs | async)" class="message-wrap">
       
+      <div *ngIf="chat.type == 'datedivider'">
+        <div class="datedivider-container">
+          <div class="datedivider-date">
+            Sent On {{ chat.timestamp.toDate().toDateString() }}
+          </div>
+        </div>
+      </div>
       <!-- Auto chats ignored when loading more chats, need to adjust service to reflect this behavior-->
-      
+
       <!-- Automatic message -->
       <div *ngIf="chat.type == 'emotion'">
         <div class="msg-content">
@@ -35,10 +42,11 @@
       </div>
   
   
-      <!-- User message -->
-      <div *ngIf="chat.type == 'user' && chat.userID != userProfileID">
+      <!-- User message sent by currently user.-->
+      <div *ngIf="chat.type == 'user' && chat.userID != userProfileID" class="user-chat-message" attr.data-chat-date="{{chat.timestamp}}">
         <div class="timestamp  ion-align-self-center" >
-          {{ toDate(chat.timestamp) | date:'h:mm a' }}
+          <!-- Passing 'short' as a paramter to the date pipe formats the date as m/d/y hm timezone. You can see this on angular webpage about the datepipe.-->
+          {{ toDate(chat.timestamp) | date:'short' }}
         </div>
         <div class="message">
           <ion-button class="user-img" fill="clear" (click)="goToProfile(chat.userID, chat.cohort)">
@@ -56,9 +64,10 @@
         </div>
       </div>
   
-      <div *ngIf="chat.type == 'user' && chat.userID == userProfileID">
+      <!-- User message sent by the current user-->
+      <div *ngIf="chat.type == 'user' && chat.userID == userProfileID" class="user-chat-message" attr.data-chat-date="{{chat.timestamp}}">
         <div class="myTimestamp ion-align-self-center">
-          {{ toDate(chat.timestamp) | date:'h:mm a' }}
+          {{ toDate(chat.timestamp) | date:'short' }}
         </div>
         <div class="myMessage">
           <div class="msg-detail">
@@ -97,7 +106,7 @@
       <!-- User message from a different user -->
       <div *ngIf="chat.type == 'user' && chat.userID != userProfileID">
         <div class="timestamp  ion-align-self-center" >
-          {{ toDate(chat.timestamp) | date:'h:mm a' }}
+          {{ toDate(chat.timestamp) | date:'short' }}
         </div>
         <div class="message">
           <ion-button class="user-img" fill="clear" (click)="goToProfile(chat.userID, chat.cohort)">
@@ -109,7 +118,7 @@
             </div>
             <div class="msg-content">
               <span class="triangle"></span>
-              <p class="line-breaker ">{{chat.message}}</p>
+              <p class="line-breaker ">{{chat.message}} New relative</p>
             </div>
           </div>
         </div>
@@ -118,7 +127,7 @@
       <!-- User message from current user -->
       <div *ngIf="chat.type == 'user' && chat.userID == userProfileID">
         <div class="myTimestamp ion-align-self-center">
-          {{ toDate(chat.timestamp) | date:'h:mm a' }}
+          {{ toDate(chat.timestamp) | date:'short' }}
         </div>
         <div class="myMessage">
           <div class="msg-detail">
@@ -127,7 +136,7 @@
             </div>
             <div class="msg-content">
               <span class="triangle"></span>
-              <p class="line-breaker ">{{chat.message}}</p>
+              <p class="line-breaker ">{{chat.message}} New relative</p>
             </div>
           </div>
           <ion-button class="user-img" fill="clear" (click)="goToProfile(chat.userID, chat.cohort)">
