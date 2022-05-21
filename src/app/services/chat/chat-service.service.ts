@@ -82,7 +82,9 @@ export class ChatService {
       })
     );
 
-    this.initializeDateChats();
+    //this.deleteAllDateChats();
+    //this.initializeDateChats();
+
 
     //this.addIsInChatFieldToUsers();
 
@@ -432,7 +434,9 @@ export class ChatService {
 
   // Function that will add a bunch of messages to the database that represent timestamp dividers.
   // Each message added by this function represents a line displayed in the chat room to show division between messages sent of different days.
-  initializeDateChats()
+  // Is only designed for adding timestmaps to the chat database initially! This was only used because the chat room had no datedividers which are going to be
+  // added dynamically instead of like this.
+  async initializeDateChats()
   {
 
     // Date of the current chat document. We check to see if this date changes, and if 
@@ -452,7 +456,7 @@ export class ChatService {
     // The current chat from the database.
     let currentChat: Chat;
 
-    this.afs.collection<Chat>('chats').ref.where('type','==','user').orderBy('timestamp','asc').get().then( (querySnap) =>
+    await this.afs.collection<Chat>('chats').ref.where('type','==','user').orderBy('timestamp','desc').get().then( (querySnap) =>
     {
       querySnap.forEach( (docSnap) =>
       {
@@ -462,11 +466,12 @@ export class ChatService {
 
         if( gotFirstDate )
         {
-          currentDate = new Date( currentChat.timestamp.toDate().toString() ); // Get date from chat message without hour minute, second timestamp.
+          currentDate = new Date( currentChat.timestamp.toDate().toDateString() ); // Get date from chat message without hour minute, second timestamp.
 
           // If the currentDate is actually older than newerDate
-          if(currentDate < newerDate )
+          if( currentDate < newerDate )
           {
+            console.log(`Adding new datedivider with date ${newerDate.toString()}`)
             // If the currentDate is older than the newerDate, add a chat message of type datedivider with the same date as the newerDate.
             // We use newerDates date becuase we are working backwards, adding date dividers  for the newest messages and then the oldest.
             this.afs.collection('chats').ref.add({
@@ -498,7 +503,36 @@ export class ChatService {
 
       })
     });
+
+    console.log(`Current date is ${currentDate.toString()} newer date is ${newerDate.toString()}`)
+    // After we have examined all chats, the messages sent on the oldest date will not have received a timestamp datedivider, so we add one here.    
+    
+    this.afs.collection('chats').ref.add({
+      cohort: 'default',
+      username: 'datedivider',
+      userID: 'system',
+      timestamp: currentDate,
+      message: 'datedivider',
+      profilePic: 'NA',
+      type: 'datedivider',
+      visibility: 'true',
+      count: '0',
+    });
+
+
+
+
   }
+
+  deleteAllDateChats()
+  {
+    this.afs.collection('chats').ref.where('type','==','datedivider').get().then( ( querySnap ) => {
+      querySnap.forEach( (queryDocSnap) => {
+        queryDocSnap.ref.delete();
+      })
+    })
+  }
+
 
     
 

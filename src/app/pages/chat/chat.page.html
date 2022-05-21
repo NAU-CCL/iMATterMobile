@@ -26,7 +26,11 @@
     <div *ngFor="let chat of (chatService.currentChatDataBatchObs | async)" class="message-wrap">
       
       <div *ngIf="chat.type == 'datedivider'">
-        Date Divider {{ chat.timestamp.toDate() }}
+        <div class="datedivider-container">
+          <div class="datedivider-date">
+            Sent On {{ chat.timestamp.toDate().toDateString() }}
+          </div>
+        </div>
       </div>
       <!-- Auto chats ignored when loading more chats, need to adjust service to reflect this behavior-->
 
