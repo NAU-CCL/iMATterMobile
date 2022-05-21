@@ -60,7 +60,7 @@ export class ChatPage implements OnInit {
   public chats: Observable<any>;
   // contains the date of the most recent message sent. Updates as messages load and gets older and older to detirmine where
   // message date line dividers should go. Initialize this value to the current date.
-  public currentNewestDate: Date = new Date(); 
+  public currentNewestDate: Date = new Date( (new Date()).toDateString() ); 
 
   private hasEntered: boolean;
 
@@ -200,10 +200,14 @@ export class ChatPage implements OnInit {
   // Timestamp is a timestamp object that represents dates stored in google firebase docs.
   chatSentOnDiffDate( timestamp )
   {
+
+    console.log(`Current Newest Date is ${this.currentNewestDate}`);
+
     let chatDate: Date;
+
     try
     {
-      chatDate = timestamp.toDate(); // toDate is a Timestamp object method
+      chatDate = new Date( timestamp.toDate().toDateString() ); // toDate is a Timestamp object method
     }
     catch(error)
     {
@@ -212,12 +216,12 @@ export class ChatPage implements OnInit {
     }
 
 
-    if( chatDate < this.currentNewestDate[0]) // // older messages. If date is less than another date than the lesser date is older.
+    if( chatDate < this.currentNewestDate) // // older messages. If date is less than another date then the lesser date is older.
     {
-      console.log(`Timestamp ${chatDate} is older than current ${this.currentNewestDate[0]}`);
+      console.log(`Timestamp ${chatDate} is older than current ${this.currentNewestDate}`);
 
       // Now compare other chat dates to this chats send date.
-      this.currentNewestDate[0] = chatDate;
+      this.currentNewestDate = chatDate;
       return true;
     }
 

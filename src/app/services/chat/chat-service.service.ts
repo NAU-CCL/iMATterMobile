@@ -428,17 +428,47 @@ export class ChatService {
   }
 
 
-  // Example function for adding a field to each document in a collection.
-  /*
-  addIsInChatFieldToUsers()
+  // Function that will add a bunch of messages to the database that represent timestamp dividers.
+  // Each message added by this function represents a line displayed in the chat room to show division between messages sent of different days.
+  initializeDateChats()
   {
-    this.afs.collection('users').ref.get().then( (querySnap) => {
-      querySnap.forEach( (docSnap) =>{
-        docSnap.ref.update({isInChat: false});
+
+    // Date of the current chat document. We check to see if this date changes, and if 
+    // it does we know to place a date stamp chat with that date into the database.
+    // Not always going to be the same data as the one stored in currentChat.
+    let currentDate: Date;
+
+    // Once we start iterating we need the date of the first chat before we can start any comparisons.
+    // Get the first date then set this to true.
+    let gotFirstDate = false;
+
+
+    // The current chat from the database.
+    let currentChat: Chat;
+
+    this.afs.collection<Chat>('chats').ref.where('type','==','user').orderBy('timestamp','asc').get().then( (querySnap) =>
+    {
+      querySnap.forEach( (docSnap) =>
+      {
+        currentChat = docSnap.data() as Chat;
+
+        if( gotFirstDate )
+        {
+          
+        }
+        else
+        {
+          // call toDate() on the timestamp object.
+          // Call toDateString() on the date object returned from toDate() to get a string of the date without a timestamp, ie just MM/DD/YYYY
+          // Then pass the timestamp string without a timestamp to the new Date contrusctor to get a timestamp that does not have a time.
+          // We dont care what time a chat was sent, only the day it was sent.
+          currentDate = new Date( currentChat.timestamp.toDate().toDateString() );
+        }
+
+
       })
-    })
+    });
   }
-  */
 
     
 
