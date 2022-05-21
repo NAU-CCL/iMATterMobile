@@ -26,13 +26,6 @@
     <div *ngFor="let chat of (chatService.currentChatDataBatchObs | async)" class="message-wrap">
       
       <!-- Auto chats ignored when loading more chats, need to adjust service to reflect this behavior-->
-      
-      <div *ngIf="chatSentOnDiffDate( chat.timestamp )">
-        <div class="msg-content">
-          <!-- 'shortDate' param formats the date as MM/DD/YYYY-->
-          <p class="">{{toDate(chat.timestamp) | date: 'shortDate'}}</p>
-        </div>
-      </div>
 
       <!-- Automatic message -->
       <div *ngIf="chat.type == 'emotion'">
@@ -42,8 +35,8 @@
       </div>
   
   
-      <!-- User message -->
-      <div *ngIf="chat.type == 'user' && chat.userID != userProfileID">
+      <!-- User message sent by currently user.-->
+      <div *ngIf="chat.type == 'user' && chat.userID != userProfileID" class="user-chat-message" attr.data-chat-date="{{chat.timestamp}}">
         <div class="timestamp  ion-align-self-center" >
           <!-- Passing 'short' as a paramter to the date pipe formats the date as m/d/y hm timezone. You can see this on angular webpage about the datepipe.-->
           {{ toDate(chat.timestamp) | date:'short' }}
@@ -64,7 +57,8 @@
         </div>
       </div>
   
-      <div *ngIf="chat.type == 'user' && chat.userID == userProfileID">
+      <!-- User message sent by the current user-->
+      <div *ngIf="chat.type == 'user' && chat.userID == userProfileID" class="user-chat-message" attr.data-chat-date="{{chat.timestamp}}">
         <div class="myTimestamp ion-align-self-center">
           {{ toDate(chat.timestamp) | date:'short' }}
         </div>

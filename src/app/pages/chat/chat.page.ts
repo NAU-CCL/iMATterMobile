@@ -60,7 +60,7 @@ export class ChatPage implements OnInit {
   public chats: Observable<any>;
   // contains the date of the most recent message sent. Updates as messages load and gets older and older to detirmine where
   // message date line dividers should go. Initialize this value to the current date.
-  public currentNewestDate: Date =  new Date(); 
+  public currentNewestDate: Date = new Date(); 
 
   private hasEntered: boolean;
 
@@ -117,39 +117,20 @@ export class ChatPage implements OnInit {
       }
     });
 
-    /*
-    this.storage.get('cohort').then((val) => {
-      if (val) {
-        this.chats = this.chatService.getChats(val);
-        const ref = firebase.firestore().collection('chats').where('cohort', '==', this.cohort.name).orderBy('timestamp');
-        ref.get().then((res) => {
-          res.forEach(doc => {
-            this.numberOfCurrentChats += 1;
-          });
-        });
-      }
-    });
-    */
-    // this.getCohort();
+  }
 
-    /*
-    const timer = Observable.timer(0, 1000);
-    timer.subscribe(tick => {
-      console.log('tic');
-      const ref = firebase.firestore().collection('chats').where('cohort', '==', this.cohort.name).orderBy('timestamp');
-      ref.get().then((res) => {
-        this.numOfChats = this.numberOfCurrentChats;
-        this.numberOfCurrentChats = 0;
-        res.forEach(doc => {
-          this.numberOfCurrentChats += 1;
-        });
-      });
+  ngAfterViewInit()
+  {
+    const allChatMessages = document.querySelectorAll('.user-chat-message') as NodeListOf<HTMLDivElement>;
 
-      if (this.numberOfCurrentChats > this.numOfChats) {
-        console.log('tick');
-        this.scrollToBottom();
-      }
-    });*/
+    console.log(`Running ngafterviewinit length of chat message divs ${allChatMessages.length}`)
+    for(let index = 0; index < allChatMessages.length; index++)
+    {
+      let currentMessage: HTMLDivElement = allChatMessages[index];
+      let currentMessageDate = currentMessage.dataset.chatDate;
+
+      console.log(`Curent msg date before conversion, ${currentMessageDate}`);
+    }
   }
 
   ionViewDidEnter() {
@@ -227,17 +208,28 @@ export class ChatPage implements OnInit {
   // Timestamp is a timestamp object that represents dates stored in google firebase docs.
   chatSentOnDiffDate( timestamp )
   {
-    let chatDate: Date = timestamp.toDate(); // toDate is a Timestamp object method
-
-
-    if( chatDate < this.currentNewestDate) // // older messages. If date is less than another date than the lesser date is older.
+    let chatDate: Date;
+    try
     {
-      console.log(`Timestamp ${chatDate} is older than current ${this.currentNewestDate}`);
-      
+      chatDate = timestamp.toDate(); // toDate is a Timestamp object method
+    }
+    catch(error)
+    {
+      console.log(`Could not convert the given timestamp to date. Timestamp ${JSON.stringify(timestamp)}. Error ${error}`);
+      return false;
+    }
+
+
+    if( chatDate < this.currentNewestDate[0]) // // older messages. If date is less than another date than the lesser date is older.
+    {
+      console.log(`Timestamp ${chatDate} is older than current ${this.currentNewestDate[0]}`);
+
       // Now compare other chat dates to this chats send date.
-      this.currentNewestDate = chatDate;
+      this.currentNewestDate[0] = chatDate;
       return true;
     }
+
+    return false;
   }
 
   async addChat(chatType) {
