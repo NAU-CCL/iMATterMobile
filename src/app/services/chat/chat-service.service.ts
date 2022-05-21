@@ -82,6 +82,8 @@ export class ChatService {
       })
     );
 
+    this.initializeDateChats();
+
     //this.addIsInChatFieldToUsers();
 
   }
@@ -263,7 +265,7 @@ export class ChatService {
 
     // order by desc if reverse is true.
     const first = this.afs.collection(this.query.path, ref => {
-      return ref.orderBy(this.query.field, this.query.reverse ? 'desc' : 'asc').limit(this.query.limit)
+      return ref.orderBy(this.query.field, this.query.reverse ? 'desc' : 'asc').limit(this.query.limit);
      })
 
      this.mapAndUpdate(first);
@@ -436,6 +438,10 @@ export class ChatService {
     // Date of the current chat document. We check to see if this date changes, and if 
     // it does we know to place a date stamp chat with that date into the database.
     // Not always going to be the same data as the one stored in currentChat.
+    let newerDate: Date;
+
+    // The date extracted from the current chat messages. Could be older or the same as newerDate, 
+    // we dont know and want to find out.
     let currentDate: Date;
 
     // Once we start iterating we need the date of the first chat before we can start any comparisons.
@@ -452,9 +458,32 @@ export class ChatService {
       {
         currentChat = docSnap.data() as Chat;
 
+        console.log(`Current Doc Date is ${currentChat.timestamp.toDate().toString() }`)
+
         if( gotFirstDate )
         {
-          
+          currentDate = new Date( currentChat.timestamp.toDate().toString() ); // Get date from chat message without hour minute, second timestamp.
+
+          // If the currentDate is actually older than newerDate
+          if(currentDate < newerDate )
+          {
+            // If the currentDate is older than the newerDate, add a chat message of type datedivider with the same date as the newerDate.
+            // We use newerDates date becuase we are working backwards, adding date dividers  for the newest messages and then the oldest.
+            this.afs.collection('chats').ref.add({
+              cohort: 'default',
+              username: 'datedivider',
+              userID: 'system',
+              timestamp: newerDate,
+              message: 'datedivider',
+              profilePic: 'NA',
+              type: 'datedivider',
+              visibility: 'true',
+              count: '0',
+            });
+
+            // Set the newerDate to currentDate. Current date is older, so that will be the next date we examine.
+            newerDate = currentDate;
+          }
         }
         else
         {
@@ -462,9 +491,10 @@ export class ChatService {
           // Call toDateString() on the date object returned from toDate() to get a string of the date without a timestamp, ie just MM/DD/YYYY
           // Then pass the timestamp string without a timestamp to the new Date contrusctor to get a timestamp that does not have a time.
           // We dont care what time a chat was sent, only the day it was sent.
-          currentDate = new Date( currentChat.timestamp.toDate().toDateString() );
-        }
+          newerDate = new Date( currentChat.timestamp.toDate().toDateString() );
 
+          gotFirstDate = true;
+        }
 
       })
     });

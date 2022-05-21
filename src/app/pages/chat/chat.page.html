@@ -25,6 +25,9 @@
     <!-- Load chats that were created before the user entered the room. ie load older chats.-->
     <div *ngFor="let chat of (chatService.currentChatDataBatchObs | async)" class="message-wrap">
       
+      <div *ngIf="chat.type == 'datedivider'">
+        Date Divider {{ chat.timestamp.toDate() }}
+      </div>
       <!-- Auto chats ignored when loading more chats, need to adjust service to reflect this behavior-->
 
       <!-- Automatic message -->
