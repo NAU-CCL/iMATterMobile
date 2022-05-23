@@ -130,6 +130,7 @@ export class ChatService {
         let newChatDate = new Date( newChat.timestamp.toDateString() );
 
         console.log(`Adding new message: Most recent chat date is ${mostRecentChatDate.toDateString()} New chat msg date is ${newChatDate.toDateString()}`);
+        console.log(`\n New message body from service is: ${newChat.message}`);
 
         // If the new chat date is newer than  the most recent chat mesage by 1 day or more, then add a datedivider to the db with the new chats datestamp.
         if(newChatDate > mostRecentChatDate)
@@ -145,7 +146,7 @@ export class ChatService {
             visibility: 'true',
             count: '0',
           });
-          console.log(`added new date divider message.`)
+          console.log(`added new date divider message.`);
         }
         else
         {
