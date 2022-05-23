@@ -28,7 +28,7 @@ export interface Chat {
   cohort: string;
   username: string;
   userID: string;
-  timestamp: any;
+  timestamp: Date;
   message: string;
   profilePic: any;
   type: any;
@@ -122,7 +122,7 @@ export class ChatService {
     // First query the collection for chats ordered from newest first to oldest, limit query to 1, then check the returned chat to see if
     // the chat was sent the day before the new chat being added to the db. If this is the case add a timestamp divider with a date equal to the new chat date.
     await this.afs.collection('chats').ref.orderBy('timestamp', 'desc').limit(1).get().then( (querySnap) => {
-      querySnap.forEach((docSnap) =>{
+      querySnap.forEach(async (docSnap) =>{
         let mostRecentChatMessage = docSnap.data();
         // Get date but without time stamp. toDateString returns a string of the date without timestamp and then we recreate date object using this stirng which returns
         // a date object that includes a time stamp of 12:00am so datedividers are always the most recent timestamped chat messages in the db.
@@ -130,22 +130,26 @@ export class ChatService {
         let newChatDate = new Date( newChat.timestamp.toDateString() );
 
         console.log(`Adding new message: Most recent chat date is ${mostRecentChatDate.toDateString()} New chat msg date is ${newChatDate.toDateString()}`);
+        console.log(`\n New message body from service is: ${newChat.message}`);
 
         // If the new chat date is newer than  the most recent chat mesage by 1 day or more, then add a datedivider to the db with the new chats datestamp.
         if(newChatDate > mostRecentChatDate)
         {
-          this.afs.collection('chats').ref.add({
+          await this.afs.collection('chats').ref.add({
             cohort: 'default',
             username: 'datedivider',
             userID: 'system',
-            timestamp: newChatDate,
+             //Create a new date using the contructor and passing in milliseconds to represent new date.
+             // Here we are setting the datedivider timestamp to 1 minute before the chat message sent. This is so when chats are loaded from the database,
+             // the timestamp  always has an earlier timestamp so it gets loaded first before the chat message.
+            timestamp: new Date(newChat.timestamp.getTime() - 1000*1 ),
             message: 'datedivider',
             profilePic: 'NA',
             type: 'datedivider',
             visibility: 'true',
             count: '0',
           });
-          console.log(`added new date divider message.`)
+          console.log(`added new date divider message.`);
         }
         else
         {

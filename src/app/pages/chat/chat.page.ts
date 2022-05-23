@@ -58,9 +58,6 @@ export class ChatPage implements OnInit {
 
   public cohortChat: string;
   public chats: Observable<any>;
-  // contains the date of the most recent message sent. Updates as messages load and gets older and older to detirmine where
-  // message date line dividers should go. Initialize this value to the current date.
-  public currentNewestDate: Date = new Date( (new Date()).toDateString() ); 
 
   private hasEntered: boolean;
 
@@ -199,11 +196,11 @@ export class ChatPage implements OnInit {
 
   async addChat(chatType) {
     this.chat.cohort = this.cohortChat;
-    this.storage.get('userCode').then((val) => {
+    this.storage.get('userCode').then(async (val) => {
       if (val) {
         const ref = this.afs.firestore.collection('users').where('code', '==', val);
-        ref.get().then((result) => {
-          result.forEach(doc => {
+        ref.get().then(async (result) => {
+          result.forEach(async doc => {
 
             this.chat.userID = val;
             this.chat.username = doc.get('username');
@@ -211,7 +208,12 @@ export class ChatPage implements OnInit {
             this.chat.timestamp = new Date();
             this.chat.visibility = true;
             this.chat.type = 'user';
-            this.chatService.addChat(this.chat);
+            console.log(`Adding chat from component: Message for chat is ${this.chat.message}`);
+
+            // Await this line becaue if we dont, this function will execute in the background and then we will immediately set this.chat.message = '' 
+            // which changes the object reference and basically deletes the message before the service can add the chat to the db.
+            await this.chatService.addChat(this.chat);
+            console.log(`Passed chat service addChat call`);
             
             // Chat.message is changed everytime someone enters the new message field on the chat room page. 
             // This line resets the new chat box to empty to after the message is sent the old message is removed.
