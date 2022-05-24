@@ -9,6 +9,7 @@ import {AngularFirestore} from '@angular/fire/firestore';
 import {Observable} from 'rxjs';
 import {ToastController} from '@ionic/angular';
 import {Storage} from '@ionic/storage';
+//import { FCM } from '@awesome-cordova-plugins/fcm/ngx';
 
 import {BnNgIdleService} from 'bn-ng-idle';
 import {Device} from '@ionic-native/device';
@@ -99,6 +100,7 @@ export class LoginPage implements OnInit {
             ],
         });
 
+        
         platform.ready().then(() => {
             this.platform.pause.subscribe(() => {
                 console.log('[INFO] App paused');
@@ -109,11 +111,21 @@ export class LoginPage implements OnInit {
                 console.log('[INFO] App resumed');
             });
         });
+        
     }
 
     ngOnInit() {
-        console.log()
+        console.log(`In login page oninit`);
 
+        /*
+        this.realFcm.onNotification().subscribe(data => {
+            if(data.wasTapped){
+              console.log(`Received in background date is ${JSON.stringify(data)}`);
+            } else {
+              console.log(`Received in foreground ${JSON.stringify(data)}`);
+            };
+          });
+          */
     }
 
     // This is an ionic method called after a view loads AUTOMAGICALLY.
@@ -209,6 +221,8 @@ export class LoginPage implements OnInit {
     private notificationSetup(userID) {
         this.fcm.getToken(userID);
     }
+
+    
 
 
     updateLogOut() {
