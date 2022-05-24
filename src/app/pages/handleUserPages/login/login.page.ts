@@ -9,7 +9,6 @@ import {AngularFirestore} from '@angular/fire/firestore';
 import {Observable} from 'rxjs';
 import {ToastController} from '@ionic/angular';
 import {Storage} from '@ionic/storage';
-//import { FCM } from '@awesome-cordova-plugins/fcm/ngx';
 
 import {BnNgIdleService} from 'bn-ng-idle';
 import {Device} from '@ionic-native/device';
@@ -68,7 +67,7 @@ export class LoginPage implements OnInit {
 
     // 3 means we dont know if the user is already logged into the app or not, we must wait for our function
     // to check if the user has credential in local storage. Show white screen while app checks for previous login.
-    // 2 means user does not have loging credentials on device or User has autoLogin set to false ins settings.
+    // 2 means user does not have loggin credentials on device or User has autoLogin set to false in settings.
     // 1 means the user has credentials on the device and we will auto log them in.
     public userAutoLoginSetting: number = 3;
 
@@ -87,7 +86,6 @@ export class LoginPage implements OnInit {
         private analyticsService: AnalyticsService,
         private platform: Platform,
         private bnIdle: BnNgIdleService
-        // private device: Device
     ) {
         this.showEmailBox = true;
 
@@ -116,16 +114,6 @@ export class LoginPage implements OnInit {
 
     ngOnInit() {
         console.log(`In login page oninit`);
-
-        /*
-        this.realFcm.onNotification().subscribe(data => {
-            if(data.wasTapped){
-              console.log(`Received in background date is ${JSON.stringify(data)}`);
-            } else {
-              console.log(`Received in foreground ${JSON.stringify(data)}`);
-            };
-          });
-          */
     }
 
     // This is an ionic method called after a view loads AUTOMAGICALLY.

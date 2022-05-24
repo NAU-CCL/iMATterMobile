@@ -1,9 +1,15 @@
 
   <ng-container *ngFor="let chat of currentAutoChats; let i = index">
-    <div #autoNotif [attr.id]="'chat-'+ i" class="chat-notif-style" [style.margin-top]="i*2+'px'" [style.animation-duration]="autoChatLifeSpan + 's'" (click)="removeJoinedChatNotif(autoNotif)">
-      <div>
-        {{chat.message}}
+    <div #autoNotif [attr.id]="'chat-'+ i" class="chat-notif-style" [style.margin-top]="i*2+'px'" [style.animation-duration]="autoChatLifeSpan + 's'">
+      <div class="main-chat-notif-area" (click)="navigateUserToChat(autoNotif)">
+        <div class="center-text" [style.height]="(userIsInChat) ? '100%' : 'auto'">
+          <div>{{chat.message}}</div>
+        </div>
+        <div class="sub-text" *ngIf="!userIsInChat">Tap to Enter Chat</div> 
       </div>
-      <div class="sub-text">*Tap to dismiss</div>
+
+      <div class="chat-notif-close" (click)="removeJoinedChatNotif(autoNotif)">
+        <ion-icon name="close" style="color: white; font-size:20px;"></ion-icon>
+      </div>
     </div>
   </ng-container>
