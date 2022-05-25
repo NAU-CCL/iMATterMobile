@@ -5,6 +5,7 @@ import { DocumentChangeAction, DocumentReference } from '@angular/fire/firestore
 import {autoChat} from '../pages/chat/chatInterface';
 import { Storage } from '@ionic/storage';
 import { _topicWithOptions } from 'firebase-functions/lib/providers/pubsub';
+import { Router, Event, NavigationStart, NavigationEnd, NavigationError} from '@angular/router';
 
 @Component({
   selector: 'app-global-chat-notifications',
@@ -19,9 +20,13 @@ export class GlobalChatNotificationsComponent implements OnInit {
   private userCode;
   public autoChatLifeSpan: number; // How long to show an auto chat before it auto disappears.
   private maxOnScreenAutoChats: number; // Max number of auto chats to show to the user.
+  public currentRoute;
+  public userIsInChat: boolean;
+  private chatURL = "/tabs/chat";
 
   constructor( private chatService: ChatService,
-               private storage: Storage) { }
+               private storage: Storage,
+               private router: Router) { }
 
   ngOnInit() {
     
@@ -29,7 +34,33 @@ export class GlobalChatNotificationsComponent implements OnInit {
     // Subscribe to the observable which emits new auto chats.
     // and get the current userCode
     this.initializeChatNotifs();
+    // Function that subscribes to router events so we know what page the user is looking at at all times.
+    this.watchForRouterEvents();
     
+    
+  }
+
+  watchForRouterEvents()
+  {
+    this.router.events.subscribe((event: Event) => {
+
+      if (event instanceof NavigationEnd) {
+          // Hide progress spinner or progress bar
+          this.currentRoute = event.url;    
+          // /tabs/chat is what we want.      
+          console.log(`The current url is ${event}`);
+
+          if( this.currentRoute === this.chatURL)
+          {
+            console.log(`User is in chat room now.`);
+            this.userIsInChat = true;
+          }
+          else
+          {
+            this.userIsInChat = false;
+          }
+      }
+    });
   }
 
 
@@ -43,21 +74,33 @@ export class GlobalChatNotificationsComponent implements OnInit {
     
       console.log(`Pushing new auto chat ${JSON.stringify(newAutoChat)}`);
   
+          
       setTimeout( ()=>{
-            // Remove the first item in the array after about 6 seconds.
+            // Remove the first item in the array after whatever number of seconds are set in the admin website.
+            // Auto chats animate themselves on screen but we dont want to waste time rendering them if theyre invisible so we
+            // need to deleete them when the leave screen animation has completed.
             this.currentAutoChats.shift();
           },  (this.autoChatLifeSpan * 1000) + 200 );
+        
     }
 
   }
 
 
   // Delete a chat from the chat array, is subsequently removed from the DOM.
-  removeJoinedChatNotif( chatToRemoveEl )
+  removeJoinedChatNotif( autoChatElement: HTMLDivElement)
   {
-    // Remove the chat from the auto chat array. The chat at the end 
-    // of the array is always the one being clicked so we can use pop to remove it.
-    this.currentAutoChats.pop();
+    // Change the animation attributes of the element to animate it leaving the screen when the user closes it.
+    autoChatElement.style.animationName = 'close-message';
+    autoChatElement.style.animationTimingFunction = 'ease-out';
+    autoChatElement.style.animationFillMode = 'forwards';
+    autoChatElement.style.animationDuration = '.25s';
+
+    setTimeout( ()=>{
+      // Remove the chat from the auto chat array. The chat at the end 
+      // of the array is always the one being clicked so we can use pop to remove it.
+      this.currentAutoChats.pop();
+    },  550);
   }
 
   calculateTopMargin()
@@ -110,6 +153,21 @@ export class GlobalChatNotificationsComponent implements OnInit {
        this.displayAutoChat( autoChatDocChangeAction.payload.doc.data() )
       } );
     } );
+  }
+
+  navigateUserToChat( autoChatElement: HTMLDivElement )
+  {
+    // If the user is not already in the chat room, navigate them to it.
+    if(this.currentRoute != this.chatURL)
+    {
+      this.removeJoinedChatNotif(autoChatElement);
+
+      this.router.navigateByUrl(this.chatURL);
+    }
+    else
+    {
+      this.removeJoinedChatNotif(autoChatElement);
+    }
   }
 }     
 

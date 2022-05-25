@@ -28,7 +28,7 @@ export interface Chat {
   cohort: string;
   username: string;
   userID: string;
-  timestamp: Date;
+  timestamp: any;
   message: string;
   profilePic: any;
   type: any;

@@ -34,6 +34,7 @@ import {Device} from '@ionic-native/device/ngx';
 import * as firebase from 'firebase/app';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+//import { FCM } from '@awesome-cordova-plugins/fcm/ngx';
 
 firebase.initializeApp(environment.firebase);
 

@@ -67,7 +67,7 @@ export class LoginPage implements OnInit {
 
     // 3 means we dont know if the user is already logged into the app or not, we must wait for our function
     // to check if the user has credential in local storage. Show white screen while app checks for previous login.
-    // 2 means user does not have loging credentials on device or User has autoLogin set to false ins settings.
+    // 2 means user does not have loggin credentials on device or User has autoLogin set to false in settings.
     // 1 means the user has credentials on the device and we will auto log them in.
     public userAutoLoginSetting: number = 3;
 
@@ -86,7 +86,6 @@ export class LoginPage implements OnInit {
         private analyticsService: AnalyticsService,
         private platform: Platform,
         private bnIdle: BnNgIdleService
-        // private device: Device
     ) {
         this.showEmailBox = true;
 
@@ -99,6 +98,7 @@ export class LoginPage implements OnInit {
             ],
         });
 
+        
         platform.ready().then(() => {
             this.platform.pause.subscribe(() => {
                 console.log('[INFO] App paused');
@@ -109,11 +109,11 @@ export class LoginPage implements OnInit {
                 console.log('[INFO] App resumed');
             });
         });
+        
     }
 
     ngOnInit() {
-        console.log()
-
+        console.log(`In login page oninit`);
     }
 
     // This is an ionic method called after a view loads AUTOMAGICALLY.
@@ -209,6 +209,8 @@ export class LoginPage implements OnInit {
     private notificationSetup(userID) {
         this.fcm.getToken(userID);
     }
+
+    
 
 
     updateLogOut() {
