@@ -23,53 +23,61 @@
     <!-- Emoticon toolbar that is always visible on the homepage at the top of the screen. -->
     <ion-toolbar class="emotion-toolbar">
         <ion-row class="ion-justify-content-center">
-            <ion-col>
-                <ion-button class="ion-no-padding" [class.highlight]="this.user.currentEmotion == 'happy'" size="small"
+            <ion-col class="emoticon-container">
+                <ion-button class="ion-no-padding ion-no-margin" [class.highlight]="this.user.currentEmotion == 'happy'" size="small"
                 fill="clear" (click)="saveEmotion('happy')">
                     <div>😃</div>
                 </ion-button>
+                <div class="emoticon-label">Happy</div>
             </ion-col>
-            <ion-col>
-                <ion-button class="ion-no-padding" [class.highlight]="this.user.currentEmotion == 'loved'" size="small"
+            <ion-col class="emoticon-container">
+                <ion-button class="ion-no-padding ion-no-margin" [class.highlight]="this.user.currentEmotion == 'loved'" size="small"
                     fill="clear" (click)="saveEmotion('loved')">
                     🥰
                 </ion-button>
+                <div class="emoticon-label">Loved</div>
             </ion-col>
-            <ion-col>
-                <ion-button class="ion-no-padding" [class.highlight]="this.user.currentEmotion == 'ok'" size="small"
+            <ion-col class="emoticon-container">
+                <ion-button class="ion-no-padding ion-no-margin" [class.highlight]="this.user.currentEmotion == 'ok'" size="small"
                     fill="clear" (click)="saveEmotion('ok')">
                     😐
                 </ion-button>
+                <div class="emoticon-label">Ok</div>
             </ion-col>
-            <ion-col>
-                <ion-button class="ion-no-padding" [class.highlight]="this.user.currentEmotion == 'stressed'"
+            <ion-col class="emoticon-container">
+                <ion-button class="ion-no-padding ion-no-margin" [class.highlight]="this.user.currentEmotion == 'stressed'"
                     size="small" fill="clear" (click)="saveEmotion('stressed')">
                     😩
                 </ion-button>
+                <div class="emoticon-label">Stressed</div>
             </ion-col>
-            <ion-col>
-                <ion-button class="ion-no-padding" [class.highlight]="this.user.currentEmotion == 'tired'" size="small"
+            <ion-col class="emoticon-container">
+                <ion-button class="ion-no-padding ion-no-margin" [class.highlight]="this.user.currentEmotion == 'tired'" size="small"
                     fill="clear" (click)="saveEmotion('tired')">
                     😴
                 </ion-button>
+                <div class="emoticon-label">Tired</div>
             </ion-col>
-            <ion-col>
-                <ion-button class="ion-no-padding" [class.highlight]="this.user.currentEmotion == 'sad'" size="small"
+            <ion-col class="emoticon-container">
+                <ion-button class="ion-no-padding ion-no-margin" [class.highlight]="this.user.currentEmotion == 'sad'" size="small"
                     fill="clear" (click)="saveEmotion('sad')">
                     😢
                 </ion-button>
+                <div class="emoticon-label">Sad</div>
             </ion-col>
-            <ion-col>
-                <ion-button class="ion-no-padding" [class.highlight]="this.user.currentEmotion == 'lonely'" size="small"
+            <ion-col class="emoticon-container">
+                <ion-button class="ion-no-padding ion-no-margin" [class.highlight]="this.user.currentEmotion == 'lonely'" size="small"
                     fill="clear" (click)="saveEmotion('lonely')">
                     😔
                 </ion-button>
+                <div class="emoticon-label">Lonely</div>
             </ion-col>
-            <ion-col>
-                <ion-button class="ion-no-padding" [class.highlight]="this.user.currentEmotion == 'angry'" size="small"
+            <ion-col class="emoticon-container">
+                <ion-button class="ion-no-padding ion-no-margin" [class.highlight]="this.user.currentEmotion == 'angry'" size="small"
                     fill="clear" (click)="saveEmotion('angry')">
                     😡
                 </ion-button>
+                <div class="emoticon-label">Angry</div>
             </ion-col>
         </ion-row>
     </ion-toolbar>
