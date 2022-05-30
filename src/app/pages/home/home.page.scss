@@ -17,8 +17,8 @@ ion-title {
 
 .highlight {
   background-color: var(--main-tint);
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   border-radius: 50%;
 }
 
@@ -35,7 +35,6 @@ ion-title {
 
   ion-col {
     padding: 0;
-    margin: 0;
     text-align: center;
 
     p {
@@ -43,6 +42,15 @@ ion-title {
       margin: 0;
     }
   }
+}
+
+.emoticon-label{
+  font-size: 9px;
+  font-weight: bolder;
+}
+
+.emoticon-container{
+  margin: 5px 0px 5px 0px;
 }
 
 ion-toolbar {
@@ -112,4 +120,9 @@ ion-icon {
       padding: 0;
     }
   }
+}
+
+.inner-emotion-tool-bar{
+  margin-left: 10px;
+  margin-right: 10px;
 }
