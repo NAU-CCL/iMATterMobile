@@ -93,7 +93,9 @@
     <!-- Load chats that are new relative to when the user joined the chat room-->
     <div *ngFor="let chat of (chats | async)" class="message-wrap">
       
-      <!-- This element appears if the message is a datedivider type. This just shows the day the message and all messages below was sent on-->
+      <!-- This element appears if the message is a datedivider type. This just shows the day the message and all messages below was sent on -->
+      <!-- Leaving this html in here because although we are not actually adding datediver type chat documents to the database anymore, the best solution is to create
+           Chat messages client side with type datedivider while messages are being loaded from our chat observable. -->
       <div *ngIf="chat.type == 'datedivider'">
         <div class="datedivider-container">
           <div class="datedivider-date">
