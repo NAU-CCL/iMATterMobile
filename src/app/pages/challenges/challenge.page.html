@@ -109,8 +109,6 @@
 
 
 <!-- This is where challenges for a specific type are displayed such as Parenting, Exercise, Sleep ect. This html would display all challenges for parenting or exercise depending on what was clicked.-->
-
-<!-- Not sure what this html is for, challengeView is assigned all once and never changed inside challenge.page.ts-->
 <ion-content *ngIf="challengeView != 'all' && challengeView != 'joined'">
     <ion-list>
         <ng-container *ngFor="let challenge of ( challenges | async )">

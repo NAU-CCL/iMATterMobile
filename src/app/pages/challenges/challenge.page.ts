@@ -46,6 +46,8 @@ export class ChallengePage implements OnInit {
                 private analyticsService: AnalyticsService,
                 private alertController: AlertController,
                 private datePipe: DatePipe) {
+
+    
     }
 
 
@@ -62,6 +64,7 @@ export class ChallengePage implements OnInit {
 
         this.challenges = this.challengeService.getAllChallenges();
         this.types = this.challengeService.getChallengeTypes();
+
     }
 
     ionViewWillEnter() {
