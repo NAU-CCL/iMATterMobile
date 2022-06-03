@@ -16,6 +16,7 @@ import { HomePage } from '../../home/home.page';
 import { ActionSheetController } from '@ionic/angular';
 import { EMOJIS } from '../../../services/emojiArray';
 
+
 @Component({
     selector: 'app-profile',
     templateUrl: './profile.page.html',
@@ -154,6 +155,10 @@ export class ProfilePage implements OnInit {
         });
 
         this.displayRedeemOptions = false;
+
+        
+       
+
     }
 
     ngAfterViewInit(){

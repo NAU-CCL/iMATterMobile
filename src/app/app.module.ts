@@ -15,6 +15,7 @@ import {AppComponent} from './app.component';
 import {environment} from '../environments/environment';
 import {AngularFireModule} from '@angular/fire';
 import {AngularFirestoreModule, FirestoreSettingsToken, AngularFirestore} from '@angular/fire/firestore';
+
 import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
 // Opens phone app with number entered.
 import { CallNumber } from '@awesome-cordova-plugins/call-number/ngx';
