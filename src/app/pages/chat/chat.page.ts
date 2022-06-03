@@ -266,8 +266,9 @@ export class ChatPage implements OnInit {
   // enters or leaves the chatroom.
   addAutoChat( enteredChat )
   {
-
+    
     // Get the user code from storage and then query the datbase for the correct user document.
+    /*
     this.storage.get('userCode').then((currentUserCode) => {
       if (currentUserCode) {
         const ref = this.afs.firestore.collection('users').where('code', '==', currentUserCode);
@@ -294,6 +295,7 @@ export class ChatPage implements OnInit {
         })
         }
       })
+      */
   }
 
 

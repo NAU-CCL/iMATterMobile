@@ -2,8 +2,8 @@
   <ng-container *ngFor="let chat of currentAutoChats; let i = index">
     <div #autoNotif [attr.id]="'chat-'+ i" class="chat-notif-style" [style.margin-top]="i*2+'px'" [style.animation-duration]="autoChatLifeSpan + 's'">
       <div class="main-chat-notif-area" (click)="navigateUserToChat(autoNotif)">
-        <div class="center-text" [style.height]="(userIsInChat) ? '100%' : 'auto'">
-          <div>{{chat.message}}</div>
+        <div class="center-text">
+          <div class="user-name-text-box">{{chat.username}}</div>  <div style="display:inline-block;" >has {{chat.type}} the chatroom.</div>
         </div>
         <div class="sub-text" *ngIf="!userIsInChat">Tap to Enter Chat</div> 
       </div>
@@ -13,3 +13,19 @@
       </div>
     </div>
   </ng-container>
+
+
+<!--
+  <div #autoNotif class="chat-notif-style">
+    <div class="main-chat-notif-area" (click)="navigateUserToChat(autoNotif)">
+      <div class="center-text">
+        <span class="user-name-text-box">Calvin-test-775799999999999999999999</span>  <span style="display:inline-block;" >has entered the chatroom.</span>
+      </div>
+      <div class="sub-text" *ngIf="!userIsInChat">Tap to Enter Chat</div> 
+    </div>
+
+    <div class="chat-notif-close" (click)="removeJoinedChatNotif(autoNotif)">
+      <ion-icon name="close" style="color: white; font-size:20px;"></ion-icon>
+    </div>
+  </div>
+-->
