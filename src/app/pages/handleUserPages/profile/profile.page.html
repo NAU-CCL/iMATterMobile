@@ -134,6 +134,7 @@
                             <ion-badge style="z-index: 2; background-color: transparent; position: absolute;">
                                 {{ userEmotionIcon }}</ion-badge>
 
+                            <!-- Show the users profile picture While in editing mode. If they click theyre profile picture we display all profile picture options. -->
                             <ion-img src="{{ previewPic }}" style="position: relative;" (click)="showPics()"></ion-img>
                         </ion-card>
                         <ion-item *ngIf="showImages">
