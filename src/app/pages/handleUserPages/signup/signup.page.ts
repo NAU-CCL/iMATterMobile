@@ -91,7 +91,6 @@ export class SignupPage implements OnInit {
   public currentDate = new Date().toJSON().split('T')[0];
   public currentYear = new Date().getFullYear();
   public maxYear = new Date().getFullYear() + 1;
-  public minYear = new Date().getFullYear() - 2;
   public securityQs: Array<string>;
   public autoProfilePic: any;
   private emailUsed: boolean;
