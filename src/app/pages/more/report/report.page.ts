@@ -77,6 +77,8 @@ export class ReportPage implements OnInit {
             this.report.type = 'Problem';
             this.report.version = this.device.version;
 
+            // Call the addReport method from the userSubmission service. Within this method we also send an email 
+            // to all admin emails listed in the web app settings page under feedback emails.
             this.userSubmissionService.addReport(this.report).then(() => {
               this.router.navigateByUrl('/tabs/more');
               this.showToast('Report sent');
