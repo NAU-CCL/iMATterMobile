@@ -1,7 +1,7 @@
 .chat-notif-style{
     position:absolute;
     left: 10%;
-    top: 10%;
+   
     
     background-color: #1A5773;
     border: 1px solid #888a91;
@@ -12,12 +12,12 @@
     width: 80%;
     color: white;
    
-    /*
+   
     animation-name: fade-auto-msg;
     animation-timing-function:  ease-out;
     animation-fill-mode: both;
     animation-duration: 6s;    
-   */
+   
 
     display: flex;
     flex-direction: row;
