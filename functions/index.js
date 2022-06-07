@@ -723,3 +723,51 @@ exports.newSurveyNotification = functions.https.onRequest((req, res) => {
         res.send("finished");
     });
 });
+
+// This function invoked when the reports collection has a new document added to it.
+exports.sendProblemReportedEmail = functions.firestore.document('reports/{docID}').onCreate(async (snap, context) => {
+    
+        console.log(`Getting current admin emails`);
+    
+        // Remember, querying firestore in node.js is different than in typescript.
+         let adminEmailArray = await admin.firestore().collection('settings').doc('adminSettings').get().then( (docSnap) => {
+            let adminSettings = docSnap.data();
+      
+            let currentAdminEmails = adminSettings.adminEmails;
+      
+            console.log(`Current admin emails array in send problem report email ${currentAdminEmails}`);
+      
+            return currentAdminEmails;
+          });
+    
+        console.log(`Got current admin emails`);
+    
+        // Get an object representing the document that was just created in the reports table.
+        const data = snap.data();
+    
+        let authData = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false,
+            auth: {
+                user: SENDER_EMAIL,
+                pass: SENDER_PASS
+            }
+        });
+    
+        authData.sendMail({
+            from: 'imatternotification@gmail.com',
+            to: adminEmailArray, // admin set receiver
+            subject: "iMATter: New Problem Reported", // Subject line
+            text: "There has been a new problem reported.", // plain text body
+            html: `<div style="border:2px solid black; padding:15px; border-radius: 10px;">
+                        <h2>Problem Title: ${data.title}</h2>
+                        <h2>Submitted by: ${data.username}</h2>
+                        <div style="margin-left: auto; margin-right: auto; margin-top: 10px; width: 80%; padding: 20px;">
+                            <h3 style="text-decoration: underline; width: fit-content; margin-left: auto; margin-right: auto;"> Problem Description </h3>
+                            <span> ${data.description}</span>
+                        </div>
+                   </div>` 
+        }).then(res => console.log('Successfully sent that feedback/problem mail')).catch(err => console.log(`Error sending that feedback/problem email: ${err}`));
+    
+     });
