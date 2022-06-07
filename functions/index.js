@@ -729,7 +729,8 @@ exports.sendProblemReportedEmail = functions.firestore.document('reports/{docID}
     
         console.log(`Getting current admin emails`);
     
-         let adminEmailArray = await this.afs.collection('settings').doc('adminSettings').ref.get().then( (docSnap) => {
+        // Remember, querying firestore in node.js is different than in typescript.
+         let adminEmailArray = await admin.firestore().collection('settings').doc('adminSettings').get().then( (docSnap) => {
             let adminSettings = docSnap.data();
       
             let currentAdminEmails = adminSettings.adminEmails;
