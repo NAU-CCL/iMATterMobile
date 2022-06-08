@@ -38,10 +38,35 @@ ion-input {
   text-align: center;
 }
 
-.dark-blue-text{
-  color: #02041b;
+.new-to-imatter-btn{
+  color: #0e3783;
   font-weight: bolder;
-  font-size: 17px;
+  font-size: 15px;
   white-space: normal;
   overflow: none;
+  text-decoration-line: underline;
+}
+
+.new-to-imatter-header{
+  font-weight: bolder;
+  text-align: center;
+}
+
+.forgot-pass-btn{
+  color: #02041b;
+  font-weight: bolder;
+  font-size: 14px;
+  white-space: normal;
+  overflow: none;
+}
+
+
+.new-account-card-thumbnail{
+  position: absolute;
+  left: 18px;
+  top: 13px;
+}
+
+.new-account-icon{
+  font-size:200%;
 }
