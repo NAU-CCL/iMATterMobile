@@ -35,7 +35,7 @@ export class SurveyService {
                 return actions.map(a => {
                     const data = a.payload.doc.data();
                     const id = a.payload.doc.id;
-                    return { id, ...data };
+                    return { id, ...data }; // Take all the key and value pairs from data and toss them into the object along with id. Basically extract the data object properties and place it in a new obj.
                 });
             })
         );

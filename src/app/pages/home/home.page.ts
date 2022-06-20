@@ -202,6 +202,7 @@ export class HomePage implements OnInit {
     ionViewWillEnter() {
         console.log('ionViewWillEnter()');
 
+        // Get all surveys from surveys-v2 collection
         this.surveys = this.surveyService.getSurveys();
 
         // this.ngOnInit();
@@ -235,7 +236,6 @@ export class HomePage implements OnInit {
                         this.user.answeredSurveys = doc.get('answeredSurveys');
                         this.user.availableSurveys = doc.get('availableSurveys');
                         this.updateSurveys();
-                        console.log(this.user.availableSurveys);
 
                         this.daysInRecovery = this.getDaysInRecovery(this.user.endRehabDate);
 
@@ -433,12 +433,17 @@ export class HomePage implements OnInit {
         this.mpnService.addEmotionNotif(this.emotionNotif);
         this.surveys.forEach(item => {
             item.forEach(survey => {
+                // Iterate through all surveys in system. If the survey is an emotion triggered survey, then check to see if the users
+                // current emotion corresponds to the surveys emotion trigger, if the users emotion corresponds to the survey,
+                // push the survey onto the users available survey array.
                 if (survey.type == 'Emotion Triggered') {
                     if (survey.characteristics['emotion'] == this.user.currentEmotion) {
+                        /*
                         this.user.availableSurveys.push(survey.id);
                         this.afs.firestore.collection('users').doc(this.userProfileID)
                             .update({ availableSurveys: this.user.availableSurveys });
                         console.log(this.user.availableSurveys);
+                        */
                     }
                 }
             });
@@ -649,13 +654,23 @@ export class HomePage implements OnInit {
         document.body.classList.toggle('dark');
     }
 
+    // Iterate through all surveys in the db and append any survey ids to the user document if the user has not 
+    // already completed the survey before. We do not remove survey ids from the user document even if the user has already completed the survey.
     updateSurveys() {
+        this.totalSurveys = 0;
+        // String array of survey ids representing surveys available to the user.
+        // When the user completes a survey, the survey is removed from avaialble surveys and and added to answered surveys.
         const currentSurveys = this.user.availableSurveys;
         this.surveys.forEach(surveyArray => {
             
+            // Each survey element within surveyArray represents a generally avaialble survey. Not a survey assigned to the user but
+            // simply a survey that could be assigned to the user.
             surveyArray.forEach(survey => {
 
-                // For some reason there are nine surveys avaialble but we only show the user about 6. 
+                //console.log(`Survey from array is ${JSON.stringify(survey)}`);
+
+                // If the currentSurvey array contains the id of the current survey then increase the user total survey count because
+                // this survey belongs to the user.
                 if(currentSurveys.includes(survey['id']))
                 {
                     this.totalSurveys++;
@@ -663,6 +678,7 @@ export class HomePage implements OnInit {
 
                 this.checkComplete(survey);
                 console.log(this.surveyComplete);
+
                 if (!this.surveyComplete) {
                     
                     if (survey['type'] == 'Days After Joining') {
@@ -680,9 +696,14 @@ export class HomePage implements OnInit {
                         );
                         var characteristics = survey['characteristics'];
                         var date = new Date();
+                        // Current day of week.
                         var dayOfWeek = weekdays[date.getDay()];
+                        // Current day of month.
                         var dayOfMonth = date.getDate();
                         if (characteristics['repeatEvery']) {
+                            // if the survey is supposed to repeat weekly, hasnt been completed today, and today is the day the survey is set
+                            // to show, add the survey to the users array of available surveys. WILL LIKELY NOT WORK if user
+                            // does not open app on the day the survey is set to repeat on.
                             if (characteristics['repeatEvery'] == 'weekly' && dayOfWeek == characteristics['display']) {
                                 if (!currentSurveys.includes(survey['id'])) {
                                     currentSurveys.push(survey['id']);
@@ -698,9 +719,12 @@ export class HomePage implements OnInit {
                             }
                         }
                     }
-                } else {
+                }
+                // If the user survey was complete, do nothing and go to the next survey in the array. 
+                else {
                     this.surveyComplete = false;
                 }
+
                 this.userSurveys = currentSurveys;
                 console.log("User surveys: " + this.userSurveys);
                 this.userService.updateAvailableSurveys(currentSurveys, this.user['code']);
@@ -715,13 +739,15 @@ export class HomePage implements OnInit {
         const surveyID = survey['id'];
         const today = new Date();
         const todayString = this.datepipe.transform(today, 'y-MM-dd');
-        this.user.answeredSurveys.forEach(complete => {
+        this.user.answeredSurveys.forEach(completedSurvey => {
+            // If the user completed the repeating survey today, it is counted as complete.
             if (survey['type'] === 'Repeating') {
-                if (complete['survey'] === surveyID && todayString === complete['date']) {
+                if (completedSurvey['survey'] === surveyID && todayString === completedSurvey['date']) {
                     this.surveyComplete = true;
                 }
             } else {
-                if (complete['survey'] === surveyID) {
+                // If the user has completed the survey set the variable to true.
+                if (completedSurvey['survey'] === surveyID) {
                     this.surveyComplete = true;
                 }
             }
