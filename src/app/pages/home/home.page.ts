@@ -433,12 +433,17 @@ export class HomePage implements OnInit {
         this.mpnService.addEmotionNotif(this.emotionNotif);
         this.surveys.forEach(item => {
             item.forEach(survey => {
+                // Iterate through all surveys in system. If the survey is an emotion triggered survey, then check to see if the users
+                // current emotion corresponds to the surveys emotion trigger, if the users emotion corresponds to the survey,
+                // push the survey onto the users available survey array.
                 if (survey.type == 'Emotion Triggered') {
                     if (survey.characteristics['emotion'] == this.user.currentEmotion) {
+                        /*
                         this.user.availableSurveys.push(survey.id);
                         this.afs.firestore.collection('users').doc(this.userProfileID)
                             .update({ availableSurveys: this.user.availableSurveys });
                         console.log(this.user.availableSurveys);
+                        */
                     }
                 }
             });
@@ -690,9 +695,14 @@ export class HomePage implements OnInit {
                         );
                         var characteristics = survey['characteristics'];
                         var date = new Date();
+                        // Current day of week.
                         var dayOfWeek = weekdays[date.getDay()];
+                        // Current day of month.
                         var dayOfMonth = date.getDate();
                         if (characteristics['repeatEvery']) {
+                            // if the survey is supposed to repeat weekly, hasnt been completed today, and today is the day the survey is set
+                            // to show, add the survey to the users array of available surveys. WILL LIKELY NOT WORK if user
+                            // does not open app on the day the survey is set to repeat on.
                             if (characteristics['repeatEvery'] == 'weekly' && dayOfWeek == characteristics['display']) {
                                 if (!currentSurveys.includes(survey['id'])) {
                                     currentSurveys.push(survey['id']);
