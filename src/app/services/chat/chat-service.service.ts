@@ -82,6 +82,7 @@ export class ChatService {
       })
     );
 
+    //this.deleteBlankChats();
     
     //this.initializeDateChats();
 
@@ -239,6 +240,21 @@ export class ChatService {
     })
   }
 
+   // Delete all chats in db that are blank. ie every single field is an empty string.
+   // Not sure where these chats come from at the moment but they start to pile up over time.
+   deleteBlankChats()
+   {
+     let chatCount = 1;
+     this.afs.collection('chats').ref.where('type','==','').get().then( ( querySnap ) => {
+       querySnap.forEach( (queryDocSnap) => {
+         let chatDoc = queryDocSnap.data();
+         console.log(`Chat to delete is ${JSON.stringify(chatDoc)} \n\n Total chats ${chatCount}`);
+         chatCount++;
+         //queryDocSnap.ref.delete();
+       })
+     })
+   }
+
 
 
 
@@ -331,6 +347,8 @@ export class ChatService {
 
   // Gets all chats from the db that are added after the user joins the chatroom.
   // Snapshots any changes so the returned observable can fetch new messages from the db.
+
+  // Consider using state changes for the instead of snapshot changes for new chats.
   getNewChats(cohortID): Observable<Chat[]>  {
     // this.iterateChats(cohortID);
     let currentDateAndTime  = new Date();
@@ -341,8 +359,8 @@ export class ChatService {
     return this.chats = this.chatCollection.snapshotChanges().pipe(
       map(actions => {
         return actions.map(a => {
-          const data = a.payload.doc.data();
-          data.id = a.payload.doc.id;
+          const data = a.payload.doc.data(); // payload is a property of DocumentChange object.
+          //Return the data object for the chat object.
           return data;
         });
       })
