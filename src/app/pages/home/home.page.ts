@@ -659,6 +659,7 @@ export class HomePage implements OnInit {
     updateSurveys() {
         this.totalSurveys = 0;
         // String array of survey ids representing surveys available to the user.
+        // When the user completes a survey, the survey is removed from avaialble surveys and and added to answered surveys.
         const currentSurveys = this.user.availableSurveys;
         this.surveys.forEach(surveyArray => {
             
