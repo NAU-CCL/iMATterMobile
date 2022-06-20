@@ -649,14 +649,22 @@ export class HomePage implements OnInit {
         document.body.classList.toggle('dark');
     }
 
+    // Iterate through all surveys in the db and append any survey ids to the user document if the user has not 
+    // already completed the survey before. We do not remove survey ids from the user document even if the user has already completed the survey.
     updateSurveys() {
+        this.totalSurveys = 0;
         // String array of survey ids representing surveys available to the user.
         const currentSurveys = this.user.availableSurveys;
         this.surveys.forEach(surveyArray => {
             
+            // Each survey element within surveyArray represents a generally avaialble survey. Not a survey assigned to the user but
+            // simply a survey that could be assigned to the user.
             surveyArray.forEach(survey => {
 
-                // For some reason there are nine surveys avaialble but we only show the user about 6. 
+                //console.log(`Survey from array is ${JSON.stringify(survey)}`);
+
+                // If the currentSurvey array contains the id of the current survey then increase the user total survey count because
+                // this survey belongs to the user.
                 if(currentSurveys.includes(survey['id']))
                 {
                     this.totalSurveys++;
@@ -664,6 +672,7 @@ export class HomePage implements OnInit {
 
                 this.checkComplete(survey);
                 console.log(this.surveyComplete);
+
                 if (!this.surveyComplete) {
                     
                     if (survey['type'] == 'Days After Joining') {
@@ -699,9 +708,12 @@ export class HomePage implements OnInit {
                             }
                         }
                     }
-                } else {
+                }
+                // If the user survey was complete, do nothing and go to the next survey in the array. 
+                else {
                     this.surveyComplete = false;
                 }
+
                 this.userSurveys = currentSurveys;
                 console.log("User surveys: " + this.userSurveys);
                 this.userService.updateAvailableSurveys(currentSurveys, this.user['code']);
@@ -716,13 +728,15 @@ export class HomePage implements OnInit {
         const surveyID = survey['id'];
         const today = new Date();
         const todayString = this.datepipe.transform(today, 'y-MM-dd');
-        this.user.answeredSurveys.forEach(complete => {
+        this.user.answeredSurveys.forEach(completedSurvey => {
+            // If the user completed the repeating survey today, it is counted as complete.
             if (survey['type'] === 'Repeating') {
-                if (complete['survey'] === surveyID && todayString === complete['date']) {
+                if (completedSurvey['survey'] === surveyID && todayString === completedSurvey['date']) {
                     this.surveyComplete = true;
                 }
             } else {
-                if (complete['survey'] === surveyID) {
+                // If the user has completed the survey set the variable to true.
+                if (completedSurvey['survey'] === surveyID) {
                     this.surveyComplete = true;
                 }
             }
