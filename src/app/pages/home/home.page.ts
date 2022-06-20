@@ -202,6 +202,7 @@ export class HomePage implements OnInit {
     ionViewWillEnter() {
         console.log('ionViewWillEnter()');
 
+        // Get all surveys from surveys-v2 collection
         this.surveys = this.surveyService.getSurveys();
 
         // this.ngOnInit();
@@ -235,7 +236,6 @@ export class HomePage implements OnInit {
                         this.user.answeredSurveys = doc.get('answeredSurveys');
                         this.user.availableSurveys = doc.get('availableSurveys');
                         this.updateSurveys();
-                        console.log(this.user.availableSurveys);
 
                         this.daysInRecovery = this.getDaysInRecovery(this.user.endRehabDate);
 
@@ -650,6 +650,7 @@ export class HomePage implements OnInit {
     }
 
     updateSurveys() {
+        // String array of survey ids representing surveys available to the user.
         const currentSurveys = this.user.availableSurveys;
         this.surveys.forEach(surveyArray => {
             
