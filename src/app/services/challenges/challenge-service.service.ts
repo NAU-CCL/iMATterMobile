@@ -95,7 +95,7 @@ export class ChallengeService {
 
     updateJoinedChallenges(userID: string, joined: any[]): Promise<any> {
 
-        console.log(`Updated joined challenge ${JSON.stringify(joined)} \n\n\n for user id ${userID}`);
+        //console.log(`Updated joined challenge ${JSON.stringify(joined)} \n\n\n for user id ${userID}`);
 
         return this.afs.firestore.collection('users')
             .doc(userID).update({joinedChallenges: joined});
@@ -115,7 +115,9 @@ export class ChallengeService {
 
             userChallengeArray.map((challengePropObj) =>{
                 // Get yesterdays date in the most convoluted way possible.
-                challengePropObj.dateOfLastCompletion = new Date(new Date(new Date().setDate(new Date().getDate() -1)).setHours(0,0,0,0));
+                challengePropObj.dateOfLastCompletion = new Date(new Date(new Date().setDate(new Date().getDate() - 5)).setHours(0,0,0,0));
+                challengePropObj.currentDay++;
+
                 return challengePropObj;
             })
 

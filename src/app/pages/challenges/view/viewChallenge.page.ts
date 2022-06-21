@@ -94,12 +94,12 @@ export class ViewChallengePage implements OnInit {
                                 if (item.challenge.id === this.challenge.id) {
                                     this.joined = true;
                                     this.currentDay = item.currentDay;
-                                    this.dayComplete = item.dayComplete;
 
                                     // More recent dates are greater than older dates.
                                     // So if today is more recent than the date of last completion,
                                     // then dayComplete should be false
-                                    if( item.dateOfLastCompletion.toDate() < new Date( new Date().setHours(0,0,0,0) ) )
+                                    //item.dateOfLastCompletion.toDate() < new Date( new Date().setHours(0,0,0,0) )
+                                    if(item.dateOfLastCompletion.toDate() < new Date( new Date().setHours(0,0,0,0) ) )
                                     {
 
                                         this.dayComplete = false;
@@ -186,10 +186,10 @@ export class ViewChallengePage implements OnInit {
 
                 this.currentDay++;
 
-                // set the date of the last completed activity so we can tell if the user has
+                // set the date of the last completed activity to the current date without a timestamp (hh:mm) so we can tell if the user has
                 // waited at least 1 day before they can do the next task.
                 item.dateOfLastCompletion = new Date(new Date().setHours(0,0,0,0));
-                //item.dateOfLastCompletion = new Date(new Date(new Date().setDate(new Date().getDate() -1)).setHours(0,0,0,0));
+                //item.dateOfLastCompletion = new Date(new Date(new Date().setDate(new Date().getDate() - 1)).setHours(0,0,0,0));
 
                 console.log(`Current Day: ${this.currentDay} Day complete ${this.dayComplete} Date of last completion: ${ item.dateOfLastCompletion }`);
                 
@@ -205,7 +205,6 @@ export class ViewChallengePage implements OnInit {
             console.log(`Updated challenges: ${JSON.stringify(r)}`);
         });
         
-            //this.areYouSure(challengeId, id);
         
     }
 
