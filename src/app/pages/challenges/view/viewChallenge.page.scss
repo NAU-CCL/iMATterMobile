@@ -19,3 +19,18 @@ ion-grid, ion-col, ion-row {
 .url {
   --color: var(--main-color);
 }
+
+.task-done-label{
+  display: inline-block;
+  margin-right: 3px;
+}
+
+.inner-task-cb-container{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.right-margin{
+  margin-right: 6px;
+}
