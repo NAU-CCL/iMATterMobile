@@ -38,7 +38,7 @@ export class ViewChallengePage implements OnInit {
         contents: []
     };
 
-    public daysCompleted;
+    public currentDay;
     public dayComplete;
 
     constructor(private challengeService: ChallengeService,
@@ -93,11 +93,23 @@ export class ViewChallengePage implements OnInit {
                             this.joinedChallenges.forEach(item => {
                                 if (item.challenge.id === this.challenge.id) {
                                     this.joined = true;
-                                    this.daysCompleted = item.currentDay;
+                                    this.currentDay = item.currentDay;
                                     this.dayComplete = item.dayComplete;
-                                    if (!item.dayComplete) {
-                                        this.daysCompleted--;
+
+                                    // More recent dates are greater than older dates.
+                                    // So if today is more recent than the date of last completion,
+                                    // then dayComplete should be false
+                                    if( item.dateOfLastCompletion.toDate() < new Date( new Date().setHours(0,0,0,0) ) )
+                                    {
+
+                                        this.dayComplete = false;
                                     }
+                                    else
+                                    {
+                                        this.dayComplete = true;
+                                    }
+
+                                    console.log(`Current Day: ${this.currentDay} Day complete ${this.dayComplete} Date of last completion: ${ item.dateOfLastCompletion.toDate() }`);
                                 }
                             });
                         });
@@ -162,13 +174,32 @@ export class ViewChallengePage implements OnInit {
         const check = document.getElementById(id) as HTMLInputElement;
         if (check.name === 'checkbox') {
             check.name = 'square-outline';
-            this.joinedChallenges.forEach(item => {
+
+            // Create an updated array of joined challenges after iterating through the array
+            this.joinedChallenges = this.joinedChallenges.map(item => {
                 if (item.challenge.id === challengeId) {
-                    item.dayComplete = !item.dayComplete;
-                    this.challengeService.updateJoinedChallenges(this.userID, this.joinedChallenges).then(r => {
-                        console.log(r);
-                    });
+                    // mark the challenge as complete for the day.
+                    item.dayComplete = true;
+
+                    // Increment current day now that user has completed today.
+                    item.currentDay++;
+
+                    this.currentDay++;
+
+                    // set the date of the last completed activity so we can tell if the user has
+                    // waited at least 1 day before they can do the next task.
+                    item.dateOfLastCompletion = new Date(new Date().setHours(0,0,0,0));
+                    
+                    return item;
                 }
+                return item;
+            });
+
+            console.log(`Updated challenges array before service: ${JSON.stringify(this.joinedChallenges)}`);
+
+            // Now update the joined challenges array 
+            this.challengeService.updateJoinedChallenges(this.userID, this.joinedChallenges).then(r => {
+                console.log(`Updated challenges: ${JSON.stringify(r)}`);
             });
         } else {
             this.areYouSure(challengeId, id);

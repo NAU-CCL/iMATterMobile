@@ -193,7 +193,7 @@ exports.updateDays = functions.https.onRequest((req, res) => {
         console.log('Failed: ' + err);
     });
 
-});;
+});
 
 exports.sendInfoDeskNotification =
     functions.firestore.document('questions/{questionID}').onCreate(async (snap, context) => {

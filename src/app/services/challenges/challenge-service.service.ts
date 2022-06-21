@@ -33,6 +33,8 @@ export class ChallengeService {
     private typesCollection: AngularFirestoreCollection<ChallengeTypes>;
 
     constructor(private afs: AngularFirestore) {
+
+        //this.addDateOfLastCompletionToChallengArray();
     }
 
     getChallengeCollection() {
@@ -91,7 +93,10 @@ export class ChallengeService {
         );
     }
 
-    updateJoinedChallenges(userID: string, joined: any[]) {
+    updateJoinedChallenges(userID: string, joined: any[]): Promise<any> {
+
+        console.log(`Updated joined challenge ${JSON.stringify(joined)} \n\n\n for user id ${userID}`);
+
         return this.afs.firestore.collection('users')
             .doc(userID).update({joinedChallenges: joined});
     }
@@ -99,6 +104,25 @@ export class ChallengeService {
     updateCompletedChallenges(userID: string, completed: any[]) {
         return this.afs.firestore.collection('users')
             .doc(userID).update({completedChallenges: completed});
+    }
+
+
+    addDateOfLastCompletionToChallengArray()
+    {
+        this.afs.firestore.collection('users').doc('NTw38h').get().then((user) =>{
+            let userDataObj = user.data();
+            let userChallengeArray = userDataObj.joinedChallenges;
+
+            userChallengeArray.map((challengePropObj) =>{
+                // Get yesterdays date in the most convoluted way possible.
+                challengePropObj.dateOfLastCompletion = new Date(new Date(new Date().setDate(new Date().getDate() -1)).setHours(0,0,0,0));
+                return challengePropObj;
+            })
+
+            console.log(`New User challenge array is ${JSON.stringify(userChallengeArray)}`);
+
+            user.ref.update({joinedChallenges: userChallengeArray});
+        })
     }
 }
 
