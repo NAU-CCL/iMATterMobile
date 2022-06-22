@@ -378,9 +378,18 @@ export class HomePage implements OnInit {
 
 
     saveEmotion(emotion: string) {
-
-        console.log(emotion);
-
+        
+        this.chat.cohort = this.user.cohort;
+        this.chat.userID = this.userProfileID;
+        this.chat.username = this.user.username;
+        this.chat.profilePic = this.user.profilePic;
+        this.chat.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+        this.chat.message = this.chat.username + ' is currently feeling ' + emotion;
+        this.chat.type = 'emotion';
+        this.chat.visibility = true;
+        
+        
+        // If new emotion is different than old, add a chat message describing the new emotion.
         if (emotion != this.user.currentEmotion) {
             this.chatService.addChat(this.chat).then(() => {
                 this.chat.message = '';
@@ -391,15 +400,6 @@ export class HomePage implements OnInit {
             .update({ mood: emotion });
 
         this.user.currentEmotion = emotion;
-
-        this.chat.cohort = this.user.cohort;
-        this.chat.userID = this.userProfileID;
-        this.chat.username = this.user.username;
-        this.chat.profilePic = this.user.profilePic;
-        this.chat.timestamp = firebase.firestore.FieldValue.serverTimestamp();
-        this.chat.message = this.chat.username + ' is currently feeling ' + emotion;
-        this.chat.type = 'emotion';
-        this.chat.visibility = true;
 
 
         if (emotion === 'stressed') {

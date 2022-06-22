@@ -119,6 +119,7 @@ export class ChatService {
 
   async addChat( newChat: Chat) {
 
+    console.log(`Adding chat. Chat to be added is ${JSON.stringify(newChat)}`);
     // Add the new chat to the database.
     this.afs.collection('chats').add(newChat);
 
