@@ -477,7 +477,10 @@ exports.newLearningModuleNotification = functions.https.onRequest((req, res) => 
 /**
  * Specifically for sending emotion survey notifications
  * Triggered whenever user's profile changes, and checks to see if it was their mood that changed
+ * 
+ * JUNE 29 2022 COMMENTING THIS METHOD OUT SINCE WE ARE TEMPORARILY DISBANDING EMOTION TRIGGERED SURVEYS. WILL REIMPLEMENT IN THE FUTURE.
  */
+/*
 exports.emotionSurveyNotification = functions.firestore.document('users/{userID}').onUpdate((change, context) => {
     const newValue = change.after.data();
     const previousValue = change.before.data();
@@ -535,6 +538,8 @@ exports.emotionSurveyNotification = functions.firestore.document('users/{userID}
 
     return false;
 });
+
+*/
 
 /**
  * Used for checking surveys that aren't emotion surveys
