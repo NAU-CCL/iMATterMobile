@@ -168,30 +168,7 @@ exports.updateDays = functions.https.onRequest((req, res) => {
         res.send("failed: " + err)
     });
 
-    // get random quote of the day
-    const quotes = [];
-    let homeQuote = '';
-    const imgs = admin.firestore().collection('quotes');
-    imgs.get().then(result => {
-        result.forEach(doc => {
-            quotes.push(doc.get('picture'));
-        });
-        const randIndex = Math.floor(Math.random() * Math.floor(quotes.length));
-        homeQuote = quotes[randIndex];
-        return null;
-    }).catch(err => {
-        console.log("Failed: " + err);
-    });
-
-    const home = admin.firestore().collection('homeQuote');
-    home.get().then(result => {
-        result.forEach(doc => {
-            result.quote = homeQuote;
-        });
-        return null;
-    }).catch(err => {
-        console.log('Failed: ' + err);
-    });
+    
 
 });
 
