@@ -18,6 +18,7 @@ import { SurveyService, Survey } from 'src/app/services/survey/survey.service';
 import { DatePipe } from '@angular/common';
 import { ProfileService } from 'src/app/services/user/profile.service';
 import { consoleTestResultHandler } from 'tslint/lib/test';
+import { FirestoreExamplesService } from 'src/app/services/firestore-examples.service';
 
 
 @Component({
@@ -155,7 +156,8 @@ export class HomePage implements OnInit {
         private quoteService: QuoteService,
         private surveyService: SurveyService,
         private userService: ProfileService,
-        private datepipe: DatePipe) {
+        private datepipe: DatePipe,
+        private exSercice: FirestoreExamplesService) {
         this.dropDown = [{ expanded: false }];
     }
 
