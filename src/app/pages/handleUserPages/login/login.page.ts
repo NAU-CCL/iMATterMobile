@@ -98,17 +98,7 @@ export class LoginPage implements OnInit {
             ],
         });
 
-        
-        platform.ready().then(() => {
-            this.platform.pause.subscribe(() => {
-                console.log('[INFO] App paused');
-                this.updateLogOut();
-            });
-
-            this.platform.resume.subscribe(() => {
-                console.log('[INFO] App resumed');
-            });
-        });
+    
         
     }
 
@@ -210,37 +200,11 @@ export class LoginPage implements OnInit {
         this.fcm.getToken(userID);
     }
 
+
     
-
-
-    updateLogOut() {
-        this.analyticsService.updateLogOut(this.session);
-        console.log('added LogOutTime');
-    }
-
     addSession() {
-        this.storage.get('userCode').then((val) => {
-            if (val) {
-                const ref = this.afs.firestore.collection('users').where('code', '==', val);
-                ref.get().then((result) => {
-                    result.forEach(doc => {
-
-                        this.session.userID = val;
-                        this.session.LoginTime = firebase.firestore.FieldValue.serverTimestamp();
-
-                        this.analyticsService.addSession(this.session).then(() => {
-                            console.log('successful session creation');
-
-                        }, err => {
-                            console.log('trouble adding session');
-
-                        });
-                    });
-                });
-            }
-        });
-
-
+        
+        this.analyticsService.addSessionOnAppEnter( );
     }
 
     // Used on the login page and called when the user clicks the log in button.
@@ -278,10 +242,9 @@ export class LoginPage implements OnInit {
                             // IF USER EMAIL AND PASS ON DEVICE MATCH DATABASE, load information into the user object and create a session.
 
                             // this.storage.set('version', this.device.version);
-                            this.storage.set('userCode', this.userID);
-
-                            //console.log(`Adding Session!!!`);
-                            this.addSession();
+                            this.storage.set('userCode', this.userID).then( ()=>{
+                                this.addSession();
+                            });
                             this.storage.set('authenticated', 'true');
                             this.storage.set('password', this.userPassword);
                             this.storage.set('username', doc.get('username'));
@@ -329,6 +292,7 @@ export class LoginPage implements OnInit {
 
     // Delete user information when logging them out.
     logOut(): void {
+        this.analyticsService.endSessionOnAppExit();
         this.storage.set('authenticated', 'false');
         this.storage.remove('userCode');
         this.storage.remove('email');

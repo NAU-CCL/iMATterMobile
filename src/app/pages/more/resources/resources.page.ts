@@ -14,6 +14,7 @@ import { connectableObservableDescriptor } from 'rxjs/internal/observable/Connec
 import { SelectMultipleControlValueAccessor } from '@angular/forms';
 import { time } from 'console';
 import { escapeLeadingUnderscores } from 'typescript';
+import { AnalyticsService } from 'src/app/services/analyticsService.service';
 
 
 
@@ -60,7 +61,8 @@ export class ResourcesPage implements OnInit, AfterViewInit {
         public afs: AngularFirestore,
         private storage: Storage,
         private inAppBrowser: InAppBrowser,
-        public locationService: LocationService) {
+        public locationService: LocationService,
+        private analyticsService: AnalyticsService) {
     }
 
     options = {
@@ -304,6 +306,14 @@ export class ResourcesPage implements OnInit, AfterViewInit {
         {
             this.filteredList = this.locationList;
         }
+    }
+
+    logIndividualResourceClicks()
+    {
+  
+  
+      this.analyticsService.updateClicks('numOfClickIndividualResource');
+  
     }
 
 

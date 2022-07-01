@@ -333,20 +333,18 @@ export class HomePage implements OnInit {
     }
 
     updateProfileClicks() {
-        this.analyticsService.updateProfileClicks(this.session);
+        this.analyticsService.updateClicks( 'numOfClickProfile' );
         console.log('added profile click');
-
     }
 
     updateInfoClicks() {
-        this.analyticsService.updateInfoClicks(this.session);
+        this.analyticsService.updateClicks( 'numOfClickInfo' );
         console.log('added info click');
-
     }
 
 
     updateSurveyClicks() {
-        this.analyticsService.updateSurveyClicks(this.session);
+        this.analyticsService.updateClicks('numOfClickSurvey');
         console.log('added survery click');
 
     }
@@ -755,6 +753,8 @@ export class HomePage implements OnInit {
     }
 
     answerSurvey(survey: Survey) {
+        this.updateSurveyClicks();
+
         let submitData;
         submitData = survey.id + ':' + this.user['daysAUser'];
         this.router.navigate(['/tabs/home/available/answer/' + submitData]);

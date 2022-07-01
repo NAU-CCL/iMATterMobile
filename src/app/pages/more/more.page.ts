@@ -65,9 +65,14 @@ export class MorePage implements OnInit {
   }
 
   updateLModuleClicks() {
-    this.analyticsService.updateLModuleClicks(this.session);
+    this.analyticsService.updateClicks('numOfClickLModule');
     console.log('added learning module click');
 
+  }
+
+  updateResourcePageClicks()
+  {
+    this.analyticsService.updateClicks('numOfClickResources');
   }
 
   addView() {

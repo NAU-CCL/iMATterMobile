@@ -64,7 +64,8 @@
                         {{(location.distance * 0.000621371).toPrecision(2)}} mi
                     </div>
                 </div>
-                <ion-icon [routerLink]="['./', location.id]" name="arrow-forward" slot="end"></ion-icon>
+                <!-- Button that takes user to individual resource on click-->
+                <ion-icon (click)="logIndividualResourceClicks()" [routerLink]="['./', location.id]" name="arrow-forward" slot="end"></ion-icon>
             </ion-item>
 
         </ion-list>
