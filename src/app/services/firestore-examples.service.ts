@@ -7,11 +7,11 @@ import { AngularFirestore } from '@angular/fire/firestore';
 export class FirestoreExamplesService {
   
   constructor(private firestore: AngularFirestore) { 
-    console.log(`Ex service initialized.`)
+    //console.log(`Ex service initialized.`)
     
-    this.getAllUsers();
+    //this.getAllUsers();
 
-    this.listenForNewData();
+    //this.listenForNewData();
 
    //this.firestore.collection('testRealTimeData').ref.add({message: 'hi', timestamp: new Date()});
   }
