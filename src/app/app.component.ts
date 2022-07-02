@@ -11,6 +11,7 @@ import {BnNgIdleService} from 'bn-ng-idle';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {Observable} from 'rxjs';
+import { ProfileService } from './services/user/profile.service';
 
 @Component({
     selector: 'app-root',
@@ -19,6 +20,7 @@ import {Observable} from 'rxjs';
 })
 
 export class AppComponent {
+
 
     session: Sessions =
         {
@@ -43,20 +45,20 @@ export class AppComponent {
         private storage: Storage,
         private router: Router,
         private bnIdle: BnNgIdleService,
-        private analyticsService: AnalyticsService
+        private analyticsService: AnalyticsService,
+        private profileService: ProfileService
     ) {
         this.initializeApp();
-        //firebase.initializeApp(firebaseConfig);
-        // this.bnIdle.startWatching(300).subscribe((isTimedOut: boolean) => {
-        //     if (isTimedOut) {
-        //
-        //         this.updateLogOut();
-        //         console.log('session expired');
-        //
-        //         this.logOut();
-        //
-        //     }
-        // });
+
+
+        // Event that is suppose to fire when the user leaves to their homescreen.
+        document.addEventListener('pause',  (  ) => {  analyticsService.endSessionOnAppExit() }, false);
+
+        // Event that fires when user opens app after leaving app previously.
+        document.addEventListener('resume', ( ) => { 
+            analyticsService.addSessionOnAppEnter()  }, false);
+
+
     }
 
     logOut(): void {
@@ -70,15 +72,12 @@ export class AppComponent {
         this.router.navigateByUrl('login');
     }
 
-    updateLogOut() {
-        this.analyticsService.updateLogOut(this.session);
-        console.log('added LogOutTime');
-    }
-
     initializeApp() {
         this.platform.ready().then(() => {
             this.statusBar.styleDefault();
             this.splashScreen.hide();
         });
     }
+
+
 }

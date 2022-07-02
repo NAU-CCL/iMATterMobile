@@ -202,11 +202,6 @@ export class ProfilePage implements OnInit {
         this.refreshPage();
     }
 
-    updateLogOut() {
-        this.analyticsService.updateLogOut(this.session);
-        console.log('added LogOutTime');
-    }
-
     addView() {
         // this.analytic.sessionID = this.session.id;
         this.storage.get('userCode').then((val) => {
@@ -233,6 +228,7 @@ export class ProfilePage implements OnInit {
 
     // log user out, sets authentication to false and removes some unnecessary storage
     logOut(): void {
+        this.analyticsService.endSessionOnAppExit();
         this.storage.set('authenticated', 'false');
         this.storage.remove('userCode');
         this.storage.remove('totalDaysPregnant');
@@ -602,7 +598,6 @@ export class ProfilePage implements OnInit {
             text: 'Log Out',
             role: 'destructive',
             handler: () => {
-                this.updateLogOut();
                 this.logOut();
             }
           }, {

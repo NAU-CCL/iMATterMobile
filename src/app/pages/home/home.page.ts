@@ -18,6 +18,7 @@ import { SurveyService, Survey } from 'src/app/services/survey/survey.service';
 import { DatePipe } from '@angular/common';
 import { ProfileService } from 'src/app/services/user/profile.service';
 import { consoleTestResultHandler } from 'tslint/lib/test';
+import { FirestoreExamplesService } from 'src/app/services/firestore-examples.service';
 
 
 @Component({
@@ -155,7 +156,8 @@ export class HomePage implements OnInit {
         private quoteService: QuoteService,
         private surveyService: SurveyService,
         private userService: ProfileService,
-        private datepipe: DatePipe) {
+        private datepipe: DatePipe,
+        private exSercice: FirestoreExamplesService) {
         this.dropDown = [{ expanded: false }];
     }
 
@@ -333,20 +335,18 @@ export class HomePage implements OnInit {
     }
 
     updateProfileClicks() {
-        this.analyticsService.updateProfileClicks(this.session);
+        this.analyticsService.updateClicks( 'numOfClickProfile' );
         console.log('added profile click');
-
     }
 
     updateInfoClicks() {
-        this.analyticsService.updateInfoClicks(this.session);
+        this.analyticsService.updateClicks( 'numOfClickInfo' );
         console.log('added info click');
-
     }
 
 
     updateSurveyClicks() {
-        this.analyticsService.updateSurveyClicks(this.session);
+        this.analyticsService.updateClicks('numOfClickSurvey');
         console.log('added survery click');
 
     }
@@ -755,6 +755,8 @@ export class HomePage implements OnInit {
     }
 
     answerSurvey(survey: Survey) {
+        this.updateSurveyClicks();
+
         let submitData;
         submitData = survey.id + ':' + this.user['daysAUser'];
         this.router.navigate(['/tabs/home/available/answer/' + submitData]);

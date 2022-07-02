@@ -48,30 +48,27 @@ export class TabsPage implements OnInit {
 
 
     updateChatClicks() {
-        this.analyticsService.updateChatClicks(this.session);
+
+        this.analyticsService.updateClicks( 'numOfClickChat' );
         console.log('added chat click');
 
     }
 
-
-    updateCalendarClicks() {
-        this.analyticsService.updateCalendarClicks(this.session);
-        console.log('added calendar click');
-
+    updateChallengeClicks()
+    {
+        this.analyticsService.updateClicks( 'numOfChallengeClicks' );
+        console.log('added challenge click');
     }
 
-
     updateMoreClicks() {
-        this.analyticsService.updateMoreClicks(this.session);
+        this.analyticsService.updateClicks( 'numOfClickMore' );
         console.log('added more click');
 
     }
 
-
     updateHomeClicks() {
-        this.analyticsService.updateHomeClicks(this.session);
+        this.analyticsService.updateClicks( 'numOfClickHome' );
         console.log('added home click');
-
     }
 
 }
