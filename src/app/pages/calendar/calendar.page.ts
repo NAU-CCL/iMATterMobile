@@ -891,7 +891,7 @@ async displayCalendarInfo(){
 	  else{
 		const selected = moment(ev.selectedTime).toDate();
 		this.event.startTime = selected.toISOString();
-		selected.setHours(selected.getHours() + 3);
+		selected.setHours(selected.getHours() + 1);
 		this.event.endTime = (selected.toISOString());
 	  }
 
