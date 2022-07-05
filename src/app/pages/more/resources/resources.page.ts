@@ -29,7 +29,7 @@ declare var google;
 export class ResourcesPage implements OnInit, AfterViewInit {
     public locations: Observable<Location[]>;
     public locationList: Location[] = [];
-    public filteredList: Location[];
+    public filteredList: Location[] = [];
     public locationTypes = [];
     public mapLoaded: boolean = false;
 
@@ -282,7 +282,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
 
     filterResources( event )
     {
-        console.log('called filter ques in resource page. ');
+        console.log('called filter queues in resource page. ');
 
         const searchInput = event.target.value;
 
