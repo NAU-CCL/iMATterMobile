@@ -251,7 +251,7 @@ export class ChatService {
          let chatDoc = queryDocSnap.data();
          console.log(`Chat to delete is ${JSON.stringify(chatDoc)} \n\n Total chats ${chatCount}`);
          chatCount++;
-         //queryDocSnap.ref.delete();
+         queryDocSnap.ref.delete();
        })
      })
    }
