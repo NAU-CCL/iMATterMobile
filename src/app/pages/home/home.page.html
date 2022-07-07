@@ -127,7 +127,7 @@
     <ion-list class="notifList" *ngIf="!collpaseChallenges && user.joinedChallenges.length > 0">
         <ng-container *ngFor="let challenge of (challenges|async)">
             <ion-card id="card{{challenge.id}}" class="notifCard" *ngIf="challengeJoined(challenge.id)">
-                <ion-card-title class="ion-padding" [routerLink]="['/tabs/habits/viewChallenge', challenge.id]">{{challenge.title}}
+                <ion-card-title class="ion-padding" [routerLink]="['/tabs/habits/viewChallenge', challenge.id]" (click)="updateIndividualChallengeClicks()">{{challenge.title}}
                     <ion-icon *ngIf="!daysComplete[challenge.id] " name="arrow-forward" size=small
                         class="ion-float-right" [routerLink]="['/tabs/habits/viewChallenge', challenge.id]"></ion-icon>
                     <ion-icon *ngIf="daysComplete[challenge.id] " name="checkmark" size=small class="ion-float-right"

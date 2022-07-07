@@ -157,7 +157,8 @@ export class HomePage implements OnInit {
         private surveyService: SurveyService,
         private userService: ProfileService,
         private datepipe: DatePipe,
-        private exSercice: FirestoreExamplesService) {
+        private exSercice: FirestoreExamplesService,
+        private analyticService: AnalyticsService) {
         this.dropDown = [{ expanded: false }];
     }
 
@@ -757,6 +758,11 @@ export class HomePage implements OnInit {
         let submitData;
         submitData = survey.id + ':' + this.user['daysAUser'];
         this.router.navigate(['/tabs/home/available/answer/' + submitData]);
+    }
+
+    updateIndividualChallengeClicks()
+    {
+        this.analyticService.updateClicks('individualChallengeClicks');
     }
 
 }

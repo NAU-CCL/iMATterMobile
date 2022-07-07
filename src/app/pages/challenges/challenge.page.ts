@@ -45,7 +45,8 @@ export class ChallengePage implements OnInit {
                 private afs: AngularFirestore,
                 private analyticsService: AnalyticsService,
                 private alertController: AlertController,
-                private datePipe: DatePipe) {
+                private datePipe: DatePipe,
+                private analyticService: AnalyticsService) {
 
     
     }
@@ -202,5 +203,10 @@ export class ChallengePage implements OnInit {
                 }
             }
         });
+    }
+
+    updateIndividualChallengeClicks()
+    {
+        this.analyticService.updateClicks('individualChallengeClicks');
     }
 }

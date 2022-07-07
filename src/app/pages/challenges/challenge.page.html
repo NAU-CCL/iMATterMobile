@@ -72,7 +72,7 @@
     </ion-item-divider>
     <ion-list>
         <ng-container *ngFor="let challenge of ( challenges | async )">
-            <ion-card *ngIf="challengeJoined(challenge.id)" button [routerLink]="['/tabs/habits/viewChallenge', challenge.id]" [ngClass]="challenge.id">
+            <ion-card *ngIf="challengeJoined(challenge.id)" button [routerLink]="['/tabs/habits/viewChallenge', challenge.id]" [ngClass]="challenge.id" (click)="updateIndividualChallengeClicks()">
                 <ion-card-title class="ion-padding-horizontal ion-padding-top">
                     {{challenge.title}}
                 </ion-card-title>
@@ -112,7 +112,7 @@
 <ion-content *ngIf="challengeView != 'all' && challengeView != 'joined'">
     <ion-list>
         <ng-container *ngFor="let challenge of ( challenges | async )">
-            <ion-card button [routerLink]="['/tabs/habits/viewChallenge', challenge.id]" *ngIf="challenge.type == challengeView" [ngClass]="challenge.id">
+            <ion-card button [routerLink]="['/tabs/habits/viewChallenge', challenge.id]" *ngIf="challenge.type == challengeView" [ngClass]="challenge.id" (click)="updateClicks('individualChallengeClick')">
                 <ion-card-title class="ion-padding-horizontal ion-padding-top">
                     <ion-row>
                         <ion-thumbnail *ngIf="challenge.icon != '' && challenge.icon != undefined">
