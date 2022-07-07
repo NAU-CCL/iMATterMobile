@@ -56,7 +56,7 @@ export class TabsPage implements OnInit {
 
     updateChallengeClicks()
     {
-        this.analyticsService.updateClicks( 'numOfChallengeClicks' );
+        this.analyticsService.updateClicks( 'numOfChallengeTabClicks' );
         console.log('added challenge click');
     }
 

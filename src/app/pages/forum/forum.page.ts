@@ -179,5 +179,11 @@ export class ForumPage implements OnInit {
     await alert.present();
   }
 
+  updateIndividualInfoDeskClicks()
+  {
+      this.analyticsService.updateClicks('individualInfoDeskClicks');
+    
+  }
+
 
 }
