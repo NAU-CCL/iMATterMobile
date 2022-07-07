@@ -25,56 +25,56 @@
         <ion-row class="ion-justify-content-center">
             <ion-col class="emoticon-container">
                 <ion-button class="ion-no-padding ion-no-margin" [class.highlight]="this.user.currentEmotion == 'happy'" size="small"
-                fill="clear" (click)="saveEmotion('happy')">
-                    <div>😃</div>
+                fill="clear" (click)="saveEmotion('happy', '😃')">
+                    <div>😃</div> 
                 </ion-button>
                 <div class="emoticon-label-light">Happy</div>
             </ion-col>
-            <ion-col class="emoticon-container">
+            <ion-col class="emoticon-container"> 
                 <ion-button class="ion-no-padding ion-no-margin" [class.highlight]="this.user.currentEmotion == 'loved'" size="small"
-                    fill="clear" (click)="saveEmotion('loved')">
+                    fill="clear" (click)="saveEmotion('loved', '🥰')">
                     🥰
                 </ion-button>
                 <div class="emoticon-label-light">Loved</div>
             </ion-col>
             <ion-col class="emoticon-container">
                 <ion-button class="ion-no-padding ion-no-margin" [class.highlight]="this.user.currentEmotion == 'ok'" size="small"
-                    fill="clear" (click)="saveEmotion('ok')">
+                    fill="clear" (click)="saveEmotion('ok','😐')">
                     😐
                 </ion-button>
                 <div class="emoticon-label-light">Ok</div>
             </ion-col>
             <ion-col class="emoticon-container">
                 <ion-button class="ion-no-padding ion-no-margin" [class.highlight]="this.user.currentEmotion == 'stressed'"
-                    size="small" fill="clear" (click)="saveEmotion('stressed')">
+                    size="small" fill="clear" (click)="saveEmotion('stressed','😩')">
                     😩
                 </ion-button>
                 <div class="emoticon-label-light">Stressed</div>
             </ion-col>
             <ion-col class="emoticon-container">
                 <ion-button class="ion-no-padding ion-no-margin" [class.highlight]="this.user.currentEmotion == 'tired'" size="small"
-                    fill="clear" (click)="saveEmotion('tired')">
+                    fill="clear" (click)="saveEmotion('tired','😴')">
                     😴
                 </ion-button>
                 <div class="emoticon-label-light">Tired</div>
             </ion-col>
             <ion-col class="emoticon-container">
                 <ion-button class="ion-no-padding ion-no-margin" [class.highlight]="this.user.currentEmotion == 'sad'" size="small"
-                    fill="clear" (click)="saveEmotion('sad')">
+                    fill="clear" (click)="saveEmotion('sad','😢')">
                     😢
                 </ion-button>
                 <div class="emoticon-label-light">Sad</div>
             </ion-col>
             <ion-col class="emoticon-container">
                 <ion-button class="ion-no-padding ion-no-margin" [class.highlight]="this.user.currentEmotion == 'lonely'" size="small"
-                    fill="clear" (click)="saveEmotion('lonely')">
+                    fill="clear" (click)="saveEmotion('lonely','😔')">
                     😔
                 </ion-button>
                 <div class="emoticon-label-light">Lonely</div>
             </ion-col>
             <ion-col class="emoticon-container">
                 <ion-button class="ion-no-padding ion-no-margin" [class.highlight]="this.user.currentEmotion == 'angry'" size="small"
-                    fill="clear" (click)="saveEmotion('angry')">
+                    fill="clear" (click)="saveEmotion('angry','😡')">
                     😡
                 </ion-button>
                 <div class="emoticon-label-light">Angry</div>

@@ -377,23 +377,20 @@ export class HomePage implements OnInit {
     }
 
 
-    saveEmotion(emotion: string) {
+    saveEmotion(emotion: string, emoji: string) {
         
         this.chat.cohort = this.user.cohort;
         this.chat.userID = this.userProfileID;
         this.chat.username = this.user.username;
         this.chat.profilePic = this.user.profilePic;
         this.chat.timestamp = firebase.firestore.FieldValue.serverTimestamp();
-        this.chat.message = this.chat.username + ' is currently feeling ' + emotion;
-        this.chat.type = 'emotion';
+        this.chat.message = 'is currently feeling ' + emoji;
         this.chat.visibility = true;
-        
+        this.chat.type = 'emotion';
         
         // If new emotion is different than old, add a chat message describing the new emotion.
         if (emotion != this.user.currentEmotion) {
-            this.chatService.addChat(this.chat).then(() => {
-                this.chat.message = '';
-            });
+            this.chatService.addAutoChat(this.chat, this.chat.userID, true);
         }
 
         this.afs.firestore.collection('users').doc(this.userProfileID)
