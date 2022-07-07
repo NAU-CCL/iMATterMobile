@@ -39,7 +39,7 @@
 
 <ion-content>
   <ion-list *ngIf="allQuestions == true">
-    <ion-item button [routerLink]="['/forum/forum-thread', question.id]" *ngFor="let question of questionList">
+    <ion-item button [routerLink]="['/forum/forum-thread', question.id]" *ngFor="let question of questionList" (click)="updateIndividualInfoDeskClicks()">
       <ion-col>
         <ion-row>
           <div class="padding-top">

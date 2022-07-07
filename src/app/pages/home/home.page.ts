@@ -380,6 +380,8 @@ export class HomePage implements OnInit {
 
     saveEmotion(emotion: string, emoji: string) {
         
+        this.analyticService.updateClicks('emotionChangeClicks');
+
         this.chat.cohort = this.user.cohort;
         this.chat.userID = this.userProfileID;
         this.chat.username = this.user.username;
@@ -764,5 +766,7 @@ export class HomePage implements OnInit {
     {
         this.analyticService.updateClicks('individualChallengeClicks');
     }
+
+
 
 }

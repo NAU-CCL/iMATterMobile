@@ -29,7 +29,7 @@
       <ion-card-content style="padding:0"> <img src="https://firebasestorage.googleapis.com/v0/b/imatter-nau.appspot.com/o/MorePage%2Fimatter_map_image.png?alt=media&token=179abe25-5c14-452e-9bde-4cdfa9f00cb3" ></ion-card-content>
     </ion-card>
   
-    <ion-card button [routerLink]="['./forum/']" lines="none">
+    <ion-card button [routerLink]="['./forum/']" lines="none" (click)="updateInfoDeskClicks()">
       <ion-card-title class="ion-padding tile-font-flex">
         <div class="info-desk-tile">
           Information Desk
@@ -39,7 +39,7 @@
       <ion-card-content style="padding:0"> <img src="https://firebasestorage.googleapis.com/v0/b/imatter-nau.appspot.com/o/MorePage%2Fimatter_info_desk.png?alt=media&token=4aff669b-ed90-4211-8227-fb19c4379c3a" ></ion-card-content>
     </ion-card>
   
-    <ion-card button [routerLink]="['./calendar/']" lines="none">
+    <ion-card button [routerLink]="['./calendar/']" lines="none" (click)="updateCalendarClicks()">
       <ion-card-title class="ion-padding tile-font-flex">
         <div class="tile-font-size">
           Calendar
@@ -62,7 +62,7 @@
   </div>
 
   <ion-card>
-    <ion-item button [routerLink]="['./settings/']" lines="none">
+    <ion-item button [routerLink]="['./settings/']" lines="none" (click)="updateIndividualInfoDeskClicks()">
       Settings
       <ion-icon md="md-arrow-forward" slot="end"></ion-icon>
     </ion-item>

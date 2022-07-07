@@ -98,4 +98,18 @@ export class MorePage implements OnInit {
   });
 }
 
+  updateCalendarClicks()
+  {
+    this.analyticsService.updateClicks('calendarClicks');
+  }
+
+  updateInfoDeskClicks()
+  {
+    this.analyticsService.updateClicks('infoDeskClicks');
+  }
+
+  updateSettingsPageClicks()
+  {
+      this.analyticsService.updateClicks('settingsClicks');
+  }
 }

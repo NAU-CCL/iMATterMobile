@@ -142,7 +142,8 @@ export class ProfilePage implements OnInit {
         private datePipe: DatePipe,
         private chatService: ChatService,
         private mpnService: MoodProviderNotifService,
-        private actionSheetController: ActionSheetController
+        private actionSheetController: ActionSheetController,
+        private analyticService: AnalyticsService
     ) {
         this.getProfilePictureChoices();
     }
@@ -446,6 +447,8 @@ export class ProfilePage implements OnInit {
     }
 
     saveEmotion(emotion: string) {
+        this.analyticService.updateClicks('emotionChangeClicks');
+
         this.afs.firestore.collection('users').doc(this.userProfileID)
             .update({ mood: emotion });
 
