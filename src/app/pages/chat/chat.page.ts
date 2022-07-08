@@ -268,7 +268,7 @@ export class ChatPage implements OnInit {
   {
     
     // Get the user code from storage and then query the datbase for the correct user document.
-    
+    console.log(`adding auto chat`)
     this.storage.get('userCode').then((currentUserCode) => {
       if (currentUserCode) {
         const ref = this.afs.firestore.collection('users').where('code', '==', currentUserCode);
@@ -281,7 +281,7 @@ export class ChatPage implements OnInit {
               cohort: 'default',
               userID: userDocObject.code,
               message: `${userDocObject.username} has ${enteredChat} the chatroom.`,
-              username: 'calvin',
+              username: userDocObject.username,
               timestamp: new Date(),
               visibility: true,
               type: enteredChat,

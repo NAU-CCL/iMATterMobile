@@ -208,7 +208,7 @@ export class AnalyticsService {
 
   updateClicks( pageName )
   {
-    console.log(`Updating ${pageName} clicks, session object is ${this.idReference}`)
+    console.log(`Updating ${pageName} clicks, session object ref is ${this.idReference}`)
 
       this.sessionCollection.doc(this.idReference).get().subscribe( (docSnap) => {
           let docData = docSnap.data();

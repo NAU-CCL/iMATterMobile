@@ -422,6 +422,10 @@ export class ChatService {
       });
 
     }
+    else
+    {
+      console.log(`Auto chat was emotion`)
+    }
   }
 
   getAutoChats( ): Observable<DocumentChangeAction<autoChat>[]>
