@@ -26,10 +26,12 @@ export class RecoveryCodePage implements OnInit {
     private theCode: string;
     private wantedUserID: string;
     private recoveryPassword: string;
+    private confirmPassword:string;
 
 
 
     public enterCodeForm: FormGroup;
+
     constructor(
         public loadingCtrl: LoadingController,
         public alertCtrl: AlertController,
@@ -50,6 +52,10 @@ export class RecoveryCodePage implements OnInit {
                 '',
                 Validators.compose([Validators.required, Validators.minLength(8)])
             ],
+            confirmPassword: [
+                '',
+                Validators.compose([Validators.required, Validators.minLength(8)])
+            ]
         });
     }
 
@@ -66,6 +72,7 @@ export class RecoveryCodePage implements OnInit {
     validateUser(enterCodeForm: FormGroup) {
         this.recoveryCode = enterCodeForm.value.recoveryCode;
         this.recoveryPassword = enterCodeForm.value.recoveryPassword;
+        this.confirmPassword = enterCodeForm.value.confirmPassword;
 
         var recoveryEmail;
         var theCode;
@@ -73,56 +80,58 @@ export class RecoveryCodePage implements OnInit {
         console.log(this.recoveryCode);
         console.log("recoveryEmail");
         console.log(this.recoveryPassword.toString());
-        //const newPassword: string = this.recoveryPassword;
-        let newPassword = this.enterCodeForm.controls['recoveryPassword'].value;
-        console.log(newPassword);
-        this.afs.firestore.collection('recoveryEmail').where('code', '==', this.recoveryCode)
-            .get().then(snapshot => {
-                if (snapshot.docs.length > 0) {
-                    console.log(('exists'));
-                    const recoveryRef = this.afs.firestore.collection('recoveryEmail');
-                    recoveryRef.get().then((result) => {
-                        result.forEach(doc => {
-                            this.userID = doc.id;
-                            this.theCode = doc.get('code');
-                            if (this.theCode === this.recoveryCode) {
-                                recoveryEmail = doc.get('email');
-                                this.afs.firestore.collection('recoveryEmail').doc(doc.id).update({
-                                    code: "",
-                                    email: ""
-                                });
-                                console.log(recoveryEmail);
-                                console.log("5");
-                            } else {
-                            }
+        
+        
+        if( this.recoveryPassword === this.confirmPassword ){
+            let newPassword = this.enterCodeForm.controls['recoveryPassword'].value;
+            console.log(newPassword);
+            this.afs.firestore.collection('recoveryEmail').where('code', '==', this.recoveryCode)
+                .get().then(snapshot => {
+                    if (snapshot.docs.length > 0) {
+                        console.log(('exists'));
+                        const recoveryRef = this.afs.firestore.collection('recoveryEmail');
+                        recoveryRef.get().then((result) => {
+                            result.forEach(doc => {
+                                this.userID = doc.id;
+                                this.theCode = doc.get('code');
+                                if (this.theCode === this.recoveryCode) {
+                                    recoveryEmail = doc.get('email');
+                                    this.afs.firestore.collection('recoveryEmail').doc(doc.id).update({
+                                        code: "",
+                                        email: ""
+                                    });
+                                    console.log(recoveryEmail);
+                                    console.log("5");
+                                } else {
+                                }
+                            });
                         });
-                    });
 
-                    const userRef = this.afs.firestore.collection('users');
-                    userRef.get().then((result) => {
-                        result.forEach(doc => {
-                            this.userID = doc.id;
-                            this.userEmail = doc.get('email');
-                            this.password = doc.get('password');
+                        const userRef = this.afs.firestore.collection('users');
+                        userRef.get().then((result) => {
+                            result.forEach(doc => {
+                                this.userID = doc.id;
+                                this.userEmail = doc.get('email');
+                                this.password = doc.get('password');
 
-                            if (this.userEmail === recoveryEmail) {
-                                this.wantedUserID = this.userID;
-                                console.log(newPassword);
-                                this.afs.firestore.collection('users').doc(this.wantedUserID).update({
-                                    password: newPassword
-                                });
-                                this.showToast('Password has been changed!');
-                                this.router.navigate(['/login/']);
-                            } else {
-                            }
+                                if (this.userEmail === recoveryEmail) {
+                                    this.wantedUserID = this.userID;
+                                    console.log(newPassword);
+                                    this.afs.firestore.collection('users').doc(this.wantedUserID).update({
+                                        password: newPassword
+                                    });
+                                    this.showToast('Password has been changed!');
+                                    this.router.navigate(['/login/']);
+                                } else {
+                                }
+                            });
                         });
-                    });
-                } else {
-                    this.showToast('Code invalid')
-                    console.log('Email does not exist');
-                    this.userEmail = false;
-                }
-            });
+                    } else {
+                        this.showToast('Code invalid')
+                        console.log('Email does not exist');
+                        this.userEmail = false;
+                    }
+            });}
     }
 
 

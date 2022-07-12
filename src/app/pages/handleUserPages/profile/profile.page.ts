@@ -282,13 +282,14 @@ export class ProfilePage implements OnInit {
             inputs: [
                 { name: 'oldPassword', placeholder: 'Old password', type: 'password' },
                 { name: 'newPassword', placeholder: 'New password', type: 'password' },
+                { name: 'confirmPassword', placeholder: 'Confirm new password', type: 'password' },
             ],
             buttons: [
                 { text: 'Cancel' },
                 {
                     text: 'Save',
                     handler: data => {
-                        if (data.newPassword.length >= 8) {
+                        if (data.newPassword.length >= 8 && data.newPassword === data.confirmPassword) {
                             this.profileService.updatePassword(data.newPassword, data.oldPassword, this.userProfileID)
                                 .then(() => {
                                     this.showToast('Your password has been updated!');
@@ -298,7 +299,12 @@ export class ProfilePage implements OnInit {
                                         this.showToast('There was a problem updating your password');
                                     });
                         } else {
-                            alert.message = 'Password must be 8 characters or longer';
+                            if( data.Password !== data.confirmPassword ){
+                                alert.message = 'New Password and password confirmation must match';
+                            }
+                            else{
+                                alert.message = 'Password must be 8 characters or longer';
+                            }
                             return false;
                         }
                     },

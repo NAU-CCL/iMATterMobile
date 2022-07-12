@@ -21,8 +21,20 @@
       >
       </ion-input>
     </ion-item>
+    <ion-item>
+      <ion-input
+          formControlName="confirmPassword"
+                type="password"
+                placeholder="Retype this password"
+                [class.invalid]="!enterCodeForm.controls['confirmPassword'].valid && enterCodeForm.controls['confirmPassword'].touched"
+        >
+        </ion-input>
+      </ion-item>
    <ion-item class="error-message" *ngIf="!enterCodeForm.controls['recoveryPassword'].valid && enterCodeForm.controls['recoveryPassword'].touched">
       <ion-label>Please enter an 8 character password</ion-label>
+    </ion-item>
+    <ion-item class="error-message" *ngIf="enterCodeForm.value.newPassword !== enterCodeForm.value.confirmPassword">
+      <ion-label>Ensure that the password match</ion-label>
     </ion-item>
 
     <ion-button class="fill-button"
