@@ -72,7 +72,7 @@
     "rxjs-compat": "^6.4.0",
     "tslib": "^1.11.1",
     "uk.co.workingedge.phonegap.plugin.launchnavigator": "^5.0.6",
-    "url-parse": "^1.5.8",
+    "url-parse": "^1.5.9",
     "zone.js": "~0.9.1"
   },
   "devDependencies": {
