@@ -4,12 +4,9 @@ import {Platform} from '@ionic/angular';
 import {SplashScreen} from '@ionic-native/splash-screen/ngx';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {AnalyticsService, Analytics, Sessions} from 'src/app/services/analyticsService.service';
-import * as firebase from 'firebase/app';
-import {firebaseConfig} from './firebaseCredentials';
 import {Storage} from '@ionic/storage';
 import {BnNgIdleService} from 'bn-ng-idle';
 import {ActivatedRoute, Router} from '@angular/router';
-import {AngularFirestore} from '@angular/fire/compat/firestore';
 import {Observable} from 'rxjs';
 import { ProfileService } from './services/user/profile.service';
 
