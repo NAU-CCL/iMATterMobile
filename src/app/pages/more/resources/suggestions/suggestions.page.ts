@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { LocationSuggestion, UserSubmissionsService } from '../../../../services/userSubmissions/user-submissions.service';
-import {AngularFirestore} from '@angular/fire/firestore';
+import {AngularFirestore} from '@angular/fire/compat/firestore';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ToastController} from '@ionic/angular';
 import {Storage} from '@ionic/storage';
-import * as firebase from 'firebase/app';
 
 @Component({
   selector: 'app-suggestions',
@@ -46,7 +45,7 @@ export class SuggestionsPage implements OnInit {
         ref.get().then((result) => {
           result.forEach(doc => {
             this.locationSuggestion.userID = val;
-            this.locationSuggestion.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+            this.locationSuggestion.timestamp = new Date();
             this.locationSuggestion.username = doc.get('username');
             this.locationSuggestion.type = 'Location Suggestion';
 

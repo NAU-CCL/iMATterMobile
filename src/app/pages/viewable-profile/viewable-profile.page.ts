@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore'
 import { QuestionService } from '../../services/infoDesk/question.service';
 import { DatePipe } from '@angular/common';
 import { User, Provider } from '../../services/user/auth.service';

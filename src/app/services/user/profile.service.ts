@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import {AngularFirestore, AngularFirestoreCollection, DocumentReference} from '@angular/fire/compat/firestore';
 import { Storage } from '@ionic/storage';
 
-import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 
@@ -137,7 +136,7 @@ export class ProfileService {
     {
         return this.storage.get('userCode').then((val) => {
             console.log(`In profile service, user code is ${val}`)
-            return this.afs.collection('users').doc(val).get();
+            return this.afs.collection<any>('users').doc(val).get();
         });
     }
 }

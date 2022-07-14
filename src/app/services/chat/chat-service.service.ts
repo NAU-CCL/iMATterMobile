@@ -147,7 +147,7 @@ export class ChatService {
   async iterateChats(cohortID, timeCalled) {
     console.log('iterateChats called');
     // get what the admin has set to determine user visibility of chats
-    this.afs.collection('settings').doc('chatroomSettings').get().then((result) => {
+    this.afs.collection('settings').doc('chatroomSettings').ref.get().then((result) => {
       const lifeType = result.get('lifeType');
 
       // if chat visibility is based on number of hours the chat has existed
@@ -185,7 +185,7 @@ export class ChatService {
         let numberOfCurrentChats = 0;
         let numberOfCurrentAutoChats = 0;
         // time order is oldest to newest
-        const ref = firebase.firestore().collection('chats').where('cohort', '==', cohortID).orderBy('timestamp', 'desc');
+        const ref = this.afs.collection('chats').ref.where('cohort', '==', cohortID).orderBy('timestamp', 'desc');
         ref.get().then((res) => {
           res.forEach(doc => {
             // for each doc in the cohort chat room, if it is a user sent, iterate

@@ -1,19 +1,11 @@
 import { AfterViewInit, Component, OnInit, ViewChild, NgZone } from '@angular/core';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Storage } from '@ionic/storage';
-import { NativeGeocoder, NativeGeocoderOptions, NativeGeocoderResult } from '@ionic-native/native-geocoder/ngx';
-import * as firebase from 'firebase/app';
+import { NativeGeocoder } from '@ionic-native/native-geocoder/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { compilerSetStylingMode } from '@angular/compiler/src/render3/view/styling_state';
-import { forEach } from '@angular-devkit/schematics';
 import { LocationService, Location } from 'src/app/services/resource.service';
 import { Observable } from 'rxjs';
-import * as internal from 'assert';
-import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
-import { SelectMultipleControlValueAccessor } from '@angular/forms';
-import { time } from 'console';
-import { escapeLeadingUnderscores } from 'typescript';
 import { AnalyticsService } from 'src/app/services/analyticsService.service';
 
 

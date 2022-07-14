@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore'
 import { Storage } from '@ionic/storage';
 import { FcmService } from "../../../services/pushNotifications/fcm.service";
 import { ProfileService } from "../../../services/user/profile.service";
