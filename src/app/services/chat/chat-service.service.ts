@@ -3,7 +3,6 @@ import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument,
 import { map, take } from 'rxjs/operators';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Storage } from '@ionic/storage';
-import * as firebase from 'firebase/app';
 import 'rxjs/add/operator/do'
 import 'rxjs/add/operator/scan'
 import 'rxjs/add/operator/take'

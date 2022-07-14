@@ -4,7 +4,6 @@ import { map, take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { Storage } from '@ionic/storage';
 import { increment } from '@angular/fire/firestore';
-import * as firebase from 'firebase/app';
 
 export interface Question {
   id?: string;

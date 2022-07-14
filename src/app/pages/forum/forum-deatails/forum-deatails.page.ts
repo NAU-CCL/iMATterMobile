@@ -3,9 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { QuestionService, Question } from 'src/app/services/infoDesk/question.service';
 import { ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
-import {Observable} from 'rxjs';
 import {AngularFirestore} from '@angular/fire/compat/firestore';
-import * as firebase from 'firebase/app';
 import { HttpClient } from '@angular/common/http';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 

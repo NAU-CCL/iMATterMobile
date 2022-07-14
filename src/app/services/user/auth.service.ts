@@ -4,7 +4,6 @@ import {AngularFirestore, AngularFirestoreCollection} from '@angular/fire/compat
 import { map, take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
-import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 

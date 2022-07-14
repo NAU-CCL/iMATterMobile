@@ -1,18 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { LocationSuggestion, UserSubmissionsService } from '../../../../services/userSubmissions/user-submissions.service';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { LocationService, Location } from 'src/app/services/resource.service';
-import * as firebase from 'firebase/app';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { CallNumber } from '@awesome-cordova-plugins/call-number/ngx';
 // Allows us to open apple or google maps from the app when user clicks an address.
 import { LaunchNavigator, LaunchNavigatorOptions } from '@awesome-cordova-plugins/launch-navigator/ngx';
 import {Device} from '@ionic-native/device/ngx';
 import { AlertController } from '@ionic/angular';
-import { Output, EventEmitter } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
 import { ReviewTagPopoverComponent } from './review-tag-popover/review-tag-popover.component'
 

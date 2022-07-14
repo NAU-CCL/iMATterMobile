@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument, DocumentReference } from '@angular/fire/compat/firestore';
 import { map, take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { Storage } from '@ionic/storage';
-import * as firebase from 'firebase/app';
 import { ProfileService } from './user/profile.service';
 import { increment } from '@angular/fire/firestore';
 // import FieldValue = firebase.firestore.FieldValue;
