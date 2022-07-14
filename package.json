@@ -63,6 +63,7 @@
     "cordova-plugin-telerik-imagepicker": "^2.3.6",
     "core-js": "^2.5.4",
     "dotenv": "^8.2.0",
+    "eventsource": "^1.1.1",
     "firebase": "^7.14.1",
     "firebase-admin": "^8.9.2",
     "firebase-functions": "^3.3.0",
