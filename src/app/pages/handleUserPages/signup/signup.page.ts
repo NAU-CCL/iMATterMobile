@@ -5,10 +5,9 @@ import { LoadingController, AlertController, ToastController } from '@ionic/angu
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
-import { storage } from 'firebase';
 import 'firebase/storage';
 import * as firebase from 'firebase/app';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 
 @Component({
@@ -234,7 +233,7 @@ export class SignupPage implements OnInit {
       this.user.profilePic = this.picURL;
       this.user.securityQ = signupForm.value.securityQ;
       this.user.securityA = signupForm.value.securityA;
-      this.user.joined = firebase.firestore.FieldValue.serverTimestamp();
+      this.user.joined = new Date();
 
 
       // find user current pregnancy status
@@ -349,19 +348,19 @@ export class SignupPage implements OnInit {
 
 
   getSecurityQs() {
-    firebase.firestore().collection('settings').doc('userSignUpSettings').get().then((result) => {
+    this.afs.collection('settings').doc('userSignUpSettings').ref.get().then((result) => {
       this.securityQs = result.get('securityQs');
     });
   }
 
   getAutoProfilePic() {
-    firebase.firestore().collection('settings').doc('userSignUpSettings').get().then((result) => {
+    this.afs.collection('settings').doc('userSignUpSettings').ref.get().then((result) => {
       this.picURL = result.get('autoProfilePic');
     });
   }
 
   getProfilePictureChoices() {
-    firebase.firestore().collection('settings').doc('userSignUpSettings').get().then((result) => {
+    this.afs.collection('settings').doc('userSignUpSettings').ref.get().then((result) => {
       this.allPicURLs = result.get('profilePictures');
     });
   }

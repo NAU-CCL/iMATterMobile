@@ -9,14 +9,11 @@ import { AnalyticsService, Analytics, Sessions } from 'src/app/services/analytic
 import { Observable } from 'rxjs';
 import { FireService } from 'src/app/services/survey/fire.service';
 import { MoodProviderNotifService, EmotionNotif } from '../../services/mood-provider-notif.service';
-import { ChallengeService, Challenge, ChallengeTypes } from '../../services/challenges/challenge-service.service';
-import { QuoteService, Quote } from '../../services/homeQuote.service';
-import { delay } from 'rxjs/operators';
-import { element } from 'protractor';
+import { ChallengeService, Challenge } from '../../services/challenges/challenge-service.service';
+import { QuoteService} from '../../services/homeQuote.service';
 import { SurveyService, Survey } from 'src/app/services/survey/survey.service';
 import { DatePipe } from '@angular/common';
 import { ProfileService } from 'src/app/services/user/profile.service';
-import { consoleTestResultHandler } from 'tslint/lib/test';
 import { FirestoreExamplesService } from 'src/app/services/firestore-examples.service';
 
 

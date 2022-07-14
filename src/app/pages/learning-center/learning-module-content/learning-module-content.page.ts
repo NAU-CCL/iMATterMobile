@@ -5,7 +5,7 @@ import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
 import { ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { FormGroup, FormControl } from '@angular/forms';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ProfileService } from '../../../services/user/profile.service';
 import { Observable } from 'rxjs';
 import { AlertController } from '@ionic/angular';
