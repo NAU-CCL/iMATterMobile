@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Report, UserSubmissionsService } from '../../../services/userSubmissions/user-submissions.service';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
@@ -72,7 +72,7 @@ export class ReportPage implements OnInit {
             this.report.title = submissionForm.value.subject;
             this.report.description = submissionForm.value.description;
             this.report.userID = val;
-            this.report.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+            this.report.timestamp = new Date();
             this.report.username = doc.get('username');
             this.report.type = 'Problem';
             this.report.version = this.device.version;

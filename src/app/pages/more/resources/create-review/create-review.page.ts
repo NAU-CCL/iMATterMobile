@@ -1,6 +1,6 @@
 
 import { Component, OnInit } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection, Query } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection, Query, DocumentData } from '@angular/fire/compat/firestore';
 import { Observable } from 'rxjs';
 import { FormArray } from '@angular/forms';
 
@@ -32,7 +32,7 @@ export class CreateReviewPage implements OnInit {
   public reviewsCollection: AngularFirestoreCollection;
 
   // A query for a single resourceReviewQuestions document form the db. Need to call .get.then() on it to get data, see the loadSurveyReviewQuestionsIntoForm method to see how we use the firestore query object.
-  public reviewQuestionsQuery: Query;
+  public reviewQuestionsQuery: Query<DocumentData>;
   public reviewQuestionsJSON: ReviewQuestions; 
 
   // All of these arrays are the same length as each index is related to each other. ie this is a group surveyQuestionsArray[0],surveyQuestionTypes[0], surveyTagsArray[0].
