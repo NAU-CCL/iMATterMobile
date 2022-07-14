@@ -41,6 +41,7 @@
     "@ionic-native/status-bar": "^5.22.0",
     "@ionic/angular": "^4.7.1",
     "@ionic/storage": "^2.2.0",
+    "async": "^2.6.4",
     "bn-ng-idle": "^1.0.1",
     "call-number": "^1.0.1",
     "cordova-android": "^8.1.0",
