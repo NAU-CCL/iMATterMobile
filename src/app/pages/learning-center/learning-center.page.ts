@@ -4,7 +4,7 @@ import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyti
 import { Observable } from 'rxjs';
 import { Storage} from '@ionic/storage';
 import * as firebase from 'firebase/app';
-import {AngularFirestore} from '@angular/fire/firestore';
+import {AngularFirestore} from '@angular/fire/compat/firestore';
 import { Router, ActivatedRoute } from '@angular/router';
 import { single } from 'rxjs/operators';
 
@@ -18,7 +18,7 @@ export class LearningCenterPage implements OnInit {
     analytic: Analytics =
   {
     page: '',
-    userID: '',
+    userID: '', 
     timestamp: '',
     sessionID: ''
   };
@@ -216,7 +216,7 @@ export class LearningCenterPage implements OnInit {
           result.forEach(doc => {
             this.analytic.page = 'learningModule';
             this.analytic.userID = val;
-            this.analytic.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+            this.analytic.timestamp = new Date();
             // this.analytic.sessionID = this.idReference;
             this.analyticsService.addView(this.analytic).then (() => {
               console.log('successful added view: learningModules');

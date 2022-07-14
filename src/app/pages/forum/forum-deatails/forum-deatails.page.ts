@@ -4,9 +4,8 @@ import { QuestionService, Question } from 'src/app/services/infoDesk/question.se
 import { ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import {Observable} from 'rxjs';
-import {AngularFirestore} from '@angular/fire/firestore';
+import {AngularFirestore} from '@angular/fire/compat/firestore';
 import * as firebase from 'firebase/app';
-import FieldValue = firebase.firestore.FieldValue;
 import { HttpClient } from '@angular/common/http';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
@@ -23,7 +22,7 @@ export class ForumDeatailsPage implements OnInit {
     description: '',
     username: '',
     userID: '',
-    timestamp: FieldValue,
+    timestamp: undefined,
     profilePic: '',
     anon: false,
     type: '',
@@ -79,7 +78,7 @@ export class ForumDeatailsPage implements OnInit {
           ref.get().then((result) => {
             result.forEach(doc => {
               this.question.userID = val;
-              this.question.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+              this.question.timestamp = new Date();
 
               if (!this.question.anon) {
                 this.question.username = doc.get('username');
@@ -137,7 +136,7 @@ export class ForumDeatailsPage implements OnInit {
 	}
 
   getAutoProfilePic() {
-    firebase.firestore().collection('settings').doc('userSignUpSettings').get().then((result) => {
+    this.afs.collection('settings').doc('userSignUpSettings').get().subscribe((result) => {
       this.anonPic = result.get('autoProfilePic');
     });
   }

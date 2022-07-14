@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
-import { AngularFirestore } from '@angular/fire/firestore';
+import {AngularFirestore} from '@angular/fire/compat/firestore';
 import { ToastController, AlertController } from '@ionic/angular';
 import { User } from '../../services/user/auth.service';
 import { ChatService, Cohort, Chat } from '../../services/chat/chat-service.service';
 import { AnalyticsService, Analytics, Sessions } from 'src/app/services/analyticsService.service';
-import * as firebase from 'firebase/app';
 import { Observable } from 'rxjs';
 import { FireService } from 'src/app/services/survey/fire.service';
 import { MoodProviderNotifService, EmotionNotif } from '../../services/mood-provider-notif.service';
@@ -362,7 +361,7 @@ export class HomePage implements OnInit {
                     result.forEach(doc => {
                         this.analytic.page = 'home';
                         this.analytic.userID = val;
-                        this.analytic.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+                        this.analytic.timestamp = new Date();
                         // this.analytic.sessionID = this.idReference;
                         this.analyticsService.addView(this.analytic).then(() => {
                             console.log('successful added view: home');
@@ -386,7 +385,7 @@ export class HomePage implements OnInit {
         this.chat.userID = this.userProfileID;
         this.chat.username = this.user.username;
         this.chat.profilePic = this.user.profilePic;
-        this.chat.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+        this.chat.timestamp = new Date();
         this.chat.message = 'is currently feeling ' + emoji;
         this.chat.visibility = true;
         this.chat.type = 'emotion';
@@ -429,7 +428,7 @@ export class HomePage implements OnInit {
         this.emotionNotif.userID = this.userProfileID;
         this.emotionNotif.username = this.user.username;
         this.emotionNotif.emotionEntered = emotion;
-        this.emotionNotif.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+        this.emotionNotif.timestamp = new Date();
         this.mpnService.addEmotionNotif(this.emotionNotif);
         this.surveys.forEach(item => {
             item.forEach(survey => {

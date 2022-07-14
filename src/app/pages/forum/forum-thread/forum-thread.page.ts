@@ -4,9 +4,8 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {IonContent, ToastController} from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import {Observable} from 'rxjs';
-import {AngularFirestore} from '@angular/fire/firestore';
+import {AngularFirestore} from '@angular/fire/compat/firestore';
 import * as firebase from 'firebase/app';
-import FieldValue = firebase.firestore.FieldValue;
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 @Component({
@@ -22,7 +21,7 @@ export class ForumThreadPage implements OnInit {
     description: '',
     username: '',
     userID: '',
-    timestamp: FieldValue,
+    timestamp: undefined,
     profilePic: '',
     anon: false,
     type: '',
@@ -35,7 +34,7 @@ export class ForumThreadPage implements OnInit {
     username: '',
     questionID: '',
     userID: '',
-    timestamp: FieldValue,
+    timestamp: undefined,
     profilePic: '',
     anon: false,
     type: ''

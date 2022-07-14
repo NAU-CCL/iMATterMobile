@@ -5,7 +5,7 @@ import {LoadingController, AlertController, Platform} from '@ionic/angular';
 import {AuthServiceProvider} from '../../../services/user/auth.service';
 import {FcmService} from '../../../services/pushNotifications/fcm.service';
 import {Router} from '@angular/router';
-import {AngularFirestore} from '@angular/fire/firestore';
+import {AngularFirestore} from '@angular/fire/compat/firestore';
 import {Observable} from 'rxjs';
 import {ToastController} from '@ionic/angular';
 import {Storage} from '@ionic/storage';

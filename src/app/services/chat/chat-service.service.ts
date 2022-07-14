@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument, DocumentChangeAction, DocumentReference, Query } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument, DocumentChangeAction, DocumentReference, Query } from '@angular/fire/compat/firestore';
 import { map, take } from 'rxjs/operators';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Storage } from '@ionic/storage';
@@ -7,7 +7,6 @@ import * as firebase from 'firebase/app';
 import 'rxjs/add/operator/do'
 import 'rxjs/add/operator/scan'
 import 'rxjs/add/operator/take'
-import { StringMap } from '@angular/compiler/src/compiler_facade_interface';
 import {autoChat} from '../../pages/chat/chatInterface'
 
 interface chatsQueryConfig{
@@ -148,7 +147,7 @@ export class ChatService {
   async iterateChats(cohortID, timeCalled) {
     console.log('iterateChats called');
     // get what the admin has set to determine user visibility of chats
-    firebase.firestore().collection('settings').doc('chatroomSettings').get().then((result) => {
+    this.afs.collection('settings').doc('chatroomSettings').get().then((result) => {
       const lifeType = result.get('lifeType');
 
       // if chat visibility is based on number of hours the chat has existed
@@ -162,7 +161,7 @@ export class ChatService {
         console.log('now', now);
 
         // go into all chats
-        const ref = firebase.firestore().collection('chats').where('cohort', '==', cohortID);
+        const ref = this.afs.collection<any>('chats').ref.where('cohort', '==', cohortID)
         ref.get().then((res) => {
           res.forEach(doc => {
             const timestamp = new Date(doc.get('timestamp').toDate());

@@ -13,8 +13,9 @@ import {AppVersion} from '@ionic-native/app-version/ngx';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {environment} from '../environments/environment';
-import {AngularFireModule} from '@angular/fire';
-import {AngularFirestoreModule, FirestoreSettingsToken, AngularFirestore} from '@angular/fire/firestore';
+import {AngularFirestore} from '@angular/fire/compat/firestore';
+
+import { AngularFireModule } from '@angular/fire/compat';
 
 import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
 // Opens phone app with number entered.
@@ -50,7 +51,6 @@ firebase.initializeApp(environment.firebase);
             name: 'exdb'
         }),
         AppRoutingModule,
-        AngularFirestoreModule,
         AngularFireModule.initializeApp(environment),
         ReactiveFormsModule,
         FormsModule,
@@ -71,7 +71,7 @@ firebase.initializeApp(environment.firebase);
         ReactiveFormsModule,
         BnNgIdleService,
         {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
-        {provide: FirestoreSettingsToken, useValue: {}},
+        //{provide: FirestoreSettingsToken, useValue: {}},
         InAppBrowser,
         DatePipe,
         AppVersion,

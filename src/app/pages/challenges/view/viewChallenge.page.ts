@@ -1,17 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import {ChallengeService, Challenge, ChallengeTypes} from '../../../services/challenges/challenge-service.service';
-import { Observable } from 'rxjs';
+import {ChallengeService, Challenge } from '../../../services/challenges/challenge-service.service';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
-import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyticsService.service';
-import * as firebase from 'firebase/app';
-import {AngularFirestore} from '@angular/fire/firestore';
+import { AnalyticsService } from 'src/app/services/analyticsService.service';
+import {AngularFirestore} from '@angular/fire/compat/firestore';
 import {AlertController} from '@ionic/angular';
 import {ActivatedRoute} from '@angular/router';
-import {ExpandableComponent} from '../../../components/expandable/expandable.component';
 import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
-import {compilerSetStylingMode} from '@angular/compiler/src/render3/view/styling_state';
-import {isNegativeNumberLiteral} from 'tslint';
+
 
 
 @Component({

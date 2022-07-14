@@ -6,7 +6,7 @@ import { Storage } from '@ionic/storage';
 import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyticsService.service';
 import {DatePipe} from '@angular/common';
 import * as firebase from 'firebase/app';
-import {AngularFirestore} from '@angular/fire/firestore';
+import {AngularFirestore} from '@angular/fire/compat/firestore';
 import {AlertController} from '@ionic/angular';
 import {ExpandableComponent} from '../../components/expandable/expandable.component';
 import {element} from 'protractor';

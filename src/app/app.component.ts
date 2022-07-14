@@ -9,7 +9,7 @@ import {firebaseConfig} from './firebaseCredentials';
 import {Storage} from '@ionic/storage';
 import {BnNgIdleService} from 'bn-ng-idle';
 import {ActivatedRoute, Router} from '@angular/router';
-import {AngularFirestore} from '@angular/fire/firestore';
+import {AngularFirestore} from '@angular/fire/compat/firestore';
 import {Observable} from 'rxjs';
 import { ProfileService } from './services/user/profile.service';
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ReviewQuestions } from '../pages/more/resources/review-interfaces/review-interfaces';
-import { AngularFirestore, AngularFirestoreCollection, DocumentData, Query } from '@angular/fire/firestore';
+import {AngularFirestore, AngularFirestoreCollection, DocumentData, Query } from '@angular/fire/compat/firestore';
 
 
 @Injectable({

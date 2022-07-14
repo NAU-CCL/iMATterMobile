@@ -4,7 +4,7 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { AuthServiceProvider, User } from '../../../services/user/auth.service';
 import { Router } from '@angular/router';
-import { AngularFirestore } from '@angular/fire/firestore';
+import {AngularFirestore} from '@angular/fire/compat/firestore';
 import { ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { ProfileService } from '../../../services/user/profile.service';

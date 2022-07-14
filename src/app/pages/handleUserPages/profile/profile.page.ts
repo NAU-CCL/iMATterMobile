@@ -4,7 +4,7 @@ import { AuthServiceProvider, User } from '../../../services/user/auth.service';
 import { ProfileService } from '../../../services/user/profile.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Observable } from 'rxjs';
 import * as firebase from 'firebase/app';
 import { AnalyticsService, Analytics, Sessions } from 'src/app/services/analyticsService.service';
@@ -420,12 +420,14 @@ export class ProfilePage implements OnInit {
 
     // gets admin set point amount and uses that to
     displayPointInfo() {
-        const pointRef = firebase.firestore().collection('settings').doc('giftCardSettings').get();
-        pointRef.then((res) => {
+        const pointRef = this.afs.collection('settings').doc('giftCardSettings').get();
+        let pointRef_ = pointRef.subscribe((res) => {
             const points = res.get('points');
             this.presentAlert('Earning Points',
                 'You can earn points by completing surveys and answering learning module questions. Once you have earned ' +
                 +points + ' points, you will see a redeem button, which you may press to use your points to get a gift card for $5');
+                
+            pointRef_.unsubscribe();
         });
     }
 
@@ -439,9 +441,11 @@ export class ProfilePage implements OnInit {
         this.refreshPage();
 
         // send an email
-        firebase.firestore().collection('settings').doc('giftCardSettings').get().then((result) => {
+        let giftCardSettings_ = this.afs.collection('settings').doc('giftCardSettings').get().subscribe((result) => {
             const adminEmail = result.get('email');
             this.profileService.addToRedeemTable(adminEmail, email, username, gcType);
+
+            giftCardSettings_.unsubscribe();
         });
         this.showToast('An email was sent for your gift card request!');
     }
@@ -458,7 +462,7 @@ export class ProfilePage implements OnInit {
         this.chat.userID = this.userProfileID;
         this.chat.username = this.user.username;
         this.chat.profilePic = this.user.profilePic;
-        this.chat.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+        this.chat.timestamp = new Date();
         this.chat.message = this.chat.username + ' is currently feeling ' + emotion;
         this.chat.type = 'emotion';
         this.chat.visibility = true;
@@ -495,7 +499,7 @@ export class ProfilePage implements OnInit {
         this.emotionNotif.userID = this.userProfileID;
         this.emotionNotif.username = this.user.username;
         this.emotionNotif.emotionEntered = emotion;
-        this.emotionNotif.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+        this.emotionNotif.timestamp = new Date();
         this.mpnService.addEmotionNotif(this.emotionNotif);
     }
 
@@ -549,8 +553,9 @@ export class ProfilePage implements OnInit {
     }
 
     getProfilePictureChoices() {
-        firebase.firestore().collection('settings').doc('userSignUpSettings').get().then((result) => {
+        let userSignUpSetting_ = this.afs.collection('settings').doc('userSignUpSettings').get().subscribe((result) => {
             this.allPicURLs = result.get('profilePictures');
+            userSignUpSetting_.unsubscribe();
         });
     }
 

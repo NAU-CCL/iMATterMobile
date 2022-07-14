@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
+import {AngularFirestore, AngularFirestoreCollection, DocumentReference} from '@angular/fire/compat/firestore';
 import { Storage } from '@ionic/storage';
 
 import * as firebase from 'firebase/app';
@@ -12,8 +12,7 @@ import 'firebase/firestore';
 
 export class ProfileService {
 
-    public userProfile: firebase.firestore.DocumentReference;
-    public currentUser: firebase.User;
+    public userProfile: DocumentReference;
 
     constructor(public afs: AngularFirestore,
                 private storage: Storage) {
@@ -32,10 +31,10 @@ export class ProfileService {
             username: username,
             gcType: gcType,
             state: "new",
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            timestamp: new Date()
         });
     }
-
+    
     /**
      * Update the user's email in db, only if their password entered matches the one
      * currently in the db
