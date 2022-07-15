@@ -12,6 +12,7 @@ import {Device} from '@ionic-native/device/ngx';
 import { AlertController } from '@ionic/angular';
 import { PopoverController } from '@ionic/angular';
 import { ReviewTagPopoverComponent } from './review-tag-popover/review-tag-popover.component'
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 
 @Component({
@@ -66,9 +67,9 @@ export class ResourcePage implements OnInit {
     // Template Variables //
 
     public tagsCollapsed = false;
-
+    private storage: Storage = null;
     constructor(private resourceService: LocationService,
-        private storage: Storage,
+        private storageService: StorageService,
         private router: Router,
         private afs: AngularFirestore,
         private activatedRoute: ActivatedRoute,
@@ -84,6 +85,7 @@ export class ResourcePage implements OnInit {
     public resourceID;
 
     async ngOnInit() {
+        this.storage = await this.storageService.getStorage();
         this.storage.get('authenticated').then((val) => {
             if (val === 'false') {
                 this.router.navigate(['/login/']);

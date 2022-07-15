@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { Storage} from '@ionic/storage';
 import {AngularFirestore} from '@angular/fire/compat/firestore';
 import { Router, ActivatedRoute } from '@angular/router';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 @Component({
   selector: 'app-learning-center',
@@ -34,15 +35,18 @@ export class LearningCenterPage implements OnInit {
   lmRecurrenceMap = new Map();
 
   public learningModules: Observable<LearningModule[]>;
+  
+  private storage: Storage = null;
 
   constructor(private router: Router,
-              private storage: Storage,
+              private storageService: StorageService,
               private learningModService: LearningModuleService,
               private afs: AngularFirestore,
               private analyticsService: AnalyticsService,
               private activatedRoute: ActivatedRoute) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.storage = await this.storageService.getStorage();
     console.log('NG ON INIT');
 
     this.storage.get('authenticated').then((val) => {

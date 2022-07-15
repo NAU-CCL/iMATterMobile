@@ -7,6 +7,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { LocationService, Location } from 'src/app/services/resource.service';
 import { Observable } from 'rxjs';
 import { AnalyticsService } from 'src/app/services/analyticsService.service';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 
 
@@ -46,12 +47,12 @@ export class ResourcesPage implements OnInit, AfterViewInit {
     public iosPlatform: boolean;
 
     @ViewChild('mapElement', { static: false }) mapNativeElement;
-
+    private storage: Storage = null;
     constructor(public zone: NgZone,
         private geolocation: Geolocation,
         private nativeGeocoder: NativeGeocoder,
         public afs: AngularFirestore,
-        private storage: Storage,
+        private storageService: StorageService,
         private inAppBrowser: InAppBrowser,
         public locationService: LocationService,
         private analyticsService: AnalyticsService) {
@@ -63,7 +64,8 @@ export class ResourcesPage implements OnInit, AfterViewInit {
         maximumAge: 3600
     };
 
-    ngOnInit() {
+    async ngOnInit() {
+        this.storage = await this.storageService.getStorage();
         this.storage.get('userCode').then((val) => {
             if (val) {
                 this.userProfileID = val;

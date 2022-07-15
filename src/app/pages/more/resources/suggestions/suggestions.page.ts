@@ -4,6 +4,7 @@ import {AngularFirestore} from '@angular/fire/compat/firestore';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ToastController} from '@ionic/angular';
 import {Storage} from '@ionic/storage';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 @Component({
   selector: 'app-suggestions',
@@ -22,15 +23,16 @@ export class SuggestionsPage implements OnInit {
     type: '',
     viewed: false
   };
-
+  private storage: Storage = null;
   constructor(private afs: AngularFirestore,
   private activatedRoute: ActivatedRoute,
   private userSubmissionService: UserSubmissionsService,
   private toastCtrl: ToastController,
   private router: Router,
-  private storage: Storage) { }
+  private storageService: StorageService,) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.storage = await this.storageService.getStorage();
     this.storage.get('authenticated').then((val) => {
       if (val === 'false') {
         this.router.navigate(['/login/']);

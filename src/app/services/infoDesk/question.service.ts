@@ -48,7 +48,7 @@ export class QuestionService {
 
   private username: string;
 
-  constructor(private afs: AngularFirestore, private storage: Storage) {
+  constructor(private afs: AngularFirestore) {
 
   }
 

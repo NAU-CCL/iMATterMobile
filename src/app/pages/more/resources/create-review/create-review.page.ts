@@ -19,6 +19,7 @@ import { Location } from "src/app/services/resource.service"
 import { ResourceTypesService } from 'src/app/services/resource-types.service';
 import {Storage} from '@ionic/storage';
 import { DatePipe } from '@angular/common';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 @Component({
   selector: 'app-create-review',
@@ -69,14 +70,14 @@ export class CreateReviewPage implements OnInit {
     ])
 
   });
-
+  private storage: Storage = null;
   constructor(private route: ActivatedRoute,
               private afs: AngularFirestore,
               private fb: FormBuilder,
               private reviewSurveyService: GetReviewSurveyService,
               private resourceService: LocationService,
               private resourceTypesService: ResourceTypesService,
-              private storage: Storage,
+              private storageService: StorageService,
               private router: Router,
               public datepipe: DatePipe) {
 
@@ -90,8 +91,8 @@ export class CreateReviewPage implements OnInit {
 
   }
 
-  ngOnInit() {
-
+  async ngOnInit() {
+    this.storage = await this.storageService.getStorage();
     // Get the resource ID from the url see resources-routing.module to see where the id param is specified.
     this.route.params.subscribe(params=>{
       this.resourceID = params['id']; 

@@ -5,8 +5,8 @@ import {IonContent, ToastController} from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import {Observable} from 'rxjs';
 import {AngularFirestore} from '@angular/fire/compat/firestore';
-import * as firebase from 'firebase/app';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 
 @Component({

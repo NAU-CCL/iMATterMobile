@@ -8,6 +8,7 @@ import {AngularFirestore} from '@angular/fire/compat/firestore';
 import { ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { ProfileService } from '../../../services/user/profile.service';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 @Component({
     selector: 'app-recovery-code',
@@ -28,7 +29,7 @@ export class RecoveryCodePage implements OnInit {
     private recoveryPassword: string;
 
 
-private storage: Storage = null;
+    private storage: Storage = null;
     public enterCodeForm: FormGroup;
     constructor(
         public loadingCtrl: LoadingController,

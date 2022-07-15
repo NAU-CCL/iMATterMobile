@@ -6,7 +6,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ProfileService } from 'src/app/services/user/profile.service';
 import { DatePipe } from '@angular/common';
-import { StorageServiceService } from 'src/app/services/storage-service/storage-service.service';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 // Today's date as a Javascript Date Object
 const today = new Date();
@@ -32,7 +32,7 @@ export class AvailablePage implements OnInit {
   private storage: Storage = null; 
   
   constructor(private surveySerivce: SurveyService,
-    private storageService: StorageServiceService,
+    private storageService: StorageService,
     private router: Router,
     public afs: AngularFirestore,
     private activatedRoute: ActivatedRoute,

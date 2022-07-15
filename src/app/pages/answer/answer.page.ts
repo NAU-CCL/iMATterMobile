@@ -8,8 +8,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ModalController } from '@ionic/angular';
 import { AlertController } from '@ionic/angular';
 import { DatePipe } from '@angular/common';
-import { user } from 'firebase-functions/lib/providers/auth';
-import { StorageServiceService } from 'src/app/services/storage-service/storage-service.service';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 @Component({
     selector: 'app-answer',
@@ -55,7 +54,7 @@ export class AnswerPage implements OnInit {
         private browser: InAppBrowser,
         private router: Router,
         private profile: ProfileService,
-        private storageService: StorageServiceService,
+        private storageService: StorageService,
         private afs: AngularFirestore,
         private modalController: ModalController,
         public alertController: AlertController,

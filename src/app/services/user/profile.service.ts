@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import {AngularFirestore, AngularFirestoreCollection, DocumentReference} from '@angular/fire/compat/firestore';
 import { Storage } from '@ionic/storage';
+import { StorageService } from 'src/app/services/storage/storage.service';
+
 
 import 'firebase/auth';
 import 'firebase/firestore';
@@ -14,7 +16,7 @@ export class ProfileService {
     public userProfile: DocumentReference;
 
     constructor(public afs: AngularFirestore,
-                private storage: Storage) {
+                private storageService: StorageService) {
 
     }
 
@@ -132,9 +134,10 @@ export class ProfileService {
             .doc(userID).update({ availableSurveys: newAvailableSurveys });
     }
 
-    getCurrentUserCode()
+    async getCurrentUserCode()
     {
-        return this.storage.get('userCode').then((val) => {
+        let storage  = await this.storageService.getStorage();
+        return storage.get('userCode').then((val) => {
             console.log(`In profile service, user code is ${val}`)
             return this.afs.collection<any>('users').doc(val).get();
         });

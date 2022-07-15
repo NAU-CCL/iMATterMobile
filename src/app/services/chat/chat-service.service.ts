@@ -67,7 +67,7 @@ export class ChatService {
   currentChatDataBatchObs: Observable<any>; // data
 
 
-  constructor(private afs: AngularFirestore, private storage: Storage) {
+  constructor(private afs: AngularFirestore) {
     this.cohortCollection = this.afs.collection<Cohort>('cohorts');
 
     this.cohorts = this.cohortCollection.snapshotChanges().pipe(

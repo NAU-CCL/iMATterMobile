@@ -14,9 +14,9 @@ import { SurveyService, Survey } from 'src/app/services/survey/survey.service';
 import { DatePipe } from '@angular/common';
 import { ProfileService } from 'src/app/services/user/profile.service';
 import { FirestoreExamplesService } from 'src/app/services/firestore-examples.service';
-import { StorageServiceService } from 'src/app/services/storage-service/storage-service.service';
 
 import { Storage } from '@ionic/storage-angular';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 
 @Component({
@@ -146,7 +146,7 @@ export class HomePage implements OnInit {
 
     constructor(private activatedRoute: ActivatedRoute, public afs: AngularFirestore,
         private toastCtrl: ToastController,
-        private storageService: StorageServiceService,
+        private storageService: StorageService,
         private router: Router,
         private chatService: ChatService,
         private alertController: AlertController,

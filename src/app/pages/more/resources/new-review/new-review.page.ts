@@ -5,6 +5,7 @@ import { Component, OnInit } from '@angular/core';
 import { LocationService, Location } from 'src/app/services/resource.service';
 import { FormControl } from '@angular/forms';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 
 
@@ -52,8 +53,9 @@ export class NewReviewPage implements OnInit {
   // The users 1-5 star rating of the rescource, contains an int between 1-5.
   public selected_rating: number;
 
-
-  constructor(private storage: Storage,
+  private storage: Storage = null;
+  constructor(
+    private storageService: StorageService,
     private router: Router,
     private afs: AngularFirestore,
     private activatedRoute: ActivatedRoute,
@@ -62,7 +64,8 @@ export class NewReviewPage implements OnInit {
     private formsMod: FormsModule) { }
 
     
-  ngOnInit() {
+  async ngOnInit() {
+    this.storage = await this.storageService.getStorage();
   }
 
   name = new FormControl('');

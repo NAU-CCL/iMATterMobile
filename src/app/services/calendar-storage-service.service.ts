@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Storage } from '@ionic/storage';
+import { StorageService } from 'src/app/services/storage/storage.service';
+import { Storage } from '@ionic/storage-angular';
+
+
 export interface Item {
   // title: string,
   startTime: Date,
@@ -17,10 +20,19 @@ const ITEMS_KEY = 'my-items';
 })
 export class CalendarStorageService {
 
-  constructor(private storage: Storage) { }
+  public storage: Storage = null;
 
+  constructor(private storageService: StorageService) { }
+
+
+  getStorage()
+  {
+    return this.storageService.getStorage()
+  }
   // CREATE
-  addItem(item: Item): Promise<any> {
+  async addItem(item: Item): Promise<any> {
+    this.storage = await this.getStorage();
+
     return this.storage.get(ITEMS_KEY).then((items: Item[]) => {
       if (items) {
         items.push(item);
@@ -32,11 +44,13 @@ export class CalendarStorageService {
   }
 
   // READ
-  getItems(): Promise<Item[]> {
+  async getItems(): Promise<Item[]> {
+    this.storage = await this.getStorage();
     return this.storage.get(ITEMS_KEY);
   }
 
-  deleteItem(event): Promise<any> {
+  async deleteItem(event): Promise<any> {
+    this.storage = await this.getStorage();
     this.storage.remove(event);
     return null;
   }
