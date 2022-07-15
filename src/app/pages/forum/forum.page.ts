@@ -144,7 +144,7 @@ export class ForumPage implements OnInit {
           result.forEach(doc => {
             this.analytic.page = 'infoDesk';
             this.analytic.userID = val;
-            this.analytic.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+            this.analytic.timestamp = new Date();
             //this.analytic.sessionID = this.idReference;
             this.analyticsService.addView(this.analytic).then(() => {
               console.log('successful added view: infoDesk');

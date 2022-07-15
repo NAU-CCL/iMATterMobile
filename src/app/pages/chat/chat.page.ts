@@ -3,25 +3,12 @@ import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import { ChatService, Cohort, Chat } from '../../services/chat/chat-service.service';
 import { Observable } from 'rxjs';
-import * as firebase from 'firebase/app';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AnalyticsService, Analytics, Sessions } from 'src/app/services/analyticsService.service';
 import { IonContent } from '@ionic/angular';
 
 
-import {
-  Plugins,
-  PushNotification,
-  PushNotificationToken,
-  PushNotificationActionPerformed
-} from '@capacitor/core';
-import { sendChatNotification } from "../../../../functions/src";
 import 'rxjs-compat/add/observable/timer';
-import { SelectMultipleControlValueAccessor } from '@angular/forms';
-
-import {ScrollableDirective} from './scrollable.directive'
-
-const { PushNotifications } = Plugins;
 
 @Component({
   selector: 'app-tab2',
@@ -241,7 +228,7 @@ export class ChatPage implements OnInit {
           result.forEach(doc => {
             this.analytic.page = 'chat';
             this.analytic.userID = val;
-            this.analytic.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+            this.analytic.timestamp = new Date();
             // this.analytic.sessionID = this.idReference;
             this.analyticsService.addView(this.analytic).then(() => {
               console.log('successful added view: chat');

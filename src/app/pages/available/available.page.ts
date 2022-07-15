@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { SurveyService, Survey } from 'src/app/services/survey/survey.service';
 import { Storage } from '@ionic/storage';
 import { Router, ActivatedRoute } from '@angular/router';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ProfileService } from 'src/app/services/user/profile.service';
 import * as admin from 'firebase-admin';
 import { DatePipe } from '@angular/common';

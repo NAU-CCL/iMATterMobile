@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Storage } from '@ionic/storage';
 import { FcmService } from "../../services/pushNotifications/fcm.service";
 
@@ -10,6 +10,10 @@ import { FcmService } from "../../services/pushNotifications/fcm.service";
 })
 export class CalendarSettingsPage implements OnInit {
 
+  public clock: any;
+  public eventNotificationTime: any;
+
+  
   private chatNotif: boolean;
   private learningModNotif: boolean;
   private surveyNotif: boolean;

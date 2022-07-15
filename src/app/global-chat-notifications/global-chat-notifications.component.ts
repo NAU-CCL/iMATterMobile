@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import {ChatService} from '../services/chat/chat-service.service'
-import { DocumentChangeAction, DocumentReference } from '@angular/fire/firestore';
+import { DocumentChangeAction, DocumentReference }  from '@angular/fire/compat/firestore';
 import {autoChat} from '../pages/chat/chatInterface';
 import { Storage } from '@ionic/storage';
 import { _topicWithOptions } from 'firebase-functions/lib/providers/pubsub';

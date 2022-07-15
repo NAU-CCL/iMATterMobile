@@ -7,7 +7,8 @@ import {DatePipe} from '@angular/common';
 import {IonicModule, IonicRouteStrategy} from '@ionic/angular';
 import {SplashScreen} from '@ionic-native/splash-screen/ngx';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
-import {IonicStorageModule} from '@ionic/storage';
+import { IonicStorageModule } from '@ionic/storage-angular';
+
 import {AppVersion} from '@ionic-native/app-version/ngx';
 
 import {AppRoutingModule} from './app-routing.module';
@@ -33,12 +34,9 @@ import {ShowMessagePageModule} from './pages/answer/show-message/show-message.mo
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {BnNgIdleService} from 'bn-ng-idle';
 import {Device} from '@ionic-native/device/ngx';
-import * as firebase from 'firebase/app';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 //import { FCM } from '@awesome-cordova-plugins/fcm/ngx';
-
-firebase.initializeApp(environment.firebase);
 
 @NgModule({
     declarations: [AppComponent],
@@ -47,14 +45,14 @@ firebase.initializeApp(environment.firebase);
         IonicModule.forRoot(),
         RouterModule.forRoot([]),
         HttpClientModule,
-        IonicStorageModule.forRoot({
-            name: 'exdb'
-        }),
         AppRoutingModule,
-        AngularFireModule.initializeApp(environment),
+        AngularFireModule.initializeApp(environment.firebase),
         ReactiveFormsModule,
         FormsModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        IonicStorageModule.forRoot({
+            //name: 'exdb'
+        }),
 
     ],
     providers: [

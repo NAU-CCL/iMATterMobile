@@ -44,7 +44,7 @@ export class ViewChallengePage implements OnInit {
                 private analyticsService: AnalyticsService,
                 private alertController: AlertController,
                 private activatedRoute: ActivatedRoute,
-                private inAppBrowser: InAppBrowser) {
+                public inAppBrowser: InAppBrowser) {
     }
 
     ngOnInit() {

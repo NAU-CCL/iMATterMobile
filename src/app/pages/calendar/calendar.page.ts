@@ -6,7 +6,6 @@ import { Storage } from '@ionic/storage';
 import { Router } from '@angular/router';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyticsService.service';
-import * as firebase from 'firebase/app';
 
 import {AngularFirestore} from '@angular/fire/compat/firestore';
 
@@ -166,7 +165,7 @@ export class CalendarPage implements OnInit {
         result.forEach(doc =>{
           this.analytic.page = 'calendar';
           this.analytic.userID = val;
-          this.analytic.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+          this.analytic.timestamp = new Date();
           //this.analytic.sessionID = this.idReference;
           this.analyticsService.addView(this.analytic).then (() =>{
             console.log('successful added view: Calendar');

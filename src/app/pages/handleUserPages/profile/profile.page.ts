@@ -139,7 +139,7 @@ export class ProfilePage implements OnInit {
         private alertController: AlertController,
         private toastCtrl: ToastController,
         private http: HttpClient,
-        private datePipe: DatePipe,
+        public datePipe: DatePipe,
         private chatService: ChatService,
         private mpnService: MoodProviderNotifService,
         private actionSheetController: ActionSheetController,
@@ -212,7 +212,7 @@ export class ProfilePage implements OnInit {
                     result.forEach(doc => {
                         this.analytic.page = 'profile';
                         this.analytic.userID = val;
-                        this.analytic.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+                        this.analytic.timestamp = new Date();
                         // this.analytic.sessionID = this.idReference;
                         this.analyticsService.addView(this.analytic).then(() => {
                             console.log('successful added view: profile');
@@ -402,7 +402,7 @@ export class ProfilePage implements OnInit {
                         this.user.autoLogin = doc.get('autoLogin');
                         this.userEmotionIcon = this.getUserEmotionIcon(this.user.currentEmotion);
 
-                        const pointRef = firebase.firestore().collection('settings').doc('giftCardSettings').get();
+                        const pointRef = this.afs.collection<any>('settings').doc('giftCardSettings').ref.get();
                         pointRef.then((res) => {
                             this.pointsForRedemption = res.get('points');
                             this.gcTypes = res.get('types');

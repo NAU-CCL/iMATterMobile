@@ -8,6 +8,7 @@ import {AngularFirestore} from '@angular/fire/compat/firestore';
 import * as firebase from 'firebase/app';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
+
 @Component({
   selector: 'app-forum-thread',
   templateUrl: './forum-thread.page.html',
@@ -108,7 +109,7 @@ export class ForumThreadPage implements OnInit {
                               this.answer.username = 'Anonymous';
                               this.answer.profilePic = this.anonPic;
                           }
-                          this.answer.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+                          this.answer.timestamp = new Date();
 
                           this.questionService.addAnswer(this.answer).then(() => {
                               this.showToast('Answer added');
@@ -151,7 +152,7 @@ export class ForumThreadPage implements OnInit {
     }
 
     getAutoProfilePic() {
-        firebase.firestore().collection('settings').doc('userSignUpSettings').get().then((result) => {
+        this.afs.collection('settings').doc('userSignUpSettings').ref.get().then((result) => {
             this.anonPic = result.get('autoProfilePic');
         });
     }
