@@ -12,7 +12,6 @@ import { HttpClient } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { MoodProviderNotifService, EmotionNotif } from '../../../services/mood-provider-notif.service';
 import { ChatService, Cohort, Chat } from '../../../services/chat/chat-service.service';
-import { HomePage } from '../../home/home.page';
 import { ActionSheetController } from '@ionic/angular';
 import { EMOJIS } from '../../../services/emojiArray';
 

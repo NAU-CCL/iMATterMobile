@@ -11,9 +11,6 @@ import {ToastController} from '@ionic/angular';
 import {Storage} from '@ionic/storage';
 
 import {BnNgIdleService} from 'bn-ng-idle';
-import {Device} from '@ionic-native/device';
-
-import * as firebase from 'firebase/app';
 
 @Component({
     selector: 'app-login',
