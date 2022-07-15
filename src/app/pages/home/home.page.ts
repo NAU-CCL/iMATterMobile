@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Storage } from '@ionic/storage';
 import {AngularFirestore} from '@angular/fire/compat/firestore';
 import { ToastController, AlertController } from '@ionic/angular';
 import { User } from '../../services/user/auth.service';
@@ -15,6 +14,9 @@ import { SurveyService, Survey } from 'src/app/services/survey/survey.service';
 import { DatePipe } from '@angular/common';
 import { ProfileService } from 'src/app/services/user/profile.service';
 import { FirestoreExamplesService } from 'src/app/services/firestore-examples.service';
+import { StorageServiceService } from 'src/app/services/storage-service/storage-service.service';
+
+import { Storage } from '@ionic/storage-angular';
 
 
 @Component({
@@ -139,9 +141,12 @@ export class HomePage implements OnInit {
 
     public defaultChallengeCover = "https://firebasestorage.googleapis.com/v0/b/imatter-nau.appspot.com/o/ChallengeImages%2FdefaultChallenge_640x640.png?alt=media&token=f80549df-a0bc-42f2-b487-555fd059f719";
 
+
+    private storage: Observable<Storage> = null;
+
     constructor(private activatedRoute: ActivatedRoute, public afs: AngularFirestore,
         private toastCtrl: ToastController,
-        private storage: Storage,
+        private storageService: StorageServiceService,
         private router: Router,
         private chatService: ChatService,
         private alertController: AlertController,
@@ -155,16 +160,20 @@ export class HomePage implements OnInit {
         private datepipe: DatePipe,
         private exSercice: FirestoreExamplesService,
         private analyticService: AnalyticsService) {
-        this.dropDown = [{ expanded: false }];
+
+            this.storage = this.storageService.getStorage();
+            this.dropDown = [{ expanded: false }];
     }
 
     ngOnInit() {
 
-        this.storage.get('authenticated').then((val) => {
-            if (val === 'false') {
-                this.router.navigate(['/login/']);
-            }
-        });
+        this.storage.subscribe( ( storage ) => {
+            storage.get('authenticated').then((val) => {
+                if (val === 'false') {
+                    this.router.navigate(['/login/']);
+                }
+            });
+        }) 
 
 
         // document.cookie = `accessed=${new Date()};`

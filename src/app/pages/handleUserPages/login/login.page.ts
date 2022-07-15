@@ -8,9 +8,11 @@ import {Router} from '@angular/router';
 import {AngularFirestore} from '@angular/fire/compat/firestore';
 import {Observable} from 'rxjs';
 import {ToastController} from '@ionic/angular';
-import {Storage} from '@ionic/storage';
+
+import { Storage } from '@ionic/storage-angular';
 
 import {BnNgIdleService} from 'bn-ng-idle';
+import { StorageServiceService } from 'src/app/services/storage-service/storage-service.service';
 
 @Component({
     selector: 'app-login',
@@ -68,7 +70,8 @@ export class LoginPage implements OnInit {
     // 1 means the user has credentials on the device and we will auto log them in.
     public userAutoLoginSetting: number = 3;
 
-    
+    private storage: Observable<Storage> = null;
+
 
     constructor(
         public loadingCtrl: LoadingController,
@@ -78,12 +81,16 @@ export class LoginPage implements OnInit {
         private formBuilder: FormBuilder,
         private afs: AngularFirestore,
         private toastCtrl: ToastController,
-        private storage: Storage,
         private fcm: FcmService,
         private analyticsService: AnalyticsService,
         private platform: Platform,
-        private bnIdle: BnNgIdleService
+        private bnIdle: BnNgIdleService,
+        private storageService: StorageServiceService,
     ) {
+
+        this.storage = this.storageService.getStorage();
+
+
         this.showEmailBox = true;
 
         this.loginForm = this.formBuilder.group({
@@ -118,7 +125,11 @@ export class LoginPage implements OnInit {
         console.log("Waiting for get('auth') to return");
 
         // Add await to force the function to synchronously execute before moving onto next lines of code.
-        isUserAuthenticated = ( <string>await this.storage.get('authenticated') ) == "true";
+        this.storage.subscribe( (storage) => {
+        
+            storage.get('authenticated').then( (isAuth) =>{
+                isUserAuthenticated = isAuth;
+            } )} );
 
         console.log(`Got value from await func, is is: ${ isUserAuthenticated } typeof autoLoginUser is ${ typeof( isUserAuthenticated ) }`);
 
