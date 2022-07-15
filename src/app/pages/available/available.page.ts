@@ -5,7 +5,6 @@ import { Storage } from '@ionic/storage';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ProfileService } from 'src/app/services/user/profile.service';
-import * as admin from 'firebase-admin';
 import { DatePipe } from '@angular/common';
 
 // Today's date as a Javascript Date Object
@@ -19,7 +18,7 @@ const today = new Date();
 
 export class AvailablePage implements OnInit {
   public surveys: Observable<Survey[]>;
-  public userSurveys: [];
+  public userSurveys: Survey[] = [];
   public userCode = '';
   public emotion = '';
   public daysAUser = '';

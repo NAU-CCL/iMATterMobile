@@ -51,7 +51,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         FormsModule,
         BrowserAnimationsModule,
         IonicStorageModule.forRoot({
-            //name: 'exdb'
+                name: 'exdb',
         }),
 
     ],

@@ -1,4 +1,4 @@
-import { CalendarComponent } from 'ionic2-calendar/calendar';
+import { Calendar } from '@awesome-cordova-plugins/calendar/ngx';
 import { Component, ViewChild, OnInit, Inject, LOCALE_ID } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { formatDate } from '@angular/common';
@@ -103,13 +103,20 @@ export class CalendarPage implements OnInit {
   // @ts-ignore
   @ViewChild(CalendarComponent) myCal: CalendarComponent;
 
-  constructor(private localNotifications: LocalNotifications, private alertCtrl: AlertController, @Inject(LOCALE_ID) private locale: string,
-              private storage: Storage, private storageService: StorageService,  private afs: AngularFirestore,
-     private analyticsService: AnalyticsService, private router: Router) {
-		this.notifyTime = moment(new Date()).format();
+  constructor(private localNotifications: LocalNotifications,
+	          private alertCtrl: AlertController,
+			  @Inject(LOCALE_ID) private locale: string,
+              private storage: Storage,
+			  private storageService: StorageService,  
+			  private afs: AngularFirestore,
+              private analyticsService: AnalyticsService,      
+			  private router: Router,
+			  private calendarComponent: Calendar) {
 
-		this.chosenHours = new Date().getHours();
-		this.chosenMinutes = new Date().getMinutes();
+				this.notifyTime = moment(new Date()).format();
+
+				this.chosenHours = new Date().getHours();
+				this.chosenMinutes = new Date().getMinutes();
 
 
 
