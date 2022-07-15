@@ -9,6 +9,7 @@ import { ModalController } from '@ionic/angular';
 import { AlertController } from '@ionic/angular';
 import { DatePipe } from '@angular/common';
 import { user } from 'firebase-functions/lib/providers/auth';
+import { StorageServiceService } from 'src/app/services/storage-service/storage-service.service';
 
 @Component({
     selector: 'app-answer',
@@ -46,13 +47,15 @@ export class AnswerPage implements OnInit {
     availableSurveys = [];
 
     startTime;
+    
+    private storage: Storage = null; 
 
     constructor(private activatedRoute: ActivatedRoute,
         private surveyService: SurveyService,
         private browser: InAppBrowser,
         private router: Router,
         private profile: ProfileService,
-        private storage: Storage,
+        private storageService: StorageServiceService,
         private afs: AngularFirestore,
         private modalController: ModalController,
         public alertController: AlertController,
@@ -60,7 +63,8 @@ export class AnswerPage implements OnInit {
     ) {
     }
 
-    ngOnInit() {
+    async ngOnInit() {
+        this.storage = await this.storageService.getStorage();
         // if the user is not authenticated, sends the user to login page
         this.storage.get('authenticated').then((val) => {
             if (val === 'false') {

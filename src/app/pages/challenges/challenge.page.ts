@@ -7,6 +7,7 @@ import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyti
 import {DatePipe} from '@angular/common';
 import {AngularFirestore} from '@angular/fire/compat/firestore';
 import {AlertController} from '@ionic/angular';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 
 @Component({
@@ -33,9 +34,10 @@ export class ChallengePage implements OnInit {
     public challengeView = 'all';
     public itemsInChallengeRow = 2;
     public justCompletedChallenge = false;
+    private storage: Storage = null;
 
     constructor(private challengeService: ChallengeService,
-                private storage: Storage,
+                private storageService: StorageService,
                 private router: Router,
                 private activeRoute: ActivatedRoute,
                 private afs: AngularFirestore,
@@ -50,9 +52,9 @@ export class ChallengePage implements OnInit {
 
 
     // Is not guranteed to be called everytime the page is visited.
-    ngOnInit() {
+    async ngOnInit() {
         console.log('In ngoninit');
-
+        this.storage = await this.storageService.getStorage();
         this.storage.get('authenticated').then((val) => {
             if (val === 'false') {
                 this.router.navigate(['/login/']);

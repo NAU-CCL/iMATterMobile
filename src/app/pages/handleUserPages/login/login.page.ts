@@ -12,7 +12,7 @@ import {ToastController} from '@ionic/angular';
 import { Storage } from '@ionic/storage-angular';
 
 import {BnNgIdleService} from 'bn-ng-idle';
-import { StorageServiceService } from 'src/app/services/storage-service/storage-service.service';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 @Component({
     selector: 'app-login',
@@ -71,8 +71,6 @@ export class LoginPage implements OnInit {
     public userAutoLoginSetting: number = 3;
 
     private storage: Storage = null;
-
-
     constructor(
         public loadingCtrl: LoadingController,
         public alertCtrl: AlertController,
@@ -85,11 +83,8 @@ export class LoginPage implements OnInit {
         private analyticsService: AnalyticsService,
         private platform: Platform,
         private bnIdle: BnNgIdleService,
-        private storageService: StorageServiceService,
+        private storageService: StorageService,
     ) {
-
-        
-        
 
 
         this.showEmailBox = true;

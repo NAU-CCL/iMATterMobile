@@ -12,7 +12,8 @@ import {AngularFirestore} from '@angular/fire/compat/firestore';
 import {Observable} from 'rxjs';
 import * as moment from 'moment';
 
-import { StorageService, Item } from '../../services/storage.service';
+import { CalendarStorageService, Item } from '../../services/calendar-storage-service.service';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 /**
  * This code written with the help of this tutorial:
@@ -102,12 +103,12 @@ export class CalendarPage implements OnInit {
 
   // @ts-ignore
   @ViewChild(CalendarComponent) myCal: CalendarComponent;
-
+private storage: Storage = null; 
   constructor(private localNotifications: LocalNotifications,
 	          private alertCtrl: AlertController,
 			  @Inject(LOCALE_ID) private locale: string,
-              private storage: Storage,
-			  private storageService: StorageService,  
+              private storageService: StorageService,
+			  private calStorageService: CalendarStorageService,
 			  private afs: AngularFirestore,
               private analyticsService: AnalyticsService,      
 			  private router: Router,
@@ -135,7 +136,8 @@ export class CalendarPage implements OnInit {
 	}
 
 
-  ngOnInit() {
+  async ngOnInit() {
+	this.storage = await this.storageService.getStorage();
     this.storage.get('authenticated').then((val) => {
       if (val === 'false') {
         this.router.navigate(['/login/']);
@@ -279,7 +281,7 @@ export class CalendarPage implements OnInit {
 		this.myCal.loadEvents();
 
 
-		this.storageService.addItem(eventCopy).then(item => {
+		this.calStorageService.addItem(eventCopy).then(item => {
 
 
 		  this.loadItems();
@@ -355,7 +357,7 @@ export class CalendarPage implements OnInit {
     this.myCal.loadEvents();
 
 
-	this.storageService.addItem(eventCopy).then(item => {
+	this.calStorageService.addItem(eventCopy).then(item => {
 
 
       this.loadItems();
@@ -385,7 +387,7 @@ async displayCalendarInfo(){
 
 
   loadItems() {
-    this.storageService.getItems().then(items => {
+    this.calStorageService.getItems().then(items => {
       this.items = items;
       if (items) {
      this.eventSource = items;
@@ -565,7 +567,7 @@ async displayCalendarInfo(){
 		this.myCal.loadEvents();
 
 
-		this.storageService.addItem(eventCopy).then(item => {
+		this.calStorageService.addItem(eventCopy).then(item => {
 
 			//lod
 		  this.loadItems();
@@ -639,7 +641,7 @@ async displayCalendarInfo(){
     this.myCal.loadEvents();
 
 
-	this.storageService.addItem(eventCopy).then(item => {
+	this.calStorageService.addItem(eventCopy).then(item => {
 
 		console.log('?');
       this.loadItems();

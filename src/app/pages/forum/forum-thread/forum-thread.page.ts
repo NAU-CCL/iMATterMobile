@@ -47,13 +47,13 @@ export class ForumThreadPage implements OnInit {
     public answers: Observable<any>;
     public answerForm: FormGroup;
     public anonPic: string;
-
+    private storage: Storage = null;
   constructor(private afs: AngularFirestore,
               private activatedRoute: ActivatedRoute,
               private questionService: QuestionService,
               private toastCtrl: ToastController,
               private router: Router,
-              private storage: Storage,
+              private storageService: StorageService,
               private formBuilder: FormBuilder) {
 
       this.answerForm = this.formBuilder.group({
@@ -64,8 +64,8 @@ export class ForumThreadPage implements OnInit {
 
   }
 
-  ngOnInit() {
-
+  async ngOnInit() {
+      this.storage = await this.storageService.getStorage();
       this.storage.get('authenticated').then((val) => {
           if (val === 'false') {
               this.router.navigate(['/login/']);

@@ -7,6 +7,7 @@ import { AnalyticsService, Analytics, Sessions } from 'src/app/services/analytic
 import * as firebase from 'firebase/app';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AlertController } from '@ionic/angular';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 
 @Component({
@@ -38,16 +39,18 @@ export class ForumPage implements OnInit {
   public thisUserLoadedQuestionList: any[];
 
   public iosPlatform: boolean;
-
+  private storage: Storage = null;
   constructor(private questionService: QuestionService,
-    private storage: Storage,
+    private storageService: StorageService,
     private router: Router,
     private afs: AngularFirestore,
     private analyticsService: AnalyticsService,
     private alertController: AlertController) {
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.storage = await this.storageService.getStorage();
+    
     this.storage.get('authenticated').then((val) => {
       if (val === 'false') {
         this.router.navigate(['/login/']);

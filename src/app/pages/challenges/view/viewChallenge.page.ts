@@ -7,6 +7,7 @@ import {AngularFirestore} from '@angular/fire/compat/firestore';
 import {AlertController} from '@ionic/angular';
 import {ActivatedRoute} from '@angular/router';
 import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 
 
@@ -36,9 +37,10 @@ export class ViewChallengePage implements OnInit {
 
     public currentDay;
     public dayComplete;
-
+    private storage: Storage = null;
+    
     constructor(private challengeService: ChallengeService,
-                private storage: Storage,
+                private storageService: StorageService,
                 private router: Router,
                 private afs: AngularFirestore,
                 private analyticsService: AnalyticsService,
@@ -47,7 +49,8 @@ export class ViewChallengePage implements OnInit {
                 public inAppBrowser: InAppBrowser) {
     }
 
-    ngOnInit() {
+    async ngOnInit() {
+        this.storage = await this.storageService.getStorage();
         this.storage.get('authenticated').then((val) => {
             if (val === 'false') {
                 this.router.navigate(['/login/']);

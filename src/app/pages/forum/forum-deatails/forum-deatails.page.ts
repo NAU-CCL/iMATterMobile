@@ -6,6 +6,7 @@ import { Storage } from '@ionic/storage';
 import {AngularFirestore} from '@angular/fire/compat/firestore';
 import { HttpClient } from '@angular/common/http';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 
 @Component({
@@ -31,13 +32,13 @@ export class ForumDeatailsPage implements OnInit {
   public anon: boolean;
   public questionForm: FormGroup;
   public anonPic: string;
-
+private storage: Storage = null;
   constructor(private afs: AngularFirestore,
               private activatedRoute: ActivatedRoute,
               private questionService: QuestionService,
               private toastCtrl: ToastController,
               private router: Router,
-              private storage: Storage,
+              private storageService: StorageService,
               private http: HttpClient,
               private formBuilder: FormBuilder) {
 
@@ -51,7 +52,8 @@ export class ForumDeatailsPage implements OnInit {
     });
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.storage = await this.storageService.getStorage();
     this.storage.get('authenticated').then((val) => {
       if (val === 'false') {
         this.router.navigate(['/login/']);

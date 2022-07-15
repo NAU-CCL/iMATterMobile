@@ -6,6 +6,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ProfileService } from 'src/app/services/user/profile.service';
 import { DatePipe } from '@angular/common';
+import { StorageServiceService } from 'src/app/services/storage-service/storage-service.service';
 
 // Today's date as a Javascript Date Object
 const today = new Date();
@@ -28,9 +29,10 @@ export class AvailablePage implements OnInit {
   public userVisibility;
   public user;
   public surveyComplete;
-
+  private storage: Storage = null; 
+  
   constructor(private surveySerivce: SurveyService,
-    private storage: Storage,
+    private storageService: StorageServiceService,
     private router: Router,
     public afs: AngularFirestore,
     private activatedRoute: ActivatedRoute,
@@ -39,8 +41,8 @@ export class AvailablePage implements OnInit {
   ) {
   }
 
-  ngOnInit() {
-
+  async ngOnInit() {
+    this.storage = await this.storageService.getStorage();
     this.storage.get('authenticated').then((val) => {
       if (val === 'false') {
         this.router.navigate(['/login/']);

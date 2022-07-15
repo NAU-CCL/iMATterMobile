@@ -14,6 +14,7 @@ import { MoodProviderNotifService, EmotionNotif } from '../../../services/mood-p
 import { ChatService, Cohort, Chat } from '../../../services/chat/chat-service.service';
 import { ActionSheetController } from '@ionic/angular';
 import { EMOJIS } from '../../../services/emojiArray';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 
 @Component({
@@ -125,7 +126,7 @@ export class ProfilePage implements OnInit {
     static checkUserPoints(userPoints, pointsNeeded): boolean {
         return userPoints >= pointsNeeded;
     }
-
+    private storage: Storage = null;
     constructor(
         private alertCtrl: AlertController,
         private authService: AuthServiceProvider,
@@ -133,7 +134,7 @@ export class ProfilePage implements OnInit {
         private router: Router,
         private activatedRoute: ActivatedRoute,
         private afs: AngularFirestore,
-        private storage: Storage,
+        private storageService: StorageService,
         private analyticsService: AnalyticsService,
         private alertController: AlertController,
         private toastCtrl: ToastController,
@@ -147,7 +148,8 @@ export class ProfilePage implements OnInit {
         this.getProfilePictureChoices();
     }
 
-    ngOnInit() {
+    async ngOnInit() {
+        this.storage = await this.storageService.getStorage();
         this.storage.get('authenticated').then((val) => {
             if (val === 'false') {
                 this.router.navigate(['/login/']);

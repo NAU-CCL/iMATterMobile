@@ -6,9 +6,7 @@ import { filter } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
-export class StorageServiceService {
-
-  public storageBehaviorSub: BehaviorSubject<Storage | null> = new BehaviorSubject<Storage | null>(null);
+export class StorageService {
 
   private storage_ : Storage | null = null;
   constructor(private storage: Storage) {
@@ -27,14 +25,4 @@ export class StorageServiceService {
       return this.storage_;
     }
    }
-
-   /*
-   public getStorage()
-   {
-
-    this.storageBehaviorSub.asObservable().pipe( filter( emittedVal => !!emittedVal ) ).subscribe( ( storage) => {
-      return storage;
-    });
-   }
-   */
 }

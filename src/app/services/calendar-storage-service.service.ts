@@ -15,7 +15,7 @@ const ITEMS_KEY = 'my-items';
 @Injectable({
   providedIn: 'root'
 })
-export class StorageService {
+export class CalendarStorageService {
 
   constructor(private storage: Storage) { }
 

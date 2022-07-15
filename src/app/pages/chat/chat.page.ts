@@ -9,6 +9,7 @@ import { IonContent } from '@ionic/angular';
 
 
 import 'rxjs-compat/add/observable/timer';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 @Component({
   selector: 'app-tab2',
@@ -54,13 +55,30 @@ export class ChatPage implements OnInit {
   private numOfChats: number;
 
   public userProfileID;
+private storage: Storage = null;
 
   constructor(public _zone: NgZone,
     private router: Router,
-    private storage: Storage,
+    private storageService: StorageService,
     public chatService: ChatService,
     private afs: AngularFirestore,
     private analyticsService: AnalyticsService) {
+    
+
+    // Event that is suppose to fire when the user leaves to their homescreen.
+    document.addEventListener('pause',  () => { this.addAutoChat( 'left' );  }, false);
+
+    // Event that fires when user opens app after leaving app previously.
+    document.addEventListener('resume', () => { this.addAutoChat( 'entered' ); }, false);
+
+    //this.chatService.deleteAllAutoChats();
+
+    console.log( `The active view is: ${this.router.url}` );
+  }
+
+  async ngOnInit() {
+    this.storage = await this.storageService.getStorage();
+
     this.storage.get('cohort').then((val) => {
       if (val) {
         this.cohortChat = val;
@@ -74,18 +92,6 @@ export class ChatPage implements OnInit {
       this.scrollToBottom();
     });
 
-    // Event that is suppose to fire when the user leaves to their homescreen.
-    document.addEventListener('pause',  () => { this.addAutoChat( 'left' );  }, false);
-
-    // Event that fires when user opens app after leaving app previously.
-    document.addEventListener('resume', () => { this.addAutoChat( 'entered' ); }, false);
-
-    //this.chatService.deleteAllAutoChats();
-
-    console.log( `The active view is: ${this.router.url}` );
-  }
-
-  ngOnInit() {
     this.chatService.initChatServce('chats', 'timestamp');
 
     this.storage.get('authenticated').then((val) => {

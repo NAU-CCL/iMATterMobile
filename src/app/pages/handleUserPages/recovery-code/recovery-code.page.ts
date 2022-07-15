@@ -28,7 +28,7 @@ export class RecoveryCodePage implements OnInit {
     private recoveryPassword: string;
 
 
-
+private storage: Storage = null;
     public enterCodeForm: FormGroup;
     constructor(
         public loadingCtrl: LoadingController,
@@ -38,7 +38,7 @@ export class RecoveryCodePage implements OnInit {
         private formBuilder: FormBuilder,
         public afs: AngularFirestore,
         private toastCtrl: ToastController,
-        private storage: Storage,
+        private storageService: StorageService,
         private profileService: ProfileService
     ) {
         this.enterCodeForm = this.formBuilder.group({
@@ -53,7 +53,8 @@ export class RecoveryCodePage implements OnInit {
         });
     }
 
-    ngOnInit() {
+    async ngOnInit() {
+        this.storage = await this.storageService.getStorage();
     }
 
     showToast(msg) {
