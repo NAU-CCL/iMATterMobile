@@ -70,7 +70,7 @@ export class LoginPage implements OnInit {
     // 1 means the user has credentials on the device and we will auto log them in.
     public userAutoLoginSetting: number = 3;
 
-    private storage: Observable<Storage> = null;
+    private storage: Storage = null;
 
 
     constructor(
@@ -88,7 +88,8 @@ export class LoginPage implements OnInit {
         private storageService: StorageServiceService,
     ) {
 
-        this.storage = this.storageService.getStorage();
+        
+        
 
 
         this.showEmailBox = true;
@@ -106,7 +107,7 @@ export class LoginPage implements OnInit {
         
     }
 
-    ngOnInit() {
+   async ngOnInit() {
         console.log(`In login page oninit`);
     }
 
@@ -114,6 +115,10 @@ export class LoginPage implements OnInit {
     // Metho called right after page load.
     async ionViewDidEnter() {
         console.log('User ion did enter');
+
+        this.storage = await this.storageService.getStorage();
+
+        console.log(`Got storage ${this.storage}`);
 
         let autoLoginUser: boolean;
         let isUserAuthenticated: boolean = false;
@@ -125,11 +130,8 @@ export class LoginPage implements OnInit {
         console.log("Waiting for get('auth') to return");
 
         // Add await to force the function to synchronously execute before moving onto next lines of code.
-        this.storage.subscribe( (storage) => {
         
-            storage.get('authenticated').then( (isAuth) =>{
-                isUserAuthenticated = isAuth;
-            } )} );
+        isUserAuthenticated = await this.storage.get('authenticated') === 'true';
 
         console.log(`Got value from await func, is is: ${ isUserAuthenticated } typeof autoLoginUser is ${ typeof( isUserAuthenticated ) }`);
 

@@ -142,7 +142,7 @@ export class HomePage implements OnInit {
     public defaultChallengeCover = "https://firebasestorage.googleapis.com/v0/b/imatter-nau.appspot.com/o/ChallengeImages%2FdefaultChallenge_640x640.png?alt=media&token=f80549df-a0bc-42f2-b487-555fd059f719";
 
 
-    private storage: Observable<Storage> = null;
+    private storage: Storage = null;
 
     constructor(private activatedRoute: ActivatedRoute, public afs: AngularFirestore,
         private toastCtrl: ToastController,
@@ -160,20 +160,19 @@ export class HomePage implements OnInit {
         private datepipe: DatePipe,
         private exSercice: FirestoreExamplesService,
         private analyticService: AnalyticsService) {
-
-            this.storage = this.storageService.getStorage();
             this.dropDown = [{ expanded: false }];
     }
 
-    ngOnInit() {
+    async ngOnInit() {
+        this.storage = await this.storageService.getStorage();
 
-        this.storage.subscribe( ( storage ) => {
-            storage.get('authenticated').then((val) => {
+        
+            this.storage.get('authenticated').then((val) => {
                 if (val === 'false') {
                     this.router.navigate(['/login/']);
                 }
             });
-        }) 
+     
 
 
         // document.cookie = `accessed=${new Date()};`

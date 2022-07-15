@@ -12,18 +12,29 @@ export class StorageServiceService {
 
   private storage_ : Storage | null = null;
   constructor(private storage: Storage) {
-    this.init();
    }
 
-   async init()
+   async getStorage(): Promise<Storage>
    {
-    const storage = await this.storage.create();
-    this.storage_ = storage;
-    this.storageBehaviorSub.next(this.storage_);
+    if( this.storage_ )
+    {
+      return this.storage_;
+    }
+    else
+    {
+      const storage = await this.storage.create();
+      this.storage_ = storage;
+      return this.storage_;
+    }
    }
 
-   public getStorage(): Observable<Storage> 
+   /*
+   public getStorage()
    {
-    return firstValueFrom(this.storageBehaviorSub.asObservable().pipe( filter( emittedVal => !!emittedVal ) ));
+
+    this.storageBehaviorSub.asObservable().pipe( filter( emittedVal => !!emittedVal ) ).subscribe( ( storage) => {
+      return storage;
+    });
    }
+   */
 }
