@@ -99,7 +99,7 @@ export class MorePage implements OnInit {
 
   updateCalendarClicks()
   {
-    this.analyticsService.updateClicks('calendarClicks');
+    //this.analyticsService.updateClicks('calendarClicks');
   }
 
   updateInfoDeskClicks()

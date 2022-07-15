@@ -1,4 +1,4 @@
-import { Calendar } from '@awesome-cordova-plugins/calendar/ngx';
+import { CalendarComponent } from 'ionic2-calendar';
 import { Component, ViewChild, OnInit, Inject, LOCALE_ID } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { formatDate } from '@angular/common';
@@ -43,13 +43,12 @@ export class CalendarPage implements OnInit {
   days: any[];
   chosenHours: number;
   chosenMinutes: number;
-  eventList: any[] = [];
-
   minDate = moment().toDate().toISOString();
 
   test = [];
   eventSource = [];
   viewTitle;
+  eventList: any[] = [];
 
   calendar = {
     mode: 'month',
@@ -111,8 +110,7 @@ private storage: Storage = null;
 			  private calStorageService: CalendarStorageService,
 			  private afs: AngularFirestore,
               private analyticsService: AnalyticsService,      
-			  private router: Router,
-			  private calendarComponent: Calendar) {
+			  private router: Router) {
 
 				this.notifyTime = moment(new Date()).format();
 
