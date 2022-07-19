@@ -263,8 +263,9 @@ export class ProfilePage implements OnInit {
                             this.profileService.updateEmail(data.newEmail, data.password, this.userProfileID)
                                 .then(() => {
                                     this.showToast('Your email has been updated!');
-                                    this.storage.set('email', data.newEmail);
-                                    this.refreshPage();
+                                    this.storage.set('email', data.newEmail).then( ()=>{
+                                        this.refreshPage();
+                                    });
                                 },
                                     err => {
                                         this.showToast('There was a problem updating your email');
@@ -292,8 +293,9 @@ export class ProfilePage implements OnInit {
                 {
                     text: 'Save',
                     handler: data => {
-                        if (data.newPassword.length >= 8) {
-                            this.profileService.updatePassword(data.newPassword, data.oldPassword, this.userProfileID)
+                        if (data.newPassword.length >= 8 && this.user.password === data.oldPassword) 
+                        {
+                            this.profileService.updatePassword(data.newPassword, this.userProfileID)
                                 .then(() => {
                                     this.showToast('Your password has been updated!');
                                     this.refreshPage();
@@ -301,8 +303,17 @@ export class ProfilePage implements OnInit {
                                     err => {
                                         this.showToast('There was a problem updating your password');
                                     });
-                        } else {
+                        } 
+                        else if(data.newPassword.length <= 8 )
+                        {
+                            console.log(`Password is less than 8. New pass ${data.newPassword}. Old password ${data.oldPassword}`);
                             alert.message = 'Password must be 8 characters or longer';
+                            return false;
+                        }
+                        else if(this.user.password != data.oldPassword)
+                        {
+                            console.log(`Old password incorrect. User pass ${this.user.password}. Old password ${data.oldPassword}`);
+                            alert.message = 'Old password incorrect';
                             return false;
                         }
                     },
@@ -385,6 +396,7 @@ export class ProfilePage implements OnInit {
                 const ref = this.afs.firestore.collection('users').where('code', '==', val);
                 ref.get().then((result) => {
                     result.forEach(doc => {
+                        console.log(`user code is ${val}`)
                         this.user.username = doc.get('username');
                         this.user.email = doc.get('email');
                         this.user.password = doc.get('password');
@@ -456,11 +468,17 @@ export class ProfilePage implements OnInit {
         this.showToast('An email was sent for your gift card request!');
     }
 
-    saveEmotion(emotion: string) {
+    saveEmotion(emotion: string, emoji: string)
+    {
         this.analyticService.updateClicks('emotionChangeClicks');
 
         this.afs.firestore.collection('users').doc(this.userProfileID)
             .update({ mood: emotion });
+
+         // If new emotion is different than old, add a chat message describing the new emotion.
+         if (emotion != this.user.currentEmotion) {
+            this.chatService.addAutoChat(this.chat, this.chat.userID, true);
+         }
 
         this.user.currentEmotion = emotion;
 
@@ -469,13 +487,11 @@ export class ProfilePage implements OnInit {
         this.chat.username = this.user.username;
         this.chat.profilePic = this.user.profilePic;
         this.chat.timestamp = new Date();
-        this.chat.message = this.chat.username + ' is currently feeling ' + emotion;
+        this.chat.message = 'is currently feeling ' + emoji;
         this.chat.type = 'emotion';
         this.chat.visibility = true;
 
-        this.chatService.addChat(this.chat).then(() => {
-            this.chat.message = '';
-        });
+        
 
         this.updateEmotionBadge(this.user.currentEmotion);
 
@@ -506,7 +522,6 @@ export class ProfilePage implements OnInit {
         this.emotionNotif.username = this.user.username;
         this.emotionNotif.emotionEntered = emotion;
         this.emotionNotif.timestamp = new Date();
-        this.mpnService.addEmotionNotif(this.emotionNotif);
     }
 
     updateEmotionBadge(emotion: string) {

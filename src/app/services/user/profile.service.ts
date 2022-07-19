@@ -40,8 +40,9 @@ export class ProfileService {
      * Update the user's email in db, only if their password entered matches the one
      * currently in the db
      */
-    async updateEmail(newEmail: string, password: string, userID: string) {
-        this.afs.firestore.collection('users').where('code', '==', userID)
+    async updateEmail(newEmail: string, password: string, userID: string): Promise<void>
+    {
+        return this.afs.firestore.collection('users').where('code', '==', userID)
             .get().then(snapshot => {
                 snapshot.forEach(doc => {
                     const userPassword = doc.get('password');
@@ -54,18 +55,17 @@ export class ProfileService {
     }
 
     /**
-     * Update the user's password in db, only if their old password entered matches the one
-     * currently in the db
+     * Update the user's password in db regardless if old password matches new password.
      */
-    async updatePassword(newPassword: string, oldPassword: string, userID: string) {
-        this.afs.firestore.collection('users').where('code', '==', userID)
+    async updatePassword(newPassword: string, userID: string) {
+        return this.afs.firestore.collection('users').where('code', '==', userID)
             .get().then(snapshot => {
                 snapshot.forEach(doc => {
-                    const userPassword = doc.get('password');
-                    if (userPassword === oldPassword) {
-                        return this.afs.firestore.collection('users')
-                            .doc(userID).update({ password: newPassword });
-                    }
+                    
+                    return this.afs.firestore.collection('users')
+                          .doc(userID).update({ password: newPassword }).then( () =>{
+                            console.log(`Finished updating pass`);
+                          });
                 });
             });
     }
