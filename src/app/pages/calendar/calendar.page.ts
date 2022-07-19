@@ -32,8 +32,8 @@ export class CalendarPage implements OnInit {
   event = {
     title: '',
     desc: '',
-    startTime: '',
-    endTime: '',
+    startTime: new Date().toISOString(),
+    endTime: new Date( new Date((new Date()).setHours(23)).setMinutes(59) ).toISOString(),
     allDay: false,
 	id: '',
 	AMPM: ''
@@ -44,6 +44,11 @@ export class CalendarPage implements OnInit {
   chosenHours: number;
   chosenMinutes: number;
   minDate = moment().toDate().toISOString();
+
+  public openStartTimePicker: boolean = false;
+  public openEndTimePicker: boolean = false;
+
+
 
   test = [];
   eventSource = [];
@@ -198,6 +203,8 @@ private storage: Storage = null;
 
   // Create the right event format and reload source
   addEvent() {
+
+	
 	  this.currentlyEditing = false;
 	  this.notificationIndex = Math.floor(Math.random() * 100000000000);
 	  let eventCopy = {

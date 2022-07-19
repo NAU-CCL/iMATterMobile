@@ -34,12 +34,28 @@
           <ion-input type="text" placeholder="Description" [(ngModel)]="event.desc"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-label>Start</ion-label>
-          <ion-datetime displayFormat="MM/DD/YYYY HH:mm" pickerFormat="MMM D:HH:mm" [(ngModel)]="event.startTime" ></ion-datetime>
+          <ion-label class="event-time-label" >Start:</ion-label>
+          <ion-text id="start-time-24" >{{event.startTime | date:'h:mm a'}} </ion-text>
+
+          <ion-popover trigger="start-time-24" [isOpen]='openStartTimePicker' (didDismiss)="openStartTimePicker = false">
+              <ng-template>
+                  <div>
+                      <ion-datetime hourCycle="h23" presentation="time"  showDefaultButtons=true  [(ngModel)]="event.startTime"></ion-datetime>
+                  </div>
+              </ng-template>
+          </ion-popover>
         </ion-item>
         <ion-item>
-          <ion-label>End</ion-label>
-          <ion-datetime displayFormat="MM/DD/YYYY HH:mm" pickerFormat="MMM D:HH:mm" [(ngModel)]="event.endTime" ></ion-datetime>
+          <ion-label class="event-time-label" >End</ion-label>
+          <ion-text id="end-time-24" >{{event.endTime | date:'h:mm a'}} </ion-text>
+
+          <ion-popover trigger="end-time-24" [isOpen]='openEndTimePicker' (didDismiss)="openEndTimePicker = false">
+            <ng-template>
+                <div>
+                    <ion-datetime hourCycle="h23" presentation="time"  showDefaultButtons=true  [(ngModel)]="event.endTime"></ion-datetime>
+                </div>
+            </ng-template>
+          </ion-popover>
         </ion-item>
         <ion-item>
           <ion-label>All Day?</ion-label>
@@ -66,19 +82,31 @@
           <ion-input type="text" placeholder="Description" [(ngModel)]="event.desc"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-label>Start</ion-label>
-          <ion-datetime displayFormat="MM/DD/YYYY hh:mm" pickerFormat="MMM D:hh:mm" [(ngModel)]="event.startTime" ></ion-datetime>
+          <ion-label class="event-time-label">Start:</ion-label>
+          <ion-text id="start-time-12" >{{event.startTime | date:'h:mm a'}} </ion-text>
+
+          <ion-popover trigger="start-time-12" [isOpen]='openStartTimePicker' (didDismiss)="openStartTimePicker = false">
+              <ng-template>
+                  <div>
+                      <ion-datetime presentation="time"  showDefaultButtons=true  [(ngModel)]="event.startTime"></ion-datetime>
+                  </div>
+              </ng-template>
+          </ion-popover>
+
         </ion-item>
-		<ion-item>
-		 <ion-label>AM or PM?</ion-label>
-		<ion-select [(ngModel)]="event.AMPM" ok-text="Okay" cancel-text="cancel">
-			  <ion-select-option value="am">am</ion-select-option>
-			  <ion-select-option value="pm">pm</ion-select-option>
-		  </ion-select>
-		  </ion-item>
+		
         <ion-item>
-          <ion-label>End</ion-label>
-          <ion-datetime displayFormat="MM/DD/YYYY hh:mm" pickerFormat="MMM D:hh:mm" [(ngModel)]="event.endTime" ></ion-datetime>
+          <ion-label class="end-time-label">End</ion-label>
+          <ion-text  id="event-time-12" >{{event.endTime | date:'h:mm a'}} </ion-text>
+
+          <ion-popover trigger="event-time-12" [isOpen]='openEndTimePicker' (didDismiss)="openEndTimePicker = false">
+            <ng-template>
+                <div>
+                    <ion-datetime presentation="time"  showDefaultButtons=true  [(ngModel)]="event.endTime"></ion-datetime>
+                </div>
+            </ng-template>
+          </ion-popover>
+
         </ion-item>
         <ion-item>
           <ion-label>All Day?</ion-label>
