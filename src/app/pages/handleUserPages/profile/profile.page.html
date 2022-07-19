@@ -1,3 +1,6 @@
+
+
+
 <ion-header>
     <ion-toolbar>
         <ion-grid>
@@ -145,7 +148,7 @@
 
                             <!-- Show the users profile picture While in editing mode. If they click theyre profile picture we display all profile picture options. -->
                             <ion-img src="{{ previewPic }}" style="position: relative;" (click)="showPics()"></ion-img>
-                            <button class="edit-profile-pic-btn" (click)="showPics()"> Click Here to Edit Your Profile Picture </button>
+                            <button class="edit-profile-pic-btn" (click)="showPics()"> Change Picture </button>
                         </ion-card>
                         <ion-item *ngIf="showImages">
                             <ion-row>
@@ -162,8 +165,21 @@
                         <ion-col>
                             <h1 style="margin: 0; font-size: 2em;">{{ user.username }}</h1>
                             <p style="font-size: 0.8em; margin: 0;">Sobriety Start Date: <br>
-                                <ion-item>
-                                    <ion-datetime id="newEndRehabDate" value="{{ recoveryDate }}"></ion-datetime>
+                                <ion-item (click)="openRecoveryDatePicker = true">
+
+                                    <ion-text id="recovery-date-input">
+                                        <div>{{newRecoveryDate | date:'M/d/yy' }}</div>
+                                        <ion-icon class="open-datepicker-arrow" name="chevron-down-outline"></ion-icon>
+                                    </ion-text>
+
+                                    <ion-popover trigger="recovery-date-input" [isOpen]='openRecoveryDatePicker' (didDismiss)="openRecoveryDatePicker = false">
+                                        <ng-template>
+                                            <div>
+                                                <ion-datetime presentation="date"  showDefaultButtons=true  [(ngModel)]="newRecoveryDate"></ion-datetime>
+                                            </div>
+                                        </ng-template>
+                                    </ion-popover>
+
                                 </ion-item>
                             </p>
                         </ion-col>

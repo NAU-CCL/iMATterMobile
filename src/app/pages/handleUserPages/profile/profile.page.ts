@@ -111,13 +111,16 @@ export class ProfilePage implements OnInit {
     public chosenGCType: string;
     public gcTypes: Array<string>;
     public userEmotionIcon: string;
-    public recoveryDate: any;
+    public recoveryDate: string;
+    public newRecoveryDate: string;
+
     public editingMode = false;
     public showImages = false;
     public allPicURLs: any;
     public previewPic: any;
     public collapsePersonalInfo: boolean = true;
     public showSettingsDropDown = false;
+    public openRecoveryDatePicker:boolean = false;
 
     public pointsLeftForGC;
 
@@ -391,8 +394,10 @@ export class ProfilePage implements OnInit {
                         // const rehabDate = new Date(doc.get('endRehabDate'));
                         // this.user.endRehabDate = this.datepipe.transform(rehabDate, 'D MM YYYY');
                         // this.user.endRehabDate = doc.get('endRehabDate');
-                        const date = new Date(doc.get('endRehabDate') + 'T12:00:00');
+                        const date = doc.get('endRehabDate');
+                        console.log(`The date is ${JSON.stringify(date)}`);
                         this.recoveryDate = date;
+                        this.newRecoveryDate = date;
                         // console.log(date);
                         this.user.endRehabDate = doc.get('endRehabDate');
                         // console.log(dateString);
@@ -571,18 +576,18 @@ export class ProfilePage implements OnInit {
 
     saveProfile() {
         
-        let dateValue = (document.getElementById('newEndRehabDate') as HTMLInputElement).value;
-        dateValue = this.datePipe.transform(dateValue, 'y-MM-dd');
+        console.log(`New recover date in save profile is ${this.newRecoveryDate}`);
 
-        if (dateValue !== this.user.endRehabDate) {
-            console.log('date value changed');
+        if (this.newRecoveryDate !== this.user.endRehabDate) {
+            console.log('Date value changed');
             // const newRehabDate = (document.getElementById('newEndRehabDate') as HTMLInputElement).value;
-            this.user.endRehabDate = dateValue.split('T')[0];
-            const date = new Date(this.user.endRehabDate + 'T12:00:00');
-            this.recoveryDate = date;
+            this.user.endRehabDate = this.newRecoveryDate;
+            //this.recoveryDate = date;
             this.profileService.updateRecoveryDate(this.user.endRehabDate, this.userProfileID);
         } else {
             console.log('In the else');
+            // we use newrecovery date in the date picker and use recoverdate to persist out changes in case the user cancels their edits.
+            this.newRecoveryDate = this.recoveryDate;
         }
 
         console.log('Out of if');
@@ -599,6 +604,7 @@ export class ProfilePage implements OnInit {
     cancelEdit() {
         this.previewPic = this.user.profilePic;
         this.editingMode = false;
+        this.newRecoveryDate = this.recoveryDate;
     }
 
     async showSettingsActionSheet() {
