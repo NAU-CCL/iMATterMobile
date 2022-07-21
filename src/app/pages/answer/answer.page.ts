@@ -122,8 +122,11 @@ export class AnswerPage implements OnInit {
         // When the user exits the survey page show them a message
         page.on('exit').subscribe(event => {
 
-            // this.showMessage()
-            this.presentAlert();
+            //if( this.isComplete() ){
+
+                this.presentAlert();
+
+            //}
 
         });
     }
