@@ -180,7 +180,7 @@ export class AnswerPage implements OnInit {
             buttons: [{
                 text: 'OK',
                 handler: () => {
-                    this.submit();
+                    this.submit(); // update user points when ok is clicked. If user does not click ok do they not get points?
                 }
             }
             ]

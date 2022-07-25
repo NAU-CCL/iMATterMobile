@@ -753,3 +753,10 @@ exports.sendProblemReportedEmail = functions.firestore.document('reports/{docID}
         }).then(res => console.log('Successfully sent that feedback/problem mail')).catch(err => console.log(`Error sending that feedback/problem email: ${err}`));
     
      });
+
+exports.updateCompletedSurveys = functions.https.onRequest((request, response) => {
+    console.log('Query Params: ', request.query);
+
+    return response.send(200, { message: 'ok' });
+    
+});
