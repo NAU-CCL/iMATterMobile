@@ -754,9 +754,3 @@ exports.sendProblemReportedEmail = functions.firestore.document('reports/{docID}
     
      });
 
-exports.updateCompletedSurveys = functions.https.onRequest((request, response) => {
-    console.log('Query Params: ', request.query);
-
-    return response.send(200, { message: 'ok' });
-    
-});
