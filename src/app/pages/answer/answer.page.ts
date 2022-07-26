@@ -176,12 +176,9 @@ export class AnswerPage implements OnInit {
         const alert = await this.alertController.create({
             header: 'You Completed The Survey',
             subHeader: 'Thank You',
-            message: 'Thanks for taking the Survey, your input is really appreciated.',
+            message: 'If you did not complete the survey feel free to come back and finish it. If you did complete the survey, please wait a few minutes to receive your points. Thank you for your time.',
             buttons: [{
-                text: 'OK',
-                handler: () => {
-                    this.submit();
-                }
+                text: 'OK'
             }
             ]
         });
