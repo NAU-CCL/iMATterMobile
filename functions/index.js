@@ -754,9 +754,78 @@ exports.sendProblemReportedEmail = functions.firestore.document('reports/{docID}
     
      });
 
-    exports.updateCompletedSurveys = functions.https.onRequest((request, response) => {
+    // This function is triggered by qualtrics when a user completes a survey. This function 
+    // updates the users taken and available surveys as well as their points.
+    exports.updateCompletedSurveys = functions.https.onRequest(async (request, response) => {
+        // request.query is our query params object and holds all values sent to us by the qualtrics survey web serivice.
         console.log('Query Params: ', request.query);
 
-        return response.send(200, { message: 'ok' });
+        // The start and end times are ISO strings, conver them to dates.
+        let startDate = new Date(request.query.StartTime);
+        let endDate = new Date(request.query.EndTime);
+        
+        // retrieve characters from the str starting at index 3 and ending at the end of the string. ie remove SV_ from the survey id.
+        let surveyID = request.query.SurveyID.substring(3);
+        
+
+        console.log(`Start date is ${ JSON.stringify(startDate)} End date is ${JSON.stringify(endDate)} \n\n Survey ID is ${surveyID} \n The survey url is ${request.query.URL.split('?')[0]}`);
+
+
+        // Get the user doc snapshot
+        let userDocSnap = await admin.firestore().collection('users').doc(request.query.UserID).get();
+
+        let userRef = userDocSnap.ref;
+        let userData = userDocSnap.data();
+
+        // Get available and taken survey arrays so we can update them.
+        let userAvailableSurveys = userData.availableSurveys;
+        let userTakenSurveys = userData.answeredSurveys;
+
+        // Initialize survey taken object to record the survey the user just took.
+        let surveyTaken = {
+            date: new Date(),
+            timeStart: startDate, // Save string?
+            timeEnd:  endDate,
+            days: userData.daysAUser
+        };
+
+        // The url has query params that we want to remove. Split at the question mark giving you the url at index 0 and the query param strign at index 1
+        let surveyLink = request.query.URL.split('?')[0]
+
+        let surveyDoc;
+        let surveyQuerySnap = await admin.firestore().collection('surveys-v2').where('link','==', surveyLink).get();
+        surveyQuerySnap.forEach( (queryDocSnap) => {
+            console.log(`Iterating through surveys. This survey data is ${JSON.stringify(queryDocSnap.data())}`);
+            surveyDoc = queryDocSnap.data();
+
+            surveyTaken['survey'] = queryDocSnap.ref.id; // save survey doc id not qualtrics ID
+        })
+
+        
+        // Get the number of points the survey is worth so we can increment user points appropraitely.
+        let surveyPoints = surveyDoc.points;
+
+
+
+        console.log(surveyTaken);
+
+        // answeredSurveys
+        // Add the survey taken object to the users array of taken surveys so we can simply update the users answeredSurveys field in a second.
+        userTakenSurveys.push(surveyTaken);
+
+        //availableSurveys
+        userAvailableSurveys.splice(userAvailableSurveys.indexOf(this.id), 1);
+
+        // then increase the user's current points by the amount that the current
+        // survey is worth, then navigate back to the home page
+        const newPointValue = userData.points + surveyPoints;
+
+        // Update the user document.
+        userRef.update( {answeredSurveys: userTakenSurveys, availableSurveys: userAvailableSurveys, points: newPointValue} );
+
+        
+
+
+        return response.status(200).send({ message: 'ok' });
     
     }); 

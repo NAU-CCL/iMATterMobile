@@ -683,9 +683,13 @@ export class HomePage implements OnInit {
                     
                     if (survey['type'] == 'Days After Joining') {
                         var characteristics = survey['characteristics'];
+                        console.log(` Survey type is days after joining. Name: ${survey['title']}`);
+                        
                         if (this.user['daysAUser'] >= characteristics['daysAfterJoining']) {
                             if (!currentSurveys.includes(survey['id'])) {
                                 currentSurveys.push(survey['id']);
+                                console.log(` Pushing days after joining survey. Name: ${survey['title']}`);
+                                
                             }
                         }
                     } else if (survey['type'] == 'Repeating') {
@@ -722,6 +726,8 @@ export class HomePage implements OnInit {
                 }
                 // If the user survey was complete, do nothing and go to the next survey in the array. 
                 else {
+                    console.log(` Survey was complete. Name: ${survey['title']}`);
+                    
                     this.surveyComplete = false;
                 }
 
