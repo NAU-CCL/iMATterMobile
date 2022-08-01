@@ -113,48 +113,59 @@ exports.updateDays = functions.https.onRequest((req, res) => {
     ref.get().then((result) => {
         result.forEach(doc => {
 
-            const docID = doc.get('code');
-
-            var currentUser = admin.firestore().collection('users').doc(docID);
-
             //user hasn't signed up yet, skip them
-            if (doc.get('codeEntered') === false) {
-                return;
+            if (doc.get('codeEntered') === false) 
+            {
+                console.log(`Code entered was false exiting.`)
             }
-
-            var username = doc.get('username');
-
-            //Update daysAUser and daysSinceLogin
-            var new_days = doc.data().daysAUser + 1;
-            var sinceLogin = doc.data().daysSinceLogin + 1;
-
-            // update challenge days
-            // update challenge days
-            let updateJoinedChallenges = doc.data().joinedChallenges;
-
-            for (let challenge of updateJoinedChallenges) {
-                if (challenge.dayComplete === true) {
-                    challenge.currentDay = challenge.currentDay + 1;
-                    challenge.dayComplete = false;
-
-                    if (challenge.currentDay > challenge.challenge.length) {
-                        challenge.dateFinished = new Date();
-                        updateJoinedChallenges.splice(updateJoinedChallenges.indexOf(challenge), 1)
+            else
+            {
+                const docID = doc.get('code');
+    
+                var currentUser = admin.firestore().collection('users').doc(docID);
+    
+    
+                var username = doc.get('username');
+    
+                //Update daysAUser and daysSinceLogin
+                var new_days = doc.data().daysAUser + 1;
+                var sinceLogin = doc.data().daysSinceLogin + 1;
+    
+                // update challenge days
+                // update challenge days
+                let updateJoinedChallenges = doc.data().joinedChallenges;
+    
+                console.log(`Joined challenges is ${doc.data().joinedChallenges}`);
+                if( updateJoinedChallenges )
+                {
+                    for (let challenge of updateJoinedChallenges) {
+                        if (challenge.dayComplete === true) {
+                            challenge.currentDay = challenge.currentDay + 1;
+                            challenge.dayComplete = false;
+        
+                            if (challenge.currentDay > challenge.challenge.length) {
+                                challenge.dateFinished = new Date();
+                                updateJoinedChallenges.splice(updateJoinedChallenges.indexOf(challenge), 1)
+                            }
+                        }
                     }
+
+                    currentUser.update({
+                        joinedChallenges: updateJoinedChallenges
+                    });
                 }
+    
+                console.log(`Updating days a user. Old days ${doc.data().daysAUser} New Days ${new_days}`);
+                currentUser.update({
+                    daysAUser: new_days
+                });
+    
+                currentUser.update({
+                    daysSinceLogin: sinceLogin
+                });
+    
+               
             }
-
-            currentUser.update({
-                daysAUser: new_days
-            });
-
-            currentUser.update({
-                daysSinceLogin: sinceLogin
-            });
-
-            currentUser.update({
-                joinedChallenges: updateJoinedChallenges
-            });
 
         });
 
