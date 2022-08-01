@@ -114,7 +114,7 @@ export class AnswerPage implements OnInit {
 
         // Add the UserID=userid get param to the url so qualtrics can automatically grab it from the url
         // In order for this to work, the survey must have an embedded data element named UserID.
-        url += '?UserID=' + this.userCode.toString() + '?StartTime=' + new Date().toJSON();
+        url += '?UserID=' + this.userCode.toString() + '&StartTime=' + new Date().toJSON();
 
         console.log(`Opening survey with URL ${url}`);
 

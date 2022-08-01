@@ -819,10 +819,12 @@ exports.sendProblemReportedEmail = functions.firestore.document('reports/{docID}
 
 
         console.log(surveyTaken);
+        console.log(`User taken surveys ${JSON.stringify(userTakenSurveys)}. User avaialble surveys ${JSON.stringify(userAvailableSurveys)}`);
 
         // answeredSurveys
         // Add the survey taken object to the users array of taken surveys so we can simply update the users answeredSurveys field in a second.
         userTakenSurveys.push(surveyTaken);
+        
 
         //availableSurveys
         userAvailableSurveys.splice(userAvailableSurveys.indexOf(surveyTaken['survey']), 1);
@@ -831,7 +833,6 @@ exports.sendProblemReportedEmail = functions.firestore.document('reports/{docID}
         // survey is worth, then navigate back to the home page
         const newPointValue = userData.points + surveyPoints;
 
-        consle.log(`User taken surveys ${JSON.stringify(userTakenSurveys)}. User avaialble surveys ${JSON.stringify(userAvailableSurveys)} User new points: ${newPointValue}`);
 
         // Update the user document.
         userRef.update( {answeredSurveys: userTakenSurveys, availableSurveys: userAvailableSurveys, points: newPointValue} );
