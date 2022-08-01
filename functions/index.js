@@ -825,7 +825,7 @@ exports.sendProblemReportedEmail = functions.firestore.document('reports/{docID}
         userTakenSurveys.push(surveyTaken);
 
         //availableSurveys
-        userAvailableSurveys.splice(userAvailableSurveys.indexOf(this.id), 1);
+        userAvailableSurveys.splice(userAvailableSurveys.indexOf(surveyTaken['survey']), 1);
 
         // then increase the user's current points by the amount that the current
         // survey is worth, then navigate back to the home page
