@@ -831,6 +831,8 @@ exports.sendProblemReportedEmail = functions.firestore.document('reports/{docID}
         // survey is worth, then navigate back to the home page
         const newPointValue = userData.points + surveyPoints;
 
+        consle.log(`User taken surveys ${JSON.stringify(userTakenSurveys)}. User avaialble surveys ${JSON.stringify(userAvailableSurveys)} User new points: ${newPointValue}`);
+
         // Update the user document.
         userRef.update( {answeredSurveys: userTakenSurveys, availableSurveys: userAvailableSurveys, points: newPointValue} );
 
