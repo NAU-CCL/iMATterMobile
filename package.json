@@ -41,7 +41,7 @@
     "@ionic-native/native-geocoder": "*",
     "@ionic-native/splash-screen": "*",
     "@ionic-native/status-bar": "*",
-    "@ionic/angular": "*",
+    "@ionic/angular": "^6.2.1",
     "@ionic/storage": "*",
     "@ionic/storage-angular": "^3.0.6",
     "ansi-html": "*",
