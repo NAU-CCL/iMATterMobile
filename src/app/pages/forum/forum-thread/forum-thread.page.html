@@ -11,7 +11,7 @@
 </ion-header>
 
 <ion-content #content>
-  <ion-item>
+  <ion-item *ngIf="question.timestamp">
     <div>
       <ion-row>
         <div *ngIf="!question.anon" >

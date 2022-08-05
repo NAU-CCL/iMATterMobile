@@ -4,8 +4,8 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content >
-  <div padding-horizontal>
+<ion-content #ion_content [scrollEvents]="true">
+  <div>
   <h3>
     Welcome to iMATter!
   </h3>
@@ -103,8 +103,26 @@
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked"> Sobriety Date</ion-label>
-      <ion-datetime formControlName="endRehabDate" max="{{currentYear}}" placeholder="The First Day of Your Sobriety"> </ion-datetime>
+       <p style="font-size: 0.8em; margin: 0;">Sobriety Start Date: <br>
+        <ion-item >
+
+            <ion-text id="recovery-start-date-input" (click)="scrollContentToBottom(ion_content)">
+                <div style="display: inline-block;">{{ recoveryStartDate | date:'M/d/yy' }}</div>
+                <ion-icon class="open-datepicker-arrow" name="chevron-down-outline"></ion-icon>
+            </ion-text>
+
+            
+
+              <ion-popover trigger="recovery-start-date-input" side="right" alignment="start" [isOpen]='openRecoveryDatePicker' (didDismiss)="openRecoveryDatePicker = false">
+                  <ng-template>
+                      <div>
+                          <ion-datetime presentation="date"  showDefaultButtons=true  [(ngModel)]="recoveryStartDate"></ion-datetime>
+                      </div>
+                  </ng-template>
+              </ion-popover>
+            
+
+        </ion-item>
     </ion-item>
 
 <!--    <ion-item>-->
