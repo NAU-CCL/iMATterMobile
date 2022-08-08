@@ -144,8 +144,7 @@
           }
         },
         "ionic-cordova-build": {
-          "builder": "@ionic/angular-toolkit:cordova-build",
-          "options": {
+          "builder": "@ionic/cordova-builders:cordova-build",          "options": {
             "browserTarget": "app:build"
           },
           "configurations": {
@@ -155,8 +154,7 @@
           }
         },
         "ionic-cordova-serve": {
-          "builder": "@ionic/angular-toolkit:cordova-serve",
-          "options": {
+          "builder": "@ionic/cordova-builders:cordova-serve",          "options": {
             "cordovaBuildTarget": "app:ionic-cordova-build",
             "devServerTarget": "app:serve"
           },
