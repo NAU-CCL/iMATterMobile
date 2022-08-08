@@ -104,10 +104,7 @@
 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
-<<<<<<< Updated upstream
 =======
-=======
->>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 <<<<<<< HEAD
@@ -132,7 +129,6 @@
                 
 =======
 <<<<<<< Updated upstream
-<<<<<<< Updated upstream
 >>>>>>> Stashed changes
 
 
@@ -141,8 +137,6 @@
 >>>>>>> fixed the package.json
 >>>>>>> Stashed changes
 =======
-=======
->>>>>>> Stashed changes
     <ion-item>
        <p style="font-size: 0.8em; margin: 0;">Sobriety Start Date: <br>
         <ion-item >
