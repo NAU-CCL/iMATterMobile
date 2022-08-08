@@ -6,7 +6,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import 'firebase/storage';
-import * as firebase from 'firebase/app';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 
