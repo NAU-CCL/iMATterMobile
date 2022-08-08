@@ -9,6 +9,8 @@ import 'firebase/storage';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 
+
+
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.page.html',
@@ -230,7 +232,7 @@ export class SignupPage implements OnInit {
       this.user.password = signupForm.value.password;
       // this.user.dueDate = signupForm.value.dateDue.split('T')[0];
       this.user.dueDate = '';
-      this.user.endRehabDate = signupForm.value.endRehabDate.split('T')[0];
+      this.user.endRehabDate = this.recoveryStartDate.split('T')[0];
       this.user.location = signupForm.value.location;
       this.user.bio = signupForm.value.bio;
       this.user.profilePic = this.picURL;
@@ -529,6 +531,20 @@ export class SignupPage implements OnInit {
     //console.log(`Scrolling to bottom. Ion content scroll height is ${ion_content.scrollHeight}`)
 
     ion_content.scrollToBottom();
+  }
+
+  updateRecoveryDate( newDate: any, datePicker: any)
+  {
+    console.log(`New recovery date is ${JSON.stringify(newDate)} Date picker value ${datePicker.value} Date picker obj ${JSON.stringify(datePicker.preferWheel)}`)
+
+    this.recoveryStartDate = datePicker.value;
+    this.signupForm.controls['endRehabDate'].setValue(this.recoveryStartDate);
+    this.openRecoveryDatePicker = false;
+  }
+
+  closeDatePicker()
+  {
+    this.openRecoveryDatePicker = false;
   }
 
 }
