@@ -167,7 +167,7 @@ export class AnalyticsService {
 
   async addSessionOnAppEnter( ) {
 
-    console.log(`Adding new user session`)
+    console.log(`Adding new user session`);
     let userID: string  = '';
 
     // Get the user code and then add a new session to the analyticsSessions collection using the user code.
@@ -209,6 +209,37 @@ export class AnalyticsService {
   {
     console.log(`Updating ${pageName} clicks, session object ref is ${this.idReference}`)
 
+<<<<<<< HEAD
+      if( this.idReference )
+      {
+
+        this.sessionCollection.doc(this.idReference).get().subscribe( (docSnap) => {
+            let docData = docSnap.data();
+  
+            // If property exists on document, increment it else, add the field with value of 1 for single click.
+            if( docData.hasOwnProperty(pageName) )
+            {
+              docSnap.ref.update({[pageName]:  firebase.firestore.FieldValue.increment(1)}).then( ()=>{
+                this.sessionCollection.doc(this.idReference).get().subscribe( (docSnap)=> {
+                  console.log(`The incremeneted session object is now ${JSON.stringify( docSnap.data() )}`);
+                })
+              });
+            }
+            else
+            {
+              docSnap.ref.update({[pageName]:  1}).then( ()=>{
+                this.sessionCollection.doc(this.idReference).get().subscribe( (docSnap)=> {
+                  console.log(`The incremeneted session object is now ${JSON.stringify( docSnap.data() )}`);
+                })
+              });
+            }
+          })
+      }
+      else
+      {
+        console.log(`SESSION ID REFERENCE WAS NULL!`);
+      }
+=======
       this.sessionCollection.doc(this.idReference).get().subscribe( (docSnap) => {
           let docData = docSnap.data();
 
@@ -230,6 +261,7 @@ export class AnalyticsService {
             });
           }
         })
+>>>>>>> master
 
    
   }
