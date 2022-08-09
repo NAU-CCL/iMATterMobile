@@ -195,3 +195,19 @@ ion-icon {
 .editing-profile-subtext{
   font-size: 12px;
 }
+
+.flex-row-apart{
+  display:flex;
+  justify-content: space-between;
+}
+
+#recovery-date-input{
+  color: rgb(32, 121, 255);
+  display: flex;
+  justify-content: center;
+  align-items:center;
+}
+
+.open-datepicker-arrow{
+  margin-left: 5px;
+}

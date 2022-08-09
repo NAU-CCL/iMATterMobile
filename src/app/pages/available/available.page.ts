@@ -3,10 +3,10 @@ import { Observable } from 'rxjs';
 import { SurveyService, Survey } from 'src/app/services/survey/survey.service';
 import { Storage } from '@ionic/storage';
 import { Router, ActivatedRoute } from '@angular/router';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ProfileService } from 'src/app/services/user/profile.service';
-import * as admin from 'firebase-admin';
 import { DatePipe } from '@angular/common';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 // Today's date as a Javascript Date Object
 const today = new Date();
@@ -19,7 +19,7 @@ const today = new Date();
 
 export class AvailablePage implements OnInit {
   public surveys: Observable<Survey[]>;
-  public userSurveys: [];
+  public userSurveys: Survey[] = [];
   public userCode = '';
   public emotion = '';
   public daysAUser = '';
@@ -29,9 +29,10 @@ export class AvailablePage implements OnInit {
   public userVisibility;
   public user;
   public surveyComplete;
-
+  private storage: Storage = null; 
+  
   constructor(private surveySerivce: SurveyService,
-    private storage: Storage,
+    private storageService: StorageService,
     private router: Router,
     public afs: AngularFirestore,
     private activatedRoute: ActivatedRoute,
@@ -40,8 +41,8 @@ export class AvailablePage implements OnInit {
   ) {
   }
 
-  ngOnInit() {
-
+  async ngOnInit() {
+    this.storage = await this.storageService.getStorage();
     this.storage.get('authenticated').then((val) => {
       if (val === 'false') {
         this.router.navigate(['/login/']);

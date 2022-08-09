@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection, DocumentData, Query } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection, DocumentData, Query } from '@angular/fire/compat/firestore';
 import { Observable, of } from 'rxjs';
 import { ReviewQuestions } from '../pages/more/resources/review-interfaces/review-interfaces' ;
 import { Review } from '../pages/more/resources/review-interfaces/review-interfaces' ;
@@ -56,7 +56,7 @@ export class GetReviewSurveyService {
   // Function used to convert the type field from strings to arrays in the Location collection.
   changeResourceTypesFromStringToArray()
   {
-    this.afs.collection<ReviewQuestions[]>('resourceLocations').ref.get().then( querySnap =>{
+    this.afs.collection<any>('resourceLocations').ref.get().then( querySnap =>{
       querySnap.forEach( ( docSnapShot )=>{
 
         let resourceObj = docSnapShot.data();

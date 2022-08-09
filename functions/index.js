@@ -753,3 +753,4 @@ exports.sendProblemReportedEmail = functions.firestore.document('reports/{docID}
         }).then(res => console.log('Successfully sent that feedback/problem mail')).catch(err => console.log(`Error sending that feedback/problem email: ${err}`));
     
      });
+

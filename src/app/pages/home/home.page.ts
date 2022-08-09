@@ -1,24 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Storage } from '@ionic/storage';
-import { AngularFirestore } from '@angular/fire/firestore';
+import {AngularFirestore} from '@angular/fire/compat/firestore';
 import { ToastController, AlertController } from '@ionic/angular';
 import { User } from '../../services/user/auth.service';
 import { ChatService, Cohort, Chat } from '../../services/chat/chat-service.service';
 import { AnalyticsService, Analytics, Sessions } from 'src/app/services/analyticsService.service';
-import * as firebase from 'firebase/app';
 import { Observable } from 'rxjs';
 import { FireService } from 'src/app/services/survey/fire.service';
 import { MoodProviderNotifService, EmotionNotif } from '../../services/mood-provider-notif.service';
-import { ChallengeService, Challenge, ChallengeTypes } from '../../services/challenges/challenge-service.service';
-import { QuoteService, Quote } from '../../services/homeQuote.service';
-import { delay } from 'rxjs/operators';
-import { element } from 'protractor';
+import { ChallengeService, Challenge } from '../../services/challenges/challenge-service.service';
+import { QuoteService} from '../../services/homeQuote.service';
 import { SurveyService, Survey } from 'src/app/services/survey/survey.service';
 import { DatePipe } from '@angular/common';
 import { ProfileService } from 'src/app/services/user/profile.service';
-import { consoleTestResultHandler } from 'tslint/lib/test';
 import { FirestoreExamplesService } from 'src/app/services/firestore-examples.service';
+
+import { Storage } from '@ionic/storage-angular';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 
 @Component({
@@ -143,9 +141,12 @@ export class HomePage implements OnInit {
 
     public defaultChallengeCover = "https://firebasestorage.googleapis.com/v0/b/imatter-nau.appspot.com/o/ChallengeImages%2FdefaultChallenge_640x640.png?alt=media&token=f80549df-a0bc-42f2-b487-555fd059f719";
 
+
+    private storage: Storage = null;
+
     constructor(private activatedRoute: ActivatedRoute, public afs: AngularFirestore,
         private toastCtrl: ToastController,
-        private storage: Storage,
+        private storageService: StorageService,
         private router: Router,
         private chatService: ChatService,
         private alertController: AlertController,
@@ -159,16 +160,19 @@ export class HomePage implements OnInit {
         private datepipe: DatePipe,
         private exSercice: FirestoreExamplesService,
         private analyticService: AnalyticsService) {
-        this.dropDown = [{ expanded: false }];
+            this.dropDown = [{ expanded: false }];
     }
 
-    ngOnInit() {
+    async ngOnInit() {
+        this.storage = await this.storageService.getStorage();
 
-        this.storage.get('authenticated').then((val) => {
-            if (val === 'false') {
-                this.router.navigate(['/login/']);
-            }
-        });
+        
+            this.storage.get('authenticated').then((val) => {
+                if (val === 'false') {
+                    this.router.navigate(['/login/']);
+                }
+            });
+     
 
 
         // document.cookie = `accessed=${new Date()};`
@@ -362,7 +366,7 @@ export class HomePage implements OnInit {
                     result.forEach(doc => {
                         this.analytic.page = 'home';
                         this.analytic.userID = val;
-                        this.analytic.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+                        this.analytic.timestamp = new Date();
                         // this.analytic.sessionID = this.idReference;
                         this.analyticsService.addView(this.analytic).then(() => {
                             console.log('successful added view: home');
@@ -386,7 +390,7 @@ export class HomePage implements OnInit {
         this.chat.userID = this.userProfileID;
         this.chat.username = this.user.username;
         this.chat.profilePic = this.user.profilePic;
-        this.chat.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+        this.chat.timestamp = new Date();
         this.chat.message = 'is currently feeling ' + emoji;
         this.chat.visibility = true;
         this.chat.type = 'emotion';
@@ -429,7 +433,7 @@ export class HomePage implements OnInit {
         this.emotionNotif.userID = this.userProfileID;
         this.emotionNotif.username = this.user.username;
         this.emotionNotif.emotionEntered = emotion;
-        this.emotionNotif.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+        this.emotionNotif.timestamp = new Date();
         this.mpnService.addEmotionNotif(this.emotionNotif);
         this.surveys.forEach(item => {
             item.forEach(survey => {

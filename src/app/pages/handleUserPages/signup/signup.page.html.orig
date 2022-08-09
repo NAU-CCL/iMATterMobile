@@ -1,0 +1,195 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Sign Up</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content #ion_content [scrollEvents]="true">
+  <div>
+  <h3>
+    Welcome to iMATter!
+  </h3>
+  <p class="content">
+    In order to get started, we need some information. Please fill out the form below to
+    begin using iMATter. <br>
+    Press 'read more' if you would like to know why we are
+    asking for this information.
+  </p>
+  <ion-button class="text-button" fill = "clear" expand="block" *ngIf="!readMore" (click)="showMore()">
+    Read More
+  </ion-button>
+
+<div *ngIf="readMore">
+  <p class="content">
+    <b>iMATter Screen Name:</b> To keep this application anonymous, we ask you to create a secret identity. This is
+    what will be shown to other users.
+  </p>
+
+  <p class="content">
+    <b>Due date:</b> All new users are placed into a group based on what
+    month their expected due date is in. And in order to tailor information provided
+    to you about your pregnancy, we require you enter your full due date.
+  </p>
+  <p class="content">
+    <b>Location:</b> We provide you a map of resources near you. If you would like, you
+    can allow iMATter access to your exact location when accessing the map.
+    If you feel more comfortable with a zip code, please enter your zip code.
+    Otherwise, you may leave this blank.
+  </p>
+  <p class="content">
+    <b>Bio:</b> You will have a profile that is viewable by other users. If you would like to say something about
+    yourself, feel free to do so, but we ask you to not put any identifiable personal information here.
+  </p>
+
+  <ion-button class="text-button" fill = "clear" expand="block" (click)="showLess()">
+    Show Less
+  </ion-button>
+</div>
+  </div>
+
+  <form [formGroup]="signupForm">
+    <ion-item>
+      <ion-row>
+      <ion-thumbnail class="profilePic">
+        <ion-img *ngIf="!showImages" src="{{ picURL }}" ></ion-img>
+      </ion-thumbnail>
+      <ion-button class= "fill-button" *ngIf="!showImages" (click)="showPics()"> Change Profile Picture </ion-button>
+      </ion-row>
+      <ion-item *ngIf="showImages">
+        <ion-row>
+        <ion-thumbnail class="thumbnail" *ngFor="let pic of allPicURLs" (click)="changePic(pic)">
+          <ion-img src="{{pic}}" ></ion-img>
+        </ion-thumbnail>
+        </ion-row>
+      </ion-item>
+      <ion-label position="stacked">Email</ion-label>
+      <ion-input formControlName="email" type="email" placeholder="Your email address"
+              [class.invalid]="!signupForm.controls['email'].valid && signupForm.controls['email'].touched">
+      </ion-input>
+    </ion-item>
+    <ion-item class="error-message"
+              *ngIf="!signupForm.controls['email'].valid && signupForm.controls['email'].touched">
+      <ion-label>Please enter a valid email.</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Password</ion-label>
+      <ion-input formControlName="password" type="password" placeholder="Your password"
+                 [class.invalid]="!signupForm.controls['password'].valid && signupForm.controls['password'].touched">
+      </ion-input>
+    </ion-item>
+    <ion-item class="error-message"
+              *ngIf="!signupForm.controls['password'].valid  && signupForm.controls['password'].touched">
+      <ion-label>Your password needs more than 8 characters.</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Confirm Password</ion-label>
+      <ion-input formControlName="confirmPassword" type="password" placeholder="Retype your password"
+                 [class.invalid]="!signupForm.controls['confirmPassword'].valid && signupForm.controls['confirmPassword'].touched">
+      </ion-input>
+    </ion-item>
+    <ion-item class="error-message"
+              *ngIf="signupForm.hasError('notSame')">
+      <ion-label>Password fields do not match/</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">iMATter Screen Name</ion-label>
+      <ion-input formControlName="username" placeholder="An Anonymous Name"
+                 [class.invalid]="!signupForm.controls['username'].valid && signupForm.controls['username'].touched">
+      </ion-input>
+    </ion-item>
+    <ion-item class="error-message"
+              *ngIf="!signupForm.controls['username'].valid  && signupForm.controls['username'].touched">
+      <ion-label>Please enter a secret identity.</ion-label>
+    </ion-item>
+
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+=======
+>>>>>>> Stashed changes
+<<<<<<< HEAD
+    
+    
+    <div class="date-picker-section">
+
+      <ion-text style="font-size: 0.8em; margin: 0; font-weight: bold;">Sobriety Start Date: </ion-text> <br>
+      
+  
+      <ion-text id="recovery-start-date-input" style="display: block;"  (click)="openRecoveryDatePicker = !openRecoveryDatePicker">
+          <div style="display: inline-block;">{{ recoveryStartDate | date:'M/d/yy' }}</div>
+          <ion-icon class="open-datepicker-arrow" name="chevron-down-outline"></ion-icon>
+      </ion-text>
+  
+      <div *ngIf="openRecoveryDatePicker">
+        <!-- NG model does not work at all on this date picker but it works on others, no idea why.-->
+        <ion-datetime #datePicker presentation="date" showDefaultButtons=true  size="cover" [value]="recoveryStartDate" (ionChange)="updateRecoveryDate($event, datePicker)" (ionCancel)="closeDatePicker()" [preferWheel]="true"></ion-datetime>
+      </div>
+    </div>
+    
+                
+=======
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+
+
+<<<<<<< Updated upstream
+=======
+>>>>>>> fixed the package.json
+>>>>>>> Stashed changes
+=======
+    <ion-item>
+       <p style="font-size: 0.8em; margin: 0;">Sobriety Start Date: <br>
+        <ion-item >
+
+            <ion-text id="recovery-start-date-input" (click)="scrollContentToBottom(ion_content)">
+                <div>{{ recoveryStartDate | date:'M/d/yy' }}</div>
+                <ion-icon class="open-datepicker-arrow" name="chevron-down-outline"></ion-icon>
+            </ion-text>
+
+>>>>>>> fixed the package.json
+            
+>>>>>>> Stashed changes
+
+
+<!--    <ion-item>-->
+<!--      <ion-label position="stacked">Rehab Graduation Date </ion-label>-->
+<!--      <ion-datetime min="{{minYear}}" max="{{currentYear}}" placeholder="The day your finished rehab"> </ion-datetime>-->
+<!--    </ion-item>-->
+
+    <ion-item>
+      <ion-label position="stacked">Zip Code (Optional)</ion-label>
+      <ion-input formControlName="location" placeholder="Zip Code">
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Security Question</ion-label>
+      <ion-select interface="action-sheet" placeholder="Pick a Question" formControlName="securityQ">
+        <ion-select-option *ngFor="let q of securityQs">
+          {{q}}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+
+    <ion-item>
+      <ion-label position="stacked">Answer to Security Question</ion-label>
+      <ion-input formControlName="securityA" placeholder="Answer">
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Short Bio About You(Optional)</ion-label>
+      <ion-textarea autoGrow="true" spellcheck="true" autocapitalize="true" formControlName="bio"
+                    placeholder="Nothing Personal!">
+      </ion-textarea>
+    </ion-item>
+
+    <ion-button *ngIf="signupForm.valid" class= "fill-button" expand="block" (click)="signupUser(signupForm)">
+      Create Account
+    </ion-button>
+    <ion-button *ngIf="!signupForm.valid" disabled="true" class= "fill-button" expand="block" (click)="signupUser(signupForm)">
+      Create Account
+    </ion-button>
+  </form>
+</ion-content>

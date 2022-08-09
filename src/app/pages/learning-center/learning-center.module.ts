@@ -8,8 +8,6 @@ import { LearningCenterPageRoutingModule } from './learning-center-routing.modul
 
 import { LearningCenterPage } from './learning-center.page';
 
-import { AngularFireModule } from '@angular/fire';
-import { AngularFirestoreModule, FirestoreSettingsToken, AngularFirestore } from '@angular/fire/firestore';
 import { environment } from '../../../environments/environment';
 
 @NgModule({
@@ -17,13 +15,9 @@ import { environment } from '../../../environments/environment';
     CommonModule,
     FormsModule,
     IonicModule,
-    LearningCenterPageRoutingModule,
-    AngularFireModule.initializeApp(environment),
-    AngularFirestoreModule
+    LearningCenterPageRoutingModule
   ],
   providers: [
-    AngularFirestore,
-    { provide: FirestoreSettingsToken, useValue: {} }
   ],
   declarations: [LearningCenterPage]
 })

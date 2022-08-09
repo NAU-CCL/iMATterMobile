@@ -1,8 +1,5 @@
 import { Injectable } from '@angular/core';
-import * as firebase from 'firebase/app';
-import {AngularFirestore, AngularFirestoreCollection} from '@angular/fire/firestore';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {AngularFirestore, AngularFirestoreCollection} from '@angular/fire/compat/firestore';
 
 export interface EmotionNotif {
   id?: string;

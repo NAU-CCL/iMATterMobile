@@ -1,6 +1,6 @@
 
 import { Component, OnInit } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection, Query } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection, Query, DocumentData } from '@angular/fire/compat/firestore';
 import { Observable } from 'rxjs';
 import { FormArray } from '@angular/forms';
 
@@ -19,6 +19,7 @@ import { Location } from "src/app/services/resource.service"
 import { ResourceTypesService } from 'src/app/services/resource-types.service';
 import {Storage} from '@ionic/storage';
 import { DatePipe } from '@angular/common';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 @Component({
   selector: 'app-create-review',
@@ -32,7 +33,7 @@ export class CreateReviewPage implements OnInit {
   public reviewsCollection: AngularFirestoreCollection;
 
   // A query for a single resourceReviewQuestions document form the db. Need to call .get.then() on it to get data, see the loadSurveyReviewQuestionsIntoForm method to see how we use the firestore query object.
-  public reviewQuestionsQuery: Query;
+  public reviewQuestionsQuery: Query<DocumentData>;
   public reviewQuestionsJSON: ReviewQuestions; 
 
   // All of these arrays are the same length as each index is related to each other. ie this is a group surveyQuestionsArray[0],surveyQuestionTypes[0], surveyTagsArray[0].
@@ -69,14 +70,14 @@ export class CreateReviewPage implements OnInit {
     ])
 
   });
-
+  private storage: Storage = null;
   constructor(private route: ActivatedRoute,
               private afs: AngularFirestore,
               private fb: FormBuilder,
               private reviewSurveyService: GetReviewSurveyService,
               private resourceService: LocationService,
               private resourceTypesService: ResourceTypesService,
-              private storage: Storage,
+              private storageService: StorageService,
               private router: Router,
               public datepipe: DatePipe) {
 
@@ -90,8 +91,8 @@ export class CreateReviewPage implements OnInit {
 
   }
 
-  ngOnInit() {
-
+  async ngOnInit() {
+    this.storage = await this.storageService.getStorage();
     // Get the resource ID from the url see resources-routing.module to see where the id param is specified.
     this.route.params.subscribe(params=>{
       this.resourceID = params['id']; 

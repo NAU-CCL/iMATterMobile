@@ -1,12 +1,7 @@
 import { Component, Input, OnInit, Output, EventEmitter, SimpleChanges } from '@angular/core';
-import { DocumentReference } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
 import { GetReviewSurveyService } from '../../../../services/get-review-survey.service'
-import { Review } from '../review-interfaces/review-interfaces';
 import { DatePipe } from '@angular/common';
-import { stringify } from 'querystring';
-import { ComponentsModule } from 'src/app/components/components.module';
 
 @Component({
   selector: 'app-display-reviews',

@@ -4,10 +4,10 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {IonContent, ToastController} from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import {Observable} from 'rxjs';
-import {AngularFirestore} from '@angular/fire/firestore';
-import * as firebase from 'firebase/app';
-import FieldValue = firebase.firestore.FieldValue;
+import {AngularFirestore} from '@angular/fire/compat/firestore';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import { StorageService } from 'src/app/services/storage/storage.service';
+
 
 @Component({
   selector: 'app-forum-thread',
@@ -22,7 +22,7 @@ export class ForumThreadPage implements OnInit {
     description: '',
     username: '',
     userID: '',
-    timestamp: FieldValue,
+    timestamp: undefined,
     profilePic: '',
     anon: false,
     type: '',
@@ -35,7 +35,7 @@ export class ForumThreadPage implements OnInit {
     username: '',
     questionID: '',
     userID: '',
-    timestamp: FieldValue,
+    timestamp: undefined,
     profilePic: '',
     anon: false,
     type: ''
@@ -47,13 +47,13 @@ export class ForumThreadPage implements OnInit {
     public answers: Observable<any>;
     public answerForm: FormGroup;
     public anonPic: string;
-
+    private storage: Storage = null;
   constructor(private afs: AngularFirestore,
               private activatedRoute: ActivatedRoute,
               private questionService: QuestionService,
               private toastCtrl: ToastController,
               private router: Router,
-              private storage: Storage,
+              private storageService: StorageService,
               private formBuilder: FormBuilder) {
 
       this.answerForm = this.formBuilder.group({
@@ -64,8 +64,8 @@ export class ForumThreadPage implements OnInit {
 
   }
 
-  ngOnInit() {
-
+  async ngOnInit() {
+      this.storage = await this.storageService.getStorage();
       this.storage.get('authenticated').then((val) => {
           if (val === 'false') {
               this.router.navigate(['/login/']);
@@ -109,7 +109,7 @@ export class ForumThreadPage implements OnInit {
                               this.answer.username = 'Anonymous';
                               this.answer.profilePic = this.anonPic;
                           }
-                          this.answer.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+                          this.answer.timestamp = new Date();
 
                           this.questionService.addAnswer(this.answer).then(() => {
                               this.showToast('Answer added');
@@ -152,7 +152,7 @@ export class ForumThreadPage implements OnInit {
     }
 
     getAutoProfilePic() {
-        firebase.firestore().collection('settings').doc('userSignUpSettings').get().then((result) => {
+        this.afs.collection('settings').doc('userSignUpSettings').ref.get().then((result) => {
             this.anonPic = result.get('autoProfilePic');
         });
     }

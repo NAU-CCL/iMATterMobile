@@ -3,10 +3,9 @@ import { LearningModuleService, LearningModule } from '../../services/learningMo
 import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyticsService.service';
 import { Observable } from 'rxjs';
 import { Storage} from '@ionic/storage';
-import * as firebase from 'firebase/app';
-import {AngularFirestore} from '@angular/fire/firestore';
+import {AngularFirestore} from '@angular/fire/compat/firestore';
 import { Router, ActivatedRoute } from '@angular/router';
-import { single } from 'rxjs/operators';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 @Component({
   selector: 'app-learning-center',
@@ -18,7 +17,7 @@ export class LearningCenterPage implements OnInit {
     analytic: Analytics =
   {
     page: '',
-    userID: '',
+    userID: '', 
     timestamp: '',
     sessionID: ''
   };
@@ -36,15 +35,18 @@ export class LearningCenterPage implements OnInit {
   lmRecurrenceMap = new Map();
 
   public learningModules: Observable<LearningModule[]>;
+  
+  private storage: Storage = null;
 
   constructor(private router: Router,
-              private storage: Storage,
+              private storageService: StorageService,
               private learningModService: LearningModuleService,
               private afs: AngularFirestore,
               private analyticsService: AnalyticsService,
               private activatedRoute: ActivatedRoute) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.storage = await this.storageService.getStorage();
     console.log('NG ON INIT');
 
     this.storage.get('authenticated').then((val) => {
@@ -216,7 +218,7 @@ export class LearningCenterPage implements OnInit {
           result.forEach(doc => {
             this.analytic.page = 'learningModule';
             this.analytic.userID = val;
-            this.analytic.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+            this.analytic.timestamp = new Date();
             // this.analytic.sessionID = this.idReference;
             this.analyticsService.addView(this.analytic).then (() => {
               console.log('successful added view: learningModules');

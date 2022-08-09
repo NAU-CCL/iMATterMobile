@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument, DocumentReference } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument, DocumentReference } from '@angular/fire/compat/firestore';
 import { map, take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { Storage } from '@ionic/storage';
-import * as firebase from 'firebase/app';
+import { increment } from '@angular/fire/firestore';
 
 export interface Question {
   id?: string;
@@ -48,7 +48,7 @@ export class QuestionService {
 
   private username: string;
 
-  constructor(private afs: AngularFirestore, private storage: Storage) {
+  constructor(private afs: AngularFirestore) {
 
   }
 
@@ -141,7 +141,7 @@ export class QuestionService {
   async addAnswer(answer: Answer) {
 
     this.afs.firestore.collection('questions')
-        .doc(answer.questionID).update({numOfAnswers: firebase.firestore.FieldValue.increment(1)});
+        .doc(answer.questionID).update({numOfAnswers: increment(1)});
 
     this.afs.collection('answers').add({
       username: answer.username,

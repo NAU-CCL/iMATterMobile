@@ -1,17 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import {ChallengeService, Challenge, ChallengeTypes} from '../../../services/challenges/challenge-service.service';
-import { Observable } from 'rxjs';
+import {ChallengeService, Challenge } from '../../../services/challenges/challenge-service.service';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
-import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyticsService.service';
-import * as firebase from 'firebase/app';
-import {AngularFirestore} from '@angular/fire/firestore';
+import { AnalyticsService } from 'src/app/services/analyticsService.service';
+import {AngularFirestore} from '@angular/fire/compat/firestore';
 import {AlertController} from '@ionic/angular';
 import {ActivatedRoute} from '@angular/router';
-import {ExpandableComponent} from '../../../components/expandable/expandable.component';
 import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
-import {compilerSetStylingMode} from '@angular/compiler/src/render3/view/styling_state';
-import {isNegativeNumberLiteral} from 'tslint';
+import { StorageService } from 'src/app/services/storage/storage.service';
+
 
 
 @Component({
@@ -40,18 +37,20 @@ export class ViewChallengePage implements OnInit {
 
     public currentDay;
     public dayComplete;
-
+    private storage: Storage = null;
+    
     constructor(private challengeService: ChallengeService,
-                private storage: Storage,
+                private storageService: StorageService,
                 private router: Router,
                 private afs: AngularFirestore,
                 private analyticsService: AnalyticsService,
                 private alertController: AlertController,
                 private activatedRoute: ActivatedRoute,
-                private inAppBrowser: InAppBrowser) {
+                public inAppBrowser: InAppBrowser) {
     }
 
-    ngOnInit() {
+    async ngOnInit() {
+        this.storage = await this.storageService.getStorage();
         this.storage.get('authenticated').then((val) => {
             if (val === 'false') {
                 this.router.navigate(['/login/']);

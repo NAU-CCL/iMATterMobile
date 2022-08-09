@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Storage } from '@ionic/storage';
+import { StorageService } from 'src/app/services/storage/storage.service';
 import { FcmService } from "../../services/pushNotifications/fcm.service";
 
 @Component({
@@ -10,13 +11,30 @@ import { FcmService } from "../../services/pushNotifications/fcm.service";
 })
 export class CalendarSettingsPage implements OnInit {
 
+  public clock: any;
+  public eventNotificationTime: any;
+
+  
   private chatNotif: boolean;
   private learningModNotif: boolean;
   private surveyNotif: boolean;
   private infoDeskNotif: boolean;
   private notificationTime: number;
-  constructor(public afs: AngularFirestore, private storage: Storage, private fcm: FcmService) {
+  
+  private storage: Storage = null; 
+  constructor(public afs: AngularFirestore,
+      private storageService: StorageService,
+      private fcm: FcmService) {
 
+    this.storageService.getStorage().then( (storage) => {
+      this.storage = storage
+    } );
+    
+
+  }
+
+  async ngOnInit() {
+    this.storage = await  this.storageService.getStorage();
 
     this.storage.get('userCode').then((val) => {
       if (val) {
@@ -52,11 +70,6 @@ export class CalendarSettingsPage implements OnInit {
         });
       }
     });
-
-  }
-
-  ngOnInit() {
-
   }
 
 

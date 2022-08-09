@@ -3,25 +3,13 @@ import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import { ChatService, Cohort, Chat } from '../../services/chat/chat-service.service';
 import { Observable } from 'rxjs';
-import * as firebase from 'firebase/app';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AnalyticsService, Analytics, Sessions } from 'src/app/services/analyticsService.service';
 import { IonContent } from '@ionic/angular';
 
 
-import {
-  Plugins,
-  PushNotification,
-  PushNotificationToken,
-  PushNotificationActionPerformed
-} from '@capacitor/core';
-import { sendChatNotification } from "../../../../functions/src";
 import 'rxjs-compat/add/observable/timer';
-import { SelectMultipleControlValueAccessor } from '@angular/forms';
-
-import {ScrollableDirective} from './scrollable.directive'
-
-const { PushNotifications } = Plugins;
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 @Component({
   selector: 'app-tab2',
@@ -67,13 +55,30 @@ export class ChatPage implements OnInit {
   private numOfChats: number;
 
   public userProfileID;
+private storage: Storage = null;
 
   constructor(public _zone: NgZone,
     private router: Router,
-    private storage: Storage,
+    private storageService: StorageService,
     public chatService: ChatService,
     private afs: AngularFirestore,
     private analyticsService: AnalyticsService) {
+    
+
+    // Event that is suppose to fire when the user leaves to their homescreen.
+    document.addEventListener('pause',  () => { this.addAutoChat( 'left' );  }, false);
+
+    // Event that fires when user opens app after leaving app previously.
+    document.addEventListener('resume', () => { this.addAutoChat( 'entered' ); }, false);
+
+    //this.chatService.deleteAllAutoChats();
+
+    console.log( `The active view is: ${this.router.url}` );
+  }
+
+  async ngOnInit() {
+    this.storage = await this.storageService.getStorage();
+
     this.storage.get('cohort').then((val) => {
       if (val) {
         this.cohortChat = val;
@@ -87,18 +92,6 @@ export class ChatPage implements OnInit {
       this.scrollToBottom();
     });
 
-    // Event that is suppose to fire when the user leaves to their homescreen.
-    document.addEventListener('pause',  () => { this.addAutoChat( 'left' );  }, false);
-
-    // Event that fires when user opens app after leaving app previously.
-    document.addEventListener('resume', () => { this.addAutoChat( 'entered' ); }, false);
-
-    //this.chatService.deleteAllAutoChats();
-
-    console.log( `The active view is: ${this.router.url}` );
-  }
-
-  ngOnInit() {
     this.chatService.initChatServce('chats', 'timestamp');
 
     this.storage.get('authenticated').then((val) => {
@@ -241,7 +234,7 @@ export class ChatPage implements OnInit {
           result.forEach(doc => {
             this.analytic.page = 'chat';
             this.analytic.userID = val;
-            this.analytic.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+            this.analytic.timestamp = new Date();
             // this.analytic.sessionID = this.idReference;
             this.analyticsService.addView(this.analytic).then(() => {
               console.log('successful added view: chat');

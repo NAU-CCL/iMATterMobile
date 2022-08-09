@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
+import {AngularFirestore, AngularFirestoreCollection, DocumentReference} from '@angular/fire/compat/firestore';
 import { Storage } from '@ionic/storage';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
-import * as firebase from 'firebase/app';
+
 import 'firebase/auth';
 import 'firebase/firestore';
 
@@ -12,11 +13,10 @@ import 'firebase/firestore';
 
 export class ProfileService {
 
-    public userProfile: firebase.firestore.DocumentReference;
-    public currentUser: firebase.User;
+    public userProfile: DocumentReference;
 
     constructor(public afs: AngularFirestore,
-                private storage: Storage) {
+                private storageService: StorageService) {
 
     }
 
@@ -32,16 +32,17 @@ export class ProfileService {
             username: username,
             gcType: gcType,
             state: "new",
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            timestamp: new Date()
         });
     }
-
+    
     /**
      * Update the user's email in db, only if their password entered matches the one
      * currently in the db
      */
-    async updateEmail(newEmail: string, password: string, userID: string) {
-        this.afs.firestore.collection('users').where('code', '==', userID)
+    async updateEmail(newEmail: string, password: string, userID: string): Promise<void>
+    {
+        return this.afs.firestore.collection('users').where('code', '==', userID)
             .get().then(snapshot => {
                 snapshot.forEach(doc => {
                     const userPassword = doc.get('password');
@@ -54,18 +55,17 @@ export class ProfileService {
     }
 
     /**
-     * Update the user's password in db, only if their old password entered matches the one
-     * currently in the db
+     * Update the user's password in db regardless if old password matches new password.
      */
-    async updatePassword(newPassword: string, oldPassword: string, userID: string) {
-        this.afs.firestore.collection('users').where('code', '==', userID)
+    async updatePassword(newPassword: string, userID: string) {
+        return this.afs.firestore.collection('users').where('code', '==', userID)
             .get().then(snapshot => {
                 snapshot.forEach(doc => {
-                    const userPassword = doc.get('password');
-                    if (userPassword === oldPassword) {
-                        return this.afs.firestore.collection('users')
-                            .doc(userID).update({ password: newPassword });
-                    }
+                    
+                    return this.afs.firestore.collection('users')
+                          .doc(userID).update({ password: newPassword }).then( () =>{
+                            console.log(`Finished updating pass`);
+                          });
                 });
             });
     }
@@ -134,11 +134,12 @@ export class ProfileService {
             .doc(userID).update({ availableSurveys: newAvailableSurveys });
     }
 
-    getCurrentUserCode()
+    async getCurrentUserCode()
     {
-        return this.storage.get('userCode').then((val) => {
+        let storage  = await this.storageService.getStorage();
+        return storage.get('userCode').then((val) => {
             console.log(`In profile service, user code is ${val}`)
-            return this.afs.collection('users').doc(val).get();
+            return this.afs.collection<any>('users').doc(val).get();
         });
     }
 }

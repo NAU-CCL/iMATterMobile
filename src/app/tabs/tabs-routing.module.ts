@@ -104,31 +104,6 @@ const routes: Routes = [
         path: 'more',
         children: [
           {
-            path: 'learning-center',
-            children: [
-              {
-                path: '',
-                children: [
-                  {
-                    path: '',
-                    loadChildren: () =>
-                      import('../pages/learning-center/learning-center.module').then(m => m.LearningCenterPageModule)
-                  },
-                  {
-                    path: 'learning-module-content/:id',
-                    loadChildren: () =>
-                      import('../pages/learning-center/learning-module-content/learning-module-content.module').then(m => m.LearningModuleContentPageModule)
-                  }
-                ]
-              },
-            ]
-          },
-          {
-            path: 'learning-center/:id',
-            loadChildren: () =>
-              import('../pages/learning-center/learning-center.module').then(m => m.LearningCenterPageModule)
-          },
-          {
             //This module loaded when /more is visited. Routes of the pattern /more/index will be matched by the more-routing.module.ts
             path: '',
             loadChildren: () =>
