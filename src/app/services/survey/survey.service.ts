@@ -28,12 +28,11 @@ export class SurveyService {
         // gets the collection of surveys
         this.surveyCollection = this.angularfs.collection<Survey>('surveys-v2');
 
-        
-        //  looks for changes and updates, also grabs the data // {aksjdnajksnd123knasd, title: 'survey-name', ...}
-        this.surveys = this.surveyCollection.snapshotChanges().pipe( //DocumentChangeAction[] =>
-            map(actions => { // actions ==DocumentChangeAction[]
-                return actions.map(a => {//a === DocumentChangeAction
-                    const data = a.payload.doc.data(); //DocumentChangeAction.payload === DocumentChange => DocumentChange.doc === DocumentSnapshot => DocumentSnapshot.data()
+        //  looks for changes and updates, also grabs the data
+        this.surveys = this.surveyCollection.snapshotChanges().pipe(
+            map(actions => {
+                return actions.map(a => {
+                    const data = a.payload.doc.data();
                     const id = a.payload.doc.id;
                     return { id, ...data }; // Take all the key and value pairs from data and toss them into the object along with id. Basically extract the data object properties and place it in a new obj.
                 });

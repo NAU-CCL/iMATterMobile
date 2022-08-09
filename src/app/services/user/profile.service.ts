@@ -16,12 +16,8 @@ export class ProfileService {
     public userProfile: DocumentReference;
 
     constructor(public afs: AngularFirestore,
-<<<<<<< HEAD
-                private storage: Storage) {
-=======
                 private storageService: StorageService) {
 
->>>>>>> master
     }
 
     /**
@@ -145,39 +141,5 @@ export class ProfileService {
             console.log(`In profile service, user code is ${val}`)
             return this.afs.collection<any>('users').doc(val).get();
         });
-    }
-
-    convertCompletedSurveyDateStringsToDates()
-    {
-        this.afs.collection('users').get().subscribe( (userQuerySnap) =>{
-            userQuerySnap.forEach( (userQueryDocSnap) =>{
-                let userCompletedSurveysArray = userQueryDocSnap.data().answeredSurveys;
-                if( !userCompletedSurveysArray )
-                {
-                    userCompletedSurveysArray = [];
-                }
-
-                console.log(`User ID is ${userQueryDocSnap.ref.id}`);
-
-                userCompletedSurveysArray = userCompletedSurveysArray.map( (answeredSurveyObj) =>{
-                    console.log(`Before change: answered survey object is ${JSON.stringify(answeredSurveyObj)}`);
-
-                     let timeStart=  new Date(answeredSurveyObj.date + 'T' + answeredSurveyObj.timeStart.split(' ')[0] + ':00');
-                     let timeEnd =  new Date(answeredSurveyObj.date + 'T' + answeredSurveyObj.timeEnd.split(' ')[0]);
-                     let date =  new Date(answeredSurveyObj.date + 'T' + answeredSurveyObj.timeStart.split(' ')[0] + ':00');
-
-                     answeredSurveyObj.timeStart = timeStart;
-                     answeredSurveyObj.timeEnd = timeEnd;
-                     answeredSurveyObj.date = date;
-
-                     console.log(`AFTER CHANGE: answered survey object is ${JSON.stringify(answeredSurveyObj)}`);
-                    return answeredSurveyObj;
-                } );
-
-                console.log(`MAPPED user compelted surveys array ${JSON.stringify(userCompletedSurveysArray)}`);
-
-                //userQueryDocSnap.ref.update({answeredSurveys: userCompletedSurveysArray});
-            })
-        } )
     }
 }
