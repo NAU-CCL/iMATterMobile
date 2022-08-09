@@ -239,7 +239,6 @@ export class HomePage implements OnInit {
                         this.user.currentEmotion = doc.get('mood');
                         this.user.code = doc.get('code');
                         this.user.dailyQuote = doc.get('dailyQuote');
-                        this.user.daysAUser = doc.get('daysAUser');
                         this.user.joinedChallenges = doc.get('joinedChallenges');
                         this.user.answeredSurveys = doc.get('answeredSurveys');
                         this.user.availableSurveys = doc.get('availableSurveys');
@@ -688,18 +687,9 @@ export class HomePage implements OnInit {
                     
                     if (survey['type'] == 'Days After Joining') {
                         var characteristics = survey['characteristics'];
-                        console.log(` Survey type is days after joining. Name: ${survey['title']}`);
-
-                        console.log(` DAys a user ${this.user['daysAUser']} Days after joining ${characteristics['daysAfterJoining']}`)
-                        
                         if (this.user['daysAUser'] >= characteristics['daysAfterJoining']) {
                             if (!currentSurveys.includes(survey['id'])) {
                                 currentSurveys.push(survey['id']);
-                                console.log(` Pushing days after joining survey. Name: ${survey['title']}`);
-                            }
-                            else
-                            {
-                                console.log(`Survey ID is ${survey['id']} \n Current Surveys is ${currentSurveys}`);
                             }
                         }
                     } else if (survey['type'] == 'Repeating') {
@@ -736,8 +726,6 @@ export class HomePage implements OnInit {
                 }
                 // If the user survey was complete, do nothing and go to the next survey in the array. 
                 else {
-                    console.log(` Survey was complete. Name: ${survey['title']}`);
-                    
                     this.surveyComplete = false;
                 }
 
