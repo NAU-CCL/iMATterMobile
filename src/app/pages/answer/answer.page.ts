@@ -4,11 +4,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { InAppBrowser, InAppBrowserOptions } from '@ionic-native/in-app-browser/ngx';
 import { ProfileService } from 'src/app/services/user/profile.service';
 import { Storage } from '@ionic/storage';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ModalController } from '@ionic/angular';
 import { AlertController } from '@ionic/angular';
 import { DatePipe } from '@angular/common';
-import { user } from 'firebase-functions/lib/providers/auth';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 @Component({
     selector: 'app-answer',
@@ -46,13 +46,15 @@ export class AnswerPage implements OnInit {
     availableSurveys = [];
 
     startTime;
+    
+    private storage: Storage = null; 
 
     constructor(private activatedRoute: ActivatedRoute,
         private surveyService: SurveyService,
         private browser: InAppBrowser,
         private router: Router,
         private profile: ProfileService,
-        private storage: Storage,
+        private storageService: StorageService,
         private afs: AngularFirestore,
         private modalController: ModalController,
         public alertController: AlertController,
@@ -60,7 +62,8 @@ export class AnswerPage implements OnInit {
     ) {
     }
 
-    ngOnInit() {
+    async ngOnInit() {
+        this.storage = await this.storageService.getStorage();
         // if the user is not authenticated, sends the user to login page
         this.storage.get('authenticated').then((val) => {
             if (val === 'false') {
@@ -180,7 +183,13 @@ export class AnswerPage implements OnInit {
             message: 'If you did not complete the survey feel free to come back and finish it. If you did complete the survey, please wait a few minutes to receive your points. Thank you for your time.',
             buttons: [{
                 text: 'OK',
+<<<<<<< HEAD
                 handler: ()=>{this.router.navigateByUrl('/tabs/home');}
+=======
+                handler: () => {
+                    this.submit(); // update user points when ok is clicked. If user does not click ok do they not get points?
+                }
+>>>>>>> master
             }
             ]
         });

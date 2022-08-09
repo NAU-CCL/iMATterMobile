@@ -1,20 +1,13 @@
 import { AfterViewInit, Component, OnInit, ViewChild, NgZone } from '@angular/core';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Storage } from '@ionic/storage';
-import { NativeGeocoder, NativeGeocoderOptions, NativeGeocoderResult } from '@ionic-native/native-geocoder/ngx';
-import * as firebase from 'firebase/app';
+import { NativeGeocoder } from '@ionic-native/native-geocoder/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { compilerSetStylingMode } from '@angular/compiler/src/render3/view/styling_state';
-import { forEach } from '@angular-devkit/schematics';
 import { LocationService, Location } from 'src/app/services/resource.service';
 import { Observable } from 'rxjs';
-import * as internal from 'assert';
-import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
-import { SelectMultipleControlValueAccessor } from '@angular/forms';
-import { time } from 'console';
-import { escapeLeadingUnderscores } from 'typescript';
 import { AnalyticsService } from 'src/app/services/analyticsService.service';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 
 
@@ -54,12 +47,12 @@ export class ResourcesPage implements OnInit, AfterViewInit {
     public iosPlatform: boolean;
 
     @ViewChild('mapElement', { static: false }) mapNativeElement;
-
+    private storage: Storage = null;
     constructor(public zone: NgZone,
         private geolocation: Geolocation,
         private nativeGeocoder: NativeGeocoder,
         public afs: AngularFirestore,
-        private storage: Storage,
+        private storageService: StorageService,
         private inAppBrowser: InAppBrowser,
         public locationService: LocationService,
         private analyticsService: AnalyticsService) {
@@ -71,7 +64,8 @@ export class ResourcesPage implements OnInit, AfterViewInit {
         maximumAge: 3600
     };
 
-    ngOnInit() {
+    async ngOnInit() {
+        this.storage = await this.storageService.getStorage();
         this.storage.get('userCode').then((val) => {
             if (val) {
                 this.userProfileID = val;

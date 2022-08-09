@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore'
 import { Storage } from '@ionic/storage';
+import { StorageService } from 'src/app/services/storage/storage.service';
 import { FcmService } from "../../../services/pushNotifications/fcm.service";
 import { ProfileService } from "../../../services/user/profile.service";
 
@@ -19,14 +20,22 @@ export class SettingsPage implements OnInit {
   public clock;
   public eventNotificationTime;
   public autoLogin;
-
+  private storage: Storage = null;
+  
   constructor(public afs: AngularFirestore,
-              private storage: Storage,
+              private storageService: StorageService,
               private fcm: FcmService,
               private profileService: ProfileService) {
 
                 //this.profileService.updateAutoLogin( autoLogInUser, this.userProfileID );
 
+
+    
+
+  }
+
+  async ngOnInit() {
+    this.storage = await this.storageService.getStorage();
 
     this.storage.get('userCode').then((val) => {
       if (val) {
@@ -69,11 +78,6 @@ export class SettingsPage implements OnInit {
         });
       }
     });
-
-  }
-
-  ngOnInit() {
-
   }
 
 

@@ -1,4 +1,4 @@
-import { CalendarComponent } from 'ionic2-calendar/calendar';
+import { CalendarComponent } from 'ionic2-calendar';
 import { Component, ViewChild, OnInit, Inject, LOCALE_ID } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { formatDate } from '@angular/common';
@@ -6,12 +6,14 @@ import { Storage } from '@ionic/storage';
 import { Router } from '@angular/router';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyticsService.service';
-import * as firebase from 'firebase/app';
-import {AngularFirestore} from '@angular/fire/firestore';
+
+import {AngularFirestore} from '@angular/fire/compat/firestore';
+
 import {Observable} from 'rxjs';
 import * as moment from 'moment';
 
-import { StorageService, Item } from '../../services/storage.service';
+import { CalendarStorageService, Item } from '../../services/calendar-storage-service.service';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 /**
  * This code written with the help of this tutorial:
@@ -30,8 +32,8 @@ export class CalendarPage implements OnInit {
   event = {
     title: '',
     desc: '',
-    startTime: '',
-    endTime: '',
+    startTime: new Date().toISOString(),
+    endTime: new Date( new Date((new Date()).setHours(23)).setMinutes(59) ).toISOString(),
     allDay: false,
 	id: '',
 	AMPM: ''
@@ -41,13 +43,17 @@ export class CalendarPage implements OnInit {
   days: any[];
   chosenHours: number;
   chosenMinutes: number;
-  eventList: any[] = [];
-
   minDate = moment().toDate().toISOString();
+
+  public openStartTimePicker: boolean = false;
+  public openEndTimePicker: boolean = false;
+
+
 
   test = [];
   eventSource = [];
   viewTitle;
+  eventList: any[] = [];
 
   calendar = {
     mode: 'month',
@@ -101,14 +107,20 @@ export class CalendarPage implements OnInit {
 
   // @ts-ignore
   @ViewChild(CalendarComponent) myCal: CalendarComponent;
+private storage: Storage = null; 
+  constructor(private localNotifications: LocalNotifications,
+	          private alertCtrl: AlertController,
+			  @Inject(LOCALE_ID) private locale: string,
+              private storageService: StorageService,
+			  private calStorageService: CalendarStorageService,
+			  private afs: AngularFirestore,
+              private analyticsService: AnalyticsService,      
+			  private router: Router) {
 
-  constructor(private localNotifications: LocalNotifications, private alertCtrl: AlertController, @Inject(LOCALE_ID) private locale: string,
-              private storage: Storage, private storageService: StorageService,  private afs: AngularFirestore,
-     private analyticsService: AnalyticsService, private router: Router) {
-		this.notifyTime = moment(new Date()).format();
+				this.notifyTime = moment(new Date()).format();
 
-		this.chosenHours = new Date().getHours();
-		this.chosenMinutes = new Date().getMinutes();
+				this.chosenHours = new Date().getHours();
+				this.chosenMinutes = new Date().getMinutes();
 
 
 
@@ -127,7 +139,8 @@ export class CalendarPage implements OnInit {
 	}
 
 
-  ngOnInit() {
+  async ngOnInit() {
+	this.storage = await this.storageService.getStorage();
     this.storage.get('authenticated').then((val) => {
       if (val === 'false') {
         this.router.navigate(['/login/']);
@@ -164,7 +177,7 @@ export class CalendarPage implements OnInit {
         result.forEach(doc =>{
           this.analytic.page = 'calendar';
           this.analytic.userID = val;
-          this.analytic.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+          this.analytic.timestamp = new Date();
           //this.analytic.sessionID = this.idReference;
           this.analyticsService.addView(this.analytic).then (() =>{
             console.log('successful added view: Calendar');
@@ -190,6 +203,8 @@ export class CalendarPage implements OnInit {
 
   // Create the right event format and reload source
   addEvent() {
+
+	
 	  this.currentlyEditing = false;
 	  this.notificationIndex = Math.floor(Math.random() * 100000000000);
 	  let eventCopy = {
@@ -271,7 +286,7 @@ export class CalendarPage implements OnInit {
 		this.myCal.loadEvents();
 
 
-		this.storageService.addItem(eventCopy).then(item => {
+		this.calStorageService.addItem(eventCopy).then(item => {
 
 
 		  this.loadItems();
@@ -347,7 +362,7 @@ export class CalendarPage implements OnInit {
     this.myCal.loadEvents();
 
 
-	this.storageService.addItem(eventCopy).then(item => {
+	this.calStorageService.addItem(eventCopy).then(item => {
 
 
       this.loadItems();
@@ -377,7 +392,7 @@ async displayCalendarInfo(){
 
 
   loadItems() {
-    this.storageService.getItems().then(items => {
+    this.calStorageService.getItems().then(items => {
       this.items = items;
       if (items) {
      this.eventSource = items;
@@ -557,7 +572,7 @@ async displayCalendarInfo(){
 		this.myCal.loadEvents();
 
 
-		this.storageService.addItem(eventCopy).then(item => {
+		this.calStorageService.addItem(eventCopy).then(item => {
 
 			//lod
 		  this.loadItems();
@@ -631,7 +646,7 @@ async displayCalendarInfo(){
     this.myCal.loadEvents();
 
 
-	this.storageService.addItem(eventCopy).then(item => {
+	this.calStorageService.addItem(eventCopy).then(item => {
 
 		console.log('?');
       this.loadItems();

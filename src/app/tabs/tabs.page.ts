@@ -1,15 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-// import { ClickChatService, CClicks} from 'src/app/services/analytics.service';
 import {Observable} from 'rxjs';
-import {
-    AngularFirestore,
-    AngularFirestoreCollection,
-    AngularFirestoreDocument,
-    DocumentReference
-} from '@angular/fire/firestore';
-// import { firestore  } from 'Firebase';
-import * as firebase from 'firebase';
-import {AnalyticsService, Analytics, Sessions} from 'src/app/services/analyticsService.service';
+import {AngularFirestore} from '@angular/fire/compat/firestore';
+import {AnalyticsService, Sessions} from 'src/app/services/analyticsService.service';
 
 @Component({
     selector: 'app-tabs',

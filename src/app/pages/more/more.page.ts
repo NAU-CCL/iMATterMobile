@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import { AnalyticsService, Analytics, Sessions  } from 'src/app/services/analyticsService.service';
-import * as firebase from 'firebase/app';
-import {AngularFirestore} from '@angular/fire/firestore';
+import {AngularFirestore} from '@angular/fire/compat/firestore';
 import {Observable} from 'rxjs';
 
 
@@ -83,7 +82,7 @@ export class MorePage implements OnInit {
         result.forEach(doc => {
           this.analytic.page = 'morePage';
           this.analytic.userID = val;
-          this.analytic.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+          this.analytic.timestamp = new Date();
           // this.analytic.sessionID = this.idReference;
           this.analyticsService.addView(this.analytic).then (() => {
             console.log('successful added view: morePage');
@@ -100,7 +99,7 @@ export class MorePage implements OnInit {
 
   updateCalendarClicks()
   {
-    this.analyticsService.updateClicks('calendarClicks');
+    //this.analyticsService.updateClicks('calendarClicks');
   }
 
   updateInfoDeskClicks()
@@ -111,5 +110,11 @@ export class MorePage implements OnInit {
   updateSettingsPageClicks()
   {
       this.analyticsService.updateClicks('settingsClicks');
+  }
+
+  updateIndividualInfoDeskClicks()
+  {
+      this.analyticsService.updateClicks('individualInfoDeskClicks');
+    
   }
 }

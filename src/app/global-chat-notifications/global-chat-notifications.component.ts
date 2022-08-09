@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import {ChatService} from '../services/chat/chat-service.service'
-import { DocumentChangeAction, DocumentReference } from '@angular/fire/firestore';
+import { DocumentChangeAction, DocumentReference }  from '@angular/fire/compat/firestore';
 import {autoChat} from '../pages/chat/chatInterface';
 import { Storage } from '@ionic/storage';
 import { _topicWithOptions } from 'firebase-functions/lib/providers/pubsub';
 import { Router, Event, NavigationStart, NavigationEnd, NavigationError} from '@angular/router';
+
+import { StorageService } from '../services/storage/storage.service';
 
 @Component({
   selector: 'app-global-chat-notifications',
@@ -23,14 +25,15 @@ export class GlobalChatNotificationsComponent implements OnInit {
   public currentRoute;
   public userIsInChat: boolean;
   private chatURL = "/tabs/chat";
-
+  private storage: Storage = null; 
+  
   constructor( private chatService: ChatService,
-               private storage: Storage,
+               private storageService: StorageService,
                private router: Router) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     
-    
+    this.storage = await this.storageService.getStorage();
     // Subscribe to the observable which emits new auto chats.
     // and get the current userCode
     this.initializeChatNotifs();

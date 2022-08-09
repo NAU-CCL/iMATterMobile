@@ -4,10 +4,11 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { AuthServiceProvider, User } from '../../../services/user/auth.service';
 import { Router } from '@angular/router';
-import { AngularFirestore } from '@angular/fire/firestore';
+import {AngularFirestore} from '@angular/fire/compat/firestore';
 import { ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { ProfileService } from '../../../services/user/profile.service';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 @Component({
     selector: 'app-recovery-code',
@@ -28,7 +29,7 @@ export class RecoveryCodePage implements OnInit {
     private recoveryPassword: string;
 
 
-
+    private storage: Storage = null;
     public enterCodeForm: FormGroup;
     constructor(
         public loadingCtrl: LoadingController,
@@ -38,7 +39,7 @@ export class RecoveryCodePage implements OnInit {
         private formBuilder: FormBuilder,
         public afs: AngularFirestore,
         private toastCtrl: ToastController,
-        private storage: Storage,
+        private storageService: StorageService,
         private profileService: ProfileService
     ) {
         this.enterCodeForm = this.formBuilder.group({
@@ -53,7 +54,8 @@ export class RecoveryCodePage implements OnInit {
         });
     }
 
-    ngOnInit() {
+    async ngOnInit() {
+        this.storage = await this.storageService.getStorage();
     }
 
     showToast(msg) {

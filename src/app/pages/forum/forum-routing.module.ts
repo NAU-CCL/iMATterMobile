@@ -12,7 +12,7 @@ const routes: Routes = [
     path: 'infoDesk-deatails',
     loadChildren: () => import('./forum-deatails/forum-deatails.module').then( m => m.ForumDeatailsPageModule)
   },
-  { path: 'forum-thread/:id', loadChildren: './forum-thread/forum-thread.module#ForumThreadPageModule' },
+  { path: 'forum-thread/:id', loadChildren: () => import('./forum-thread/forum-thread.module').then( m=>m.ForumThreadPageModule ) },
 
 ];
 

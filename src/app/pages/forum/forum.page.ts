@@ -5,8 +5,9 @@ import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import { AnalyticsService, Analytics, Sessions } from 'src/app/services/analyticsService.service';
 import * as firebase from 'firebase/app';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AlertController } from '@ionic/angular';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 
 @Component({
@@ -38,16 +39,18 @@ export class ForumPage implements OnInit {
   public thisUserLoadedQuestionList: any[];
 
   public iosPlatform: boolean;
-
+  private storage: Storage = null;
   constructor(private questionService: QuestionService,
-    private storage: Storage,
+    private storageService: StorageService,
     private router: Router,
     private afs: AngularFirestore,
     private analyticsService: AnalyticsService,
     private alertController: AlertController) {
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.storage = await this.storageService.getStorage();
+    
     this.storage.get('authenticated').then((val) => {
       if (val === 'false') {
         this.router.navigate(['/login/']);
@@ -144,7 +147,7 @@ export class ForumPage implements OnInit {
           result.forEach(doc => {
             this.analytic.page = 'infoDesk';
             this.analytic.userID = val;
-            this.analytic.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+            this.analytic.timestamp = new Date();
             //this.analytic.sessionID = this.idReference;
             this.analyticsService.addView(this.analytic).then(() => {
               console.log('successful added view: infoDesk');

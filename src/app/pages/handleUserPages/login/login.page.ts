@@ -5,15 +5,14 @@ import {LoadingController, AlertController, Platform} from '@ionic/angular';
 import {AuthServiceProvider} from '../../../services/user/auth.service';
 import {FcmService} from '../../../services/pushNotifications/fcm.service';
 import {Router} from '@angular/router';
-import {AngularFirestore} from '@angular/fire/firestore';
+import {AngularFirestore} from '@angular/fire/compat/firestore';
 import {Observable} from 'rxjs';
 import {ToastController} from '@ionic/angular';
-import {Storage} from '@ionic/storage';
+
+import { Storage } from '@ionic/storage-angular';
 
 import {BnNgIdleService} from 'bn-ng-idle';
-import {Device} from '@ionic-native/device';
-
-import * as firebase from 'firebase/app';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 @Component({
     selector: 'app-login',
@@ -71,8 +70,7 @@ export class LoginPage implements OnInit {
     // 1 means the user has credentials on the device and we will auto log them in.
     public userAutoLoginSetting: number = 3;
 
-    
-
+    private storage: Storage = null;
     constructor(
         public loadingCtrl: LoadingController,
         public alertCtrl: AlertController,
@@ -81,12 +79,14 @@ export class LoginPage implements OnInit {
         private formBuilder: FormBuilder,
         private afs: AngularFirestore,
         private toastCtrl: ToastController,
-        private storage: Storage,
         private fcm: FcmService,
         private analyticsService: AnalyticsService,
         private platform: Platform,
-        private bnIdle: BnNgIdleService
+        private bnIdle: BnNgIdleService,
+        private storageService: StorageService,
     ) {
+
+
         this.showEmailBox = true;
 
         this.loginForm = this.formBuilder.group({
@@ -102,7 +102,7 @@ export class LoginPage implements OnInit {
         
     }
 
-    ngOnInit() {
+   async ngOnInit() {
         console.log(`In login page oninit`);
     }
 
@@ -110,6 +110,10 @@ export class LoginPage implements OnInit {
     // Metho called right after page load.
     async ionViewDidEnter() {
         console.log('User ion did enter');
+
+        this.storage = await this.storageService.getStorage();
+
+        console.log(`Got storage ${this.storage}`);
 
         let autoLoginUser: boolean;
         let isUserAuthenticated: boolean = false;
@@ -121,7 +125,8 @@ export class LoginPage implements OnInit {
         console.log("Waiting for get('auth') to return");
 
         // Add await to force the function to synchronously execute before moving onto next lines of code.
-        isUserAuthenticated = ( <string>await this.storage.get('authenticated') ) == "true";
+        
+        isUserAuthenticated = await this.storage.get('authenticated') === 'true';
 
         console.log(`Got value from await func, is is: ${ isUserAuthenticated } typeof autoLoginUser is ${ typeof( isUserAuthenticated ) }`);
 

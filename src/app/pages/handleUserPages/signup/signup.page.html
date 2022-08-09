@@ -4,8 +4,8 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content >
-  <div padding-horizontal>
+<ion-content #ion_content [scrollEvents]="true">
+  <div>
   <h3>
     Welcome to iMATter!
   </h3>
@@ -101,11 +101,47 @@
               *ngIf="!signupForm.controls['username'].valid  && signupForm.controls['username'].touched">
       <ion-label>Please enter a secret identity.</ion-label>
     </ion-item>
+    
+    
+    <div class="date-picker-section">
 
-    <ion-item>
-      <ion-label position="stacked"> Sobriety Date</ion-label>
-      <ion-datetime formControlName="endRehabDate" max="{{currentYear}}" placeholder="The First Day of Your Sobriety"> </ion-datetime>
-    </ion-item>
+      <ion-text style="font-size: 0.8em; margin: 0; font-weight: bold;">Sobriety Start Date: </ion-text> <br>
+      
+  
+      <ion-text id="recovery-start-date-input" style="display: block;"  (click)="openRecoveryDatePicker = !openRecoveryDatePicker">
+          <div style="display: inline-block;">{{ recoveryStartDate | date:'M/d/yy' }}</div>
+          <ion-icon class="open-datepicker-arrow" name="chevron-down-outline"></ion-icon>
+      </ion-text>
+  
+      <div *ngIf="openRecoveryDatePicker">
+        <!-- NG model does not work at all on this date picker but it works on others, no idea why.-->
+        <ion-datetime #datePicker presentation="date" showDefaultButtons=true  size="cover" [value]="recoveryStartDate" (ionChange)="updateRecoveryDate($event, datePicker)" (ionCancel)="closeDatePicker()" [preferWheel]="true"></ion-datetime>
+      </div>
+    </div>
+    
+
+    
+    
+    <div class="date-picker-section">
+
+      <ion-text style="font-size: 0.8em; margin: 0; font-weight: bold;">Sobriety Start Date: </ion-text> <br>
+      
+  
+      <ion-text id="recovery-start-date-input" style="display: block;"  (click)="openRecoveryDatePicker = !openRecoveryDatePicker">
+          <div style="display: inline-block;">{{ recoveryStartDate | date:'M/d/yy' }}</div>
+          <ion-icon class="open-datepicker-arrow" name="chevron-down-outline"></ion-icon>
+      </ion-text>
+  
+      <div *ngIf="openRecoveryDatePicker">
+        <!-- NG model does not work at all on this date picker but it works on others, no idea why.-->
+        <ion-datetime #datePicker presentation="date" showDefaultButtons=true  size="cover" [value]="recoveryStartDate" (ionChange)="updateRecoveryDate($event, datePicker)" (ionCancel)="closeDatePicker()" [preferWheel]="true"></ion-datetime>
+      </div>
+    </div>
+    
+                
+            
+
+    
 
 <!--    <ion-item>-->
 <!--      <ion-label position="stacked">Rehab Graduation Date </ion-label>-->

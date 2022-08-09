@@ -4,14 +4,12 @@ import {Platform} from '@ionic/angular';
 import {SplashScreen} from '@ionic-native/splash-screen/ngx';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {AnalyticsService, Analytics, Sessions} from 'src/app/services/analyticsService.service';
-import * as firebase from 'firebase/app';
-import {firebaseConfig} from './firebaseCredentials';
 import {Storage} from '@ionic/storage';
 import {BnNgIdleService} from 'bn-ng-idle';
 import {ActivatedRoute, Router} from '@angular/router';
-import {AngularFirestore} from '@angular/fire/firestore';
 import {Observable} from 'rxjs';
 import { ProfileService } from './services/user/profile.service';
+import { StorageService } from './services/storage/storage.service';
 
 @Component({
     selector: 'app-root',
@@ -37,19 +35,18 @@ export class AppComponent {
             numOfClickHome: 0
         };
     public sessions: Observable<any>;
-
+    private storage: Storage = null;    
     constructor(
         private platform: Platform,
         private splashScreen: SplashScreen,
         private statusBar: StatusBar,
-        private storage: Storage,
+        private storageService: StorageService,
         private router: Router,
         private bnIdle: BnNgIdleService,
         private analyticsService: AnalyticsService,
         private profileService: ProfileService
     ) {
         this.initializeApp();
-
 
         // Event that is suppose to fire when the user leaves to their homescreen.
         document.addEventListener('pause',  (  ) => {  analyticsService.endSessionOnAppExit() }, false);
@@ -59,6 +56,11 @@ export class AppComponent {
             analyticsService.addSessionOnAppEnter()  }, false);
 
 
+    }
+
+    async ngOnInit()
+    {
+        this.storage = await this.storageService.getStorage();
     }
 
     logOut(): void {

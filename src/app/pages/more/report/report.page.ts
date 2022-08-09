@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Report, UserSubmissionsService } from '../../../services/userSubmissions/user-submissions.service';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import * as firebase from 'firebase/app';
 import { Device } from '@ionic-native/device/ngx';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 @Component({
   selector: 'app-report',
@@ -28,13 +29,14 @@ export class ReportPage implements OnInit {
   };
 
   public reportForm: FormGroup;
-
+  private storage: Storage = null;
+  
   constructor(private afs: AngularFirestore,
               private activatedRoute: ActivatedRoute,
               private userSubmissionService: UserSubmissionsService,
               private toastCtrl: ToastController,
               private router: Router,
-              private storage: Storage,
+              private storageService: StorageService,
               private formBuilder: FormBuilder,
               private device: Device
               ) {
@@ -47,7 +49,8 @@ export class ReportPage implements OnInit {
     });
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.storage = await this.storageService.getStorage();
     this.storage.get('authenticated').then((val) => {
       if (val === 'false') {
         this.router.navigate(['/login/']);
@@ -72,7 +75,7 @@ export class ReportPage implements OnInit {
             this.report.title = submissionForm.value.subject;
             this.report.description = submissionForm.value.description;
             this.report.userID = val;
-            this.report.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+            this.report.timestamp = new Date();
             this.report.username = doc.get('username');
             this.report.type = 'Problem';
             this.report.version = this.device.version;

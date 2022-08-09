@@ -5,11 +5,12 @@ import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
 import { ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { FormGroup, FormControl } from '@angular/forms';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ProfileService } from '../../../services/user/profile.service';
 import { Observable } from 'rxjs';
 import { AlertController } from '@ionic/angular';
 import {IonContent} from '@ionic/angular';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 @Component({
   selector: 'app-learning-module-content',
@@ -82,13 +83,14 @@ export class LearningModuleContentPage implements OnInit {
   public video: any;
   public player: any;
   videoHasEnded: boolean;
+  private storage: Storage = null;
   
   constructor(
     private activatedRoute: ActivatedRoute, 
     private learningModuleService: LearningModuleService,
     public domSanitizer: DomSanitizer,
     public toastController: ToastController,
-    private storage: Storage,
+    private storageService: StorageService,
     public afs: AngularFirestore,
     public profileService: ProfileService,
     public alertController: AlertController) 
@@ -98,8 +100,9 @@ export class LearningModuleContentPage implements OnInit {
         "quizSelections": new FormControl()});
     }
 
-  ngOnInit() 
+  async ngOnInit() 
   { 
+    this.storage = await this.storageService.getStorage();
     this.learningModules = this.learningModuleService.getAllLearningModules();
   }
   

@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthServiceProvider, User } from '../../../services/user/auth.service';
 import { FcmService } from '../../../services/pushNotifications/fcm.service';
-import { LoadingController, AlertController, ToastController } from '@ionic/angular';
+import { LoadingController, AlertController, ToastController, IonContent } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
-import { storage } from 'firebase';
 import 'firebase/storage';
-import * as firebase from 'firebase/app';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+
+
 
 
 @Component({
@@ -18,6 +18,10 @@ import { AngularFirestore } from '@angular/fire/firestore';
 })
 
 export class SignupPage implements OnInit {
+
+  public openRecoveryDatePicker: boolean = false;
+
+  public recoveryStartDate: string = new Date().toISOString();
 
   constructor(
     private authService: AuthServiceProvider,
@@ -228,13 +232,13 @@ export class SignupPage implements OnInit {
       this.user.password = signupForm.value.password;
       // this.user.dueDate = signupForm.value.dateDue.split('T')[0];
       this.user.dueDate = '';
-      this.user.endRehabDate = signupForm.value.endRehabDate.split('T')[0];
+      this.user.endRehabDate = this.recoveryStartDate.split('T')[0];
       this.user.location = signupForm.value.location;
       this.user.bio = signupForm.value.bio;
       this.user.profilePic = this.picURL;
       this.user.securityQ = signupForm.value.securityQ;
       this.user.securityA = signupForm.value.securityA;
-      this.user.joined = firebase.firestore.FieldValue.serverTimestamp();
+      this.user.joined = new Date();
 
 
       // find user current pregnancy status
@@ -349,19 +353,19 @@ export class SignupPage implements OnInit {
 
 
   getSecurityQs() {
-    firebase.firestore().collection('settings').doc('userSignUpSettings').get().then((result) => {
+    this.afs.collection('settings').doc('userSignUpSettings').ref.get().then((result) => {
       this.securityQs = result.get('securityQs');
     });
   }
 
   getAutoProfilePic() {
-    firebase.firestore().collection('settings').doc('userSignUpSettings').get().then((result) => {
+    this.afs.collection('settings').doc('userSignUpSettings').ref.get().then((result) => {
       this.picURL = result.get('autoProfilePic');
     });
   }
 
   getProfilePictureChoices() {
-    firebase.firestore().collection('settings').doc('userSignUpSettings').get().then((result) => {
+    this.afs.collection('settings').doc('userSignUpSettings').ref.get().then((result) => {
       this.allPicURLs = result.get('profilePictures');
     });
   }
@@ -519,6 +523,28 @@ export class SignupPage implements OnInit {
         surveys.doc(survey.id).update({ userVisibility: surveyUserVisibility });
       });
     });
+  }
+
+  scrollContentToBottom( ion_content: any )
+  {
+    
+    //console.log(`Scrolling to bottom. Ion content scroll height is ${ion_content.scrollHeight}`)
+
+    ion_content.scrollToBottom();
+  }
+
+  updateRecoveryDate( newDate: any, datePicker: any)
+  {
+    console.log(`New recovery date is ${JSON.stringify(newDate)} Date picker value ${datePicker.value} Date picker obj ${JSON.stringify(datePicker.preferWheel)}`)
+
+    this.recoveryStartDate = datePicker.value;
+    this.signupForm.controls['endRehabDate'].setValue(this.recoveryStartDate);
+    this.openRecoveryDatePicker = false;
+  }
+
+  closeDatePicker()
+  {
+    this.openRecoveryDatePicker = false;
   }
 
 }

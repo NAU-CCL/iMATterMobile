@@ -4,7 +4,7 @@ import { AuthServiceProvider, User } from '../../../services/user/auth.service';
 import { ProfileService } from '../../../services/user/profile.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Observable } from 'rxjs';
 import * as firebase from 'firebase/app';
 import { AnalyticsService, Analytics, Sessions } from 'src/app/services/analyticsService.service';
@@ -12,9 +12,9 @@ import { HttpClient } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { MoodProviderNotifService, EmotionNotif } from '../../../services/mood-provider-notif.service';
 import { ChatService, Cohort, Chat } from '../../../services/chat/chat-service.service';
-import { HomePage } from '../../home/home.page';
 import { ActionSheetController } from '@ionic/angular';
 import { EMOJIS } from '../../../services/emojiArray';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 
 @Component({
@@ -111,13 +111,16 @@ export class ProfilePage implements OnInit {
     public chosenGCType: string;
     public gcTypes: Array<string>;
     public userEmotionIcon: string;
-    public recoveryDate: any;
+    public recoveryDate: string;
+    public newRecoveryDate: string;
+
     public editingMode = false;
     public showImages = false;
     public allPicURLs: any;
     public previewPic: any;
     public collapsePersonalInfo: boolean = true;
     public showSettingsDropDown = false;
+    public openRecoveryDatePicker:boolean = false;
 
     public pointsLeftForGC;
 
@@ -126,7 +129,7 @@ export class ProfilePage implements OnInit {
     static checkUserPoints(userPoints, pointsNeeded): boolean {
         return userPoints >= pointsNeeded;
     }
-
+    private storage: Storage = null;
     constructor(
         private alertCtrl: AlertController,
         private authService: AuthServiceProvider,
@@ -134,12 +137,12 @@ export class ProfilePage implements OnInit {
         private router: Router,
         private activatedRoute: ActivatedRoute,
         private afs: AngularFirestore,
-        private storage: Storage,
+        private storageService: StorageService,
         private analyticsService: AnalyticsService,
         private alertController: AlertController,
         private toastCtrl: ToastController,
         private http: HttpClient,
-        private datePipe: DatePipe,
+        public datePipe: DatePipe,
         private chatService: ChatService,
         private mpnService: MoodProviderNotifService,
         private actionSheetController: ActionSheetController,
@@ -148,7 +151,8 @@ export class ProfilePage implements OnInit {
         this.getProfilePictureChoices();
     }
 
-    ngOnInit() {
+    async ngOnInit() {
+        this.storage = await this.storageService.getStorage();
         this.storage.get('authenticated').then((val) => {
             if (val === 'false') {
                 this.router.navigate(['/login/']);
@@ -212,7 +216,7 @@ export class ProfilePage implements OnInit {
                     result.forEach(doc => {
                         this.analytic.page = 'profile';
                         this.analytic.userID = val;
-                        this.analytic.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+                        this.analytic.timestamp = new Date();
                         // this.analytic.sessionID = this.idReference;
                         this.analyticsService.addView(this.analytic).then(() => {
                             console.log('successful added view: profile');
@@ -259,8 +263,9 @@ export class ProfilePage implements OnInit {
                             this.profileService.updateEmail(data.newEmail, data.password, this.userProfileID)
                                 .then(() => {
                                     this.showToast('Your email has been updated!');
-                                    this.storage.set('email', data.newEmail);
-                                    this.refreshPage();
+                                    this.storage.set('email', data.newEmail).then( ()=>{
+                                        this.refreshPage();
+                                    });
                                 },
                                     err => {
                                         this.showToast('There was a problem updating your email');
@@ -288,8 +293,9 @@ export class ProfilePage implements OnInit {
                 {
                     text: 'Save',
                     handler: data => {
-                        if (data.newPassword.length >= 8) {
-                            this.profileService.updatePassword(data.newPassword, data.oldPassword, this.userProfileID)
+                        if (data.newPassword.length >= 8 && this.user.password === data.oldPassword) 
+                        {
+                            this.profileService.updatePassword(data.newPassword, this.userProfileID)
                                 .then(() => {
                                     this.showToast('Your password has been updated!');
                                     this.refreshPage();
@@ -297,8 +303,17 @@ export class ProfilePage implements OnInit {
                                     err => {
                                         this.showToast('There was a problem updating your password');
                                     });
-                        } else {
+                        } 
+                        else if(data.newPassword.length <= 8 )
+                        {
+                            console.log(`Password is less than 8. New pass ${data.newPassword}. Old password ${data.oldPassword}`);
                             alert.message = 'Password must be 8 characters or longer';
+                            return false;
+                        }
+                        else if(this.user.password != data.oldPassword)
+                        {
+                            console.log(`Old password incorrect. User pass ${this.user.password}. Old password ${data.oldPassword}`);
+                            alert.message = 'Old password incorrect';
                             return false;
                         }
                     },
@@ -381,6 +396,7 @@ export class ProfilePage implements OnInit {
                 const ref = this.afs.firestore.collection('users').where('code', '==', val);
                 ref.get().then((result) => {
                     result.forEach(doc => {
+                        console.log(`user code is ${val}`)
                         this.user.username = doc.get('username');
                         this.user.email = doc.get('email');
                         this.user.password = doc.get('password');
@@ -390,8 +406,10 @@ export class ProfilePage implements OnInit {
                         // const rehabDate = new Date(doc.get('endRehabDate'));
                         // this.user.endRehabDate = this.datepipe.transform(rehabDate, 'D MM YYYY');
                         // this.user.endRehabDate = doc.get('endRehabDate');
-                        const date = new Date(doc.get('endRehabDate') + 'T12:00:00');
+                        const date = doc.get('endRehabDate');
+                        console.log(`The date is ${JSON.stringify(date)}`);
                         this.recoveryDate = date;
+                        this.newRecoveryDate = date;
                         // console.log(date);
                         this.user.endRehabDate = doc.get('endRehabDate');
                         // console.log(dateString);
@@ -402,7 +420,7 @@ export class ProfilePage implements OnInit {
                         this.user.autoLogin = doc.get('autoLogin');
                         this.userEmotionIcon = this.getUserEmotionIcon(this.user.currentEmotion);
 
-                        const pointRef = firebase.firestore().collection('settings').doc('giftCardSettings').get();
+                        const pointRef = this.afs.collection<any>('settings').doc('giftCardSettings').ref.get();
                         pointRef.then((res) => {
                             this.pointsForRedemption = res.get('points');
                             this.gcTypes = res.get('types');
@@ -420,12 +438,14 @@ export class ProfilePage implements OnInit {
 
     // gets admin set point amount and uses that to
     displayPointInfo() {
-        const pointRef = firebase.firestore().collection('settings').doc('giftCardSettings').get();
-        pointRef.then((res) => {
+        const pointRef = this.afs.collection('settings').doc('giftCardSettings').get();
+        let pointRef_ = pointRef.subscribe((res) => {
             const points = res.get('points');
             this.presentAlert('Earning Points',
                 'You can earn points by completing surveys and answering learning module questions. Once you have earned ' +
                 +points + ' points, you will see a redeem button, which you may press to use your points to get a gift card for $5');
+                
+            pointRef_.unsubscribe();
         });
     }
 
@@ -439,18 +459,26 @@ export class ProfilePage implements OnInit {
         this.refreshPage();
 
         // send an email
-        firebase.firestore().collection('settings').doc('giftCardSettings').get().then((result) => {
+        let giftCardSettings_ = this.afs.collection('settings').doc('giftCardSettings').get().subscribe((result) => {
             const adminEmail = result.get('email');
             this.profileService.addToRedeemTable(adminEmail, email, username, gcType);
+
+            giftCardSettings_.unsubscribe();
         });
         this.showToast('An email was sent for your gift card request!');
     }
 
-    saveEmotion(emotion: string) {
+    saveEmotion(emotion: string, emoji: string)
+    {
         this.analyticService.updateClicks('emotionChangeClicks');
 
         this.afs.firestore.collection('users').doc(this.userProfileID)
             .update({ mood: emotion });
+
+         // If new emotion is different than old, add a chat message describing the new emotion.
+         if (emotion != this.user.currentEmotion) {
+            this.chatService.addAutoChat(this.chat, this.chat.userID, true);
+         }
 
         this.user.currentEmotion = emotion;
 
@@ -458,14 +486,12 @@ export class ProfilePage implements OnInit {
         this.chat.userID = this.userProfileID;
         this.chat.username = this.user.username;
         this.chat.profilePic = this.user.profilePic;
-        this.chat.timestamp = firebase.firestore.FieldValue.serverTimestamp();
-        this.chat.message = this.chat.username + ' is currently feeling ' + emotion;
+        this.chat.timestamp = new Date();
+        this.chat.message = 'is currently feeling ' + emoji;
         this.chat.type = 'emotion';
         this.chat.visibility = true;
 
-        this.chatService.addChat(this.chat).then(() => {
-            this.chat.message = '';
-        });
+        
 
         this.updateEmotionBadge(this.user.currentEmotion);
 
@@ -495,8 +521,7 @@ export class ProfilePage implements OnInit {
         this.emotionNotif.userID = this.userProfileID;
         this.emotionNotif.username = this.user.username;
         this.emotionNotif.emotionEntered = emotion;
-        this.emotionNotif.timestamp = firebase.firestore.FieldValue.serverTimestamp();
-        this.mpnService.addEmotionNotif(this.emotionNotif);
+        this.emotionNotif.timestamp = new Date();
     }
 
     updateEmotionBadge(emotion: string) {
@@ -549,8 +574,9 @@ export class ProfilePage implements OnInit {
     }
 
     getProfilePictureChoices() {
-        firebase.firestore().collection('settings').doc('userSignUpSettings').get().then((result) => {
+        let userSignUpSetting_ = this.afs.collection('settings').doc('userSignUpSettings').get().subscribe((result) => {
             this.allPicURLs = result.get('profilePictures');
+            userSignUpSetting_.unsubscribe();
         });
     }
 
@@ -565,18 +591,18 @@ export class ProfilePage implements OnInit {
 
     saveProfile() {
         
-        let dateValue = (document.getElementById('newEndRehabDate') as HTMLInputElement).value;
-        dateValue = this.datePipe.transform(dateValue, 'y-MM-dd');
+        console.log(`New recover date in save profile is ${this.newRecoveryDate}`);
 
-        if (dateValue !== this.user.endRehabDate) {
-            console.log('date value changed');
+        if (this.newRecoveryDate !== this.user.endRehabDate) {
+            console.log('Date value changed');
             // const newRehabDate = (document.getElementById('newEndRehabDate') as HTMLInputElement).value;
-            this.user.endRehabDate = dateValue.split('T')[0];
-            const date = new Date(this.user.endRehabDate + 'T12:00:00');
-            this.recoveryDate = date;
+            this.user.endRehabDate = this.newRecoveryDate;
+            //this.recoveryDate = date;
             this.profileService.updateRecoveryDate(this.user.endRehabDate, this.userProfileID);
         } else {
             console.log('In the else');
+            // we use newrecovery date in the date picker and use recoverdate to persist out changes in case the user cancels their edits.
+            this.newRecoveryDate = this.recoveryDate;
         }
 
         console.log('Out of if');
@@ -593,6 +619,7 @@ export class ProfilePage implements OnInit {
     cancelEdit() {
         this.previewPic = this.user.profilePic;
         this.editingMode = false;
+        this.newRecoveryDate = this.recoveryDate;
     }
 
     async showSettingsActionSheet() {
