@@ -100,15 +100,7 @@
     <ion-item class="error-message"
               *ngIf="!signupForm.controls['username'].valid  && signupForm.controls['username'].touched">
       <ion-label>Please enter a secret identity.</ion-label>
-    </ion-item>
-
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> Stashed changes
-<<<<<<< HEAD
-    
+    </ion-item>    
     
     <div class="date-picker-section">
 
@@ -125,18 +117,6 @@
         <ion-datetime #datePicker presentation="date" showDefaultButtons=true  size="cover" [value]="recoveryStartDate" (ionChange)="updateRecoveryDate($event, datePicker)" (ionCancel)="closeDatePicker()" [preferWheel]="true"></ion-datetime>
       </div>
     </div>
-    
-                
-=======
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-
-
-<<<<<<< Updated upstream
-=======
->>>>>>> fixed the package.json
->>>>>>> Stashed changes
-=======
     <ion-item>
        <p style="font-size: 0.8em; margin: 0;">Sobriety Start Date: <br>
         <ion-item >
@@ -145,10 +125,6 @@
                 <div>{{ recoveryStartDate | date:'M/d/yy' }}</div>
                 <ion-icon class="open-datepicker-arrow" name="chevron-down-outline"></ion-icon>
             </ion-text>
-
->>>>>>> fixed the package.json
-            
->>>>>>> Stashed changes
 
 
 <!--    <ion-item>-->

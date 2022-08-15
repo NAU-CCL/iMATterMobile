@@ -182,9 +182,7 @@ export class AnswerPage implements OnInit {
             message: 'Thanks for taking the Survey, your input is really appreciated.',
             buttons: [{
                 text: 'OK',
-                handler: () => {
-                    this.submit(); // update user points when ok is clicked. If user does not click ok do they not get points?
-                }
+                handler: ()=>{this.router.navigateByUrl('/tabs/home');}
             }
             ]
         });
