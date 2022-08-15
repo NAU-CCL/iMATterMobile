@@ -1,4 +1,4 @@
-ionic cordova build --release
+ionic cordova build --release android
 
 jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.keystore platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk alias_name
 

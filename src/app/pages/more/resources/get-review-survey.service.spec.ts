@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { GetReviewSurveyService } from './get-review-survey.service';
+import { GetReviewSurveyService } from '../../../services/get-review-survey.service';
 
 describe('GetReviewSurveyService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));

@@ -29,23 +29,24 @@ export class AnswerPage implements OnInit {
     };
 
     // number of points the user currently has
-    userPoints;
+    userPoints:number;
 
     // user's unique code for identification
-    userCode;
+    userCode:string;
 
     // survey id and interval is taking
-    surveyData;
+    surveyData:string;
 
     // current user's taken surveys
     userSurveysTaken;
 
-    daysAUser;
+    daysAUser:number;
 
-    id;
+    id:string;
+
     availableSurveys = [];
 
-    startTime;
+    startTime: string | number | Date;
     
     private storage: Storage = null; 
 
@@ -167,6 +168,10 @@ export class AnswerPage implements OnInit {
 
     // determines if the survey is completed
     isComplete() {
+        // needs to generate ssurvey data in case onInit is too slow
+        if( !this.surveyData ){
+            this.surveyData = this.activatedRoute.snapshot.paramMap.get('id');
+        }
         if (this.surveyData.split(':')[1] === 'completed') {
             return true;
         }
