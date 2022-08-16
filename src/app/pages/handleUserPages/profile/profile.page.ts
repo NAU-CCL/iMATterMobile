@@ -451,7 +451,7 @@ export class ProfilePage implements OnInit {
 
     // this function deducts the admin set point amount from the user
     // and sends an email to the admin set email
-    redeemGiftCard(currentPoints, pointsUsed, gcType, email, username) {
+    redeemGiftCard(currentPoints:number, pointsUsed:number, gcType, email:string, username:string) {
 
         this.profileService.updatePoints(currentPoints, pointsUsed, this.userProfileID);
         this.displayRedeemOptions = false;
