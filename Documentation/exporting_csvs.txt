@@ -1,0 +1,29 @@
+Sometimes wwe want to use data from the database so we need a way to extract it. There may be easier ways, but this is the first way I found that does it.
+
+We're going to be using firestore-export a tool that allows us to query a collection on firebase and get the result as a json. I reccoment running:
+firestore-export -h 
+to learn more about what we're doing and not just copying the code. 
+
+Create an access key:
+1. Go to the firebase main page, then navigate to the settings
+2. Under the "Service Accounts" tab, click the "Generate new private key button"
+3. Click the confirmation to generate and download the data 
+4. Ensure to store this private key in a secure repo, as it allows anyone to access the database
+
+Downloading the Package: 
+1. run: 
+    sudo npm i -g node-firestore-import-export 
+
+Using the package:
+1. run firestore-export -a /path/to/private/key -b /path/to/save/extracted/date.json -n /name/of/firebase/collection -p 
+
+ as an example: firestore-export -a /home/koseward/Downloads/databaseExport.json -b ../backupUsersPointsRedeem.json -n usersPointsRedeem -p
+
+Lets talk about these flags:
+-a is the path for the private key we downloaded
+-b is the path that you want to save the extracted data to, and it must have a .json ending
+-n the collection in the firebase database, must be a collection and not just one document
+-p displays the json in human readable format, not strictly neccesary
+
+Converting to CSV:
+1. use any onlince converter to change data from json to CSV
