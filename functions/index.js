@@ -1,75 +1,84 @@
 const functions = require('firebase-functions');
+const firebase = require('firebase-admin');
 const admin = require('firebase-admin');
+// const parseAsync = require('json2csv');
+const uuidv4 = require('uuid');
+const fs = require('fs');
+const path = require('path');
+const os = require('os');
+const cors = require('cors')({origin: true});
 
 var newChat;
 const nodemailer = require('nodemailer');
 admin.initializeApp(functions.config().firebase);
 
-import * as functions from "firebase-functions";
-import * as firebase from "firebase-admin";
-import { parseAsync } from 'json2csv';
-import { v4 as uuidv4 } from 'uuid';
-import * as fs from "fs";
-import * as path from "path";
-import * as os from "os";
+// import * as functions from "firebase-functions";
+// import * as firebase from "firebase-admin";
+// import { parseAsync } from 'json2csv';
+// import { v4 as uuidv4 } from 'uuid';
+// import * as fs from "fs";
+// import * as path from "path";
+// import * as os from "os";
 
-firebase.initializeApp({
-  storageBucket: 'storage-bucket-name',
-});
 
-export const generateApplicationCsv = functions.region('asia-northeast1').pubsub
-  .topic("generate-application-csv")
-  .onPublish(async message => {
 
-    // gets the documents from the firestore collection
-    const applicationsSnapshot = await firebase
-      .firestore()
-      .collection("applications")
-      .get();
+// firebase.initializeApp({
+//   storageBucket: 'storage-bucket-name',
+// });
 
-    const applications = applicationsSnapshot.docs.map(doc => doc.data());
+// exports.generateApplicationCsv = functions.region('asia-northeast1').pubsub
+//   .topic("generate-application-csv")
+//   .onPublish(async message => {
 
-    // csv field headers
-    const fields = [
-      'firstName',
-      'lastName',
-    ];
+//     // gets the documents from the firestore collection
+//     const applicationsSnapshot = await firebase
+//       .firestore()
+//       .collection("applications")
+//       .get();
 
-    // get csv output
-    const output = await parseAsync(applications, { fields });
+//     const applications = applicationsSnapshot.docs.map(doc => doc.data());
 
-    // generate filename
-    const dateTime = new Date().toISOString().replace(/\W/g, "");
-    const filename = `applications_${dateTime}.csv`;
+//     // csv field headers
+//     const fields = [
+//       'firstName',
+//       'lastName',
+//     ];
 
-    const tempLocalFile = path.join(os.tmpdir(), filename);
+//     // get csv output
+//     const output = await parseAsync(applications, { fields });
 
-    return new Promise((resolve, reject) => {
-      //write contents of csv into the temp file
-      fs.writeFile(tempLocalFile, output, error => {
-        if (error) {
-          reject(error);
-          return;
-        }
-        const bucket = firebase.storage().bucket();
+//     // generate filename
+//     const dateTime = new Date().toISOString().replace(/\W/g, "");
+//     const filename = `applications_${dateTime}.csv`;
 
-        // upload the file into the current firebase project default bucket
-        bucket
-           .upload(tempLocalFile, {
-            // Workaround: firebase console not generating token for files
-            // uploaded via Firebase Admin SDK
-            // https://github.com/firebase/firebase-admin-node/issues/694
-            metadata: {
-              metadata: {
-                firebaseStorageDownloadTokens: uuidv4(),
-              }
-            },
-          })
-          .then(() => resolve())
-          .catch(errorr => reject(errorr));
-      });
-    });
-  });
+//     const tempLocalFile = path.join(os.tmpdir(), filename);
+
+//     return new Promise((resolve, reject) => {
+//       //write contents of csv into the temp file
+//       fs.writeFile(tempLocalFile, output, error => {
+//         if (error) {
+//           reject(error);
+//           return;
+//         }
+//         const bucket = firebase.storage().bucket();
+
+//         // upload the file into the current firebase project default bucket
+//         bucket
+//            .upload(tempLocalFile, {
+//             // Workaround: firebase console not generating token for files
+//             // uploaded via Firebase Admin SDK
+//             // https://github.com/firebase/firebase-admin-node/issues/694
+//             metadata: {
+//               metadata: {
+//                 firebaseStorageDownloadTokens: uuidv4(),
+//               }
+//             },
+//           })
+//           .then(() => resolve())
+//           .catch(errorr => reject(errorr));
+//       });
+//     });
+//   });
 
 // Tried uncommenting this line to get firebase push notif authentication error to go away.
 //admin.initializeApp();
@@ -116,6 +125,34 @@ exports.sendEmailNotification = functions.https.onRequest((req, res) => {
     })
 
 
+});
+
+exports.sendRequestAccessEmail = functions.https.onCall( (data, context) => {
+
+    console.log( data.message )
+    console.log( data.email )
+    let authData = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        auth: {
+            user: SENDER_EMAIL,
+            pass: SENDER_PASS
+        }
+    });
+
+    let textBody = data.message;
+    let to = data.email;
+
+    authData.sendMail({
+        from: 'imatternotification@gmail.com',
+        to: to, // list of receivers
+        subject: "Imatter InfoDesk", // Subject line
+        text: textBody, // plain text body
+        html: textBody // html body
+        //res.send("sent");
+    }).then(res => console.log('successfully sent that mail')).catch(err => console.log(err))
+    return;
 });
 
 exports.sendRecoveryEmail = functions.firestore.document('recoveryEmail/{docID}').onCreate((snap, context) => {
@@ -166,6 +203,7 @@ exports.sendGCRequestEmail = functions.firestore.document('usersPointsRedeem/{do
         html: "User " + data.username + " with the email: " + data.email + " has redeemed points for a(n) " + data.gcType +
             "gift card." // html body
     }).then(res => console.log('successfully sent that mail')).catch(err => console.log(err));
+    return;
 
 });
 

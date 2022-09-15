@@ -36,7 +36,6 @@ const routes: Routes = [
     path: 'survey',
     loadChildren: () => import('../available/available.module').then( m => m.AvailablePageModule)
   },
-
 ];
 
 @NgModule({

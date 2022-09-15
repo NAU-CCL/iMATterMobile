@@ -76,6 +76,10 @@ const routes: Routes = [
   {
     path: 'calendar-settings',
     loadChildren: () => import('./pages/calendar-settings/calendar-settings.module').then( m => m.CalendarSettingsPageModule)
+  },
+  {
+    path: 'request-access',
+    loadChildren: () => import('./pages/request-access/request-access.module').then( m => m.RequestAccessPageModule)
   }
 
 ];
