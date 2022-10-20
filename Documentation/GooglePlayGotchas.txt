@@ -58,4 +58,23 @@ This will generate the .aab file needed to upload to the Google Play Store, but 
 8. Navigate to the Google Play Development console and on the sidebar, click app bundle explorer. In the top right, click, upload new bundle, then upload the newly copied file.
     Done!
 
-Gotchas: This is a list of things that have gone wrong in the past in order to not mess these up in the future
+Gotchas: This is an expanding list of things that have gone wrong in the past in order to not mess these up in the future
+
+Apply Plugin Problems:
+The specifics: There was a plugin being added to the build.gradle called GradlePluginGoogleServices, which was stuck on a bugged version, 4.3.8. 
+               Cordova was not properly using version control to ignore these older versions and was still erroring.
+Solution: The config.xml has a method to enforce version control, which can be done with any plugin causing issues. The format is:
+              <preference name="GradlePluginGoogleServicesVersion" value="4.3.14" />
+
+AndroidManifest.sml problems:
+The specifics: An error kept appearing that there was a duplicated element in the AndroidManifest.xml file. Specifically, the default_notification_channel_id.
+
+Solution: It would seem like deleting the duplicate line would solve the problem, but the manifest file is actually auto generated, which means that any 
+          edits to the file are overwritten on next build attempt. The Hacky solution is to find the plugins in the plugins folder which have the same 
+          element listed in their dependencies. Then, in the android.json, look for the same value and comment it out too. Then the next time you build,
+          there should no longer be the duplicate. However, this regresses whenver the plugin updates and will require these steps to be repeated.
+
+Real Solution: 
+
+Android API: Google play will not accept app bundles with the wrong app bundle api being targeted. Thus, in the config.xml file, there is a target for 
+             the desired API. This must be changed to the wanted API, currently 32.
