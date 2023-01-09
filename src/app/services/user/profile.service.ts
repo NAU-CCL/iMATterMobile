@@ -146,7 +146,7 @@ export class ProfileService {
     {
         this.afs.collection('users').get().subscribe( (userQuerySnap) =>{
             userQuerySnap.forEach( (userQueryDocSnap) =>{
-                let userCompletedSurveysArray = userQueryDocSnap.data().answeredSurveys;
+                let userCompletedSurveysArray = userQueryDocSnap.get( "answeredSurveys" );
                 if( !userCompletedSurveysArray )
                 {
                     userCompletedSurveysArray = [];

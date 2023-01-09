@@ -933,17 +933,16 @@ exports.sendProblemReportedEmail = functions.firestore.document('reports/{docID}
         //availableSurveys
         userAvailableSurveys.splice(userAvailableSurveys.indexOf(surveyTaken['survey']), 1);
 
+        console.log(`User avaialble surveys after update: ${JSON.stringify(userAvailableSurveys)}`);
+
         // then increase the user's current points by the amount that the current
         // survey is worth, then navigate back to the home page
         const newPointValue = userData.points + surveyPoints;
 
 
         // Update the user document.
-        userRef.update( {answeredSurveys: userTakenSurveys, availableSurveys: userAvailableSurveys, points: newPointValue} );
-
-        
-
-
+        userRef.update( {answeredSurveys: userTakenSurveys, availableSurveys: userAvailableSurveys, points: newPointValue} )
+            
         return response.status(200).send({ message: 'ok' });
-    
+             
     }); 

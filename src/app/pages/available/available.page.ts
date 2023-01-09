@@ -51,7 +51,7 @@ export class AvailablePage implements OnInit {
   }
 
   ionViewDidEnter() {
-
+    
     // get all the surveys available
     this.surveys = this.surveySerivce.getSurveys();
     console.log(this.surveys);
@@ -101,6 +101,8 @@ export class AvailablePage implements OnInit {
 
   updateSurveys() {
     const currentSurveys = this.user.get('availableSurveys');
+    console.log( this.userSurveys );
+    console.log( '/////////////////////////////////////////////////' );
     this.surveys.forEach(surveyArray => {
       surveyArray.forEach(survey => {
         this.checkComplete(survey);
@@ -110,6 +112,7 @@ export class AvailablePage implements OnInit {
             var characteristics = survey['characteristics'];
             if (this.user.get('daysAUser') >= characteristics['daysAfterJoining']) {
               if (!currentSurveys.includes(survey['id'])) {
+                console.log( "First push" );
                 currentSurveys.push(survey['id']);
               }
             }
@@ -127,14 +130,20 @@ export class AvailablePage implements OnInit {
               if (characteristics['repeatEvery'] == 'weekly' && dayOfWeek == characteristics['display']) {
                 if (!currentSurveys.includes(survey['id'])) {
                   currentSurveys.push(survey['id']);
+                  console.log( "Second push" );
+
                 }
               } else if (characteristics['repeatEvery'] == 'monthy' && dayOfMonth == characteristics['display']) {
                 if (!currentSurveys.includes(survey['id'])) {
                   currentSurveys.push(survey['id']);
+                  console.log( "Third push" );
+
                 }
               } else if (characteristics['repeatEvery'] == 'daily') {
                 if (!currentSurveys.includes(survey['id'])) {
                   currentSurveys.push(survey['id']);
+                  console.log( "Fourth push" );
+
                 }
               }
             }
@@ -146,6 +155,8 @@ export class AvailablePage implements OnInit {
         this.userService.updateAvailableSurveys(currentSurveys, this.userCode);
       });
     });
+    console.log( this.userSurveys );
+    console.log( '###########################################################' );
   }
 
   checkComplete(survey) {
@@ -157,10 +168,12 @@ export class AvailablePage implements OnInit {
         if (complete['survey'] === surveyID && todayString === complete['date']) {
           this.surveyComplete = true;
         }
-      } else {
-        if (complete['survey'] === surveyID) {
+      } else if (complete['survey'] === surveyID) {
           this.surveyComplete = true;
-        }
+        
+      }
+      else{
+        this.surveyComplete = false;
       }
     });
   }

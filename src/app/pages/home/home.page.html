@@ -120,8 +120,8 @@
                     src="{{challenge.coverPicture}}">
             </div>
         </ng-container>
-        <ion-icon *ngIf="collpaseChallenges" slot="end" color=white name="arrow-dropdown"></ion-icon>
-        <ion-icon *ngIf="!collpaseChallenges" slot="end" color=white name="arrow-dropup"></ion-icon>
+        <ion-icon *ngIf="collpaseChallenges" slot="end" color=white name="chevron-forward-outline"></ion-icon>
+        <ion-icon *ngIf="!collpaseChallenges" slot="end" color=white name="chevron-down-outline"></ion-icon>
     </ion-item-divider>
 
     <ion-list class="notifList" *ngIf="!collpaseChallenges && user.joinedChallenges.length > 0">
@@ -162,8 +162,8 @@
         <ion-label style="color: white;">
             Available Surveys: {{totalSurveys}}
         </ion-label>
-        <ion-icon *ngIf="collapseSurveys" slot="end" color=white name="arrow-dropdown"></ion-icon>
-        <ion-icon *ngIf="!collapseSurveys" slot="end" color=white name="arrow-dropup"></ion-icon>
+        <ion-icon *ngIf="collapseSurveys" slot="end" color=white name="chevron-forward-outline"></ion-icon>
+        <ion-icon *ngIf="!collapseSurveys" slot="end" color=white name="chevron-down-outline"></ion-icon>
     </ion-item-divider>
 
     <ion-list class="notifList" *ngIf="!collapseSurveys && userSurveys.length > 0">
@@ -171,7 +171,8 @@
             <!-- If a survey is available to the user, show it. -->
             <ion-card class="notifCard" *ngIf="userSurveys.includes(survey.id)" (click)="answerSurvey(survey)">
                 <ion-card-title class="ion-padding">
-                    {{survey.title}} <span style="font-size: 0.5em; opacity: 100%;">{{survey.points}} points</span>
+                    
+                    {{survey.title}} <span *ngif="survey.points !== 0" style="font-size: 0.5em; opacity: 100%;">{{survey.points}} points</span>
                     <ion-icon class="ion-float-right" size=small name="arrow-forward"></ion-icon>
                 </ion-card-title>
                 <!-- <ion-card-content>{{survey.description}}</ion-card-content> -->

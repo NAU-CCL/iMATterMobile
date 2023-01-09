@@ -53,7 +53,7 @@ export class NewReviewPage implements OnInit {
   // The users 1-5 star rating of the rescource, contains an int between 1-5.
   public selected_rating: number;
 
-  private storage: Storage = null;
+  private storage: Storage;
   constructor(
     private storageService: StorageService,
     private router: Router,
