@@ -167,12 +167,12 @@
     </ion-textarea>
     <div *ngIf="chat.message == ''">
       <ion-button disabled="true" class="ion-text-button" slot="end" fill="clear">
-        <ion-icon ios="ios-arrow-forward" md="md-arrow-forward"></ion-icon>
+        <ion-icon name="arrow-forward-outline" size="large"></ion-icon>
       </ion-button>
     </div>
     <div *ngIf="chat.message > ''">
       <ion-button class="ion-text-button" slot="end" fill="clear" (click)="addChat('user')">
-        <ion-icon ios="ios-arrow-forward" md="md-arrow-forward"></ion-icon>
+        <ion-icon name="arrow-forward-outline" size="large"></ion-icon>
       </ion-button>
     </div>
   </ion-item>

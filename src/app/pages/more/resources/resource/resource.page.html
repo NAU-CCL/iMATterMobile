@@ -138,10 +138,10 @@
       <ion-col>
         Sunday:
       </ion-col>
-      <ion-col *ngIf="resource.SunOpen != 'CLOSED'">
+      <ion-col *ngIf="resource.SunOpen !== 'CLOSED'">
         {{resource.SunOpen}} - {{resource.SunClose}}
       </ion-col>
-      <ion-col *ngIf="resource.SunOpen == 'CLOSED'">
+      <ion-col *ngIf="resource.SunOpen === 'CLOSED'">
         CLOSED
       </ion-col>
     </ion-row>
