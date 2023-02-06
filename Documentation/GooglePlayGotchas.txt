@@ -66,7 +66,7 @@ The specifics: There was a plugin being added to the build.gradle called GradleP
 Solution: The config.xml has a method to enforce version control, which can be done with any plugin causing issues. The format is:
               <preference name="GradlePluginGoogleServicesVersion" value="4.3.14" />
 
-AndroidManifest.sml problems:
+AndroidManifest.xml problems:
 The specifics: An error kept appearing that there was a duplicated element in the AndroidManifest.xml file. Specifically, the default_notification_channel_id.
 
 Solution: It would seem like deleting the duplicate line would solve the problem, but the manifest file is actually auto generated, which means that any 
@@ -78,3 +78,8 @@ Real Solution:
 
 Android API: Google play will not accept app bundles with the wrong app bundle api being targeted. Thus, in the config.xml file, there is a target for 
              the desired API. This must be changed to the wanted API, currently 32.
+
+Permissions Plugins: For some reason one of the plugins for cordova has the permission "REQUEST_INSTALL_PACKAGES" which is not allowed by the Google Play store
+                     As it could cause abuse. Search through the plugins.xml files in the plugins directory, and remove those tags, and do the same in the android.json file in the platforms directory
+                     Also in the AndroidManifext.xml file.
+                         

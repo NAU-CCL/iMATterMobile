@@ -167,7 +167,7 @@ export class AnalyticsService {
 
   async addSessionOnAppEnter( ) {
 
-    console.log(`Adding new user session`)
+    console.log(`Adding new user session`);
     let userID: string  = '';
 
     // Get the user code and then add a new session to the analyticsSessions collection using the user code.
@@ -211,6 +211,12 @@ export class AnalyticsService {
 
       this.sessionCollection.doc(this.idReference).get().subscribe( (docSnap) => {
           let docData = docSnap.data();
+          console.log( docSnap.data() );
+          console.log( docSnap );
+          if( typeof docData === 'undefined' ){
+            console.log( 'Doc Data is indeed undefined' )
+          }
+
 
           // If property exists on document, increment it else, add the field with value of 1 for single click.
           if( docData.hasOwnProperty(pageName) )

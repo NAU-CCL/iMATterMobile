@@ -118,7 +118,9 @@ export class AnswerPage implements OnInit {
 
         // Add the UserID=userid get param to the url so qualtrics can automatically grab it from the url
         // In order for this to work, the survey must have an embedded data element named UserID.
-        url += '?UserID=' + this.userCode.toString();
+        url += '?UserID=' + this.userCode.toString() + '&StartTime=' + new Date().toJSON();
+
+        console.log(`Opening survey with URL ${url}`);
 
         // open the browser inside of the app, using the url, and the options
         const page = this.browser.create(url, `_blank`, options);
@@ -163,7 +165,6 @@ export class AnswerPage implements OnInit {
         // survey is worth, then navigate back to the home page
         const newPointValue = this.userPoints + this.survey.points;
         this.profile.editRewardPoints(newPointValue, this.userCode);
-        this.router.navigateByUrl('/tabs/home');
     }
 
     // determines if the survey is completed
@@ -184,7 +185,7 @@ export class AnswerPage implements OnInit {
         const alert = await this.alertController.create({
             header: 'You Completed The Survey',
             subHeader: 'Thank You',
-            message: 'Thanks for taking the Survey, your input is really appreciated.',
+            message: 'If you did not complete the survey feel free to come back and finish it. If you did complete the survey, please wait a few minutes for your surveys to update. Thank you for your time.',
             buttons: [{
                 text: 'OK',
                 handler: ()=>{this.router.navigateByUrl('/tabs/home');}

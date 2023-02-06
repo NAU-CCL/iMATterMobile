@@ -14,6 +14,7 @@ import { SurveyService, Survey } from 'src/app/services/survey/survey.service';
 import { DatePipe } from '@angular/common';
 import { ProfileService } from 'src/app/services/user/profile.service';
 import { FirestoreExamplesService } from 'src/app/services/firestore-examples.service';
+import { Timestamp } from 'firebase/firestore';
 
 import { Storage } from '@ionic/storage-angular';
 import { StorageService } from 'src/app/services/storage/storage.service';
@@ -191,23 +192,19 @@ export class HomePage implements OnInit {
             }
         }
         if (lastAccessed === undefined) {
-            console.log("the cookie expired");
             this.emotionHidden = false;
             document.cookie = `accessed=${new Date()};`
         }
         else if (today > new Date(lastAccessed.setDate(lastAccessed.getDate() + 1))) {
             this.emotionHidden = false;
-            console.log("it has been 24 hours, reset the date");
             document.cookie = `accessed=${new Date()};`
         } else {
             this.emotionHidden = true;
-            console.log("it has not been 24 hours");
         }
         console.log(this.showDailyQuote);
     }
 
     ionViewWillEnter() {
-        console.log('ionViewWillEnter()');
 
         // Get all surveys from surveys-v2 collection
         this.surveys = this.surveyService.getSurveys();
@@ -239,6 +236,7 @@ export class HomePage implements OnInit {
                         this.user.currentEmotion = doc.get('mood');
                         this.user.code = doc.get('code');
                         this.user.dailyQuote = doc.get('dailyQuote');
+                        this.user.daysAUser = doc.get('daysAUser');
                         this.user.joinedChallenges = doc.get('joinedChallenges');
                         this.user.answeredSurveys = doc.get('answeredSurveys');
                         this.user.availableSurveys = doc.get('availableSurveys');
@@ -249,7 +247,6 @@ export class HomePage implements OnInit {
                         this.user.joinedChallenges.forEach(item => {
                             this.challengeProgress[item.challenge.id] = item.currentDay - 1;
                             this.daysComplete[item.challenge.id] = item.dayComplete;
-                            console.log(this.daysComplete);
                         });
 
                         const pregUpdateRef = this.afs.firestore.collection('pregnancyUpdates')
@@ -306,7 +303,6 @@ export class HomePage implements OnInit {
 
     completeDay(id) {
         const check = document.getElementById(id) as HTMLInputElement;
-        console.log(check.checked);
         if (!check.checked) {
             this.areYouSure(id);
         } else {
@@ -341,18 +337,15 @@ export class HomePage implements OnInit {
 
     updateProfileClicks() {
         this.analyticsService.updateClicks( 'numOfClickProfile' );
-        console.log('added profile click');
     }
 
     updateInfoClicks() {
         this.analyticsService.updateClicks( 'numOfClickInfo' );
-        console.log('added info click');
     }
 
 
     updateSurveyClicks() {
         this.analyticsService.updateClicks('numOfClickSurvey');
-        console.log('added survery click');
 
     }
 
@@ -369,10 +362,10 @@ export class HomePage implements OnInit {
                         this.analytic.timestamp = new Date();
                         // this.analytic.sessionID = this.idReference;
                         this.analyticsService.addView(this.analytic).then(() => {
-                            console.log('successful added view: home');
+                            //console.log('successful added view: home');
 
                         }, err => {
-                            console.log('unsucessful added view: home');
+                            //console.log('unsucessful added view: home');
 
                         });
                     });
@@ -508,8 +501,8 @@ export class HomePage implements OnInit {
                                         this.user.joinedChallenges.indexOf(item),
                                         1
                                     );
-                                    console.log(this.user.joinedChallenges);
-                                    console.log(this.user.completedChallenges);
+                                    // console.log(this.user.joinedChallenges);
+                                    // console.log(this.user.completedChallenges);
                                     this.challengeService.updateJoinedChallenges(this.userProfileID,
                                         this.user.joinedChallenges).then(r => console.log(r));
                                     this.challengeService.updateCompletedChallenges(this.userProfileID,
@@ -541,7 +534,7 @@ export class HomePage implements OnInit {
         this.user.joinedChallenges.forEach(item => {
             if (item.challenge.id === id) {
                 if (item.currentDay === item.challenge.length) {
-                    console.log('LAST DAY COMPLETED');
+                    // console.log('LAST DAY COMPLETED');
                     this.challengeDayComplete = true;
                 } else {
                     this.challengeDayComplete = false;
@@ -584,9 +577,6 @@ export class HomePage implements OnInit {
             // first the surveys collection with the id needed will be grabbed
             const dbSurvey = this.afs.firestore.collection('surveys').doc(notifID);
 
-            console.log('SURVEY NOTIF ID: ' + notifID);
-            console.log(dbSurvey);
-
             // if the survey with the corresponding id exists then navigate to the survey page
             // and highlight the correct card. if it doesn't, display a toast telling the user
             // what went wrong
@@ -594,11 +584,11 @@ export class HomePage implements OnInit {
                 .then((docSnapshot) => {
                     if (docSnapshot.exists) {
                         dbSurvey.onSnapshot((doc) => {
-                            console.log('exists');
+                            // console.log('exists');
                             this.router.navigate(['/tabs/home/available/' + notifID]);
                         });
                     } else {
-                        console.log('does not exist');
+                        // console.log('does not exist');
                         this.showToast('Sorry, this survey is no longer available.');
                     }
                 });
@@ -609,9 +599,9 @@ export class HomePage implements OnInit {
             // first the LM collection with the id needed will be grabbed
             const dbLearningModules = this.afs.firestore.collection('learningModules').doc(notifID);
 
-            console.log('LM NOTIF ID: ' + notifID);
+            // console.log('LM NOTIF ID: ' + notifID);
 
-            console.log(dbLearningModules);
+            // console.log(dbLearningModules);
 
             // if the LM with the corresponding id exists then navigate to the Learning Center
             // and highlight the correct card. if it doesn't, display a toast telling the user
@@ -620,11 +610,11 @@ export class HomePage implements OnInit {
                 .then((docSnapshot) => {
                     if (docSnapshot.exists) {
                         dbLearningModules.onSnapshot((doc) => {
-                            console.log('exists');
+                            // console.log('exists');
                             this.router.navigate(['/tabs/home/learning-center/' + notifID]);
                         });
                     } else {
-                        console.log('does not exist');
+                        // console.log('does not exist');
                         this.showToast('Sorry, this learning module is no longer available.');
                     }
                 });
@@ -665,6 +655,8 @@ export class HomePage implements OnInit {
         // String array of survey ids representing surveys available to the user.
         // When the user completes a survey, the survey is removed from avaialble surveys and and added to answered surveys.
         const currentSurveys = this.user.availableSurveys;
+        console.log( currentSurveys );
+        console.log( '///////////////////////////////////////////////////' );
         this.surveys.forEach(surveyArray => {
             
             // Each survey element within surveyArray represents a generally avaialble survey. Not a survey assigned to the user but
@@ -679,58 +671,55 @@ export class HomePage implements OnInit {
                 {
                     this.totalSurveys++;
                 }
-
-                this.checkComplete(survey);
-                console.log(this.surveyComplete);
-
-                if (!this.surveyComplete) {
-                    
-                    if (survey['type'] == 'Days After Joining') {
-                        var characteristics = survey['characteristics'];
-                        if (this.user['daysAUser'] >= characteristics['daysAfterJoining']) {
-                            if (!currentSurveys.includes(survey['id'])) {
+                else{ 
+                    this.checkComplete(survey);
+                    // console.log(this.surveyComplete);
+    
+                    // checks the result of checkComplete to see if the survey has been completed
+                    if (!this.surveyComplete) {
+                        
+                        // There are three kinds of surveys: Emotions, days after joining, and repeating
+                        if (survey['type'] == 'Days After Joining') {
+                            var characteristics = survey['characteristics'];
+                            
+                            if (this.user['daysAUser'] >= characteristics['daysAfterJoining']) {
                                 currentSurveys.push(survey['id']);
                             }
-                        }
-                    } else if (survey['type'] == 'Repeating') {
-                        // check if repeating survey already complete
-
-                        var weekdays = new Array(
-                            "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"
-                        );
-                        var characteristics = survey['characteristics'];
-                        var date = new Date();
-                        // Current day of week.
-                        var dayOfWeek = weekdays[date.getDay()];
-                        // Current day of month.
-                        var dayOfMonth = date.getDate();
-                        if (characteristics['repeatEvery']) {
-                            // if the survey is supposed to repeat weekly, hasnt been completed today, and today is the day the survey is set
-                            // to show, add the survey to the users array of available surveys. WILL LIKELY NOT WORK if user
-                            // does not open app on the day the survey is set to repeat on.
-                            if (characteristics['repeatEvery'] == 'weekly' && dayOfWeek == characteristics['display']) {
-                                if (!currentSurveys.includes(survey['id'])) {
+                        } else if (survey['type'] == 'Repeating') {
+                            // check if repeating survey already complete
+    
+                            var weekdays = new Array(
+                                "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"
+                            );
+                            var characteristics = survey['characteristics'];
+                            var date = new Date();
+                            // Current day of week.
+                            var dayOfWeek = weekdays[date.getDay()];
+                            // Current day of month.
+                            var dayOfMonth = date.getDate();
+                            if (characteristics['repeatEvery']) {
+                                // if the survey is supposed to repeat weekly, hasnt been completed today, and today is the day the survey is set
+                                // to show, add the survey to the users array of available surveys. WILL LIKELY NOT WORK if user
+                                // does not open app on the day the survey is set to repeat on.
+                                if (characteristics['repeatEvery'] == 'weekly' && dayOfWeek == characteristics['display']) {
                                     currentSurveys.push(survey['id']);
-                                }
-                            } else if (characteristics['repeatEvery'] == 'monthy' && dayOfMonth == characteristics['display']) {
-                                if (!currentSurveys.includes(survey['id'])) {
+                                } else if (characteristics['repeatEvery'] == 'monthy' && dayOfMonth == characteristics['display']) {
                                     currentSurveys.push(survey['id']);
-                                }
-                            } else if (characteristics['repeatEvery'] == 'daily') {
-                                if (!currentSurveys.includes(survey['id'])) {
+                                } else if (characteristics['repeatEvery'] == 'daily') {
                                     currentSurveys.push(survey['id']);
                                 }
                             }
                         }
                     }
-                }
-                // If the user survey was complete, do nothing and go to the next survey in the array. 
-                else {
-                    this.surveyComplete = false;
+                    // If the user survey was complete, do nothing and go to the next survey in the array. 
+                    else {
+                        
+                        this.surveyComplete = false;
+                    }
                 }
 
+
                 this.userSurveys = currentSurveys;
-                console.log("User surveys: " + this.userSurveys);
                 this.userService.updateAvailableSurveys(currentSurveys, this.user['code']);
 
             });
@@ -739,23 +728,36 @@ export class HomePage implements OnInit {
 
     }
 
+    /*
+    @param survey: Takes the id of a survey and checks against a user's completed surveys to check if the survey has been completed before.
+    @returns: true if the survey has been completed or has been completed in the last day if repeating or nothing otherwise
+    */
     checkComplete(survey) {
+        // Gets the id of the requested survey
         const surveyID = survey['id'];
+        // Get date to check against repeating surveys. If the survey was completed that day, it counts as complete
         const today = new Date();
         const todayString = this.datepipe.transform(today, 'y-MM-dd');
+        // Goes through each of the completed surveys to see if it matches the completed survey
         this.user.answeredSurveys.forEach(completedSurvey => {
+            // console.log( completedSurvey[ 'date' ] );
             // If the user completed the repeating survey today, it is counted as complete.
             if (survey['type'] === 'Repeating') {
-                if (completedSurvey['survey'] === surveyID && todayString === completedSurvey['date']) {
+                let completedDate = this.datepipe.transform( completedSurvey[ 'date' ].toDate().toDateString(), 'y-MM-dd' );
+                if (completedSurvey['survey'] === surveyID && todayString === completedDate ) {
                     this.surveyComplete = true;
+                    console.log( completedSurvey['title'] + ' Repeats and has been completed*****************************************************')
                 }
             } else {
                 // If the user has completed the survey set the variable to true.
                 if (completedSurvey['survey'] === surveyID) {
                     this.surveyComplete = true;
+                    console.log( completedSurvey['title'] + ' has been completed*****************************************************')
                 }
             }
         });
+        // Only ever returns true or nothing. Starts as false and resets to false on each loop of updateSurveys.
+        // This should be refactored to something a little more sensible. 
     }
 
     answerSurvey(survey: Survey) {

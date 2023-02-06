@@ -18,7 +18,7 @@
       <ion-card-subtitle class="ion-padding">
         {{survey.description}}
       </ion-card-subtitle>
-      <ion-card-content>
+      <ion-card-content *ngIf="survey.points > 0">
         This survey is worth {{survey.points}} points
       </ion-card-content>
     </ion-card>

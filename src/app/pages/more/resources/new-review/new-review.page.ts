@@ -6,6 +6,7 @@ import { LocationService, Location } from 'src/app/services/resource.service';
 import { FormControl } from '@angular/forms';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { StorageService } from 'src/app/services/storage/storage.service';
+import { Console } from 'console';
 
 
 
@@ -53,7 +54,7 @@ export class NewReviewPage implements OnInit {
   // The users 1-5 star rating of the rescource, contains an int between 1-5.
   public selected_rating: number;
 
-  private storage: Storage = null;
+  private storage: Storage | null = undefined;
   constructor(
     private storageService: StorageService,
     private router: Router,
@@ -65,6 +66,7 @@ export class NewReviewPage implements OnInit {
 
     
   async ngOnInit() {
+    console.log( 'onInit' )
     this.storage = await this.storageService.getStorage();
   }
 
@@ -72,18 +74,17 @@ export class NewReviewPage implements OnInit {
 
   ionViewWillEnter()
   {
+    console.log( 'willEnter' )
     const resource_id = this.activatedRoute.snapshot.paramMap.get('id');
 
     this.locationService.getLocation(resource_id).subscribe( (resource) => { this.resource = resource });
-
-    console.log(this.resource);
   }
 
   // Takes an index that represents which star the user clicked to rate the resource.
   // Index starts at 0 which represents star 1 and index 4 reps star 5.
   updateRatingStars( starIndex: number )
   {
-
+    console.log( 'updateRatingStars' )
     this.rating_array = [false,false,false,false,false]
 
     for( let index = 0; index < this.rating_array.length ; index++ )

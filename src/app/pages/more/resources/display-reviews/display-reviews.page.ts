@@ -89,15 +89,17 @@ export class DisplayReviewsPage implements OnInit {
     console.log(`Waiting to load reviews`);
     // Fill an array with refs to each review document in the db, we do this to avoid loading all docs immediately.
     // Call await to wait for this line of code to finish.
-    await this.getReviewsQuery.get().then( querySnap =>{
-      querySnap.forEach( (queryDocSnap) => {
-        let queryDoc = queryDocSnap.data() 
-        this.reviewDocArray.push( queryDoc );
-        this.calculateReviewAverage( queryDoc );
-        this.generateReviewTags( queryDoc );
-        console.log(`Inside review ref array`);
+    if( !this.getReviewsQuery === undefined ){
+      await this.getReviewsQuery.get().then( querySnap =>{
+        querySnap.forEach( (queryDocSnap) => {
+          let queryDoc = queryDocSnap.data() 
+          this.reviewDocArray.push( queryDoc );
+          this.calculateReviewAverage( queryDoc );
+          this.generateReviewTags( queryDoc );
+          console.log(`Inside review ref array`);
+        })
       })
-    })
+    }
 
     console.log(`Finished loading reviews`);
 

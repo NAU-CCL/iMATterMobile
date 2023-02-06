@@ -83,9 +83,6 @@ export class CreateReviewPage implements OnInit {
 
     // Get the reviews collection so we can add new reviews to it.
     this.reviewsCollection =  this.afs.collection<Review>('resourceReviews');
-    this.storage.get('userCode').then( userID =>{
-      this.userID = userID;
-    })
 
 
 
@@ -93,6 +90,9 @@ export class CreateReviewPage implements OnInit {
 
   async ngOnInit() {
     this.storage = await this.storageService.getStorage();
+    this.storage.get( 'userCode' ).then( userID => {
+      this.userID = userID
+    })
     // Get the resource ID from the url see resources-routing.module to see where the id param is specified.
     this.route.params.subscribe(params=>{
       this.resourceID = params['id']; 
