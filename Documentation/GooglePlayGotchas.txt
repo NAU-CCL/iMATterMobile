@@ -80,7 +80,6 @@ Android API: Google play will not accept app bundles with the wrong app bundle a
              the desired API. This must be changed to the wanted API, currently 32.
 
 Permissions Plugins: For some reason one of the plugins for cordova has the permission "REQUEST_INSTALL_PACKAGES" which is not allowed by the Google Play store
-                     As it could cause abuse. So it has to be edited in the AndroidManifest.xml. Change:
-                         <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-                     To:
-                         <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" tools:node="remove"/>
+                     As it could cause abuse. Search through the plugins.xml files in the plugins directory, and remove those tags, and do the same in the android.json file in the platforms directory
+                     Also in the AndroidManifext.xml file.
+                         
