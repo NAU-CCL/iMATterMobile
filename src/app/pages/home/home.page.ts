@@ -14,7 +14,6 @@ import { SurveyService, Survey } from 'src/app/services/survey/survey.service';
 import { DatePipe } from '@angular/common';
 import { ProfileService } from 'src/app/services/user/profile.service';
 import { FirestoreExamplesService } from 'src/app/services/firestore-examples.service';
-import { Timestamp } from 'firebase/firestore';
 
 import { Storage } from '@ionic/storage-angular';
 import { StorageService } from 'src/app/services/storage/storage.service';
