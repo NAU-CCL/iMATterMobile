@@ -58,6 +58,10 @@ ion-content {
 
 }
 
+.fill-button{
+  display: block;
+}
+
 .select-box{
   white-space: normal;
   max-width: 100% !important;
@@ -83,6 +87,7 @@ ion-content {
 .profilePic {
   width: 50px;
   height: 50px;
+  border: 5px;
 
   ion-img {
     width: 50px;
