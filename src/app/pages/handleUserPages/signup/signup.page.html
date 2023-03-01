@@ -110,7 +110,7 @@
     
     <div class="date-picker-section">
 
-      <ion-text style="font-size: 0.8em; margin: 0; font-weight: bold;">Sobriety Start Date: </ion-text> <br>
+      <ion-text style="font-size: 0.8em; margin: 0; font-weight: bold;">Rehab Start Date:</ion-text> <br>
       
   
       <ion-text id="recovery-start-date-input" style="display: block;"  (click)="openRecoveryDatePicker = !openRecoveryDatePicker">
@@ -125,9 +125,23 @@
     </div>
     
                 
-            
+<!--             
+    <div class="date-picker-section">
 
-    
+      <ion-text style="font-size: 0.8em; margin: 0; font-weight: bold;">Rehab End Date: </ion-text> <br>
+      
+  
+      <ion-text id="recovery-start-date-input" style="display: block;"  (click)="openRecoveryDatePicker = !openRecoveryDatePicker">
+          <div style="display: inline-block;">{{ endRehabDate | date:'M/d/yy' }}</div>
+          <ion-icon class="open-datepicker-arrow" name="chevron-down-outline"></ion-icon>
+      </ion-text>
+  
+      <div *ngIf="openRecoveryDatePicker"> -->
+        <!-- NG model does not work at all on this date picker but it works on others, no idea why.-->
+        <!-- <ion-datetime #datePicker presentation="date" showDefaultButtons=true  size="cover" [value]="recoveryStartDate" (ionChange)="updateRecoveryDate($event, datePicker)" (ionCancel)="closeDatePicker()" [preferWheel]="true"></ion-datetime>
+      </div>
+    </div>
+     -->
 
 <!--    <ion-item>-->
 <!--      <ion-label position="stacked">Rehab Graduation Date </ion-label>-->
