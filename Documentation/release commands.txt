@@ -1,5 +1,9 @@
 ionic cordova build --release android
 
+cd platforms/android
+
+./gradlew build 
+
 jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.keystore platforms/android/app/build/outputs/bundle/release/app-release.aab alias_name
 
 # not necessary
