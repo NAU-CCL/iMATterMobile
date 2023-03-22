@@ -655,8 +655,6 @@ export class HomePage implements OnInit {
         // String array of survey ids representing surveys available to the user.
         // When the user completes a survey, the survey is removed from avaialble surveys and and added to answered surveys.
         const currentSurveys = this.user.availableSurveys;
-        console.log( currentSurveys );
-        console.log( '///////////////////////////////////////////////////' );
         this.surveys.forEach(surveyArray => {
             
             // Each survey element within surveyArray represents a generally avaialble survey. Not a survey assigned to the user but
@@ -746,13 +744,11 @@ export class HomePage implements OnInit {
                 let completedDate = this.datepipe.transform( completedSurvey[ 'date' ].toDate().toDateString(), 'y-MM-dd' );
                 if (completedSurvey['survey'] === surveyID && todayString === completedDate ) {
                     this.surveyComplete = true;
-                    console.log( completedSurvey['title'] + ' Repeats and has been completed*****************************************************')
                 }
             } else {
                 // If the user has completed the survey set the variable to true.
                 if (completedSurvey['survey'] === surveyID) {
                     this.surveyComplete = true;
-                    console.log( completedSurvey['title'] + ' has been completed*****************************************************')
                 }
             }
         });

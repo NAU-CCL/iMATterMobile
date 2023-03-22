@@ -106,11 +106,11 @@
       </div>
 
       <!-- Automatic message -->
-      <div *ngIf="chat.type == 'emotion'">
+      <!-- <div *ngIf="chat.type == 'emotion'">
         <div class="msg-content">
           <p class="emotion">{{chat.message}}</p>
         </div>
-      </div>
+      </div> -->
   
   
       <!-- User message from a different user -->
@@ -150,7 +150,7 @@
             </div>
           </div>
           <ion-button class="user-img" fill="clear" (click)="goToProfile(chat.userID, chat.cohort)">
-            <img class="user-img" src="{{ chat.profilePic }}" alt="">
+            <img class="" src="{{ chat.profilePic }}" alt="">
           </ion-button>
         </div>
       </div>

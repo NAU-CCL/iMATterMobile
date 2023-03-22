@@ -141,6 +141,7 @@ private storage: Storage = null;
         event.target.complete();
       }
     })
+
   }
 
   // Notify the chat when the user goes to home screen ie 'user has left chat, user has rejoined chat.'

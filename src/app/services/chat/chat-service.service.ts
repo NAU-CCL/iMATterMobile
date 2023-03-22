@@ -80,7 +80,7 @@ export class ChatService {
       })
     );
 
-    //this.deleteBlankChats();
+    this.deleteBlankChats();
     
     //this.initializeDateChats();
 
@@ -278,6 +278,7 @@ export class ChatService {
       return ref.orderBy(this.query.field, this.query.reverse ? 'desc' : 'asc').limit(this.query.limit);
      })
 
+
      this.mapAndUpdate(first);
 
 
@@ -286,6 +287,10 @@ export class ChatService {
      this.currentChatDataBatchObs = this.currentChatDataBatch.asObservable().scan( (acc, val) =>{
       return this.query.prepend ? val.concat(acc) : acc.concat(val) 
      } )
+
+
+     console.log(this.currentChatDataBatch);
+     console.log('Hello here are the chat messages' );
   }
 
 

@@ -101,8 +101,6 @@ export class AvailablePage implements OnInit {
 
   updateSurveys() {
     const currentSurveys = this.user.get('availableSurveys');
-    console.log( this.userSurveys );
-    console.log( '/////////////////////////////////////////////////' );
     this.surveys.forEach(surveyArray => {
       surveyArray.forEach(survey => {
         this.checkComplete(survey);
