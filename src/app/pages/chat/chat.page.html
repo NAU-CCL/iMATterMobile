@@ -162,7 +162,7 @@
 </ion-content>
 
 <ion-footer>
-  <ion-item>
+  <ion-item (click)="scrollToBottom()">
     <ion-textarea spellcheck="true" autocapitalize="true" [(ngModel)]="chat.message" placeholder="Enter message">
     </ion-textarea>
     <div *ngIf="chat.message == ''">
