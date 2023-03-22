@@ -247,7 +247,6 @@ export class ChatService {
      this.afs.collection('chats').ref.where('type','==','').get().then( ( querySnap ) => {
        querySnap.forEach( (queryDocSnap) => {
          let chatDoc = queryDocSnap.data();
-         console.log(`Chat to delete is ${JSON.stringify(chatDoc)} \n\n Total chats ${chatCount}`);
          chatCount++;
          queryDocSnap.ref.delete();
        })
@@ -287,10 +286,6 @@ export class ChatService {
      this.currentChatDataBatchObs = this.currentChatDataBatch.asObservable().scan( (acc, val) =>{
       return this.query.prepend ? val.concat(acc) : acc.concat(val) 
      } )
-
-
-     console.log(this.currentChatDataBatch);
-     console.log('Hello here are the chat messages' );
   }
 
 
