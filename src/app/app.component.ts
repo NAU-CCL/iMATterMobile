@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 
-import {Platform} from '@ionic/angular';
+import {Platform, ToastController, ToastButton} from '@ionic/angular';
 import {SplashScreen} from '@ionic-native/splash-screen/ngx';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {AnalyticsService, Analytics, Sessions} from 'src/app/services/analyticsService.service';
@@ -35,7 +35,8 @@ export class AppComponent {
             numOfClickHome: 0
         };
     public sessions: Observable<any>;
-    private storage: Storage = null;    
+    private storage: Storage = null;  
+    // public isOnline: boolean;  
     constructor(
         private platform: Platform,
         private splashScreen: SplashScreen,
@@ -44,8 +45,12 @@ export class AppComponent {
         private router: Router,
         private bnIdle: BnNgIdleService,
         private analyticsService: AnalyticsService,
-        private profileService: ProfileService
+        private profileService: ProfileService,
+        private connectionToast: ToastController
+
     ) {
+
+
         this.initializeApp();
 
         // Event that is suppose to fire when the user leaves to their homescreen.
@@ -54,7 +59,6 @@ export class AppComponent {
         // Event that fires when user opens app after leaving app previously.
         document.addEventListener('resume', ( ) => { 
             analyticsService.addSessionOnAppEnter()  }, false);
-
 
     }
 
@@ -76,10 +80,10 @@ export class AppComponent {
 
     initializeApp() {
         this.platform.ready().then(() => {
+
             this.statusBar.styleDefault();
             this.splashScreen.hide();
         });
     }
-
 
 }
