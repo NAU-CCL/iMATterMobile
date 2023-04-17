@@ -60,12 +60,12 @@ export class ChallengePage implements OnInit {
                 this.router.navigate(['/login/']);
             }
         });
-
+        
         this.challenges = this.challengeService.getAllChallenges();
         this.types = this.challengeService.getChallengeTypes();
-
+        
     }
-
+    
     ionViewWillEnter() {
         
         this.processRouteParams();
@@ -100,7 +100,7 @@ export class ChallengePage implements OnInit {
 
     ionViewDidEnter()
     {
-        console.log("In ion did enter");
+        this.challengeView = 'all';
     }
 
     ionViewWillLeave() {
