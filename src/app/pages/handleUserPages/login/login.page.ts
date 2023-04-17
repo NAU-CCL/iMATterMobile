@@ -326,7 +326,7 @@ export class LoginPage implements OnInit {
     private showAlert() {
         this.toastCtrl.create({
           cssClass: "error",
-          message: "You aren't connected to the internet",
+          message: "You aren't connected to the internet. Please connect to the Internet and reload the app.",
           position: 'top',
           buttons: [
             {
