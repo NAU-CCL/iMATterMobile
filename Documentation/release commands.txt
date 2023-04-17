@@ -6,7 +6,6 @@ cd platforms/android
 
 jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.keystore platforms/android/app/build/outputs/bundle/release/app-release.aab alias_name
 
-# not necessary
-zipalign -v 4 platforms/android/app/build/outputs/bundle/release/app-release.aab iMATter_V5.6.6.aab
+mv platforms/android/app/build/outputs/bundle/release/app-release.aab ./iMATter_V5.6.0.aab
 
 all done!

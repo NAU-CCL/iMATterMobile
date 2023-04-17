@@ -104,16 +104,20 @@ export class LoginPage implements OnInit {
 
    async ngOnInit() {
         console.log(`In login page oninit`);
+        // check for internet connection
+        document.addEventListener( 'offline', () => {
+            this.showAlert()
+        })
+        if( !navigator.onLine ){
+            this.showAlert()
+        }
     }
 
     // This is an ionic method called after a view loads AUTOMAGICALLY.
     // Metho called right after page load.
     async ionViewDidEnter() {
-        console.log('User ion did enter');
 
         this.storage = await this.storageService.getStorage();
-
-        console.log(`Got storage ${this.storage}`);
 
         let autoLoginUser: boolean;
         let isUserAuthenticated: boolean = false;
@@ -200,6 +204,7 @@ export class LoginPage implements OnInit {
             }
         });
     }
+
 
     private notificationSetup(userID) {
         this.fcm.getToken(userID);
@@ -317,4 +322,20 @@ export class LoginPage implements OnInit {
             duration: 2000
         }).then(toast => toast.present());
     }
+
+    private showAlert() {
+        this.toastCtrl.create({
+          cssClass: "error",
+          message: "You aren't connected to the internet. Please connect to the Internet and reload the app.",
+          position: 'top',
+          buttons: [
+            {
+                side: 'end',
+                text: 'Close',
+                role: 'cancel'
+            }
+          ]
+        }).then( (toast) => {
+        toast.present()});
+      }
 }
