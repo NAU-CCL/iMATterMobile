@@ -1,0 +1,10 @@
+To run the app in a development environment, run
+$ ionic serve --configuration=development
+This is because for some reason, our configuration does not recognize our 
+development environment, so it defaults to production. This allows us to see 
+more useful error messages while developing, as well as faster compile times, as 
+the application no longer needs to optimize the code, only serve it. 
+
+
+
+
