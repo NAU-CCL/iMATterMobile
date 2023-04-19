@@ -150,6 +150,8 @@ export class ResourcesPage implements OnInit, AfterViewInit {
     }
     */
 
+    // Gets all locations, loads the user's position and the google map with
+    // the resources
     async initializeLocations() {
         await this.geoMaps(this.userLocation); // Set the user location variables and load the map.
 
@@ -173,8 +175,6 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                 center: { lat: this.latitude, lng: this.longitude },
                 zoom: 16
             });
-
-            console.log('displayed the map');
 
             this.mapLoaded = true; 
 
