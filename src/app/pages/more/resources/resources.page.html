@@ -61,7 +61,7 @@
                     {{ location.title }}
                     <div style="font-size: .7em; color: var(--secondary-color)">
                         {{location.cityState}}
-                        {{(location.distance * 0.000621371).toPrecision(2)}} mi
+                        {{(location.distance * 0.000621371).toLocaleString("en-US", {maximumFractionDigits: 1})}} mi
                     </div>
                 </div>
                 <!-- Button that takes user to individual resource on click-->
