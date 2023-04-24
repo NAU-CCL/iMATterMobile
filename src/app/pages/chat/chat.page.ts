@@ -207,7 +207,6 @@ private storage: Storage = null;
             // Await this line becaue if we dont, this function will execute in the background and then we will immediately set this.chat.message = '' 
             // which changes the object reference and basically deletes the message before the service can add the chat to the db.
             await this.chatService.addChat(this.chat);
-            console.log(`Passed chat service addChat call`);
             
             // Chat.message is changed everytime someone enters the new message field on the chat room page. 
             // This line resets the new chat box to empty to after the message is sent the old message is removed.
