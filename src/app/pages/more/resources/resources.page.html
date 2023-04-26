@@ -68,7 +68,7 @@
                 <ion-icon (click)="logIndividualResourceClicks()" [routerLink]="['./', location.id]" name="arrow-forward" slot="end"></ion-icon>
             </ion-item>
 
-            <ion-item *ngIf=" this.mapLoaded && filteredList.length === 0">
+            <ion-item *ngIf=" this.mapLoaded && filteredList.length === 0 && locationList.length > 0">
                 <ion-label class="ion-text-wrap">
                   <ion-text>
                     <p style="text-align: center;">Sorry, there weren't any results for this search.</p>

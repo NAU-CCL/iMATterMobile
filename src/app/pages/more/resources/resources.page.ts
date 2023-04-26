@@ -8,6 +8,7 @@ import { LocationService, Location } from 'src/app/services/resource.service';
 import { Observable } from 'rxjs';
 import { AnalyticsService } from 'src/app/services/analyticsService.service';
 import { StorageService } from 'src/app/services/storage/storage.service';
+import { time } from 'console';
 
 
 
@@ -73,7 +74,11 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                 ref.get().then((result) => {
                     result.forEach(doc => {
                         this.userLocationHolder = doc.get('location');
-                        this.saveUserLocation(this.userLocationHolder).then(res => { this.initializeLocations();} );
+                        this.saveUserLocation(this.userLocationHolder).then(res => { 
+                            this.initializeLocations().then( () => {
+                                this.mapLoaded = true;
+                            })
+                        } ); 
                     });
                 });
             }
@@ -83,7 +88,6 @@ export class ResourcesPage implements OnInit, AfterViewInit {
         this.storage.get('platform').then( (val) => {
             this.iosPlatform = val === 'ios';
         } );
-
     }
 
 
@@ -136,6 +140,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
             this.locationList = locationList;
             this.filteredList = this.locationList;
         }));
+            
     }
 
 
@@ -175,8 +180,6 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                 center: { lat: this.latitude, lng: this.longitude },
                 zoom: 16
             });
-
-            this.mapLoaded = true; 
 
         }).catch((error) => {
             console.log('ERROR LOADING MAP ', error);
@@ -222,6 +225,8 @@ export class ResourcesPage implements OnInit, AfterViewInit {
             '<div id= "siteNotice">' +
             '</div>' +
             '<h1 id="firstHeading" class="firstHeading">' + location.title + '</h1></div>';
+
+        // adds click listener to each point on the map for when clicked on
         await google.maps.event.addListener(marker, 'click', function () {
             const infowindow = new google.maps.InfoWindow({
                 content: contentString,

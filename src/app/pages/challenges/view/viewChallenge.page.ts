@@ -150,7 +150,7 @@ export class ViewChallengePage implements OnInit {
 
         this.joined = true;
         this.challengeService.updateJoinedChallenges(this.userID, this.joinedChallenges).then(() => {
-            this.presentAlert('Congratulations!', 'You\'ve joined this challenge');
+            this.presentAlert('Congratulations!', "You've joined this challenge");
         });
         setTimeout(() => {
             this.ionViewWillEnter();

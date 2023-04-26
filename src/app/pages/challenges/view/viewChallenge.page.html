@@ -98,13 +98,13 @@
             </ion-card>
         </ng-container>
     </ion-list>
+    <ion-button *ngIf="joined" color="danger" size="small" expand="full" (click)="quitChallenge(challenge.id)">Quit Challenge
+    </ion-button>
 </ion-content>
 
-<ion-footer>
+<ion-footer *ngIf="!joined">
     <ion-toolbar>
         <ion-button *ngIf="!joined" color="success" expand="full" (click)="joinChallenge(challenge.id)">Join Challenge
-        </ion-button>
-        <ion-button *ngIf="joined" color="danger" expand="full" (click)="quitChallenge(challenge.id)">Quit Challenge
         </ion-button>
     </ion-toolbar>
 </ion-footer>
