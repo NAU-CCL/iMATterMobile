@@ -1,14 +1,11 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      <ion-icon name="information-circle" (click)="displayForumInfo()"> </ion-icon>
       Info Desk
+      <ion-icon name="information-circle" (click)="displayForumInfo()"> </ion-icon>
     </ion-title>
     <ion-buttons slot="start">
       <ion-back-button class="text-button" defaultHref="/tabs/more"></ion-back-button>
-    </ion-buttons>
-    <ion-buttons slot="end">
-      <ion-button class="create-post-button" routerLink="/forum/forum-deatails">Post Question</ion-button>
     </ion-buttons>
   </ion-toolbar>
   <ion-row>
@@ -90,3 +87,9 @@
     </ion-item>
   </ion-list>
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+      <ion-button expand="block" size="default" class="create-post-button" routerLink="/forum/forum-deatails">Post Question</ion-button>
+  </ion-toolbar>
+</ion-footer>
