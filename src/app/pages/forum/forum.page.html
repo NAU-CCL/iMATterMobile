@@ -9,16 +9,17 @@
     </ion-buttons>
   </ion-toolbar>
   <ion-row>
-    <ion-col>
-      <ion-button class="fill-button" [class.noHighlight]="allQuestions != true" expand="block"
-        (click)="allQuestions = true; usersQuestions = false"> All Questions</ion-button>
-    </ion-col>
-    <ion-col>
-      <ion-button class="fill-button" [class.noHighlight]="usersQuestions != true" expand="block"
-        (click)="usersQuestions = true; allQuestions = false"> Your Questions </ion-button>
-    </ion-col>
+    <ion-segment value="all">
+      <ion-segment-button value="all" (click)="usersQuestions=false; allQuestions=true;">
+        <ion-label>All Questions</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="your" (click)="usersQuestions=true; allQuestions=false;">
+        <ion-label>Your Questions</ion-label>
+      </ion-segment-button>
+    </ion-segment>
   </ion-row>
 </ion-header>
+
 
 <ion-header *ngIf="!iosPlatform">
   <!-- Searchbar for all questions -->
@@ -35,7 +36,7 @@
 </ion-header>
 
 <ion-content>
-  <ion-list *ngIf="allQuestions == true">
+  <ion-list *ngIf="allQuestions === true">
     <ion-item button [routerLink]="['/forum/forum-thread', question.id]" *ngFor="let question of questionList" (click)="updateIndividualInfoDeskClicks()">
       <ion-col>
         <ion-row>
@@ -61,7 +62,7 @@
     </ion-item>
   </ion-list>
 
-  <ion-list *ngIf="usersQuestions == true">
+  <ion-list *ngIf="usersQuestions === true">
     <ion-item button [routerLink]="['/forum/forum-thread', question.id]" *ngFor="let question of thisUserQuestionList">
       <ion-col>
         <ion-row class="timestamp">
