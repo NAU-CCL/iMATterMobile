@@ -61,13 +61,11 @@ export class DisplayReviewsPage implements OnInit {
     // Get id of the resource we are displaying reviews for.
     this.resourceID = this.activatedRoute.snapshot.paramMap.get('id');
     this.getReviewsQuery = this.reviewSurveyService.getReviewsForResourceQuery( this.resourceID );
-
-    console.log('On NGINIT');
+    
   }
 
   ionViewWillEnter()
   {
-    console.log('Will enter display reviews');
   }
 
   // Called when the parent component emits a change event to the value bound to this childs @Input property reloadReviews. 
@@ -86,22 +84,18 @@ export class DisplayReviewsPage implements OnInit {
     // Reenable the infinite scroll element.
     document.getElementsByTagName('ion-infinite-scroll')[0].disabled = false;
 
-    console.log(`Waiting to load reviews`);
     // Fill an array with refs to each review document in the db, we do this to avoid loading all docs immediately.
     // Call await to wait for this line of code to finish.
-    if( !this.getReviewsQuery === undefined ){
+    if( this.getReviewsQuery !== undefined ){
       await this.getReviewsQuery.get().then( querySnap =>{
         querySnap.forEach( (queryDocSnap) => {
           let queryDoc = queryDocSnap.data() 
           this.reviewDocArray.push( queryDoc );
           this.calculateReviewAverage( queryDoc );
           this.generateReviewTags( queryDoc );
-          console.log(`Inside review ref array`);
         })
       })
     }
-
-    console.log(`Finished loading reviews`);
 
     let loadFive = 0;
 
@@ -110,8 +104,6 @@ export class DisplayReviewsPage implements OnInit {
       this.loadReviewForIndex();
       loadFive++;
     }
-
-    console.log(`Review doc array ${this.reviewDocArray}`);
 
     console.log(`Visble reviews ${this.visibleReviewsArray}|||||||||| INDEX IS ${this.currentReviewRefIndex}`);
 
@@ -137,11 +129,7 @@ export class DisplayReviewsPage implements OnInit {
   }
 
 
-  loadData(event) {
-
-    console.log(` Len of DOC array ${this.reviewDocArray.length}`)
-
-    
+  loadData(event) {    
 
     setTimeout( () => {
 
@@ -178,7 +166,7 @@ export class DisplayReviewsPage implements OnInit {
   
   toggleShowNReviews()
   { 
-    if(this.showNReviews === this.reviewDocArray.length)
+    if(this.showNReviews < this.reviewDocArray.length)
     {
       this.showNReviews = this.showLessReviews;
       this.showReviewButtonText = "Show More";
@@ -199,7 +187,6 @@ export class DisplayReviewsPage implements OnInit {
     this.averageRating = this.totalReviewScores/(this.reviewDocArray.length);
     this.averageRating = Math.round(this.averageRating);
 
-    //console.log(`Ang Review is ${this.averageRating}`);
   }
 
   generateReviewTags( reviewDoc )
