@@ -1,3 +1,5 @@
+The following commands 
+
 ionic cordova build --release android
 
 cd platforms/android
