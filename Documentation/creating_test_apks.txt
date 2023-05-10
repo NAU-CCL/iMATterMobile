@@ -1,0 +1,27 @@
+This will allow us to create a set of apks for testing an app bundle.
+This creates the same product as what is downdloaded from the google play store.
+
+One thing to note, however, is to never include these files in git. 
+.apks expose a debug version of the app that can show attackers the passwords that
+we use to access for example, firestore. It is a good idea to delete a set of .apks
+once the testing with them is done. 
+
+1. Build the app bundle 
+    $ ionic cordova build android --release
+    ^ You can also omit the --release flag for testing
+    $ cd platforms/android
+    $ ./gradlew build
+
+2.  Build the set of .apks
+    $ bundletool build-apks --bundle=app/build/outputs/bundle/release/app-release.aab --output=../../testiMATter.apks
+    ^ if release tag was ommited, instead of bundle/relase, look in bundle/debug
+
+3. Installing the .apks
+    Ensure there is a device connected
+    $ adb devices
+
+    On the actual device, ensure that iMATter is not installed and that it is removed from the app trash
+
+    Install onto the device
+    $ cd -
+    $ bundletool install-apks --apks=testiMATter.apks

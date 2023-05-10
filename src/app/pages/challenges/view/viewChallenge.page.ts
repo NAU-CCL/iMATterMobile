@@ -157,17 +157,33 @@ export class ViewChallengePage implements OnInit {
         }, 1000);
     }
 
-    quitChallenge(id) {
-        console.log(this.joinedChallenges);
+    async quitChallenge(id) {
 
-        this.joinedChallenges.forEach((element, index) => {
-            if (element.challenge.id === id) { this.joinedChallenges.splice(index, 1); }
-        });
-        this.challengeService.updateJoinedChallenges(this.userID, this.joinedChallenges).then(() => {
-            this.presentAlert('You have quit this challenge.', 'Don\'t be afraid to try again!');
-        });
-
-        this.joined = false;
+        const alert = await this.alertController.create({
+            header: 'Are you sure?',
+            message: 'Clicking this will erase any progress on this challenge, are you sure you want to quit?',
+            buttons: [
+                {
+                    text: 'Quit',
+                    handler: () => {
+                        this.joinedChallenges.forEach((element, index) => {
+                            if (element.challenge.id === id) { this.joinedChallenges.splice(index, 1); }
+                        });
+                        this.joined = false
+                        this.challengeService.updateJoinedChallenges(this.userID, this.joinedChallenges).then(async () => {
+                            this.presentAlert('You have quit this challenge.', 'Don\'t be afraid to try again!');
+                        });
+                    }
+                },
+                {
+                    text: 'Cancel',
+                    handler: () => {
+                        alert.dismiss( true )
+                    }
+                }
+            ]
+        })
+        await alert.present()
     }
 
     completeDay(challengeId) {
