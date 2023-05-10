@@ -5,6 +5,10 @@ development environment, so it defaults to production. This allows us to see
 more useful error messages while developing, as well as faster compile times, as 
 the application no longer needs to optimize the code, only serve it. 
 
+To run in production mode which is closer to the final version, but still in 
+a browser, simply run:
+$ ionic serve
+
 
 
 
