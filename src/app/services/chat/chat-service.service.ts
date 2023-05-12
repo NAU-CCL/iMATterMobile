@@ -1,11 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument, DocumentChangeAction, DocumentReference, Query } from '@angular/fire/compat/firestore';
-import { map, take } from 'rxjs/operators';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Storage } from '@ionic/storage';
-import 'rxjs/add/operator/do'
-import 'rxjs/add/operator/scan'
-import 'rxjs/add/operator/take'
+import { scan, tap, map, take } from "rxjs/operators";
 import {autoChat} from '../../pages/chat/chatInterface'
 
 interface chatsQueryConfig{
@@ -283,9 +280,9 @@ export class ChatService {
 
      // SCan allows us to build a larger array over time.
      // Convert our chat batch subject to an observable and save it into the current batch obs variable.
-     this.currentChatDataBatchObs = this.currentChatDataBatch.asObservable().scan( (acc, val) =>{
+     this.currentChatDataBatchObs = this.currentChatDataBatch.asObservable().pipe( scan((acc, val) =>{
       return this.query.prepend ? val.concat(acc) : acc.concat(val) 
-     } )
+     } ))
   }
 
 
@@ -301,7 +298,9 @@ export class ChatService {
     this.loadingChats.next(true);
 
     return chatCollection.snapshotChanges()
-            .do( array => {
+            .pipe( 
+				tap(
+				array => {
               let values = array.map( snapShot => {
                 const data = snapShot.payload.doc.data();
                 const doc = snapShot.payload.doc
@@ -321,7 +320,7 @@ export class ChatService {
                 // Found all chats. No more chats to load.
                 this.doneLoadingChats.next(true)
               }
-            }).take(1).subscribe();
+            })).pipe(take(1)).subscribe();
   }
 
   private getCursor(){

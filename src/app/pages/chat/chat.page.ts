@@ -6,9 +6,8 @@ import { Observable } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AnalyticsService, Analytics, Sessions } from 'src/app/services/analyticsService.service';
 import { IonContent } from '@ionic/angular';
+import { timer } from "rxjs";
 
-
-import 'rxjs-compat/add/observable/timer';
 import { StorageService } from 'src/app/services/storage/storage.service';
 
 @Component({
