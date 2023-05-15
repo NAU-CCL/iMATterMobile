@@ -118,6 +118,9 @@ export class LoginPage implements OnInit {
     async ionViewDidEnter() {
 
         this.storage = await this.storageService.getStorage();
+        this.storageEmail = await this.storage.get('email')
+        console.log('This is the email stored' );
+        console.log(this.storageEmail);
 
         let autoLoginUser: boolean;
         let isUserAuthenticated: boolean = false;
@@ -210,7 +213,6 @@ export class LoginPage implements OnInit {
         this.fcm.getToken(userID);
     }
 
-
     
     addSession() {
         
@@ -220,11 +222,15 @@ export class LoginPage implements OnInit {
     // Used on the login page and called when the user clicks the log in button.
     validateUser(loginForm: FormGroup) {
         this.storage.get('email').then((val) => {
+            console.log(val)
             // if (val) {
             //     this.email = val.toString();
             //     this.validateEmailwithPass(val, loginForm.value.password);
             // } else {
             this.storage.set('email', loginForm.value.email);
+            this.storage.get('email').then((val) => {
+            console.log('//////////////////');
+            console.log(val)});
             this.validateEmailwithPass(loginForm.value.email, loginForm.value.password);
             // }
         });

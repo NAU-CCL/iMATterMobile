@@ -8,12 +8,10 @@ once the testing with them is done.
 
 1. Build the app bundle 
     $ ionic cordova build android --release
-    ^ You can also omit the --release flag for testing
-    $ cd platforms/android
-    $ ./gradlew build
-
+    ^ There should be a way to do this for debugging, but I couldn't figure it out
+    
 2.  Build the set of .apks
-    $ bundletool build-apks --bundle=app/build/outputs/bundle/release/app-release.aab --output=../../testiMATter.apks
+    $ bundletool build-apks --bundle=platforms/android/app/build/outputs/bundle/release/app-release.aab --output=testiMATter.apks
     ^ if release tag was ommited, instead of bundle/relase, look in bundle/debug
 
 3. Installing the .apks
@@ -23,5 +21,4 @@ once the testing with them is done.
     On the actual device, ensure that iMATter is not installed and that it is removed from the app trash
 
     Install onto the device
-    $ cd -
     $ bundletool install-apks --apks=testiMATter.apks
