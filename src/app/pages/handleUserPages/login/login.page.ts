@@ -103,7 +103,6 @@ export class LoginPage implements OnInit {
     }
 
    async ngOnInit() {
-        console.log(`In login page oninit`);
         // check for internet connection
         document.addEventListener( 'offline', () => {
             this.showAlert()
@@ -119,8 +118,6 @@ export class LoginPage implements OnInit {
 
         this.storage = await this.storageService.getStorage();
         this.storageEmail = await this.storage.get('email')
-        console.log('This is the email stored' );
-        console.log(this.storageEmail);
 
         let autoLoginUser: boolean;
         let isUserAuthenticated: boolean = false;
@@ -129,23 +126,17 @@ export class LoginPage implements OnInit {
         // is stored on the device, if authen is false, there is not user info on the device and we cannot auto log in the user. A user has attribute true assigned to authen when they
         // log in successfully. A users authenticated property is set to false and all user account data is deleted on logout.
 
-        console.log("Waiting for get('auth') to return");
-
         // Add await to force the function to synchronously execute before moving onto next lines of code.
         
         isUserAuthenticated = await this.storage.get('authenticated') === 'true';
-
-        console.log(`Got value from await func, is is: ${ isUserAuthenticated } typeof autoLoginUser is ${ typeof( isUserAuthenticated ) }`);
 
 
         // If the user is NOT authenticated we cannot auto log them in as not user data exists on the device.
         // Show the login page.
         if( isUserAuthenticated )
         {
-            console.log(`Inside main if statement, isUserAuthenticated is: ${ typeof(isUserAuthenticated) }`);
 
             let userID = this.storage.get('userCode').then( ( userCode ) => {
-                console.log("Inside the get user code method gonna be null.")
     
                 // Get a document from a collection. .doc() returns a doc reference! This is an offline operation and does not give you access to the actual doc data.
                 // Call .get().then(function) on the doc reference to actually retrieve the document as a snapshot.
@@ -180,14 +171,11 @@ export class LoginPage implements OnInit {
 
     autoLoginUser()
     {
-        console.log('STORAGE: ' + this.storage.get('email'));
         this.storage.get('email').then((val) => { // get the users email from phones local storage.
             if (val.toString().length > 1) {
                 this.storageEmail = val;
-                console.log('VAL: ' + val);
                 this.storage.get('authenticated').then((auth) => {
                     if (auth.toString().length > 1) {
-                        console.log('AUTH: ' + auth);
                         this.storage.get('password').then((pass) => {
                             if (pass.toString().length > 1) {
                                 if (auth === 'true') {
@@ -222,15 +210,11 @@ export class LoginPage implements OnInit {
     // Used on the login page and called when the user clicks the log in button.
     validateUser(loginForm: FormGroup) {
         this.storage.get('email').then((val) => {
-            console.log(val)
             // if (val) {
             //     this.email = val.toString();
             //     this.validateEmailwithPass(val, loginForm.value.password);
             // } else {
             this.storage.set('email', loginForm.value.email);
-            this.storage.get('email').then((val) => {
-            console.log('//////////////////');
-            console.log(val)});
             this.validateEmailwithPass(loginForm.value.email, loginForm.value.password);
             // }
         });
@@ -240,7 +224,6 @@ export class LoginPage implements OnInit {
         this.afs.firestore.collection('users').where('email', '==', email)
             .get().then(snapshot => {
             if (snapshot.docs.length > 0) {
-                console.log(('exists'));
                 this.userEmail = true;
                 // Get a reference to the user with the email saved on the device.
                 const userRef = this.afs.firestore.collection('users').where('email', '==', email);
@@ -295,7 +278,6 @@ export class LoginPage implements OnInit {
                 });
 
             } else {
-                console.log('Email does not exist');
                 this.showToast('Email is incorrect');
                 this.userEmail = false;
                 
