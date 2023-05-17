@@ -1,0 +1,13 @@
+This will describe how to edit or update firebase functions.
+Firebase functions are like our backend - they manage our database to ensure 
+that there is consistency and that certain updates will happen. This documentation
+describes how to push changes to functions to firebase.
+
+1. To change functions, look in the functions directory and change or add functions
+    in the index.js file. 
+
+2. Once done, the changed function can be deployed with:
+$ firebase deploy --only name_of_function_deployed
+
+3. If many functions were changed, you can run the command above multiple times or run:
+$ firebase deploy
