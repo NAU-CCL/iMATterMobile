@@ -399,27 +399,27 @@ export class HomePage implements OnInit {
 
 
         if (emotion === 'stressed') {
-            this.presentAlert('Stressed: Stay Strong!',
+            this.presentAlert(emoji + ' Stressed: Stay Strong!',
             `Remember you have a group of peers who care about you and try a challenge to keep moving forward with change. Take a deep breath to ground yourself. 
              Have faith that you'll get through it. If you need help, visit the resources page to find places nearby or hotlines you can call.`);
         } else if (emotion == 'happy') {
-            this.presentAlert('Happy: Fantastic!',
+            this.presentAlert(emoji + ' Happy: Fantastic!',
                 'Glad to hear you are doing well! Positive emotions can help you sieze the day and find new opportunities.')
         } else if (emotion == 'loved') {
-            this.presentAlert('Loved: Feeling loved is a great feeling!',
+            this.presentAlert(emoji + ' Loved: Feeling loved is a great feeling!',
                 'Surrounding yourself with those who support and love you will help you during recovery.')
         } else if (emotion == 'ok') {
-            this.presentAlert('Ok: It\'s okay to have off days.',
+            this.presentAlert(emoji + ' Ok: It\'s okay to have off days.',
                 'Keep going strong, think of ways to make tomorrow a better day!')
         } else if (emotion == 'sad') {
-            this.presentAlert('Sad: Your feelings are valid.',
+            this.presentAlert(emoji + ' Sad: Your feelings are valid.',
                 'You aren’t being too sensitive. You aren’t being too dramatic. You are hurting and that is okay. If you need additional support please reach out to someone who supports you or visit the Resource Locations page.');
         } else if (emotion == 'angry') {
-            this.presentAlert('Angry: Stay strong!', ' Anger is a normal reaction as your body is recovering and healing from substance use. When experiencing anger take a step back and assess the situation. Take some time to reflect and practice calming techniques. It is important to acknowledge when you feel this way and simply talking about it could help you overcome it.');
+            this.presentAlert(emoji + ' Angry: Stay strong!', ' Anger is a normal reaction as your body is recovering and healing from substance use. When experiencing anger take a step back and assess the situation. Take some time to reflect and practice calming techniques. It is important to acknowledge when you feel this way and simply talking about it could help you overcome it.');
         } else if (emotion == 'lonely') {
-            this.presentAlert('Lonely: Stay strong!', 'Feeling lonely can occur even when you\'re not alone. While starting your recovery process it is easy to feel isolated. Creating a strong sober network of like minded people can help discourage loneliness. If you want additional support, there is a chat available in the app for you to reach out and talk to others in similar situations.');
+            this.presentAlert(emoji + ' Lonely: Stay strong!', 'Feeling lonely can occur even when you\'re not alone. While starting your recovery process it is easy to feel isolated. Creating a strong sober network of like minded people can help discourage loneliness. If you want additional support, there is a chat available in the app for you to reach out and talk to others in similar situations.');
         } else if (emotion == 'tired') {
-            this.presentAlert('Tired: That\'s okay!', `With all the demands of life it's easy to feel exhausted and it can be difficult to find time to rest. Proper rest is the foundation for clear thoughts, energy, and coping skills. Try participating in ways to relax your mind like meditation, listening to music, or taking a nap to increase your energy.`);
+            this.presentAlert(emoji + ' Tired: That\'s okay!', `With all the demands of life it's easy to feel exhausted and it can be difficult to find time to rest. Proper rest is the foundation for clear thoughts, energy, and coping skills. Try participating in ways to relax your mind like meditation, listening to music, or taking a nap to increase your energy.`);
         }
 
         this.emotionNotif.userID = this.userProfileID;
@@ -654,8 +654,6 @@ export class HomePage implements OnInit {
         // String array of survey ids representing surveys available to the user.
         // When the user completes a survey, the survey is removed from avaialble surveys and and added to answered surveys.
         const currentSurveys = this.user.availableSurveys;
-        console.log( currentSurveys );
-        console.log( '///////////////////////////////////////////////////' );
         this.surveys.forEach(surveyArray => {
             
             // Each survey element within surveyArray represents a generally avaialble survey. Not a survey assigned to the user but
@@ -745,13 +743,11 @@ export class HomePage implements OnInit {
                 let completedDate = this.datepipe.transform( completedSurvey[ 'date' ].toDate().toDateString(), 'y-MM-dd' );
                 if (completedSurvey['survey'] === surveyID && todayString === completedDate ) {
                     this.surveyComplete = true;
-                    console.log( completedSurvey['title'] + ' Repeats and has been completed*****************************************************')
                 }
             } else {
                 // If the user has completed the survey set the variable to true.
                 if (completedSurvey['survey'] === surveyID) {
                     this.surveyComplete = true;
-                    console.log( completedSurvey['title'] + ' has been completed*****************************************************')
                 }
             }
         });

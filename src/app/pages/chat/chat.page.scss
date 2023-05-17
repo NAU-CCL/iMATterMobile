@@ -44,14 +44,6 @@
     position: relative;
     // padding: 10px 0;
 
-    .user-img {
-      position: absolute;
-      border-radius: 45px;
-      width: 37px;
-      height: 37px;
-      box-shadow: 0 0 2px rgba(0, 0, 0, 0.36);
-    }
-
     .msg-detail {
       width: 100%;
       display: inline-block;
@@ -70,18 +62,22 @@
     }
   }
 
+  img{
+    max-width: none;
+  }
+
+  .user-img {
+    position: absolute;
+    border-radius: 45px;
+    width: 37px;
+    height: 37px;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.36);
+  }
+
   .myMessage {
     position: relative;
     align-items: right;
     padding: 0px 37px;
-
-    .user-img {
-      position: absolute;
-      border-radius: 45px;
-      width: 37px;
-      height: 37px;
-      box-shadow: 0 0 2px rgba(0, 0, 0, 0.36);
-    }
 
     .msg-detail {
       width: 100%;

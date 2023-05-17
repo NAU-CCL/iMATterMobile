@@ -106,11 +106,11 @@
       </div>
 
       <!-- Automatic message -->
-      <div *ngIf="chat.type == 'emotion'">
+      <!-- <div *ngIf="chat.type == 'emotion'">
         <div class="msg-content">
           <p class="emotion">{{chat.message}}</p>
         </div>
-      </div>
+      </div> -->
   
   
       <!-- User message from a different user -->
@@ -162,8 +162,8 @@
 </ion-content>
 
 <ion-footer>
-  <ion-item>
-    <ion-textarea spellcheck="true" autocapitalize="true" [(ngModel)]="chat.message" placeholder="Enter message">
+  <ion-item (click)="scrollToBottom()">
+    <ion-textarea spellcheck="true" autocapitalize="true" enterkeyhint="done" [(ngModel)]="chat.message" placeholder="Enter message">
     </ion-textarea>
     <div *ngIf="chat.message == ''">
       <ion-button disabled="true" class="ion-text-button" slot="end" fill="clear">

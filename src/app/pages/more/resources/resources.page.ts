@@ -8,6 +8,7 @@ import { LocationService, Location } from 'src/app/services/resource.service';
 import { Observable } from 'rxjs';
 import { AnalyticsService } from 'src/app/services/analyticsService.service';
 import { StorageService } from 'src/app/services/storage/storage.service';
+import { time } from 'console';
 
 
 
@@ -73,7 +74,11 @@ export class ResourcesPage implements OnInit, AfterViewInit {
                 ref.get().then((result) => {
                     result.forEach(doc => {
                         this.userLocationHolder = doc.get('location');
-                        this.saveUserLocation(this.userLocationHolder).then(res => { this.initializeLocations();} );
+                        this.saveUserLocation(this.userLocationHolder).then(res => { 
+                            this.initializeLocations().then( () => {
+                                this.mapLoaded = true;
+                            })
+                        } ); 
                     });
                 });
             }
@@ -83,7 +88,6 @@ export class ResourcesPage implements OnInit, AfterViewInit {
         this.storage.get('platform').then( (val) => {
             this.iosPlatform = val === 'ios';
         } );
-
     }
 
 
@@ -136,6 +140,7 @@ export class ResourcesPage implements OnInit, AfterViewInit {
             this.locationList = locationList;
             this.filteredList = this.locationList;
         }));
+            
     }
 
 
@@ -150,6 +155,8 @@ export class ResourcesPage implements OnInit, AfterViewInit {
     }
     */
 
+    // Gets all locations, loads the user's position and the google map with
+    // the resources
     async initializeLocations() {
         await this.geoMaps(this.userLocation); // Set the user location variables and load the map.
 
@@ -167,21 +174,64 @@ export class ResourcesPage implements OnInit, AfterViewInit {
         await this.geolocation.getCurrentPosition().then((resp) => {
             this.latitude = resp.coords.latitude;
             this.longitude = resp.coords.longitude;
-            console.log(this.latitude);
-            console.log(this.longitude);
             this.map = new google.maps.Map(this.mapNativeElement.nativeElement, {
                 center: { lat: this.latitude, lng: this.longitude },
-                zoom: 16
+                zoom: 16,
+                mapTypeControl: false,
+                fullscreenControl: false,
+                streetViewControl: false
             });
 
-            console.log('displayed the map');
+        // Add button to recenter the map to the starting position
+          // Create the DIV to hold the control.
+        const centerControlDiv = document.createElement('div');
+        // Create the control.
+        const centerControl = this.createCenterControl(this.map);
+        // Append the control to the DIV.
+        centerControlDiv.appendChild(centerControl);
 
-            this.mapLoaded = true; 
+        this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(centerControlDiv);
+
 
         }).catch((error) => {
             console.log('ERROR LOADING MAP ', error);
         });
     }
+
+    /**
+ * Creates a control that recenters the map on The user's starting location.
+ */
+ createCenterControl(map) {
+    const controlButton = document.createElement('button');
+  
+    // Set CSS for the control.
+    controlButton.style.backgroundColor = '#fff';
+    controlButton.style.border = '2px solid #fff';
+    controlButton.style.borderRadius = '3px';
+    controlButton.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+    controlButton.style.color = 'rgb(25,25,25)';
+    controlButton.style.cursor = 'pointer';
+    controlButton.style.fontFamily = 'Roboto,Arial,sans-serif';
+    controlButton.style.fontSize = '16px';
+    controlButton.style.lineHeight = '38px';
+    controlButton.style.margin = '8px 0 22px';
+    controlButton.style.padding = '0 5px';
+    controlButton.style.textAlign = 'center';
+  
+    controlButton.textContent = 'Center Map';
+    controlButton.title = 'Click to recenter the map';
+    controlButton.type = 'button';
+  
+    // Setup the click event listeners: simply set the map to Chicago.
+    controlButton.addEventListener('click', () => {
+        const startingLocation = { lat: this.latitude, lng: this.longitude }
+        map.setCenter(startingLocation);
+        map.setZoom( 16 );
+    });
+  
+    return controlButton;
+  }
+  
 
 
     async addMarker(location) {
@@ -222,6 +272,8 @@ export class ResourcesPage implements OnInit, AfterViewInit {
             '<div id= "siteNotice">' +
             '</div>' +
             '<h1 id="firstHeading" class="firstHeading">' + location.title + '</h1></div>';
+
+        // adds click listener to each point on the map for when clicked on
         await google.maps.event.addListener(marker, 'click', function () {
             const infowindow = new google.maps.InfoWindow({
                 content: contentString,

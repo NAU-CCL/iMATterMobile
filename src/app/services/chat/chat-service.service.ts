@@ -80,7 +80,7 @@ export class ChatService {
       })
     );
 
-    //this.deleteBlankChats();
+    this.deleteBlankChats();
     
     //this.initializeDateChats();
 
@@ -247,7 +247,6 @@ export class ChatService {
      this.afs.collection('chats').ref.where('type','==','').get().then( ( querySnap ) => {
        querySnap.forEach( (queryDocSnap) => {
          let chatDoc = queryDocSnap.data();
-         console.log(`Chat to delete is ${JSON.stringify(chatDoc)} \n\n Total chats ${chatCount}`);
          chatCount++;
          queryDocSnap.ref.delete();
        })
@@ -277,6 +276,7 @@ export class ChatService {
     const first = this.afs.collection(this.query.path, ref => {
       return ref.orderBy(this.query.field, this.query.reverse ? 'desc' : 'asc').limit(this.query.limit);
      })
+
 
      this.mapAndUpdate(first);
 
