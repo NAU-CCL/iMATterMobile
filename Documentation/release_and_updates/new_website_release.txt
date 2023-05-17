@@ -1,0 +1,15 @@
+When editing the website, it will need to be released when done. 
+This will be the list of commands and what they do to release new versions of the website.
+Note: do not run this in the iMATterMobile directory, only in the iMATterWeb one.
+Note: Only deploy the master branch of the web application to ensure that fewer bugs make it to production
+
+1. First, make sure the website is working by testing locally:
+$ ionic serve 
+
+2. Build the release version of the application:
+$ ionic build --prod --release 
+
+This generates the www folder for the website
+
+3. Deploy the website with:
+$ firebase deploy --only hosting

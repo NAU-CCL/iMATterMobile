@@ -1,0 +1,21 @@
+The following commands build a new version of the application.
+By the end, there will be a signed version of the application that can be uploaded
+right to the google play store. 
+
+First, let's make sure we will be able to upload this version. 
+If needed, go to the google play console, and go to the latest release of the application.
+
+
+ionic cordova build --release android
+
+cd platforms/android
+
+./gradlew build 
+
+cd -
+
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.keystore platforms/android/app/build/outputs/bundle/release/app-release.aab alias_name
+
+mv platforms/android/app/build/outputs/bundle/release/app-release.aab ./iMATter_V5.6.0.aab
+
+all done!
