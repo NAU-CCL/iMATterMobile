@@ -38,6 +38,12 @@
 
  <br />   
 
+ 6. Check that the correct Cordova and Ionic versions are installed
+	* ``` $ ionic -v ```  and  ``` $ cordova -v ``` 
+	* As of May 2023, it should be ionic v7.0.0 and cordova v11.0.0 (cordova-lib@11.1.0)
+
+ <br /> 
+
 7. Install the project dependencies
 	* go to the mobile and web app directories respectively
 	* in both, run the command ``` $ npm install ``` 
@@ -64,7 +70,7 @@
 
 ### Download android tools for the app
 
-1. Create a directory 'android'
+1. Go back to your home directory, then create a directory 'android'
 2. Download the command line tools from the android website
 3. Move the 'cmdline_tools' directory from downloads into the android directory, cd into it
 5. Create a directory called 'latest'
