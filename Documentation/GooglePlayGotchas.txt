@@ -77,9 +77,19 @@ Solution: It would seem like deleting the duplicate line would solve the problem
 Real Solution: 
 
 Android API: Google play will not accept app bundles with the wrong app bundle api being targeted. Thus, in the config.xml file, there is a target for 
-             the desired API. This must be changed to the wanted API, currently 32.
+             the desired API. This must be changed to the wanted API, currently 33.
 
 Permissions Plugins: For some reason one of the plugins for cordova has the permission "REQUEST_INSTALL_PACKAGES" which is not allowed by the Google Play store
                      As it could cause abuse. Search through the plugins.xml files in the plugins directory, and remove those tags, and do the same in the android.json file in the platforms directory
                      Also in the AndroidManifext.xml file.
+
+
+Compile not found:
+The specifics: Sometimes, when building the project, it will mention that a cordova plugin cannot find the "compile" function. This is because
+               compile is deprecated, and no longer recognized. Now, implementation is the function to use.
+
+Solution: The ideal solution would be an updated version of the application. But these plugins are often old and defunct. Thus the options 
+          are to fork it, release it ourselves, with this one line fix, find someone else who has done it, or change this one line. All have drawbacks,
+          but the first two are the most ideal solutions. Else, you can go to the problem file and change it yourself. This will solve the prblem for you, this time,
+          but has to be repeated often. 
                          
